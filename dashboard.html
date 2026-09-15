@@ -544,162 +544,6 @@
     }
     .btn-close-panduan:hover { background: rgba(0,255,157,0.15); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
 
-    .ai-box {
-      background: rgba(10, 20, 30, 0.95);
-      border: 1px solid #00ff9d;
-      border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 0 20px rgba(0,255,157,0.4), inset 0 0 10px rgba(0,255,157,0.05);
-      position: relative;
-    }
-    .ai-box::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: 15px; right: 15px;
-      height: 1px;
-      background: #00ff9d;
-      box-shadow: 0 0 10px #00ff9d;
-    }
-    .ai-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      letter-spacing: 3px;
-      margin-bottom: 12px;
-      color: #00ff9d;
-      text-shadow: 0 0 8px #00ff9d;
-    }
-    .ai-status {
-      font-size: 8px;
-      color: #7dfcce;
-      letter-spacing: 1px;
-    }
-    .ai-status::before {
-      content: '●';
-      color: #00ff9d;
-      margin-right: 4px;
-      animation: blink 1s infinite;
-    }
-    .ai-chat {
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(0,255,157,0.3);
-      border-radius: 4px;
-      padding: 10px;
-      height: 220px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      font-size: 11px;
-      line-height: 1.6;
-    }
-    .ai-chat::-webkit-scrollbar { width: 5px; }
-    .ai-chat::-webkit-scrollbar-track { background: rgba(0,255,157,0.05); }
-    .ai-chat::-webkit-scrollbar-thumb { background: #00ff9d; border-radius: 3px; }
-
-    .ai-msg {
-      margin-bottom: 10px;
-      padding: 7px 10px;
-      border-radius: 4px;
-      max-width: 88%;
-      word-wrap: break-word;
-      animation: aiMsgIn 0.3s;
-      white-space: pre-wrap;
-    }
-    @keyframes aiMsgIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .ai-msg.user {
-      background: rgba(0,212,255,0.15);
-      border-left: 2px solid #00d4ff;
-      margin-left: auto;
-      color: #00d4ff;
-      text-align: right;
-    }
-    .ai-msg.ai {
-      background: rgba(0,255,157,0.08);
-      border-left: 2px solid #00ff9d;
-      color: #00ff9d;
-    }
-    .ai-msg .ai-name {
-      font-size: 8px;
-      letter-spacing: 2px;
-      color: #7dfcce;
-      margin-bottom: 3px;
-      display: block;
-    }
-    .ai-msg.user .ai-name { color: #7ddfff; }
-    .ai-msg.loading {
-      color: #7dfcce;
-      font-style: italic;
-    }
-    .ai-msg.loading::after {
-      content: '';
-      animation: dots 1.5s infinite;
-    }
-    @keyframes dots {
-      0% { content: ''; }
-      25% { content: '.'; }
-      50% { content: '..'; }
-      75% { content: '...'; }
-    }
-    .ai-input-row {
-      display: flex;
-      gap: 6px;
-    }
-    .ai-input-row input {
-      flex: 1;
-      padding: 10px 12px;
-      background: rgba(0,255,157,0.05);
-      border: 1px solid #00ff9d;
-      border-radius: 3px;
-      color: #00ff9d;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      outline: none;
-    }
-    .ai-input-row input::placeholder { color: rgba(0,255,157,0.4); }
-    .ai-input-row input:focus { box-shadow: 0 0 12px #00ff9d; }
-    .ai-input-row button {
-      padding: 10px 16px;
-      background: #00ff9d;
-      color: #0a0e14;
-      border: none;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .ai-input-row button:hover { box-shadow: 0 0 15px #00ff9d; }
-    .ai-input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .ai-suggestions {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    .ai-chip {
-      padding: 4px 8px;
-      background: rgba(0,255,157,0.08);
-      border: 1px solid rgba(0,255,157,0.4);
-      border-radius: 12px;
-      font-size: 9px;
-      color: #7dfcce;
-      cursor: pointer;
-      transition: all 0.3s;
-      letter-spacing: 0.5px;
-    }
-    .ai-chip:hover {
-      background: rgba(0,255,157,0.2);
-      border-color: #00ff9d;
-      color: #00ff9d;
-    }
-
     .leaflet-container { background: #000 !important; }
   </style>
 </head>
@@ -727,7 +571,7 @@
         <div class="panduan-row"><span class="pico">2️⃣</span><span class="ptxt">Klik <b>GENERATE</b>, lalu klik <b>📋 SALIN LINK</b></span></div>
         <div class="panduan-row"><span class="pico">3️⃣</span><span class="ptxt">Kirim link ke target via WhatsApp, Telegram, dll</span></div>
         <div class="panduan-row"><span class="pico">4️⃣</span><span class="ptxt">Target buka link → <b>Allow</b> lokasi & kamera</span></div>
-        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Tanya AI apa saja: data target, sains, teknologi, dll</span></div>
+        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Data masuk otomatis di panel <b>INCOMING DATA</b></span></div>
       </div>
       <button class="btn-close-panduan" onclick="document.getElementById('panduanBox').style.display='none'">
         ✕ TUTUP PANDUAN
@@ -747,36 +591,6 @@
           <span class="link-url" id="linkUrl"></span>
           <button class="btn-copy" id="btnCopy" onclick="copyLink()">📋 SALIN LINK</button>
         </div>
-      </div>
-    </div>
-
-    <div class="ai-box">
-      <div class="ai-header">
-        <span>🤖 CYBER AI</span>
-        <span class="ai-status" id="aiStatus">ONLINE</span>
-      </div>
-      <div class="ai-suggestions" id="aiSuggestions">
-        <div class="ai-chip" onclick="aiQuick('Siapa target terbaru?')">Target terbaru?</div>
-        <div class="ai-chip" onclick="aiQuick('Ringkas semua data target')">Ringkas data</div>
-        <div class="ai-chip" onclick="aiQuick('Apa itu GPS?')">Apa itu GPS?</div>
-        <div class="ai-chip" onclick="aiQuick('Jelaskan cara kerja IP address')">Cara kerja IP</div>
-      </div>
-      <div class="ai-chat" id="aiChat">
-        <div class="ai-msg ai">
-          <span class="ai-name">CYBER AI</span>
-          Sistem siap. Kamu bisa tanya apa saja:
-• Data target (lokasi, foto, IP, dll)
-• Pengetahuan umum (sains, teknologi, sejarah)
-• Bantuan coding, tips, saran
-• Obrolan santai
-
-Ketik pertanyaanmu di bawah.
-        </div>
-      </div>
-      <div class="ai-input-row">
-        <input id="aiInput" placeholder="Tanya apa saja..." autocomplete="off"
-               onkeypress="if(event.key==='Enter') aiSend()">
-        <button id="aiSendBtn" onclick="aiSend()">KIRIM</button>
       </div>
     </div>
 
@@ -803,17 +617,12 @@ const firebaseConfig = {
   appId: "1:750633313866:web:3d2e552960e06db83968b3"
 };
 
-const GEMINI_API_KEY = "AIzaSyD_rN7OMIHJRSwe12REYJ4szjyxGpDsePo";
-const GEMINI_MODEL = "gemini-3.6-flash";
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const user = localStorage.getItem('username');
 if (!user) location.href = 'index.html';
 document.getElementById('u').innerText = user;
-
-let allData = [];
 
 window.logout = () => {
   localStorage.removeItem('username');
@@ -900,7 +709,6 @@ window.clearAll = async () => {
   if (!confirm('Yakin hapus SEMUA data? Tidak bisa dikembalikan.')) return;
   try {
     await remove(ref(db, 'lokasi/' + user));
-    allData = [];
     lastDataCount = 0;
     alert('✓ Semua data dihapus');
   } catch(e) {
@@ -976,129 +784,6 @@ function generateID(waktu) {
   return `TGT-${y}${m}${d}-${h}${mn}${s}`;
 }
 
-// ============================================
-// 🤖 AI ASSISTANT — MODE BEBAS
-// ============================================
-const aiChat = document.getElementById('aiChat');
-const aiInput = document.getElementById('aiInput');
-const aiSendBtn = document.getElementById('aiSendBtn');
-
-window.aiQuick = (text) => {
-  aiInput.value = text;
-  aiSend();
-};
-
-function addAIMsg(text, type = 'ai') {
-  const div = document.createElement('div');
-  div.className = 'ai-msg ' + type;
-  const name = type === 'user' ? 'YOU' : 'CYBER AI';
-  div.innerHTML = `<span class="ai-name">${name}</span>${text}`;
-  aiChat.appendChild(div);
-  aiChat.scrollTop = aiChat.scrollHeight;
-  return div;
-}
-
-function addAILoading() {
-  const div = document.createElement('div');
-  div.className = 'ai-msg ai loading';
-  div.innerHTML = '<span class="ai-name">CYBER AI</span>Berpikir';
-  aiChat.appendChild(div);
-  aiChat.scrollTop = aiChat.scrollHeight;
-  return div;
-}
-
-window.aiSend = async () => {
-  const question = aiInput.value.trim();
-  if (!question) return;
-
-  aiInput.value = '';
-  aiSendBtn.disabled = true;
-  addAIMsg(question, 'user');
-  const loadingMsg = addAILoading();
-
-  try {
-    const answer = await askAI(question);
-    loadingMsg.remove();
-    addAIMsg(answer, 'ai');
-  } catch(e) {
-    loadingMsg.remove();
-    addAIMsg('[ERROR] ' + e.message, 'ai');
-  }
-
-  aiSendBtn.disabled = false;
-  aiInput.focus();
-};
-
-async function askAI(question) {
-  // Siapkan konteks data target
-  const dataContext = allData.length === 0
-    ? 'Belum ada data target tersimpan.'
-    : allData.map(([key, d]) => {
-        const waktu = new Date(d.waktu).toLocaleString('id-ID');
-        const info = [];
-        info.push(`Target: ${d.target || 'Unknown'}`);
-        info.push(`Waktu: ${waktu}`);
-        if (d.lat) info.push(`Lokasi: ${d.kota || '?'} (${d.lat.toFixed(4)}, ${d.lng.toFixed(4)})`);
-        if (d.ip) info.push(`IP: ${d.ip}`);
-        if (d.suhu !== undefined) info.push(`Suhu: ${Math.round(d.suhu)}°C`);
-        if (d.baterai) info.push(`Baterai: ${d.baterai}`);
-        if (d.platform) info.push(`Platform: ${d.platform}`);
-        if (d.network) info.push(`Jaringan: ${d.network}`);
-        if (d.timezone) info.push(`Timezone: ${d.timezone}`);
-        return '- ' + info.join(' | ');
-      }).join('\n');
-
-  const systemPrompt = `Kamu adalah CYBER AI, asisten pintar dari sistem "CYBER ANONYMOUS" milik RORAXBRINGAZ.
-
-KAMU BISA MENJAWAB SEMUA PERTANYAAN:
-1. Pertanyaan tentang data target (lokasi, foto, IP, baterai, dll) — pakai DATA TARGET di bawah
-2. Pertanyaan umum apa saja: sains, teknologi, sejarah, matematika, kesehatan, tips, coding, dll
-3. Obrolan santai / curhat / bercanda
-4. Bantuan apapun yang user butuhkan
-
-GAYA BAHASA:
-- Santai tapi profesional
-- Pakai istilah cyber/hacker KALAU RELEVAN saja
-- Bahasa Indonesia (atau sesuai bahasa user)
-- Jawab langsung, jelas, ringkas
-- Kalau pertanyaan tidak jelas, tanya balik
-
-DATA TARGET SAAT INI (${allData.length} entri):
-${dataContext}
-
-Pertanyaan user: ${question}
-
-INSTRUKSI FINAL:
-- Kalau pertanyaan soal DATA TARGET → pakai DATA TARGET di atas
-- Kalau pertanyaan umum → jawab sesuai pengetahuanmu, JANGAN tolak
-- JANGAN pernah bilang "instruksi ditolak" atau "hanya bisa jawab data target"
-- Jawab dengan helpful & ramah`;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: systemPrompt }] }]
-    })
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || 'Gagal menghubungi AI');
-  }
-
-  const data = await response.json();
-  const answer = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  
-  if (!answer) throw new Error('AI tidak memberi jawaban');
-  return answer;
-}
-
-// ============================================
-// DATA & MAP
-// ============================================
 let currentMap = null;
 let currentMarker = null;
 
@@ -1107,12 +792,10 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   if (!data) {
     document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
     if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
-    allData = [];
     lastDataCount = 0;
     return;
   }
   const arr = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
-  allData = arr;
 
   if (!firstLoad && arr.length > lastDataCount) {
     playAlertSound();
