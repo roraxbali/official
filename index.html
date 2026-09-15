@@ -3,23 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Tracker</title>
+  <title>CYBER TRACKER // LOGIN</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
-    .box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 300px; }
-    input { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; }
-    button { width: 100%; padding: 10px; background: #1877f2; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-    button:hover { background: #1559c4; }
-    h2 { text-align: center; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0e14;
+      color: #00ff9d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Efek grid background */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0,255,157,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,157,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .box {
+      background: rgba(10, 20, 30, 0.9);
+      border: 2px solid #00ff9d;
+      border-radius: 8px;
+      padding: 40px 30px;
+      width: 340px;
+      box-shadow: 
+        0 0 20px rgba(0,255,157,0.5),
+        0 0 40px rgba(0,255,157,0.2),
+        inset 0 0 20px rgba(0,255,157,0.05);
+      position: relative;
+      z-index: 2;
+    }
+    .box::before {
+      content: '◢ SYSTEM ACCESS ◣';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0a0e14;
+      padding: 0 10px;
+      color: #00ff9d;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #00ff9d;
+    }
+    h2 {
+      text-align: center;
+      color: #00ff9d;
+      letter-spacing: 4px;
+      margin-bottom: 25px;
+      text-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d;
+      font-size: 22px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 8px 0;
+      background: rgba(0,255,157,0.05);
+      border: 1px solid #00ff9d;
+      border-radius: 3px;
+      color: #00ff9d;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      letter-spacing: 1px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    input::placeholder { color: rgba(0,255,157,0.4); }
+    input:focus {
+      box-shadow: 0 0 15px #00ff9d;
+      background: rgba(0,255,157,0.1);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: transparent;
+      border: 2px solid #00ff9d;
+      color: #00ff9d;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-shadow: 0 0 5px #00ff9d;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #00ff9d;
+      color: #0a0e14;
+      box-shadow: 0 0 20px #00ff9d, 0 0 40px #00ff9d;
+      text-shadow: none;
+    }
+    #err {
+      color: #ff3366;
+      text-align: center;
+      margin-top: 12px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px #ff3366;
+    }
+    /* Efek scanline */
+    .scanline {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 50%, rgba(0,255,157,0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
+  <div class="scanline"></div>
   <div class="box">
-    <h2>Login</h2>
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button onclick="login()">Masuk</button>
-    <p style="color:red;text-align:center" id="err"></p>
+    <h2>[ LOGIN ]</h2>
+    <input id="user" placeholder="USERNAME" autocomplete="off">
+    <input id="pass" type="password" placeholder="PASSWORD">
+    <button onclick="login()">» ACCESS «</button>
+    <p id="err"></p>
   </div>
 
 <script>
@@ -27,7 +136,7 @@ function login() {
   const u = document.getElementById('user').value.trim();
   const p = document.getElementById('pass').value.trim();
   if (!u || !p) {
-    document.getElementById('err').innerText = 'Isi username & password!';
+    document.getElementById('err').innerText = '[!] ISI SEMUA FIELD';
     return;
   }
   localStorage.setItem('username', u);
