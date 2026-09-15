@@ -171,9 +171,6 @@
     .btn-copy:hover { box-shadow: 0 0 20px #00ff9d; transform: scale(1.02); }
     .btn-copy.copied { background: #00d4ff; }
 
-    /* ============================================
-       TOMBOL NOTIFIKASI (Aktifkan Suara)
-       ============================================ */
     .notif-toggle {
       padding: 5px 10px;
       background: transparent;
@@ -197,9 +194,7 @@
       box-shadow: 0 0 15px #00ff9d;
     }
 
-    /* ============================================
-       PETA ANIMASI
-       ============================================ */
+    /* PETA */
     .map-box {
       position: relative;
       width: 100%;
@@ -211,18 +206,10 @@
       margin-bottom: 12px;
       background: #000;
     }
-    #map {
-      width: 100%;
-      height: 100%;
-      background: #000;
-    }
-    .leaflet-tile-pane {
-      filter: hue-rotate(75deg) saturate(1.3) brightness(0.7) contrast(1.15);
-    }
+    #map { width: 100%; height: 100%; background: #000; }
+    .leaflet-tile-pane { filter: hue-rotate(75deg) saturate(1.3) brightness(0.7) contrast(1.15); }
     .map-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
+      position: absolute; inset: 0; pointer-events: none;
       background: 
         linear-gradient(rgba(0,255,157,0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0,255,157,0.06) 1px, transparent 1px);
@@ -230,58 +217,31 @@
       z-index: 400;
     }
     .map-scanline {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        transparent 2px,
-        rgba(0,255,157,0.08) 2px,
-        rgba(0,255,157,0.08) 3px
-      );
+      position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,255,157,0.08) 2px, rgba(0,255,157,0.08) 3px);
       z-index: 401;
     }
     .map-crosshair {
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border: 2px solid #00ff9d;
       border-radius: 50%;
-      z-index: 500;
-      pointer-events: none;
+      z-index: 500; pointer-events: none;
       box-shadow: 0 0 20px #00ff9d, inset 0 0 10px #00ff9d;
       animation: crosshairPulse 1.5s infinite;
     }
-    .map-crosshair::before,
-    .map-crosshair::after {
-      content: '';
-      position: absolute;
-      background: #00ff9d;
-      box-shadow: 0 0 5px #00ff9d;
+    .map-crosshair::before, .map-crosshair::after {
+      content: ''; position: absolute; background: #00ff9d; box-shadow: 0 0 5px #00ff9d;
     }
-    .map-crosshair::before {
-      top: 50%; left: -14px; right: -14px;
-      height: 1px;
-      transform: translateY(-50%);
-    }
-    .map-crosshair::after {
-      left: 50%; top: -14px; bottom: -14px;
-      width: 1px;
-      transform: translateX(-50%);
-    }
+    .map-crosshair::before { top: 50%; left: -14px; right: -14px; height: 1px; transform: translateY(-50%); }
+    .map-crosshair::after { left: 50%; top: -14px; bottom: -14px; width: 1px; transform: translateX(-50%); }
     @keyframes crosshairPulse {
       0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
       50% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.7; }
     }
-
     .map-status {
-      position: absolute;
-      top: 10px;
-      left: 10px;
+      position: absolute; top: 10px; left: 10px;
       background: rgba(10,20,30,0.9);
       border: 1px solid #00ff9d;
       padding: 5px 10px;
@@ -293,14 +253,9 @@
       z-index: 600;
       text-shadow: 0 0 5px #00ff9d;
     }
-    .map-status::before {
-      content: '◉ ';
-      animation: blink 1s infinite;
-    }
+    .map-status::before { content: '◉ '; animation: blink 1s infinite; }
     .map-coords {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
+      position: absolute; bottom: 10px; left: 10px;
       background: rgba(10,20,30,0.9);
       border: 1px solid #00ff9d;
       padding: 5px 10px;
@@ -312,9 +267,7 @@
       z-index: 600;
     }
     .map-zoom {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
+      position: absolute; bottom: 10px; right: 10px;
       background: rgba(10,20,30,0.9);
       border: 1px solid #00ff9d;
       padding: 5px 10px;
@@ -327,25 +280,16 @@
       text-shadow: 0 0 5px #00ff9d;
     }
 
-    /* ============================================
-       RADAR MILITER — SWEEP + PING + RANGE RING
-       ============================================ */
+    /* RADAR */
     .radar-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 180px;
-      height: 180px;
+      width: 180px; height: 180px;
       pointer-events: none;
       z-index: 450;
     }
-
-    /* Range ring — lingkaran konsentris */
     .radar-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       border: 1px solid rgba(0,255,157,0.4);
       border-radius: 50%;
@@ -354,21 +298,12 @@
     .radar-ring.r1 { width: 60px; height: 60px; }
     .radar-ring.r2 { width: 110px; height: 110px; }
     .radar-ring.r3 { width: 160px; height: 160px; }
-
-    /* Sweep line yang muter */
     .radar-sweep {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 90px;
-      height: 90px;
+      position: absolute; top: 50%; left: 50%;
+      width: 90px; height: 90px;
       transform-origin: 0% 50%;
       margin-top: -1px;
-      background: linear-gradient(90deg, 
-        rgba(0,255,157,0.9) 0%, 
-        rgba(0,255,157,0.4) 40%, 
-        transparent 100%);
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      background: linear-gradient(90deg, rgba(0,255,157,0.9) 0%, rgba(0,255,157,0.4) 40%, transparent 100%);
       animation: sweepRotate 3s linear infinite;
       box-shadow: 0 0 15px rgba(0,255,157,0.6);
     }
@@ -376,92 +311,48 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
-
-    /* Ping circle — membesar & fade out */
     .radar-ping {
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 20px;
-      height: 20px;
+      width: 20px; height: 20px;
       border: 2px solid #00ff9d;
       border-radius: 50%;
       box-shadow: 0 0 15px #00ff9d;
       animation: pingExpand 2s ease-out infinite;
     }
-    .radar-ping.p2 {
-      animation-delay: 1s;
-    }
+    .radar-ping.p2 { animation-delay: 1s; }
     @keyframes pingExpand {
-      0% {
-        width: 20px;
-        height: 20px;
-        opacity: 1;
-        border-width: 2px;
-      }
-      100% {
-        width: 180px;
-        height: 180px;
-        opacity: 0;
-        border-width: 1px;
-      }
+      0% { width: 20px; height: 20px; opacity: 1; border-width: 2px; }
+      100% { width: 180px; height: 180px; opacity: 0; border-width: 1px; }
     }
-
-    /* Crosshair di pusat radar */
     .radar-center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       background: #ff3366;
       border-radius: 50%;
       box-shadow: 0 0 15px #ff3366, 0 0 30px #ff3366;
       animation: blink 1s infinite;
     }
 
-    /* ============================================
-       POPUP TARGET — KECIL & RINGKAS
-       ============================================ */
     .target-popup .leaflet-popup-content-wrapper {
       background: transparent;
       border-radius: 4px;
-      box-shadow: 
-        0 0 10px #00ff9d,
-        0 0 20px rgba(0,255,157,0.4);
-      border: none;
-      padding: 0;
-      overflow: visible;
+      box-shadow: 0 0 10px #00ff9d, 0 0 20px rgba(0,255,157,0.4);
+      border: none; padding: 0; overflow: visible;
     }
-    .target-popup .leaflet-popup-content {
-      margin: 0;
-      line-height: 1.2;
-      padding: 0;
-      width: auto !important;
-    }
-    .target-popup .leaflet-popup-tip {
-      background: #00ff9d;
-      box-shadow: 0 0 8px #00ff9d;
-    }
-    .target-popup .leaflet-popup-close-button {
-      display: none;
-    }
+    .target-popup .leaflet-popup-content { margin: 0; line-height: 1.2; padding: 0; width: auto !important; }
+    .target-popup .leaflet-popup-tip { background: #00ff9d; box-shadow: 0 0 8px #00ff9d; }
+    .target-popup .leaflet-popup-close-button { display: none; }
 
-    /* ============================================
-       KARTU IDENTITAS TARGET
-       ============================================ */
+    /* KARTU TARGET */
     .card-target {
       margin-top: 12px;
       background: linear-gradient(135deg, rgba(10,20,30,0.95) 0%, rgba(0,40,25,0.95) 100%);
       border: 2px solid #00ff9d;
       border-radius: 8px;
       padding: 16px;
-      box-shadow: 
-        0 0 20px rgba(0,255,157,0.5),
-        0 0 40px rgba(0,255,157,0.2),
-        inset 0 0 20px rgba(0,255,157,0.05);
+      box-shadow: 0 0 20px rgba(0,255,157,0.5), 0 0 40px rgba(0,255,157,0.2), inset 0 0 20px rgba(0,255,157,0.05);
       position: relative;
       overflow: hidden;
       animation: cardIn 0.5s ease-out;
@@ -473,8 +364,7 @@
     .card-target::before {
       content: 'TARGET IDENTIFIED';
       position: absolute;
-      top: 10px;
-      right: -32px;
+      top: 10px; right: -32px;
       background: #ff3366;
       color: #fff;
       font-size: 8px;
@@ -485,11 +375,8 @@
       box-shadow: 0 0 10px #ff3366;
       z-index: 3;
     }
-
     .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       font-size: 9px;
       color: #00ff9d;
       letter-spacing: 2px;
@@ -499,12 +386,7 @@
       text-shadow: 0 0 5px #00ff9d;
     }
     .card-top .id-code { color: #7dfcce; }
-
-    .card-photo-wrap {
-      position: relative;
-      width: 100%;
-      margin-bottom: 14px;
-    }
+    .card-photo-wrap { position: relative; width: 100%; margin-bottom: 14px; }
     .card-photo {
       width: 100%;
       border-radius: 6px;
@@ -516,9 +398,7 @@
       min-height: 200px;
     }
     .card-photo-tag {
-      position: absolute;
-      top: 8px;
-      left: 8px;
+      position: absolute; top: 8px; left: 8px;
       background: rgba(10,20,30,0.85);
       border: 1px solid #00ff9d;
       color: #00ff9d;
@@ -529,9 +409,7 @@
       text-shadow: 0 0 5px #00ff9d;
     }
     .card-photo-badge {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
+      position: absolute; bottom: 8px; right: 8px;
       background: rgba(255,51,102,0.9);
       color: #fff;
       font-size: 8px;
@@ -540,7 +418,6 @@
       border-radius: 2px;
       animation: blink 1.5s infinite;
     }
-
     .card-name-block {
       text-align: center;
       padding: 8px 0;
@@ -548,12 +425,7 @@
       border-top: 1px solid rgba(0,255,157,0.3);
       border-bottom: 1px solid rgba(0,255,157,0.3);
     }
-    .card-name-label {
-      font-size: 8px;
-      color: #7dfcce;
-      letter-spacing: 3px;
-      margin-bottom: 4px;
-    }
+    .card-name-label { font-size: 8px; color: #7dfcce; letter-spacing: 3px; margin-bottom: 4px; }
     .card-name-value {
       font-size: 18px;
       font-weight: bold;
@@ -562,14 +434,7 @@
       text-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d;
       text-transform: uppercase;
     }
-
-    .card-data {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      font-size: 10px;
-      margin-bottom: 12px;
-    }
+    .card-data { display: flex; flex-direction: column; gap: 5px; font-size: 10px; margin-bottom: 12px; }
     .card-row {
       display: flex;
       padding: 6px 8px;
@@ -579,38 +444,14 @@
       gap: 8px;
       border-radius: 0 3px 3px 0;
     }
-    .card-row .cico {
-      width: 16px;
-      text-align: center;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-    .card-row .clbl {
-      color: #7dfcce;
-      font-size: 9px;
-      letter-spacing: 1px;
-      min-width: 70px;
-      flex-shrink: 0;
-      text-transform: uppercase;
-    }
-    .card-row .cval {
-      color: #00ff9d;
-      flex: 1;
-      word-break: break-word;
-      text-shadow: 0 0 4px rgba(0,255,157,0.5);
-      font-size: 11px;
-    }
-    .card-row .cval a {
-      color: #00d4ff;
-      text-decoration: none;
-      border-bottom: 1px dashed #00d4ff;
-      text-shadow: 0 0 5px #00d4ff;
-    }
+    .card-row .cico { width: 16px; text-align: center; font-size: 11px; flex-shrink: 0; }
+    .card-row .clbl { color: #7dfcce; font-size: 9px; letter-spacing: 1px; min-width: 70px; flex-shrink: 0; text-transform: uppercase; }
+    .card-row .cval { color: #00ff9d; flex: 1; word-break: break-word; text-shadow: 0 0 4px rgba(0,255,157,0.5); font-size: 11px; }
+    .card-row .cval a { color: #00d4ff; text-decoration: none; border-bottom: 1px dashed #00d4ff; text-shadow: 0 0 5px #00d4ff; }
 
     .battery-bar {
       display: inline-block;
-      width: 50px;
-      height: 10px;
+      width: 50px; height: 10px;
       border: 1px solid #00ff9d;
       border-radius: 2px;
       position: relative;
@@ -618,47 +459,25 @@
       margin-left: 5px;
     }
     .battery-bar::after {
-      content: '';
-      position: absolute;
-      right: -4px;
-      top: 2px;
-      width: 2px;
-      height: 4px;
+      content: ''; position: absolute;
+      right: -4px; top: 2px;
+      width: 2px; height: 4px;
       background: #00ff9d;
     }
-    .battery-fill {
-      height: 100%;
-      background: #00ff9d;
-      box-shadow: 0 0 5px #00ff9d;
-      transition: width 0.5s;
-    }
+    .battery-fill { height: 100%; background: #00ff9d; box-shadow: 0 0 5px #00ff9d; transition: width 0.5s; }
     .battery-fill.low { background: #ff3366; box-shadow: 0 0 5px #ff3366; }
     .battery-fill.mid { background: #ffcc00; box-shadow: 0 0 5px #ffcc00; }
 
     .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       padding-top: 10px;
       border-top: 1px dashed rgba(0,255,157,0.4);
       font-size: 8px;
       color: #7dfcce;
       letter-spacing: 1px;
     }
-    .card-footer .scan-line {
-      color: #00ff9d;
-      font-size: 8px;
-      letter-spacing: 2px;
-      animation: blink 2s infinite;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 6px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(0,255,157,0.3);
-    }
+    .card-footer .scan-line { color: #00ff9d; font-size: 8px; letter-spacing: 2px; animation: blink 2s infinite; }
+    .card-actions { display: flex; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,255,157,0.3); }
     .btn-action {
       flex: 1;
       padding: 9px 6px;
@@ -671,29 +490,11 @@
       transition: all 0.3s;
       text-shadow: 0 0 3px currentColor;
     }
-    .btn-download {
-      background: transparent;
-      border: 1px solid #00ff9d;
-      color: #00ff9d;
-    }
-    .btn-download:hover {
-      background: #00ff9d;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #00ff9d;
-      text-shadow: none;
-    }
+    .btn-download { background: transparent; border: 1px solid #00ff9d; color: #00ff9d; }
+    .btn-download:hover { background: #00ff9d; color: #0a0e14; box-shadow: 0 0 15px #00ff9d; text-shadow: none; }
     .btn-download:disabled { opacity: 0.5; cursor: wait; }
-    .btn-delete {
-      background: transparent;
-      border: 1px solid #ff3366;
-      color: #ff3366;
-    }
-    .btn-delete:hover {
-      background: #ff3366;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #ff3366;
-      text-shadow: none;
-    }
+    .btn-delete { background: transparent; border: 1px solid #ff3366; color: #ff3366; }
+    .btn-delete:hover { background: #ff3366; color: #0a0e14; box-shadow: 0 0 15px #ff3366; text-shadow: none; }
 
     .btn-clear-all {
       padding: 6px 10px;
@@ -708,40 +509,14 @@
       transition: all 0.3s;
       text-shadow: 0 0 5px #ff3366;
     }
-    .btn-clear-all:hover {
-      background: #ff3366;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #ff3366;
-      text-shadow: none;
-    }
+    .btn-clear-all:hover { background: #ff3366; color: #0a0e14; box-shadow: 0 0 15px #ff3366; text-shadow: none; }
 
-    .empty {
-      color: rgba(0,255,157,0.5);
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-align: center;
-      padding: 20px 0;
-    }
-    .status {
-      font-size: 10px;
-      color: #00ff9d;
-      letter-spacing: 1px;
-      margin-top: 6px;
-    }
-    .status::before {
-      content: '●';
-      color: #00ff9d;
-      animation: blink 1s infinite;
-      margin-right: 5px;
-    }
+    .empty { color: rgba(0,255,157,0.5); font-size: 11px; letter-spacing: 1px; text-align: center; padding: 20px 0; }
+    .status { font-size: 10px; color: #00ff9d; letter-spacing: 1px; margin-top: 6px; }
+    .status::before { content: '●'; color: #00ff9d; animation: blink 1s infinite; margin-right: 5px; }
     @keyframes blink { 50% { opacity: 0.3; } }
 
-    .panduan-list {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      font-size: 11px;
-    }
+    .panduan-list { display: flex; flex-direction: column; gap: 5px; font-size: 11px; }
     .panduan-row {
       display: flex;
       padding: 7px 9px;
@@ -751,21 +526,9 @@
       align-items: center;
       gap: 8px;
     }
-    .panduan-row .pico {
-      width: 18px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .panduan-row .ptxt {
-      color: #7dfcce;
-      flex: 1;
-      letter-spacing: 0.5px;
-      font-size: 11px;
-    }
-    .panduan-row .ptxt b {
-      color: #00ff9d;
-      text-shadow: 0 0 5px #00ff9d;
-    }
+    .panduan-row .pico { width: 18px; text-align: center; flex-shrink: 0; }
+    .panduan-row .ptxt { color: #7dfcce; flex: 1; letter-spacing: 0.5px; font-size: 11px; }
+    .panduan-row .ptxt b { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
 
     .btn-close-panduan {
       margin-top: 12px;
@@ -782,14 +545,167 @@
       transition: all 0.3s;
       text-shadow: 0 0 5px #00ff9d;
     }
-    .btn-close-panduan:hover {
-      background: rgba(0,255,157,0.15);
-      box-shadow: 0 0 10px rgba(0,255,157,0.5);
+    .btn-close-panduan:hover { background: rgba(0,255,157,0.15); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
+
+    /* ============================================
+       🤖 AI ASSISTANT CHAT
+       ============================================ */
+    .ai-box {
+      background: rgba(10, 20, 30, 0.95);
+      border: 1px solid #00ff9d;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 20px rgba(0,255,157,0.4), inset 0 0 10px rgba(0,255,157,0.05);
+      position: relative;
+    }
+    .ai-box::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 15px; right: 15px;
+      height: 1px;
+      background: #00ff9d;
+      box-shadow: 0 0 10px #00ff9d;
+    }
+    .ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      color: #00ff9d;
+      text-shadow: 0 0 8px #00ff9d;
+    }
+    .ai-status {
+      font-size: 8px;
+      color: #7dfcce;
+      letter-spacing: 1px;
+    }
+    .ai-status::before {
+      content: '●';
+      color: #00ff9d;
+      margin-right: 4px;
+      animation: blink 1s infinite;
+    }
+    .ai-chat {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(0,255,157,0.3);
+      border-radius: 4px;
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .ai-chat::-webkit-scrollbar { width: 5px; }
+    .ai-chat::-webkit-scrollbar-track { background: rgba(0,255,157,0.05); }
+    .ai-chat::-webkit-scrollbar-thumb { background: #00ff9d; border-radius: 3px; }
+
+    .ai-msg {
+      margin-bottom: 10px;
+      padding: 7px 10px;
+      border-radius: 4px;
+      max-width: 85%;
+      word-wrap: break-word;
+      animation: aiMsgIn 0.3s;
+    }
+    @keyframes aiMsgIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .ai-msg.user {
+      background: rgba(0,212,255,0.15);
+      border-left: 2px solid #00d4ff;
+      margin-left: auto;
+      color: #00d4ff;
+      text-align: right;
+    }
+    .ai-msg.ai {
+      background: rgba(0,255,157,0.08);
+      border-left: 2px solid #00ff9d;
+      color: #00ff9d;
+    }
+    .ai-msg .ai-name {
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: #7dfcce;
+      margin-bottom: 3px;
+      display: block;
+    }
+    .ai-msg.user .ai-name { color: #7ddfff; }
+    .ai-msg.loading {
+      color: #7dfcce;
+      font-style: italic;
+    }
+    .ai-msg.loading::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+    }
+    .ai-input-row {
+      display: flex;
+      gap: 6px;
+    }
+    .ai-input-row input {
+      flex: 1;
+      padding: 10px 12px;
+      background: rgba(0,255,157,0.05);
+      border: 1px solid #00ff9d;
+      border-radius: 3px;
+      color: #00ff9d;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      outline: none;
+    }
+    .ai-input-row input::placeholder { color: rgba(0,255,157,0.4); }
+    .ai-input-row input:focus { box-shadow: 0 0 12px #00ff9d; }
+    .ai-input-row button {
+      padding: 10px 16px;
+      background: #00ff9d;
+      color: #0a0e14;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ai-input-row button:hover { box-shadow: 0 0 15px #00ff9d; }
+    .ai-input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .ai-suggestions {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .ai-chip {
+      padding: 4px 8px;
+      background: rgba(0,255,157,0.08);
+      border: 1px solid rgba(0,255,157,0.4);
+      border-radius: 12px;
+      font-size: 9px;
+      color: #7dfcce;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 0.5px;
+    }
+    .ai-chip:hover {
+      background: rgba(0,255,157,0.2);
+      border-color: #00ff9d;
+      color: #00ff9d;
     }
 
-    .leaflet-container {
-      background: #000 !important;
-    }
+    .leaflet-container { background: #000 !important; }
   </style>
 </head>
 <body>
@@ -816,7 +732,7 @@
         <div class="panduan-row"><span class="pico">2️⃣</span><span class="ptxt">Klik <b>GENERATE</b>, lalu klik <b>📋 SALIN LINK</b></span></div>
         <div class="panduan-row"><span class="pico">3️⃣</span><span class="ptxt">Kirim link ke target via WhatsApp, Telegram, dll</span></div>
         <div class="panduan-row"><span class="pico">4️⃣</span><span class="ptxt">Target buka link → <b>Allow</b> lokasi & kamera</span></div>
-        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Peta animasi + radar otomatis, data masuk</span></div>
+        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Tanya AI di panel bawah untuk analisa data</span></div>
       </div>
       <button class="btn-close-panduan" onclick="document.getElementById('panduanBox').style.display='none'">
         ✕ TUTUP PANDUAN
@@ -839,6 +755,31 @@
       </div>
     </div>
 
+    <!-- 🤖 AI ASSISTANT -->
+    <div class="ai-box">
+      <div class="ai-header">
+        <span>🤖 CYBER AI</span>
+        <span class="ai-status" id="aiStatus">ONLINE</span>
+      </div>
+      <div class="ai-suggestions" id="aiSuggestions">
+        <div class="ai-chip" onclick="aiQuick('Siapa target terbaru?')">Target terbaru?</div>
+        <div class="ai-chip" onclick="aiQuick('Ringkas semua data')">Ringkas data</div>
+        <div class="ai-chip" onclick="aiQuick('Siapa yang paling aktif?')">Paling aktif</div>
+        <div class="ai-chip" onclick="aiQuick('Ada berapa target?')">Total target</div>
+      </div>
+      <div class="ai-chat" id="aiChat">
+        <div class="ai-msg ai">
+          <span class="ai-name">CYBER AI</span>
+          Sistem siap. Tanya apa saja tentang data target kamu.
+        </div>
+      </div>
+      <div class="ai-input-row">
+        <input id="aiInput" placeholder="Tanya AI tentang target..." autocomplete="off"
+               onkeypress="if(event.key==='Enter') aiSend()">
+        <button id="aiSendBtn" onclick="aiSend()">KIRIM</button>
+      </div>
+    </div>
+
     <div class="box">
       <div class="box-title">
         » INCOMING DATA
@@ -852,6 +793,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
+// ============================================
+// 🔑 KONFIGURASI
+// ============================================
 const firebaseConfig = {
   apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
   authDomain: "roraxbali-65802.firebaseapp.com",
@@ -862,6 +806,10 @@ const firebaseConfig = {
   appId: "1:750633313866:web:3d2e552960e06db83968b3"
 };
 
+const GEMINI_API_KEY = "AIzaSyD_rN7OMIHJRSwe12REYJ4szjyxGpDsePo";
+const GEMINI_MODEL = "gemini-2.0-flash";
+// ============================================
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -869,13 +817,15 @@ const user = localStorage.getItem('username');
 if (!user) location.href = 'index.html';
 document.getElementById('u').innerText = user;
 
+let allData = [];
+
 window.logout = () => {
   localStorage.removeItem('username');
   location.href = 'index.html';
 };
 
 // ============================================
-// 🔔 NOTIFIKASI SUARA
+// 🔔 NOTIFIKASI
 // ============================================
 let notifEnabled = false;
 let lastDataCount = 0;
@@ -914,11 +864,9 @@ function playBeep(freq = 880, duration = 0.15) {
 
 function playAlertSound() {
   if (!notifEnabled) return;
-  // Suara alert: 3x beep naik
   playBeep(600, 0.12);
   setTimeout(() => playBeep(880, 0.12), 150);
   setTimeout(() => playBeep(1200, 0.2), 300);
-  // Getar
   if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
 }
 
@@ -959,6 +907,7 @@ window.clearAll = async () => {
   if (!confirm('Yakin hapus SEMUA data? Tidak bisa dikembalikan.')) return;
   try {
     await remove(ref(db, 'lokasi/' + user));
+    allData = [];
     lastDataCount = 0;
     alert('✓ Semua data dihapus');
   } catch(e) {
@@ -1034,6 +983,126 @@ function generateID(waktu) {
   return `TGT-${y}${m}${d}-${h}${mn}${s}`;
 }
 
+// ============================================
+// 🤖 AI ASSISTANT
+// ============================================
+const aiChat = document.getElementById('aiChat');
+const aiInput = document.getElementById('aiInput');
+const aiSendBtn = document.getElementById('aiSendBtn');
+
+window.aiQuick = (text) => {
+  aiInput.value = text;
+  aiSend();
+};
+
+function addAIMsg(text, type = 'ai') {
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + type;
+  const name = type === 'user' ? 'YOU' : 'CYBER AI';
+  div.innerHTML = `<span class="ai-name">${name}</span>${text}`;
+  aiChat.appendChild(div);
+  aiChat.scrollTop = aiChat.scrollHeight;
+  return div;
+}
+
+function addAILoading() {
+  const div = document.createElement('div');
+  div.className = 'ai-msg ai loading';
+  div.innerHTML = '<span class="ai-name">CYBER AI</span>Menganalisa data';
+  aiChat.appendChild(div);
+  aiChat.scrollTop = aiChat.scrollHeight;
+  return div;
+}
+
+window.aiSend = async () => {
+  const question = aiInput.value.trim();
+  if (!question) return;
+
+  aiInput.value = '';
+  aiSendBtn.disabled = true;
+  addAIMsg(question, 'user');
+  const loadingMsg = addAILoading();
+
+  try {
+    const answer = await askAI(question);
+    loadingMsg.remove();
+    addAIMsg(answer, 'ai');
+  } catch(e) {
+    loadingMsg.remove();
+    addAIMsg('[ERROR] ' + e.message, 'ai');
+  }
+
+  aiSendBtn.disabled = false;
+  aiInput.focus();
+};
+
+async function askAI(question) {
+  // Siapkan konteks data untuk AI
+  const dataContext = allData.length === 0
+    ? 'Tidak ada data target tersimpan.'
+    : allData.map(([key, d]) => {
+        const waktu = new Date(d.waktu).toLocaleString('id-ID');
+        const info = [];
+        info.push(`Target: ${d.target || 'Unknown'}`);
+        info.push(`Waktu: ${waktu}`);
+        if (d.lat) info.push(`Lokasi: ${d.kota || '?'} (${d.lat.toFixed(4)}, ${d.lng.toFixed(4)})`);
+        if (d.ip) info.push(`IP: ${d.ip}`);
+        if (d.suhu !== undefined) info.push(`Suhu: ${Math.round(d.suhu)}°C`);
+        if (d.baterai) info.push(`Baterai: ${d.baterai}`);
+        if (d.platform) info.push(`Platform: ${d.platform}`);
+        if (d.network) info.push(`Jaringan: ${d.network}`);
+        if (d.timezone) info.push(`Timezone: ${d.timezone}`);
+        return '- ' + info.join(' | ');
+      }).join('\n');
+
+  const systemPrompt = `Kamu adalah CYBER AI, asisten analis data dari sistem pelacak "CYBER ANONYMOUS" milik RORAXBRINGAZ. Kamu membantu operator menganalisa data target yang masuk.
+
+TUGAS UTAMA:
+- Mencari & menemukan data target tertentu
+- Merangkum data target
+- Menganalisa pola (siapa paling aktif, lokasi, dll)
+- Menjawab pertanyaan tentang data target
+
+GAYA BAHASA:
+- Formal, singkat, padat
+- Pakai istilah hacker/cyber keren (contoh: "[ANALYZING...]", "TARGET TERDETEKSI")
+- Bahasa Indonesia
+- Jawab langsung tanpa basa-basi
+
+DATA TARGET SAAT INI (${allData.length} entri):
+${dataContext}
+
+Pertanyaan operator: ${question}
+
+Jawab dengan analisa berdasarkan data di atas. Jika data tidak ada, katakan tidak ada data.`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{
+        parts: [{ text: systemPrompt }]
+      }]
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || 'Gagal menghubungi AI');
+  }
+
+  const data = await response.json();
+  const answer = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  
+  if (!answer) throw new Error('AI tidak memberi jawaban');
+  return answer;
+}
+
+// ============================================
+// 🗺️ DATA & MAP
+// ============================================
 let currentMap = null;
 let currentMarker = null;
 
@@ -1042,12 +1111,13 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   if (!data) {
     document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
     if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
+    allData = [];
     lastDataCount = 0;
     return;
   }
   const arr = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
+  allData = arr;
 
-  // 🔔 Deteksi data baru → bunyi notifikasi
   if (!firstLoad && arr.length > lastDataCount) {
     playAlertSound();
   }
@@ -1130,9 +1200,6 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   }
 });
 
-// ============================================
-// 🗺️ FUNGSI ANIMASI PETA — AUTO PLAY + RADAR + POPUP
-// ============================================
 function initMapAnimation(lat, lng, key) {
   if (currentMap) {
     try { currentMap.remove(); } catch(e) {}
@@ -1197,54 +1264,40 @@ function initMapAnimation(lat, lng, key) {
       currentMarker.bindPopup(`
         <div style="font-family: 'Courier New', monospace; text-align: center; width: 110px;">
           <div style="
-            background: #0a0e14;
-            color: #00ff9d;
+            background: #0a0e14; color: #00ff9d;
             padding: 3px 5px;
             border-radius: 3px 3px 0 0;
-            font-size: 7px;
-            letter-spacing: 1px;
-            border: 1px solid #00ff9d;
-            border-bottom: none;
+            font-size: 7px; letter-spacing: 1px;
+            border: 1px solid #00ff9d; border-bottom: none;
             text-shadow: 0 0 3px #00ff9d;
           ">◉ TARGET LOCKED</div>
-
           ${fotoTarget ? `
             <div style="position: relative; background: #0a0e14; padding: 3px; border-left: 1px solid #00ff9d; border-right: 1px solid #00ff9d;">
               <img src="${fotoTarget}" style="
-                width: 70px;
-                height: 90px;
+                width: 70px; height: 90px;
                 object-fit: cover;
                 border-radius: 3px;
                 border: 1.5px solid #00c853;
                 box-shadow: 0 0 8px #00c853;
-                display: block;
-                margin: 0 auto;
+                display: block; margin: 0 auto;
                 filter: brightness(1.4) contrast(1.1) saturate(1.15);
               ">
               <div style="
-                position: absolute;
-                top: 5px;
-                left: 50%;
+                position: absolute; top: 5px; left: 50%;
                 transform: translateX(-50%);
                 background: rgba(255,51,102,0.9);
-                color: #fff;
-                font-size: 5px;
-                padding: 1px 4px;
-                letter-spacing: 0.5px;
+                color: #fff; font-size: 5px;
+                padding: 1px 4px; letter-spacing: 0.5px;
                 border-radius: 2px;
               ">● REC</div>
             </div>
           ` : ''}
-
           <div style="
-            background: #0a0e14;
-            color: #00ff9d;
+            background: #0a0e14; color: #00ff9d;
             padding: 3px 5px;
             border-radius: 0 0 3px 3px;
-            border: 1px solid #00ff9d;
-            border-top: none;
-            font-size: 7px;
-            letter-spacing: 0.5px;
+            border: 1px solid #00ff9d; border-top: none;
+            font-size: 7px; letter-spacing: 0.5px;
             text-shadow: 0 0 3px #00ff9d;
           ">
             <div style="font-weight: bold; margin-bottom: 1px;">${namaTarget}</div>
@@ -1253,12 +1306,8 @@ function initMapAnimation(lat, lng, key) {
         </div>
       `, {
         className: 'target-popup',
-        closeButton: false,
-        autoClose: false,
-        closeOnClick: false,
-        maxWidth: 130,
-        autoPanPadding: [40, 40],
-        offset: [0, -8]
+        closeButton: false, autoClose: false, closeOnClick: false,
+        maxWidth: 130, autoPanPadding: [40, 40], offset: [0, -8]
       }).openPopup();
 
       if (statusEl) statusEl.innerText = '◉ TARGET LOCKED';
@@ -1268,7 +1317,6 @@ function initMapAnimation(lat, lng, key) {
       currentMap.scrollWheelZoom.enable();
       currentMap.doubleClickZoom.enable();
       currentMap.touchZoom.enable();
-
       return;
     }
 
