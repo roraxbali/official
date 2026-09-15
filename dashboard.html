@@ -48,7 +48,41 @@
       text-shadow: 0 0 10px #00ff9d;
       gap: 8px;
     }
-    .header h1 { font-size: 12px; letter-spacing: 2px; }
+    .btn-chat {
+      padding: 6px 10px;
+      background: transparent;
+      border: 1px solid #00ff9d;
+      color: #00ff9d;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.3s;
+      text-shadow: 0 0 5px #00ff9d;
+      position: relative;
+    }
+    .btn-chat:hover {
+      background: #00ff9d;
+      color: #0a0e14;
+      box-shadow: 0 0 15px #00ff9d;
+      text-shadow: none;
+    }
+    .btn-chat .chat-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff3366;
+      color: #fff;
+      font-size: 8px;
+      padding: 2px 5px;
+      border-radius: 10px;
+      min-width: 14px;
+      text-align: center;
+      display: none;
+      box-shadow: 0 0 8px #ff3366;
+    }
+    .btn-chat.has-unread .chat-badge { display: block; }
     .header-center {
       font-size: 11px;
       color: #7dfcce;
@@ -191,7 +225,6 @@
     .btn-copy:hover { box-shadow: 0 0 20px #00ff9d; transform: scale(1.02); }
     .btn-copy.copied { background: #00d4ff; }
 
-    /* ===== STATISTIK ===== */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -222,7 +255,6 @@
       text-transform: uppercase;
     }
 
-    /* ===== SEARCH & FILTER ===== */
     .search-row {
       display: flex;
       gap: 6px;
@@ -240,7 +272,6 @@
     }
     .search-info b { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
 
-    /* ===== EXPORT ===== */
     .export-row {
       display: flex;
       gap: 6px;
@@ -484,52 +515,6 @@
       flex-wrap: wrap;
     }
     .card-top .id-code { color: #7dfcce; }
-    .card-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      background: rgba(255,51,102,0.2);
-      border: 1px solid #ff3366;
-      color: #ff3366;
-      font-size: 8px;
-      letter-spacing: 1px;
-      border-radius: 10px;
-      margin-left: 5px;
-      text-shadow: 0 0 5px #ff3366;
-    }
-    .card-tag.vip { background: rgba(255,204,0,0.2); border-color: #ffcc00; color: #ffcc00; text-shadow: 0 0 5px #ffcc00; }
-    .card-tag.family { background: rgba(0,212,255,0.2); border-color: #00d4ff; color: #00d4ff; text-shadow: 0 0 5px #00d4ff; }
-    .card-tag.suspect { background: rgba(255,51,102,0.2); border-color: #ff3366; color: #ff3366; text-shadow: 0 0 5px #ff3366; }
-    .card-tag.friend { background: rgba(0,255,157,0.2); border-color: #00ff9d; color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
-
-    .tag-selector {
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px dashed rgba(0,255,157,0.3);
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .tag-selector .tag-lbl {
-      font-size: 8px;
-      color: #7dfcce;
-      letter-spacing: 1.5px;
-      margin-right: 5px;
-    }
-    .tag-btn {
-      padding: 3px 8px;
-      background: transparent;
-      border: 1px solid rgba(0,255,157,0.4);
-      color: #7dfcce;
-      font-family: 'Courier New', monospace;
-      font-size: 8px;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: all 0.3s;
-    }
-    .tag-btn:hover { background: rgba(0,255,157,0.15); border-color: #00ff9d; color: #00ff9d; }
-    .tag-btn.active { background: #00ff9d; color: #0a0e14; border-color: #00ff9d; }
 
     .card-photo-wrap { position: relative; width: 100%; margin-bottom: 14px; }
     .card-photo {
@@ -692,6 +677,180 @@
     }
     .btn-close-panduan:hover { background: rgba(0,255,157,0.15); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
 
+    /* ============================================
+       LIVE CHAT PANEL
+       ============================================ */
+    .chat-panel {
+      position: fixed;
+      inset: 0;
+      background: #0a0e14;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      padding: 15px;
+    }
+    .chat-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0,255,157,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,157,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .chat-panel.show { display: flex; }
+    .chat-container {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #00ff9d;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #00ff9d;
+      gap: 10px;
+    }
+    .chat-header h2 {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: #00ff9d;
+    }
+    .btn-close-chat {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid #ff3366;
+      color: #ff3366;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      text-shadow: 0 0 5px #ff3366;
+      border-radius: 3px;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+    .btn-close-chat:hover {
+      background: #ff3366;
+      color: #0a0e14;
+      box-shadow: 0 0 15px #ff3366;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(0,255,157,0.3);
+      border-radius: 5px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-track { background: rgba(0,255,157,0.05); }
+    .chat-messages::-webkit-scrollbar-thumb { background: #00ff9d; border-radius: 3px; }
+
+    .chat-msg {
+      padding: 8px 12px;
+      background: rgba(0,255,157,0.05);
+      border-left: 3px solid #00ff9d;
+      border-radius: 0 5px 5px 0;
+      font-size: 12px;
+      animation: chatMsgIn 0.3s ease-out;
+      position: relative;
+      word-wrap: break-word;
+    }
+    @keyframes chatMsgIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .chat-msg.mine {
+      background: rgba(0,212,255,0.08);
+      border-left-color: #00d4ff;
+    }
+    .chat-msg-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      gap: 8px;
+    }
+    .chat-msg-user {
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 5px currentColor;
+    }
+    .chat-msg-time {
+      font-size: 9px;
+      color: #7dfcce;
+      letter-spacing: 0.5px;
+    }
+    .chat-msg-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e0fff0;
+      word-break: break-word;
+    }
+    .chat-msg.mine .chat-msg-text { color: #d0f0ff; }
+    .chat-msg-delete {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: #ff3366;
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+      padding: 2px 4px;
+    }
+    .chat-msg-delete:hover { opacity: 1; }
+
+    .chat-input-row {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-input-row input {
+      flex: 1;
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+    .chat-input-row button {
+      padding: 12px 18px;
+      background: #00ff9d;
+      color: #0a0e14;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .chat-input-row button:hover { box-shadow: 0 0 15px #00ff9d; }
+    .chat-input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .chat-empty {
+      text-align: center;
+      color: rgba(0,255,157,0.5);
+      font-size: 11px;
+      letter-spacing: 1px;
+      padding: 30px 10px;
+    }
+
     .leaflet-container { background: #000 !important; }
   </style>
 </head>
@@ -699,7 +858,10 @@
   <div class="scanline"></div>
   <div class="wrap">
     <div class="header">
-      <h1>[ CYBER ]</h1>
+      <button class="btn-chat" id="btnChat" onclick="openChat()">
+        [ CHAT ]
+        <span class="chat-badge" id="chatBadge">0</span>
+      </button>
       <div class="header-center" id="liveClock">--:--:--</div>
       <button id="logout" onclick="logout()">LOGOUT</button>
     </div>
@@ -790,9 +952,29 @@
     </div>
   </div>
 
+  <!-- ============================================
+       LIVE CHAT PANEL
+       ============================================ -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-container">
+      <div class="chat-header">
+        <h2>◉ LIVE CHAT GRUP</h2>
+        <button class="btn-close-chat" onclick="closeChat()">✕ TUTUP</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-empty">Memuat chat...</div>
+      </div>
+      <div class="chat-input-row">
+        <input id="chatInput" placeholder="Ketik pesan..." autocomplete="off"
+               onkeypress="if(event.key==='Enter') sendChat()">
+        <button id="chatSendBtn" onclick="sendChat()">KIRIM</button>
+      </div>
+    </div>
+  </div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, remove, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
@@ -812,12 +994,21 @@ if (!user) location.href = 'index.html';
 document.getElementById('u').innerText = user;
 
 let allData = [];
-let allDataRaw = {};
 
 window.logout = () => {
   localStorage.removeItem('username');
   location.href = 'index.html';
 };
+
+// ===== WARNA PER USER =====
+function getUserColor(name) {
+  const colors = ['#00ff9d', '#00d4ff', '#ffcc00', '#ff3366', '#b366ff', '#ff8844', '#44ff88', '#ff66cc'];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+}
 
 // ===== JAM DIGITAL LIVE =====
 function updateClock() {
@@ -912,7 +1103,6 @@ window.clearAll = async () => {
   try {
     await remove(ref(db, 'lokasi/' + user));
     allData = [];
-    allDataRaw = {};
     lastDataCount = 0;
     alert('✓ Semua data dihapus');
   } catch(e) {
@@ -988,40 +1178,6 @@ function generateID(waktu) {
   return `TGT-${y}${m}${d}-${h}${mn}${s}`;
 }
 
-// ===== LABEL / TAG =====
-function getTag(key) {
-  return localStorage.getItem('tag_' + user + '_' + key) || '';
-}
-
-window.setTag = (key, tag) => {
-  const current = getTag(key);
-  if (current === tag) {
-    localStorage.removeItem('tag_' + user + '_' + key);
-  } else {
-    localStorage.setItem('tag_' + user + '_' + key, tag);
-  }
-  renderData();
-};
-
-function tagBadge(key) {
-  const tag = getTag(key);
-  if (!tag) return '';
-  return `<span class="card-tag ${tag}">${tag.toUpperCase()}</span>`;
-}
-
-function tagSelector(key) {
-  const current = getTag(key);
-  const tags = ['vip', 'suspect', 'family', 'friend'];
-  return `
-    <div class="tag-selector">
-      <span class="tag-lbl">🏷️ LABEL:</span>
-      ${tags.map(t => `
-        <button class="tag-btn ${current === t ? 'active' : ''}" onclick="setTag('${key}', '${t}')">${t.toUpperCase()}</button>
-      `).join('')}
-    </div>
-  `;
-}
-
 // ===== SEARCH & FILTER =====
 window.filterData = () => {
   renderData();
@@ -1035,7 +1191,6 @@ function getFilteredData() {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
   return allData.filter(([key, d]) => {
-    // Filter search
     if (search) {
       const targetName = (d.target || '').toLowerCase();
       const kota = (d.kota || '').toLowerCase();
@@ -1045,7 +1200,6 @@ function getFilteredData() {
       }
     }
 
-    // Filter tanggal
     if (dateFilter === 'today') {
       if (d.waktu < todayStart) return false;
     } else if (dateFilter === '7days') {
@@ -1065,7 +1219,6 @@ function updateStats() {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const today = allData.filter(([k,d]) => d.waktu >= todayStart).length;
 
-  // Hitung top target
   const counter = {};
   allData.forEach(([k,d]) => {
     const t = d.target || 'Unknown';
@@ -1129,7 +1282,6 @@ window.exportJSON = () => {
     return;
   }
 
-  // Hapus foto dari JSON (biar file kecil)
   const dataExport = allData.map(([key, d]) => {
     const copy = { ...d };
     if (copy.foto) copy.foto = '[FOTO_BASE64_DIHAPUS]';
@@ -1155,7 +1307,6 @@ window.exportJSON = () => {
 let currentMap = null;
 let currentMarker = null;
 
-// ===== RENDER DATA =====
 function renderData() {
   const filtered = getFilteredData();
   const container = document.getElementById('hasil');
@@ -1172,7 +1323,7 @@ function renderData() {
   container.innerHTML = filtered.map(([key, d], index) => `
     <div class="card-target" id="card-${key}">
       <div class="card-top">
-        <span>ID: <span class="id-code">${generateID(d.waktu)}</span>${tagBadge(key)}</span>
+        <span>ID: <span class="id-code">${generateID(d.waktu)}</span></span>
         <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
       </div>
 
@@ -1210,8 +1361,6 @@ function renderData() {
         <div class="card-name-value">${d.target || 'UNKNOWN'}</div>
       </div>
 
-      ${tagSelector(key)}
-
       <div class="card-data">
         ${d.lat ? `
           <div class="card-row"><span class="cico">📍</span><span class="clbl">Lokasi</span><span class="cval">${d.kota || ''} ${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
@@ -1247,12 +1396,10 @@ function renderData() {
   }
 }
 
-// ===== FIREBASE LISTENER =====
 onValue(ref(db, 'lokasi/' + user), snap => {
   const data = snap.val();
   if (!data) {
     allData = [];
-    allDataRaw = {};
     lastDataCount = 0;
     document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
     document.getElementById('countShown').innerText = '0';
@@ -1261,7 +1408,6 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
     return;
   }
-  allDataRaw = data;
   allData = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
 
   if (!firstLoad && allData.length > lastDataCount) {
@@ -1273,6 +1419,109 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   updateStats();
   renderData();
 });
+
+// ============================================
+// 💬 LIVE CHAT
+// ============================================
+let chatOpen = false;
+let lastChatCount = 0;
+let chatFirstLoad = true;
+
+window.openChat = () => {
+  document.getElementById('chatPanel').classList.add('show');
+  chatOpen = true;
+  document.getElementById('chatBadge').style.display = 'none';
+  document.getElementById('btnChat').classList.remove('has-unread');
+  setTimeout(() => document.getElementById('chatInput').focus(), 300);
+  setTimeout(scrollChatBottom, 500);
+};
+
+window.closeChat = () => {
+  document.getElementById('chatPanel').classList.remove('show');
+  chatOpen = false;
+};
+
+window.sendChat = async () => {
+  const input = document.getElementById('chatInput');
+  const pesan = input.value.trim();
+  if (!pesan) return;
+
+  input.value = '';
+  document.getElementById('chatSendBtn').disabled = true;
+
+  try {
+    await push(ref(db, 'chat/global'), {
+      user: user,
+      pesan: pesan,
+      waktu: Date.now(),
+      warna: getUserColor(user)
+    });
+  } catch(e) {
+    alert('Gagal kirim: ' + e.message);
+  }
+
+  document.getElementById('chatSendBtn').disabled = false;
+  setTimeout(scrollChatBottom, 200);
+};
+
+window.deleteChatMsg = async (key) => {
+  if (!confirm('Hapus pesan ini?')) return;
+  try {
+    await remove(ref(db, 'chat/global/' + key));
+  } catch(e) {
+    alert('Gagal hapus: ' + e.message);
+  }
+};
+
+function scrollChatBottom() {
+  const container = document.getElementById('chatMessages');
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderChat(snap) {
+  const data = snap.val();
+  const container = document.getElementById('chatMessages');
+
+  if (!data) {
+    container.innerHTML = '<div class="chat-empty">Belum ada pesan. Jadilah yang pertama!</div>';
+    lastChatCount = 0;
+    return;
+  }
+
+  const arr = Object.entries(data).sort((a,b) => a[1].waktu - b[1].waktu);
+
+  // Deteksi pesan baru
+  if (!chatFirstLoad && arr.length > lastChatCount && !chatOpen) {
+    document.getElementById('btnChat').classList.add('has-unread');
+    const badge = document.getElementById('chatBadge');
+    badge.innerText = arr.length - lastChatCount;
+    playBeep(900, 0.1);
+  }
+  lastChatCount = arr.length;
+  chatFirstLoad = false;
+
+  container.innerHTML = arr.map(([key, d]) => {
+    const isMine = d.user === user;
+    const color = d.warna || getUserColor(d.user);
+    const time = new Date(d.waktu).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const safeText = String(d.pesan).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
+    return `
+      <div class="chat-msg ${isMine ? 'mine' : ''}">
+        ${isMine ? `<button class="chat-msg-delete" onclick="deleteChatMsg('${key}')" title="Hapus pesan">🗑️</button>` : ''}
+        <div class="chat-msg-header">
+          <span class="chat-msg-user" style="color: ${color};">${d.user}</span>
+          <span class="chat-msg-time">${time}</span>
+        </div>
+        <div class="chat-msg-text">${safeText}</div>
+      </div>
+    `;
+  }).join('');
+
+  if (chatOpen) scrollChatBottom();
+}
+
+onValue(ref(db, 'chat/global'), renderChat);
 
 // ===== MAP ANIMATION =====
 function initMapAnimation(lat, lng, key) {
