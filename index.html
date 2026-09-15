@@ -40,7 +40,7 @@
       background: rgba(10, 20, 30, 0.9);
       border: 2px solid #00ff9d;
       border-radius: 8px;
-      padding: 45px 30px 35px;
+      padding: 35px 25px 30px;
       width: 100%;
       max-width: 360px;
       box-shadow: 
@@ -69,11 +69,8 @@
       color: #00ff9d;
       letter-spacing: 3px;
       margin-bottom: 5px;
-      text-shadow: 
-        0 0 10px #00ff9d, 
-        0 0 20px #00ff9d, 
-        0 0 30px #00ff9d;
-      font-size: 22px;
+      text-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d, 0 0 30px #00ff9d;
+      font-size: 20px;
       font-weight: bold;
       animation: glow 2s ease-in-out infinite;
     }
@@ -83,10 +80,10 @@
     }
     .subtitle {
       text-align: center;
-      font-size: 11px;
+      font-size: 10px;
       color: #7dfcce;
       letter-spacing: 3px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       opacity: 0.85;
       text-transform: uppercase;
     }
@@ -140,6 +137,10 @@
       text-shadow: none;
     }
     button:active { transform: scale(0.98); }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
     #err {
       color: #ff3366;
       text-align: center;
@@ -154,8 +155,18 @@
       font-size: 10px;
       color: #7dfcce;
       opacity: 0.55;
-      margin-top: 22px;
+      margin-top: 20px;
       letter-spacing: 1.5px;
+      border-top: 1px dashed rgba(0,255,157,0.3);
+      padding-top: 15px;
+    }
+    .attempt-warn {
+      text-align: center;
+      font-size: 9px;
+      color: #ff3366;
+      margin-top: 8px;
+      letter-spacing: 1px;
+      opacity: 0.7;
     }
   </style>
 </head>
@@ -171,23 +182,92 @@
     <label>PASSWORD</label>
     <input id="pass" type="password" placeholder="password">
 
-    <button onclick="login()">» ACCESS «</button>
+    <button id="btnLogin" onclick="login()">» ACCESS «</button>
     <p id="err"></p>
+    <p class="attempt-warn" id="warn"></p>
 
-    <div class="footer">» ACCESS GRANTED « by RORAXBRINGAZ</div>
+    <div class="footer">
+      [ AUTHORIZED ACCESS ONLY ]<br>
+      by RORAXBRINGAZ
+    </div>
   </div>
 
 <script>
+// ============================================
+// 🔐 DAFTAR USER YANG DIIZINKAN (WHITELIST)
+// ============================================
+// Format: "username": "password"
+// Ganti sesuai keinginan kamu
+// TAMBAHKAN KOMA (,) ANTAR USER, TAPI JANGAN KOMA DI USER TERAKHIR
+const USERS = {
+  "rorax":    "rorax2026",
+  "admin":    "admin123",
+  "operator": "op456",
+  "teman1":   "teman1pass",
+  "teman2":   "teman2pass"
+};
+// ============================================
+
+let attempts = 0;
+const MAX_ATTEMPTS = 5;
+
 function login() {
   const u = document.getElementById('user').value.trim();
   const p = document.getElementById('pass').value.trim();
+  const err = document.getElementById('err');
+  const warn = document.getElementById('warn');
+  const btn = document.getElementById('btnLogin');
+
+  err.innerText = '';
+  warn.innerText = '';
+
   if (!u || !p) {
-    document.getElementById('err').innerText = '[!] ISI SEMUA FIELD';
+    err.innerText = '[!] ISI SEMUA FIELD';
     return;
   }
-  localStorage.setItem('username', u);
-  window.location.href = 'dashboard.html';
+
+  // Cek whitelist
+  if (USERS[u] && USERS[u] === p) {
+    // ✅ Login berhasil
+    err.style.color = '#00ff9d';
+    err.style.textShadow = '0 0 10px #00ff9d';
+    err.innerText = '[✓] ACCESS GRANTED';
+    
+    localStorage.setItem('username', u);
+    
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 600);
+  } else {
+    // ❌ Login gagal
+    attempts++;
+    err.innerText = '[✗] ACCESS DENIED';
+    
+    if (attempts >= MAX_ATTEMPTS) {
+      btn.disabled = true;
+      btn.innerText = '» BLOCKED «';
+      warn.innerText = '[!] TERLALU BANYAK PERCOBAAN — TUNGGU 30 DETIK';
+      
+      setTimeout(() => {
+        attempts = 0;
+        btn.disabled = false;
+        btn.innerText = '» ACCESS «';
+        warn.innerText = '';
+        err.innerText = '';
+      }, 30000);
+    } else {
+      warn.innerText = `[!] PERCOBAAN ${attempts}/${MAX_ATTEMPTS}`;
+    }
+  }
 }
+
+// Enter untuk submit
+document.getElementById('pass').addEventListener('keypress', e => {
+  if (e.key === 'Enter') login();
+});
+document.getElementById('user').addEventListener('keypress', e => {
+  if (e.key === 'Enter') document.getElementById('pass').focus();
+});
 </script>
 </body>
 </html>
