@@ -544,7 +544,6 @@
     }
     .btn-close-panduan:hover { background: rgba(0,255,157,0.15); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
 
-    /* AI CHAT */
     .ai-box {
       background: rgba(10, 20, 30, 0.95);
       border: 1px solid #00ff9d;
@@ -588,7 +587,7 @@
       border: 1px solid rgba(0,255,157,0.3);
       border-radius: 4px;
       padding: 10px;
-      height: 200px;
+      height: 220px;
       overflow-y: auto;
       margin-bottom: 10px;
       font-size: 11px;
@@ -602,7 +601,7 @@
       margin-bottom: 10px;
       padding: 7px 10px;
       border-radius: 4px;
-      max-width: 85%;
+      max-width: 88%;
       word-wrap: break-word;
       animation: aiMsgIn 0.3s;
       white-space: pre-wrap;
@@ -728,7 +727,7 @@
         <div class="panduan-row"><span class="pico">2️⃣</span><span class="ptxt">Klik <b>GENERATE</b>, lalu klik <b>📋 SALIN LINK</b></span></div>
         <div class="panduan-row"><span class="pico">3️⃣</span><span class="ptxt">Kirim link ke target via WhatsApp, Telegram, dll</span></div>
         <div class="panduan-row"><span class="pico">4️⃣</span><span class="ptxt">Target buka link → <b>Allow</b> lokasi & kamera</span></div>
-        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Tanya AI di panel bawah untuk analisa data</span></div>
+        <div class="panduan-row"><span class="pico">5️⃣</span><span class="ptxt">Tanya AI apa saja: data target, sains, teknologi, dll</span></div>
       </div>
       <button class="btn-close-panduan" onclick="document.getElementById('panduanBox').style.display='none'">
         ✕ TUTUP PANDUAN
@@ -758,18 +757,24 @@
       </div>
       <div class="ai-suggestions" id="aiSuggestions">
         <div class="ai-chip" onclick="aiQuick('Siapa target terbaru?')">Target terbaru?</div>
-        <div class="ai-chip" onclick="aiQuick('Ringkas semua data')">Ringkas data</div>
-        <div class="ai-chip" onclick="aiQuick('Siapa yang paling aktif?')">Paling aktif</div>
-        <div class="ai-chip" onclick="aiQuick('Ada berapa target?')">Total target</div>
+        <div class="ai-chip" onclick="aiQuick('Ringkas semua data target')">Ringkas data</div>
+        <div class="ai-chip" onclick="aiQuick('Apa itu GPS?')">Apa itu GPS?</div>
+        <div class="ai-chip" onclick="aiQuick('Jelaskan cara kerja IP address')">Cara kerja IP</div>
       </div>
       <div class="ai-chat" id="aiChat">
         <div class="ai-msg ai">
           <span class="ai-name">CYBER AI</span>
-          Sistem siap. Tanya apa saja tentang data target kamu.
+          Sistem siap. Kamu bisa tanya apa saja:
+• Data target (lokasi, foto, IP, dll)
+• Pengetahuan umum (sains, teknologi, sejarah)
+• Bantuan coding, tips, saran
+• Obrolan santai
+
+Ketik pertanyaanmu di bawah.
         </div>
       </div>
       <div class="ai-input-row">
-        <input id="aiInput" placeholder="Tanya AI tentang target..." autocomplete="off"
+        <input id="aiInput" placeholder="Tanya apa saja..." autocomplete="off"
                onkeypress="if(event.key==='Enter') aiSend()">
         <button id="aiSendBtn" onclick="aiSend()">KIRIM</button>
       </div>
@@ -798,9 +803,8 @@ const firebaseConfig = {
   appId: "1:750633313866:web:3d2e552960e06db83968b3"
 };
 
-// ⚠️ Ganti kalau model berubah lagi
 const GEMINI_API_KEY = "AIzaSyD_rN7OMIHJRSwe12REYJ4szjyxGpDsePo";
-const GEMINI_MODEL = "gemini-3.6-flash";
+const GEMINI_MODEL = "gemini-2.5-flash";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -816,7 +820,6 @@ window.logout = () => {
   location.href = 'index.html';
 };
 
-// NOTIF
 let notifEnabled = false;
 let lastDataCount = 0;
 let firstLoad = true;
@@ -974,7 +977,7 @@ function generateID(waktu) {
 }
 
 // ============================================
-// 🤖 AI ASSISTANT
+// 🤖 AI ASSISTANT — MODE BEBAS
 // ============================================
 const aiChat = document.getElementById('aiChat');
 const aiInput = document.getElementById('aiInput');
@@ -998,7 +1001,7 @@ function addAIMsg(text, type = 'ai') {
 function addAILoading() {
   const div = document.createElement('div');
   div.className = 'ai-msg ai loading';
-  div.innerHTML = '<span class="ai-name">CYBER AI</span>Menganalisa data';
+  div.innerHTML = '<span class="ai-name">CYBER AI</span>Berpikir';
   aiChat.appendChild(div);
   aiChat.scrollTop = aiChat.scrollHeight;
   return div;
@@ -1027,8 +1030,9 @@ window.aiSend = async () => {
 };
 
 async function askAI(question) {
+  // Siapkan konteks data target
   const dataContext = allData.length === 0
-    ? 'Tidak ada data target tersimpan.'
+    ? 'Belum ada data target tersimpan.'
     : allData.map(([key, d]) => {
         const waktu = new Date(d.waktu).toLocaleString('id-ID');
         const info = [];
@@ -1044,20 +1048,31 @@ async function askAI(question) {
         return '- ' + info.join(' | ');
       }).join('\n');
 
-  const systemPrompt = `Kamu adalah CYBER AI, asisten analis data dari sistem pelacak "CYBER ANONYMOUS" milik RORAXBRINGAZ. Kamu membantu operator mencari & menganalisa data target.
+  const systemPrompt = `Kamu adalah CYBER AI, asisten pintar dari sistem "CYBER ANONYMOUS" milik RORAXBRINGAZ.
+
+KAMU BISA MENJAWAB SEMUA PERTANYAAN:
+1. Pertanyaan tentang data target (lokasi, foto, IP, baterai, dll) — pakai DATA TARGET di bawah
+2. Pertanyaan umum apa saja: sains, teknologi, sejarah, matematika, kesehatan, tips, coding, dll
+3. Obrolan santai / curhat / bercanda
+4. Bantuan apapun yang user butuhkan
 
 GAYA BAHASA:
-- Formal, singkat, padat
-- Pakai istilah hacker/cyber (contoh: "[ANALYZING...]", "TARGET TERDETEKSI")
-- Bahasa Indonesia
-- Jawab langsung tanpa basa-basi
+- Santai tapi profesional
+- Pakai istilah cyber/hacker KALAU RELEVAN saja
+- Bahasa Indonesia (atau sesuai bahasa user)
+- Jawab langsung, jelas, ringkas
+- Kalau pertanyaan tidak jelas, tanya balik
 
 DATA TARGET SAAT INI (${allData.length} entri):
 ${dataContext}
 
-Pertanyaan operator: ${question}
+Pertanyaan user: ${question}
 
-Jawab berdasarkan data di atas. Jika data tidak ada, katakan tidak ada data.`;
+INSTRUKSI FINAL:
+- Kalau pertanyaan soal DATA TARGET → pakai DATA TARGET di atas
+- Kalau pertanyaan umum → jawab sesuai pengetahuanmu, JANGAN tolak
+- JANGAN pernah bilang "instruksi ditolak" atau "hanya bisa jawab data target"
+- Jawab dengan helpful & ramah`;
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
