@@ -3,132 +3,157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYBER TRACKER // LOGIN</title>
+  <title>Weather Tracker - Login</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Courier New', monospace;
-      background: #0a0e14;
-      color: #00ff9d;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #1e3c72 0%, #2a5298 50%, #6a8caf 100%);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      padding: 20px;
+      color: white;
       overflow: hidden;
       position: relative;
     }
-    /* Efek grid background */
-    body::before {
+    /* Awan dekoratif */
+    body::before, body::after {
       content: '';
       position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(0,255,157,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,157,0.05) 1px, transparent 1px);
-      background-size: 40px 40px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      filter: blur(40px);
       pointer-events: none;
     }
+    body::before {
+      width: 300px; height: 300px;
+      top: -80px; left: -80px;
+      animation: float 8s ease-in-out infinite;
+    }
+    body::after {
+      width: 250px; height: 250px;
+      bottom: -60px; right: -60px;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
     .box {
-      background: rgba(10, 20, 30, 0.9);
-      border: 2px solid #00ff9d;
-      border-radius: 8px;
+      background: rgba(255,255,255,0.13);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 24px;
       padding: 40px 30px;
-      width: 340px;
-      box-shadow: 
-        0 0 20px rgba(0,255,157,0.5),
-        0 0 40px rgba(0,255,157,0.2),
-        inset 0 0 20px rgba(0,255,157,0.05);
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
       position: relative;
       z-index: 2;
     }
-    .box::before {
-      content: '◢ SYSTEM ACCESS ◣';
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #0a0e14;
-      padding: 0 10px;
-      color: #00ff9d;
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #00ff9d;
+    .logo {
+      text-align: center;
+      font-size: 55px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+      animation: float 3s ease-in-out infinite;
     }
     h2 {
       text-align: center;
-      color: #00ff9d;
-      letter-spacing: 4px;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.7;
       margin-bottom: 25px;
-      text-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d;
-      font-size: 22px;
+      letter-spacing: 0.5px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      opacity: 0.75;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
     input {
       width: 100%;
-      padding: 12px 15px;
-      margin: 8px 0;
-      background: rgba(0,255,157,0.05);
-      border: 1px solid #00ff9d;
-      border-radius: 3px;
-      color: #00ff9d;
-      font-family: 'Courier New', monospace;
+      padding: 13px 15px;
+      margin-bottom: 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      color: white;
       font-size: 14px;
-      letter-spacing: 1px;
       outline: none;
       transition: all 0.3s;
+      font-family: inherit;
     }
-    input::placeholder { color: rgba(0,255,157,0.4); }
+    input::placeholder { color: rgba(255,255,255,0.5); }
     input:focus {
-      box-shadow: 0 0 15px #00ff9d;
-      background: rgba(0,255,157,0.1);
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.6);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
     }
     button {
       width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      background: transparent;
-      border: 2px solid #00ff9d;
-      color: #00ff9d;
-      font-family: 'Courier New', monospace;
+      padding: 14px;
+      margin-top: 8px;
+      background: white;
+      color: #1e3c72;
+      border: none;
+      border-radius: 12px;
       font-size: 15px;
-      letter-spacing: 3px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       cursor: pointer;
       transition: all 0.3s;
-      text-shadow: 0 0 5px #00ff9d;
-      font-weight: bold;
+      font-family: inherit;
     }
     button:hover {
-      background: #00ff9d;
-      color: #0a0e14;
-      box-shadow: 0 0 20px #00ff9d, 0 0 40px #00ff9d;
-      text-shadow: none;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
+    button:active { transform: translateY(0); }
     #err {
-      color: #ff3366;
+      color: #ffb3b3;
       text-align: center;
       margin-top: 12px;
       font-size: 12px;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px #ff3366;
+      min-height: 16px;
     }
-    /* Efek scanline */
-    .scanline {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(transparent 50%, rgba(0,255,157,0.03) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 1;
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      opacity: 0.5;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="scanline"></div>
   <div class="box">
-    <h2>[ LOGIN ]</h2>
-    <input id="user" placeholder="USERNAME" autocomplete="off">
-    <input id="pass" type="password" placeholder="PASSWORD">
-    <button onclick="login()">» ACCESS «</button>
+    <div class="logo">⛅</div>
+    <h2>Weather Tracker</h2>
+    <div class="subtitle">Masuk untuk melanjutkan</div>
+
+    <label>Username</label>
+    <input id="user" placeholder="Masukkan username" autocomplete="off">
+
+    <label>Password</label>
+    <input id="pass" type="password" placeholder="Masukkan password">
+
+    <button onclick="login()">Masuk</button>
     <p id="err"></p>
+
+    <div class="footer">Powered by Open-Meteo API</div>
   </div>
 
 <script>
@@ -136,7 +161,7 @@ function login() {
   const u = document.getElementById('user').value.trim();
   const p = document.getElementById('pass').value.trim();
   if (!u || !p) {
-    document.getElementById('err').innerText = '[!] ISI SEMUA FIELD';
+    document.getElementById('err').innerText = 'Isi username & password';
     return;
   }
   localStorage.setItem('username', u);
