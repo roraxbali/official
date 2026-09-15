@@ -194,7 +194,6 @@
       box-shadow: 0 0 15px #00ff9d;
     }
 
-    /* PETA */
     .map-box {
       position: relative;
       width: 100%;
@@ -280,7 +279,6 @@
       text-shadow: 0 0 5px #00ff9d;
     }
 
-    /* RADAR */
     .radar-overlay {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
@@ -345,7 +343,6 @@
     .target-popup .leaflet-popup-tip { background: #00ff9d; box-shadow: 0 0 8px #00ff9d; }
     .target-popup .leaflet-popup-close-button { display: none; }
 
-    /* KARTU TARGET */
     .card-target {
       margin-top: 12px;
       background: linear-gradient(135deg, rgba(10,20,30,0.95) 0%, rgba(0,40,25,0.95) 100%);
@@ -547,9 +544,7 @@
     }
     .btn-close-panduan:hover { background: rgba(0,255,157,0.15); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
 
-    /* ============================================
-       🤖 AI ASSISTANT CHAT
-       ============================================ */
+    /* AI CHAT */
     .ai-box {
       background: rgba(10, 20, 30, 0.95);
       border: 1px solid #00ff9d;
@@ -610,6 +605,7 @@
       max-width: 85%;
       word-wrap: break-word;
       animation: aiMsgIn 0.3s;
+      white-space: pre-wrap;
     }
     @keyframes aiMsgIn {
       from { opacity: 0; transform: translateY(5px); }
@@ -755,7 +751,6 @@
       </div>
     </div>
 
-    <!-- 🤖 AI ASSISTANT -->
     <div class="ai-box">
       <div class="ai-header">
         <span>🤖 CYBER AI</span>
@@ -793,9 +788,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-// ============================================
-// 🔑 KONFIGURASI
-// ============================================
 const firebaseConfig = {
   apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
   authDomain: "roraxbali-65802.firebaseapp.com",
@@ -806,9 +798,9 @@ const firebaseConfig = {
   appId: "1:750633313866:web:3d2e552960e06db83968b3"
 };
 
+// ⚠️ Ganti kalau model berubah lagi
 const GEMINI_API_KEY = "AIzaSyD_rN7OMIHJRSwe12REYJ4szjyxGpDsePo";
-const GEMINI_MODEL = "gemini-2.0-flash";
-// ============================================
+const GEMINI_MODEL = "gemini-3.6-flash";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -824,9 +816,7 @@ window.logout = () => {
   location.href = 'index.html';
 };
 
-// ============================================
-// 🔔 NOTIFIKASI
-// ============================================
+// NOTIF
 let notifEnabled = false;
 let lastDataCount = 0;
 let firstLoad = true;
@@ -1037,7 +1027,6 @@ window.aiSend = async () => {
 };
 
 async function askAI(question) {
-  // Siapkan konteks data untuk AI
   const dataContext = allData.length === 0
     ? 'Tidak ada data target tersimpan.'
     : allData.map(([key, d]) => {
@@ -1055,17 +1044,11 @@ async function askAI(question) {
         return '- ' + info.join(' | ');
       }).join('\n');
 
-  const systemPrompt = `Kamu adalah CYBER AI, asisten analis data dari sistem pelacak "CYBER ANONYMOUS" milik RORAXBRINGAZ. Kamu membantu operator menganalisa data target yang masuk.
-
-TUGAS UTAMA:
-- Mencari & menemukan data target tertentu
-- Merangkum data target
-- Menganalisa pola (siapa paling aktif, lokasi, dll)
-- Menjawab pertanyaan tentang data target
+  const systemPrompt = `Kamu adalah CYBER AI, asisten analis data dari sistem pelacak "CYBER ANONYMOUS" milik RORAXBRINGAZ. Kamu membantu operator mencari & menganalisa data target.
 
 GAYA BAHASA:
 - Formal, singkat, padat
-- Pakai istilah hacker/cyber keren (contoh: "[ANALYZING...]", "TARGET TERDETEKSI")
+- Pakai istilah hacker/cyber (contoh: "[ANALYZING...]", "TARGET TERDETEKSI")
 - Bahasa Indonesia
 - Jawab langsung tanpa basa-basi
 
@@ -1074,7 +1057,7 @@ ${dataContext}
 
 Pertanyaan operator: ${question}
 
-Jawab dengan analisa berdasarkan data di atas. Jika data tidak ada, katakan tidak ada data.`;
+Jawab berdasarkan data di atas. Jika data tidak ada, katakan tidak ada data.`;
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
@@ -1082,9 +1065,7 @@ Jawab dengan analisa berdasarkan data di atas. Jika data tidak ada, katakan tida
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contents: [{
-        parts: [{ text: systemPrompt }]
-      }]
+      contents: [{ parts: [{ text: systemPrompt }] }]
     })
   });
 
@@ -1101,7 +1082,7 @@ Jawab dengan analisa berdasarkan data di atas. Jika data tidak ada, katakan tida
 }
 
 // ============================================
-// 🗺️ DATA & MAP
+// DATA & MAP
 // ============================================
 let currentMap = null;
 let currentMarker = null;
