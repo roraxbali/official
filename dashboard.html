@@ -303,6 +303,32 @@
     }
 
     /* ============================================
+       POPUP TARGET DENGAN FOTO (CCTV STYLE)
+       ============================================ */
+    .target-popup .leaflet-popup-content-wrapper {
+      background: transparent;
+      border-radius: 6px;
+      box-shadow: 
+        0 0 25px #00ff9d,
+        0 0 50px rgba(0,255,157,0.4);
+      border: none;
+      padding: 0;
+      overflow: hidden;
+    }
+    .target-popup .leaflet-popup-tip {
+      background: #00ff9d;
+      box-shadow: 0 0 20px #00ff9d;
+    }
+    .target-popup .leaflet-popup-content {
+      margin: 0;
+      line-height: 1.3;
+      padding: 0;
+    }
+    .target-popup .leaflet-popup-close-button {
+      display: none;
+    }
+
+    /* ============================================
        KARTU IDENTITAS TARGET
        ============================================ */
     .card-target {
@@ -633,19 +659,6 @@
       box-shadow: 0 0 10px rgba(0,255,157,0.5);
     }
 
-    /* Leaflet popup style */
-    .leaflet-popup-content-wrapper {
-      background: #00ff9d;
-      border-radius: 6px;
-      box-shadow: 0 0 20px #00ff9d;
-    }
-    .leaflet-popup-tip {
-      background: #00ff9d;
-      box-shadow: 0 0 20px #00ff9d;
-    }
-    .leaflet-popup-content {
-      margin: 8px 12px;
-    }
     .leaflet-container {
       background: #000 !important;
     }
@@ -911,9 +924,6 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     </div>
   `).join('');
 
-  // ============================================
-  // 🗺️ JALANKAN ANIMASI PETA UNTUK DATA TERBARU
-  // ============================================
   const terbaru = arr[0][1];
   if (terbaru && terbaru.lat && document.getElementById('map')) {
     setTimeout(() => initMapAnimation(terbaru.lat, terbaru.lng, arr[0][0]), 200);
@@ -921,7 +931,7 @@ onValue(ref(db, 'lokasi/' + user), snap => {
 });
 
 // ============================================
-// 🗺️ FUNGSI ANIMASI PETA — AUTO PLAY
+// 🗺️ FUNGSI ANIMASI PETA — AUTO PLAY + POPUP FOTO
 // ============================================
 function initMapAnimation(lat, lng, key) {
   if (currentMap) {
@@ -929,7 +939,6 @@ function initMapAnimation(lat, lng, key) {
     currentMap = null;
   }
 
-  // Buat peta — LOCKED (tidak bisa interaksi selama animasi)
   currentMap = L.map('map', {
     zoomControl: false,
     attributionControl: false,
@@ -942,7 +951,6 @@ function initMapAnimation(lat, lng, key) {
     touchZoom: false
   }).setView([0, 20], 2);
 
-  // Layer satelit
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 18
   }).addTo(currentMap);
@@ -951,7 +959,6 @@ function initMapAnimation(lat, lng, key) {
   const statusEl = document.querySelector('.map-status');
   const coordsEl = document.getElementById('coords-' + key);
 
-  // 7 stage animasi
   const stages = [
     { zoom: 2,  center: [0, 20],     durasi: 1200, label: 'SATELIT ONLINE' },
     { zoom: 3,  center: [10, 30],    durasi: 1000, label: 'MENCARI SINYAL...' },
@@ -966,6 +973,10 @@ function initMapAnimation(lat, lng, key) {
 
   function playStage() {
     if (idx >= stages.length) {
+      // Ambil foto target dari kartu
+      const fotoTarget = document.querySelector('.card-photo')?.src || '';
+      const namaTarget = document.querySelector('.card-name-value')?.innerText || 'UNKNOWN';
+
       const targetIcon = L.divIcon({
         html: `
           <div style="
@@ -983,17 +994,90 @@ function initMapAnimation(lat, lng, key) {
       });
 
       currentMarker = L.marker([lat, lng], { icon: targetIcon }).addTo(currentMap);
+
       currentMarker.bindPopup(`
-        <div style="font-family: 'Courier New', monospace; color: #0a0e14; text-align: center; padding: 4px;">
-          <b style="color: #00c853; font-size: 13px;">◉ TARGET LOCKED</b><br>
-          <span style="font-size: 11px;">${lat.toFixed(5)}, ${lng.toFixed(5)}</span>
+        <div style="font-family: 'Courier New', monospace; color: #0a0e14; text-align: center; min-width: 160px;">
+          <div style="
+            background: #0a0e14;
+            color: #00ff9d;
+            padding: 4px 8px;
+            border-radius: 4px 4px 0 0;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            border: 1px solid #00ff9d;
+            border-bottom: none;
+            text-shadow: 0 0 5px #00ff9d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+          ">
+            <span>◉ TARGET LOCKED</span>
+            <span style="color: #ff3366; animation: blink 1s infinite;">● REC</span>
+          </div>
+
+          ${fotoTarget ? `
+            <div style="position: relative; background: #0a0e14; padding: 6px; border: 1px solid #00ff9d; border-top: none; border-bottom: none;">
+              <div style="position: relative; display: inline-block; width: 100%;">
+                <img src="${fotoTarget}" style="
+                  width: 140px;
+                  height: 170px;
+                  object-fit: cover;
+                  border-radius: 4px;
+                  border: 2px solid #00c853;
+                  box-shadow: 0 0 15px #00c853, inset 0 0 10px rgba(0,255,157,0.3);
+                  display: block;
+                  margin: 0 auto;
+                  filter: contrast(1.08) saturate(1.15);
+                ">
+                <div style="position: absolute; inset: 0; pointer-events: none;">
+                  <div style="position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-top: 2px solid #00ff9d; border-left: 2px solid #00ff9d; box-shadow: 0 0 8px #00ff9d;"></div>
+                  <div style="position: absolute; top: 2px; right: 2px; width: 14px; height: 14px; border-top: 2px solid #00ff9d; border-right: 2px solid #00ff9d; box-shadow: 0 0 8px #00ff9d;"></div>
+                  <div style="position: absolute; bottom: 2px; left: 2px; width: 14px; height: 14px; border-bottom: 2px solid #00ff9d; border-left: 2px solid #00ff9d; box-shadow: 0 0 8px #00ff9d;"></div>
+                  <div style="position: absolute; bottom: 2px; right: 2px; width: 14px; height: 14px; border-bottom: 2px solid #00ff9d; border-right: 2px solid #00ff9d; box-shadow: 0 0 8px #00ff9d;"></div>
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; border: 1px solid rgba(0,255,157,0.7); border-radius: 50%; box-shadow: 0 0 10px rgba(0,255,157,0.8);"></div>
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 1px; height: 10px; background: rgba(0,255,157,0.7);"></div>
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 1px; background: rgba(0,255,157,0.7);"></div>
+                  <div style="position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,255,157,0.1) 2px, rgba(0,255,157,0.1) 3px); border-radius: 4px;"></div>
+                  <div style="position: absolute; top: 4px; left: 50%; transform: translateX(-50%); background: rgba(255,51,102,0.9); color: #fff; font-size: 7px; padding: 1px 6px; letter-spacing: 1px; border-radius: 2px;">● LIVE CAPTURE</div>
+                </div>
+              </div>
+            </div>
+          ` : `
+            <div style="background: #0a0e14; padding: 12px; border: 1px solid #00ff9d; border-top: none; border-bottom: none; color: #ff3366; font-size: 10px; letter-spacing: 1px;">
+              [ NO CAMERA ACCESS ]
+            </div>
+          `}
+
+          <div style="
+            background: #0a0e14;
+            color: #00ff9d;
+            padding: 6px 8px;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid #00ff9d;
+            border-top: none;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px #00ff9d;
+          ">
+            <div style="color: #7dfcce; font-size: 8px; letter-spacing: 2px; margin-bottom: 2px;">TARGET ID</div>
+            <div style="font-weight: bold; margin-bottom: 4px;">${namaTarget}</div>
+            <div style="color: #7dfcce; font-size: 9px;">${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
+            <div style="color: #7dfcce; font-size: 8px; margin-top: 3px;">${new Date().toLocaleTimeString('id-ID')}</div>
+          </div>
         </div>
-      `).openPopup();
+      `, {
+        className: 'target-popup',
+        closeButton: false,
+        autoClose: false,
+        closeOnClick: false,
+        maxWidth: 220,
+        autoPanPadding: [20, 20]
+      }).openPopup();
 
       if (statusEl) statusEl.innerText = '◉ TARGET LOCKED';
       if (zoomEl) zoomEl.innerText = 'ZOOM: 16';
 
-      // Unlock peta setelah animasi selesai
       currentMap.dragging.enable();
       currentMap.scrollWheelZoom.enable();
       currentMap.doubleClickZoom.enable();
