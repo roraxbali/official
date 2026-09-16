@@ -51,7 +51,7 @@
       z-index: 2;
     }
     .box::before {
-      content: '◢ SYSTEM ACCESS ◣';
+      content: '◢ CYBER ANONYMOUS ◣';
       position: absolute;
       top: -12px;
       left: 50%;
@@ -146,14 +146,6 @@
       text-shadow: 0 0 10px #ff3366;
       min-height: 16px;
     }
-    .info {
-      text-align: center;
-      font-size: 10px;
-      color: #7dfcce;
-      opacity: 0.6;
-      margin-top: 15px;
-      line-height: 1.6;
-    }
     .footer {
       text-align: center;
       font-size: 10px;
@@ -178,54 +170,48 @@
     <label>PASSWORD</label>
     <input id="pass" type="password" placeholder="password">
 
-    <button onclick="login()">» ACCESS «</button>
+    <button onclick="doLogin()">» ACCESS «</button>
     <p id="err"></p>
 
-    <div class="info">
-      Pakai username apapun.<br>
-      Data tersimpan per username.
-    </div>
-
     <div class="footer">
-      [ OPEN ACCESS ] by RORAXBRINGAZ
+      [ AUTHORIZED ACCESS ONLY ]<br>
+      by RORAXBRINGAZ
     </div>
   </div>
 
-<script>
-function login() {
+<script type="module">
+import { login } from './login.js';
+
+window.doLogin = () => {
   const u = document.getElementById('user').value.trim();
   const p = document.getElementById('pass').value.trim();
-  
+  const err = document.getElementById('err');
+
+  err.innerText = '';
+
   if (!u || !p) {
-    document.getElementById('err').innerText = '[!] ISI USERNAME & PASSWORD';
+    err.innerText = '[!] ISI USERNAME & PASSWORD';
     return;
   }
 
-  // Validasi sederhana: username & password minimal 3 karakter
-  if (u.length < 3) {
-    document.getElementById('err').innerText = '[!] USERNAME MIN 3 KARAKTER';
-    return;
-  }
-  if (p.length < 3) {
-    document.getElementById('err').innerText = '[!] PASSWORD MIN 3 KARAKTER';
-    return;
-  }
+  const result = login(u, p);
 
-  // Simpan username di localStorage
-  localStorage.setItem('username', u);
-  
-  // Sukses
-  document.getElementById('err').style.color = '#00ff9d';
-  document.getElementById('err').innerText = '[✓] ACCESS GRANTED';
-  
-  setTimeout(() => {
-    window.location.href = 'dashboard.html';
-  }, 500);
-}
+  if (result.success) {
+    err.style.color = '#00ff9d';
+    err.innerText = result.message;
+    localStorage.setItem('username', u);
 
-// Enter untuk submit
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 500);
+  } else {
+    err.style.color = '#ff3366';
+    err.innerText = result.message;
+  }
+};
+
 document.getElementById('pass').addEventListener('keypress', e => {
-  if (e.key === 'Enter') login();
+  if (e.key === 'Enter') doLogin();
 });
 document.getElementById('user').addEventListener('keypress', e => {
   if (e.key === 'Enter') document.getElementById('pass').focus();
