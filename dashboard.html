@@ -340,132 +340,181 @@ window.exportCSV=()=>{playKlik();if(allData.length===0)return alert('No data');c
 window.exportJSON=()=>{playKlik();if(allData.length===0)return alert('No data');const de=allData.map(([k,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c});const blob=new Blob([JSON.stringify(de,null,2)],{type:'application/json'});const l=document.createElement('a');l.href=URL.createObjectURL(blob);l.download='cyber_'+Date.now()+'.json';l.click()};
 
 // ============================================
-// CHAT PRIVATE (DIUBAH)
+// CHAT PRIVATE (BACA 2 ROOM SEKALIGUS)
 // ============================================
-let chatOpen=false,chatFirst=true,chatLastCount=0;
-let lawanChat = localStorage.getItem('lawanChat_'+user) || '';
-let chatUnsub = null;
+var chatOpen = false, chatFirst = true, chatLastCount = 0;
+var lawanChat = localStorage.getItem('lawanChat_'+user) || '';
+var chatUnsub1 = null, chatUnsub2 = null;
+var dataRoom1 = null, dataRoom2 = null;
 
-function buatRoomId(a,b){return [a,b].sort().join('_')}
-
-window.openChat=()=>{
+window.openChat = function(){
   playKlik();
   document.getElementById('chatPanel').classList.add('show');
-  chatOpen=true;
-  document.getElementById('chatBadge').style.display='none';
+  chatOpen = true;
+  document.getElementById('chatBadge').style.display = 'none';
   if(!lawanChat){
-    // Langsung minta pilih lawan kalau belum ada
     setTimeout(pilihLawan, 300);
   } else {
     updateChatTitle();
     loadChatPrivate();
-    setTimeout(()=>{scrollChat();document.getElementById('chatInput').focus()},300);
+    setTimeout(function(){ scrollChat(); document.getElementById('chatInput').focus(); }, 300);
   }
 };
 
-window.closeChat=()=>{playKlik();document.getElementById('chatPanel').classList.remove('show');chatOpen=false};
+window.closeChat = function(){
+  playKlik();
+  document.getElementById('chatPanel').classList.remove('show');
+  chatOpen = false;
+};
 
 function updateChatTitle(){
-  const el = document.getElementById('chatTitle');
-  if(el) el.innerText = lawanChat ? ('◉ CHAT: '+lawanChat.toUpperCase()) : '◉ PRIVATE CHAT';
+  var el = document.getElementById('chatTitle');
+  if(el) el.innerText = lawanChat ? ('◉ CHAT: ' + lawanChat.toUpperCase()) : '◉ PRIVATE CHAT';
 }
 
-window.pilihLawan=async()=>{
+window.pilihLawan = async function(){
   playKlik();
   try{
-    const res = await fetch('https://infocuaca.online/users.json');
-    const users = await res.json();
-    const daftar = Object.keys(users).filter(u => u !== user);
-    if(daftar.length===0){alert('Tidak ada user lain');return}
-    const pilih = prompt('Pilih lawan bicara:\n\n' + daftar.map((u,i)=>(i+1)+'. '+u).join('\n') + '\n\nKetik nama user:');
-    if(pilih && daftar.includes(pilih.trim())){
+    var res = await fetch('https://infocuaca.online/users.json');
+    var users = await res.json();
+    var daftar = Object.keys(users).filter(function(u){ return u !== user; });
+    if(daftar.length === 0){ alert('Tidak ada user lain'); return; }
+    var teks = 'Pilih lawan bicara:\n\n';
+    for(var i = 0; i < daftar.length; i++){
+      teks += (i+1) + '. ' + daftar[i] + '\n';
+    }
+    teks += '\nKetik nama user:';
+    var pilih = prompt(teks);
+    if(pilih && daftar.indexOf(pilih.trim()) !== -1){
       lawanChat = pilih.trim();
       localStorage.setItem('lawanChat_'+user, lawanChat);
       updateChatTitle();
-      chatLastCount = 0; chatFirst = true;
+      chatLastCount = 0;
+      chatFirst = true;
+      dataRoom1 = null;
+      dataRoom2 = null;
       loadChatPrivate();
-      addLog('Chat dengan: '+lawanChat);
+      addLog('Chat dengan: ' + lawanChat);
+    } else if(pilih){
+      alert('User "'+pilih+'" tidak ditemukan di users.json');
     }
-  }catch(e){alert('Gagal ambil daftar user: '+e.message)}
+  }catch(e){ alert('Gagal ambil daftar user: ' + e.message); }
 };
 
 function loadChatPrivate(){
   if(!lawanChat) return;
-  const roomId = buatRoomId(user, lawanChat);
-  if(chatUnsub){try{chatUnsub()}catch(e){}}
-  chatUnsub = onValue(ref(db,'chat/'+roomId), renderChat);
+  var room1 = user + '_' + lawanChat;
+  var room2 = lawanChat + '_' + user;
+  if(chatUnsub1){ try{ chatUnsub1(); }catch(e){} chatUnsub1 = null; }
+  if(chatUnsub2){ try{ chatUnsub2(); }catch(e){} chatUnsub2 = null; }
+  dataRoom1 = null;
+  dataRoom2 = null;
+  console.log('[CHAT] Load room1:', room1, '| room2:', room2);
+  chatUnsub1 = onValue(ref(db, 'chat/' + room1), function(snap){
+    dataRoom1 = snap.val();
+    console.log('[CHAT] room1 data:', dataRoom1);
+    renderChatGabungan();
+  });
+  chatUnsub2 = onValue(ref(db, 'chat/' + room2), function(snap){
+    dataRoom2 = snap.val();
+    console.log('[CHAT] room2 data:', dataRoom2);
+    renderChatGabungan();
+  });
 }
 
-window.sendChat=async()=>{
-  playKlik();
-  const i=document.getElementById('chatInput');
-  const m=i.value.trim();
-  if(!m)return;
-  if(!lawanChat){alert('Pilih lawan bicara dulu!');return}
-  i.value='';
-  const roomId = buatRoomId(user, lawanChat);
-  try{
-    await push(ref(db,'chat/'+roomId),{
-      user:user,
-      penerima:lawanChat,
-      pesan:m,
-      waktu:Date.now()
-    });
-  }catch(e){addLog('Gagal kirim: '+e.message,'err')}
-};
-
-window.deleteChat=async(key)=>{
-  playKlik();
-  if(!confirm('Hapus pesan?'))return;
-  if(!lawanChat)return;
-  const roomId = buatRoomId(user, lawanChat);
-  try{await remove(ref(db,'chat/'+roomId+'/'+key))}catch(e){}
-};
-
-function scrollChat(){const c=document.getElementById('chatMsgs');c.scrollTop=c.scrollHeight}
-
-function renderChat(snap){
-  const data = snap.val();
-  const c = document.getElementById('chatMsgs');
-  if(!data){
-    c.innerHTML='<div class="empty">Belum ada pesan dengan '+lawanChat+'</div>';
-    chatLastCount=0;
+function renderChatGabungan(){
+  var c = document.getElementById('chatMsgs');
+  var gabung = [];
+  if(dataRoom1){
+    var keys1 = Object.keys(dataRoom1);
+    for(var i = 0; i < keys1.length; i++){
+      gabung.push([keys1[i], dataRoom1[keys1[i]]]);
+    }
+  }
+  if(dataRoom2){
+    var keys2 = Object.keys(dataRoom2);
+    for(var j = 0; j < keys2.length; j++){
+      gabung.push([keys2[j], dataRoom2[keys2[j]]]);
+    }
+  }
+  var seen = {};
+  gabung = gabung.filter(function(item){
+    if(seen[item[0]]) return false;
+    seen[item[0]] = true;
+    return true;
+  });
+  gabung.sort(function(a,b){ return a[1].waktu - b[1].waktu; });
+  console.log('[CHAT] Total pesan digabung:', gabung.length);
+  if(gabung.length === 0){
+    c.innerHTML = '<div class="empty">Belum ada pesan dengan ' + lawanChat + '</div>';
+    chatLastCount = 0;
     return;
   }
-  const arr = Object.entries(data)
-    .filter(([k,d]) =>
-      (d.user===user && d.penerima===lawanChat) ||
-      (d.user===lawanChat && d.penerima===user)
-    )
-    .sort((a,b)=>a[1].waktu-b[1].waktu);
-
-  if(!chatFirst && arr.length>chatLastCount && !chatOpen){
-    const badge=document.getElementById('chatBadge');
-    badge.style.display='inline-block';
-    badge.innerText=arr.length-chatLastCount;
+  if(!chatFirst && gabung.length > chatLastCount && !chatOpen){
+    var badge = document.getElementById('chatBadge');
+    badge.style.display = 'inline-block';
+    badge.innerText = gabung.length - chatLastCount;
     chatNotificationSound();
-    addLog('💬 Chat baru dari '+lawanChat,'warn');
+    addLog('💬 Chat baru dari ' + lawanChat, 'warn');
   }
-  chatLastCount=arr.length;
-  chatFirst=false;
-
-  c.innerHTML = arr.map(([key,d])=>{
-    const isMine = d.user===user;
-    const t = new Date(d.waktu).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-    const txt = String(d.pesan).replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    return '<div class="chat-msg '+(isMine?'mine':'')+'">'+
-      '<div class="mhead">'+
-        '<span class="muser">'+d.user+'</span>'+
-        '<span>'+t+(isMine?' <button class="mdel" onclick="deleteChat(\''+key+'\')">🗑️</button>':'')+'</span>'+
-      '</div>'+
-      '<div class="mtext">'+txt+'</div>'+
+  chatLastCount = gabung.length;
+  chatFirst = false;
+  var html = '';
+  for(var k = 0; k < gabung.length; k++){
+    var key = gabung[k][0];
+    var d = gabung[k][1];
+    var isMine = (d.user === user);
+    var tgl = new Date(d.waktu);
+    var t = tgl.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+    var txt = String(d.pesan).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    html += '<div class="chat-msg ' + (isMine ? 'mine' : '') + '">' +
+      '<div class="mhead">' +
+        '<span class="muser">' + d.user + '</span>' +
+        '<span>' + t + (isMine ? ' <button class="mdel" onclick="deleteChat(\'' + key + '\')">🗑️</button>' : '') + '</span>' +
+      '</div>' +
+      '<div class="mtext">' + txt + '</div>' +
     '</div>';
-  }).join('');
-
+  }
+  c.innerHTML = html;
   if(chatOpen) scrollChat();
 }
 
-// Kalau sudah ada lawanChat tersimpan, load otomatis
+window.sendChat = async function(){
+  playKlik();
+  var i = document.getElementById('chatInput');
+  var m = i.value.trim();
+  if(!m) return;
+  if(!lawanChat){ alert('Pilih lawan bicara dulu!'); return; }
+  i.value = '';
+  var roomId = user + '_' + lawanChat;
+  try{
+    await push(ref(db, 'chat/' + roomId), {
+      user: user,
+      penerima: lawanChat,
+      pesan: m,
+      waktu: Date.now()
+    });
+    addLog('✓ Pesan terkirim ke ' + lawanChat);
+  }catch(e){
+    addLog('✗ Gagal kirim: ' + e.message, 'err');
+  }
+};
+
+window.deleteChat = async function(key){
+  playKlik();
+  if(!confirm('Hapus pesan?')) return;
+  if(!lawanChat) return;
+  var room1 = user + '_' + lawanChat;
+  var room2 = lawanChat + '_' + user;
+  try{ await remove(ref(db, 'chat/' + room1 + '/' + key)); }catch(e){}
+  try{ await remove(ref(db, 'chat/' + room2 + '/' + key)); }catch(e){}
+};
+
+function scrollChat(){
+  var c = document.getElementById('chatMsgs');
+  c.scrollTop = c.scrollHeight;
+}
+
 if(lawanChat){
   updateChatTitle();
   loadChatPrivate();
