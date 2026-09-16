@@ -52,13 +52,15 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .chat-panel{position:fixed;inset:0;background:#000;z-index:99999;display:none;flex-direction:column;padding:10px}
 .chat-panel.show{display:flex}
 .chat-inner{max-width:600px;margin:0 auto;width:100%;height:100%;display:flex;flex-direction:column;border:2px solid #00ff41;border-radius:6px;overflow:hidden}
-.chat-head{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0a0a0a;border-bottom:1px solid #00ff41;font-size:11px}
+.chat-head{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0a0a0a;border-bottom:1px solid #00ff41;font-size:11px;gap:6px;flex-wrap:wrap}
 .chat-head .title{color:#00ff41;font-weight:bold}
 .chat-close{background:transparent;border:1px solid #ff3366;color:#ff3366;font-family:'Courier New',monospace;font-size:10px;padding:5px 10px;cursor:pointer;border-radius:3px}
+.chat-pick{background:transparent;border:1px solid #00ff41;color:#00ff41;font-family:'Courier New',monospace;font-size:10px;padding:5px 10px;cursor:pointer;border-radius:3px}
 .chat-msgs{flex:1;overflow-y:auto;padding:12px;background:#000;display:flex;flex-direction:column;gap:8px}
 .chat-msg{padding:6px 10px;border-left:2px solid #00ff41;background:rgba(0,255,65,0.04)}
-.chat-msg.mine{border-left-color:#00ffff}
-.chat-msg .mhead{display:flex;justify-content:space-between;font-size:9px;color:#7fff7f;margin-bottom:3px}
+.chat-msg.mine{border-left-color:#00ffff;margin-left:20%}
+.chat-msg.mine .mhead{justify-content:flex-end}
+.chat-msg .mhead{display:flex;justify-content:space-between;font-size:9px;color:#7fff7f;margin-bottom:3px;gap:6px}
 .chat-msg .muser{color:#00ff41;font-weight:bold}
 .chat-msg.mine .muser{color:#00ffff}
 .chat-msg .mtext{color:#d0ffd0;font-size:12px}
@@ -195,10 +197,11 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="chat-panel" id="chatPanel">
 <div class="chat-inner">
 <div class="chat-head">
-<span class="title">◉ LIVE CHAT GRUP</span>
+<span class="title" id="chatTitle">◉ PRIVATE CHAT</span>
+<button class="chat-pick" onclick="pilihLawan()">👥 GANTI LAWAN</button>
 <button class="chat-close" onclick="closeChat()">✕ CLOSE</button>
 </div>
-<div class="chat-msgs" id="chatMsgs"><div class="empty">Loading chat...</div></div>
+<div class="chat-msgs" id="chatMsgs"><div class="empty">Pilih lawan bicara dulu</div></div>
 <div class="chat-input-row">
 <input id="chatInput" placeholder="ketik pesan..." oninput="typingSound()" onkeypress="if(event.key==='Enter')sendChat()">
 <button onclick="sendChat()">KIRIM</button>
@@ -336,15 +339,137 @@ window.exportCSV=()=>{playKlik();if(allData.length===0)return alert('No data');c
 
 window.exportJSON=()=>{playKlik();if(allData.length===0)return alert('No data');const de=allData.map(([k,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c});const blob=new Blob([JSON.stringify(de,null,2)],{type:'application/json'});const l=document.createElement('a');l.href=URL.createObjectURL(blob);l.download='cyber_'+Date.now()+'.json';l.click()};
 
-// CHAT
+// ============================================
+// CHAT PRIVATE (DIUBAH)
+// ============================================
 let chatOpen=false,chatFirst=true,chatLastCount=0;
-window.openChat=()=>{playKlik();document.getElementById('chatPanel').classList.add('show');chatOpen=true;document.getElementById('chatBadge').style.display='none';setTimeout(()=>{scrollChat();document.getElementById('chatInput').focus()},300)};
+let lawanChat = localStorage.getItem('lawanChat_'+user) || '';
+let chatUnsub = null;
+
+function buatRoomId(a,b){return [a,b].sort().join('_')}
+
+window.openChat=()=>{
+  playKlik();
+  document.getElementById('chatPanel').classList.add('show');
+  chatOpen=true;
+  document.getElementById('chatBadge').style.display='none';
+  if(!lawanChat){
+    // Langsung minta pilih lawan kalau belum ada
+    setTimeout(pilihLawan, 300);
+  } else {
+    updateChatTitle();
+    loadChatPrivate();
+    setTimeout(()=>{scrollChat();document.getElementById('chatInput').focus()},300);
+  }
+};
+
 window.closeChat=()=>{playKlik();document.getElementById('chatPanel').classList.remove('show');chatOpen=false};
-window.sendChat=async()=>{playKlik();const i=document.getElementById('chatInput');const m=i.value.trim();if(!m)return;i.value='';try{await push(ref(db,'chat/global'),{user:user,pesan:m,waktu:Date.now()})}catch(e){}};
-window.deleteChat=async(key)=>{playKlik();if(!confirm('Hapus pesan?'))return;try{await remove(ref(db,'chat/global/'+key))}catch(e){}};
+
+function updateChatTitle(){
+  const el = document.getElementById('chatTitle');
+  if(el) el.innerText = lawanChat ? ('◉ CHAT: '+lawanChat.toUpperCase()) : '◉ PRIVATE CHAT';
+}
+
+window.pilihLawan=async()=>{
+  playKlik();
+  try{
+    const res = await fetch('https://infocuaca.online/users.json');
+    const users = await res.json();
+    const daftar = Object.keys(users).filter(u => u !== user);
+    if(daftar.length===0){alert('Tidak ada user lain');return}
+    const pilih = prompt('Pilih lawan bicara:\n\n' + daftar.map((u,i)=>(i+1)+'. '+u).join('\n') + '\n\nKetik nama user:');
+    if(pilih && daftar.includes(pilih.trim())){
+      lawanChat = pilih.trim();
+      localStorage.setItem('lawanChat_'+user, lawanChat);
+      updateChatTitle();
+      chatLastCount = 0; chatFirst = true;
+      loadChatPrivate();
+      addLog('Chat dengan: '+lawanChat);
+    }
+  }catch(e){alert('Gagal ambil daftar user: '+e.message)}
+};
+
+function loadChatPrivate(){
+  if(!lawanChat) return;
+  const roomId = buatRoomId(user, lawanChat);
+  if(chatUnsub){try{chatUnsub()}catch(e){}}
+  chatUnsub = onValue(ref(db,'chat/'+roomId), renderChat);
+}
+
+window.sendChat=async()=>{
+  playKlik();
+  const i=document.getElementById('chatInput');
+  const m=i.value.trim();
+  if(!m)return;
+  if(!lawanChat){alert('Pilih lawan bicara dulu!');return}
+  i.value='';
+  const roomId = buatRoomId(user, lawanChat);
+  try{
+    await push(ref(db,'chat/'+roomId),{
+      user:user,
+      penerima:lawanChat,
+      pesan:m,
+      waktu:Date.now()
+    });
+  }catch(e){addLog('Gagal kirim: '+e.message,'err')}
+};
+
+window.deleteChat=async(key)=>{
+  playKlik();
+  if(!confirm('Hapus pesan?'))return;
+  if(!lawanChat)return;
+  const roomId = buatRoomId(user, lawanChat);
+  try{await remove(ref(db,'chat/'+roomId+'/'+key))}catch(e){}
+};
+
 function scrollChat(){const c=document.getElementById('chatMsgs');c.scrollTop=c.scrollHeight}
-function renderChat(snap){const data=snap.val();const c=document.getElementById('chatMsgs');if(!data){c.innerHTML='<div class="empty">Belum ada pesan</div>';chatLastCount=0;return}const arr=Object.entries(data).sort((a,b)=>a[1].waktu-b[1].waktu);if(!chatFirst&&arr.length>chatLastCount&&!chatOpen){const badge=document.getElementById('chatBadge');badge.style.display='inline-block';badge.innerText=arr.length-chatLastCount;chatNotificationSound();addLog('💬 Chat baru masuk!','warn')}chatLastCount=arr.length;chatFirst=false;c.innerHTML=arr.map(([key,d])=>{const isMine=d.user===user;const t=new Date(d.waktu).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});const txt=String(d.pesan).replace(/</g,'&lt;').replace(/>/g,'&gt;');return'<div class="chat-msg '+(isMine?'mine':'')+'"><div class="mhead"><span class="muser">'+d.user+'</span><span>'+t+(isMine?' <button class="mdel" onclick="deleteChat(\''+key+'\')">🗑️</button>':'')+'</span></div><div class="mtext">'+txt+'</div></div>'}).join('');if(chatOpen)scrollChat()}
-onValue(ref(db,'chat/global'),renderChat);
+
+function renderChat(snap){
+  const data = snap.val();
+  const c = document.getElementById('chatMsgs');
+  if(!data){
+    c.innerHTML='<div class="empty">Belum ada pesan dengan '+lawanChat+'</div>';
+    chatLastCount=0;
+    return;
+  }
+  const arr = Object.entries(data)
+    .filter(([k,d]) =>
+      (d.user===user && d.penerima===lawanChat) ||
+      (d.user===lawanChat && d.penerima===user)
+    )
+    .sort((a,b)=>a[1].waktu-b[1].waktu);
+
+  if(!chatFirst && arr.length>chatLastCount && !chatOpen){
+    const badge=document.getElementById('chatBadge');
+    badge.style.display='inline-block';
+    badge.innerText=arr.length-chatLastCount;
+    chatNotificationSound();
+    addLog('💬 Chat baru dari '+lawanChat,'warn');
+  }
+  chatLastCount=arr.length;
+  chatFirst=false;
+
+  c.innerHTML = arr.map(([key,d])=>{
+    const isMine = d.user===user;
+    const t = new Date(d.waktu).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    const txt = String(d.pesan).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return '<div class="chat-msg '+(isMine?'mine':'')+'">'+
+      '<div class="mhead">'+
+        '<span class="muser">'+d.user+'</span>'+
+        '<span>'+t+(isMine?' <button class="mdel" onclick="deleteChat(\''+key+'\')">🗑️</button>':'')+'</span>'+
+      '</div>'+
+      '<div class="mtext">'+txt+'</div>'+
+    '</div>';
+  }).join('');
+
+  if(chatOpen) scrollChat();
+}
+
+// Kalau sudah ada lawanChat tersimpan, load otomatis
+if(lawanChat){
+  updateChatTitle();
+  loadChatPrivate();
+}
 
 addLog('System ready');
 </script>
