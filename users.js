@@ -1,0 +1,6 @@
+export const USERS = {
+  "rorax":  "rrx003",
+  "admin":  "admin003",
+  "admin1":   "admin003",
+  "admin2":   "admin003"
+};
