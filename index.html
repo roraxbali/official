@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBER ANONYMOUS by RORAXBRINGAZ</title>
+  <style>
+    :root {
+      --bg:     #090909;
+      --bg2:    #101010;
+      --gold:   #c8a000;
+      --gold2:  #e8bc00;
+      --gold-d: #4a3a00;
+      --cyan:   #00d4ff;
+      --cyan-d: #003a4a;
+      --green:  #00c853;
+      --red:    #ff3355;
+      --text:   #c8c8c8;
+      --text-d: #555;
+      --border: #1e1e1e;
+      --border2:#272727;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      padding: 20px;
+    }
+
+    /* subtle gold grid */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,160,0,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,160,0,.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* corner accents on body */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 16px;
+      border: 1px solid rgba(200,160,0,.08);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .box {
+      background: var(--bg2);
+      border: 1px solid var(--gold-d);
+      border-radius: 4px;
+      padding: 40px 30px 32px;
+      width: 100%;
+      max-width: 360px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* top label strip */
+    .box-label {
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg2);
+      padding: 0 12px;
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* corner L-brackets */
+    .box::before, .box::after {
+      content: '';
+      position: absolute;
+      width: 14px; height: 14px;
+      pointer-events: none;
+    }
+    .box::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+      border-radius: 4px 0 0 0;
+    }
+    .box::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+      border-radius: 0 0 4px 0;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--gold);
+      letter-spacing: 6px;
+      margin-bottom: 4px;
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      animation: goldpulse 3s ease-in-out infinite;
+    }
+    @keyframes goldpulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .8; }
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 9px;
+      color: var(--text-d);
+      letter-spacing: 4px;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+
+    label {
+      display: block;
+      font-size: 9px;
+      color: var(--text-d);
+      letter-spacing: 3px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 13px;
+      margin-bottom: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      color: var(--cyan);
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      letter-spacing: 1px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input::placeholder { color: var(--text-d); }
+    input:focus { border-color: var(--gold-d); }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      background: var(--gold);
+      border: none;
+      color: #000;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      letter-spacing: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 3px;
+      text-transform: uppercase;
+      transition: opacity .15s;
+    }
+    button:hover  { opacity: .88; }
+    button:active { opacity: .72; transform: scale(.99); }
+
+    #err {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      min-height: 16px;
+      color: var(--red);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 9px;
+      color: var(--text-d);
+      margin-top: 22px;
+      letter-spacing: 2px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      line-height: 1.8;
+    }
+
+    /* status dot */
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-bottom: 24px;
+      font-size: 9px;
+      color: var(--text-d);
+      letter-spacing: 2px;
+    }
+    .sdot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 5px var(--green);
+      animation: spulse 2s ease-in-out infinite;
+    }
+    @keyframes spulse {
+      0%,100%{ opacity:1; box-shadow:0 0 5px var(--green) }
+      50%    { opacity:.5; box-shadow:0 0 2px var(--green) }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <span class="box-label">◈ Cyber Terminal ◈</span>
+
+    <h2>CYBER ANONYMOUS</h2>
+    <div class="subtitle">by RORAXBRINGAZ</div>
+
+    <div class="status-row">
+      <span class="sdot"></span>
+      <span>SYSTEM ONLINE</span>
+    </div>
+
+    <label>Username</label>
+    <input id="user" placeholder="masukkan username" autocomplete="off">
+
+    <label>Password</label>
+    <input id="pass" type="password" placeholder="masukkan password">
+
+    <button onclick="doLogin()">» ACCESS «</button>
+    <p id="err"></p>
+
+    <div class="footer">
+      [ AUTHORIZED ACCESS ONLY ]<br>
+      by RORAXBRINGAZ
+    </div>
+  </div>
+
+<script type="module">
+import { login } from './login.js';
+
+window.doLogin = () => {
+  const u = document.getElementById('user').value.trim();
+  const p = document.getElementById('pass').value.trim();
+  const err = document.getElementById('err');
+
+  err.innerText = '';
+
+  if (!u || !p) {
+    err.innerText = '[!] ISI USERNAME & PASSWORD';
+    return;
+  }
+
+  const result = login(u, p);
+
+  if (result.success) {
+    err.style.color = '#00c853';
+    err.innerText = result.message;
+    localStorage.setItem('username', u);
+
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 500);
+  } else {
+    err.style.color = '#ff3355';
+    err.innerText = result.message;
+  }
+};
+
+document.getElementById('pass').addEventListener('keypress', e => {
+  if (e.key === 'Enter') doLogin();
+});
+document.getElementById('user').addEventListener('keypress', e => {
+  if (e.key === 'Enter') document.getElementById('pass').focus();
+});
+</script>
+</body>
+</html>
