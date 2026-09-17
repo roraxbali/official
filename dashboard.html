@@ -19,7 +19,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:12px;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(200,160,0,.012) 0px,rgba(200,160,0,.012) 1px,transparent 1px,transparent 4px);pointer-events:none;z-index:9999}
-.wrap{position:relative;z-index:2;max-width:620px;margin:0 auto}
+.wrap{position:relative;z-index:2;max-width:620px;margin:0 auto;transition:max-width .3s ease}
 /* ── HEADER */
 .term-header{background:var(--bg2);border:1px solid var(--gold-d);border-bottom:none;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-size:11px;border-radius:var(--radius) var(--radius) 0 0}
 .term-header .dots{display:flex;gap:7px}
@@ -153,6 +153,52 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .cmp-read{text-align:center;min-width:120px}
 .cmp-dist{font-size:30px;font-weight:bold;color:var(--gold);letter-spacing:1px}
 .cmp-sub{font-size:11px;color:var(--cyan);margin-top:4px;letter-spacing:2px}
+
+/* =========================================
+   RESPONSIVE DESKTOP — HANYA MENAMBAH TAMPILAN
+   Tidak mengubah HTML/JS asli
+   ========================================= */
+
+/* Tablet & Desktop >= 900px */
+@media (min-width:900px){
+  body{padding:20px}
+  .wrap{
+    max-width:1100px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    align-items:start;
+  }
+  /* Header full width */
+  .term-header{grid-column:1 / -1}
+  /* Main (video + topbar) full width */
+  .term-body.first{grid-column:1 / -1}
+  /* Peta multi-target full width */
+  .term-body:has(#mapMulti){grid-column:1 / -1}
+  /* Data target full width */
+  .term-body:has(#hasil){grid-column:1 / -1}
+  /* Chat panel tetap overlay penuh */
+  .chat-inner{max-width:1100px}
+  /* Panel margin bawah dihilangkan karena sudah pakai gap grid */
+  .term-body{margin-bottom:0}
+}
+
+/* Desktop lebar >= 1400px */
+@media (min-width:1400px){
+  .wrap{max-width:1360px;grid-template-columns:repeat(3,1fr)}
+  .term-body:has(#mapMulti),
+  .term-body:has(#hasil),
+  .term-body.first,
+  .term-header{grid-column:1 / -1}
+  .chat-inner{max-width:1360px}
+}
+
+/* Pastikan peta & gambar tetap proporsional di desktop */
+@media (min-width:900px){
+  .map-box{height:380px}
+  .map-box.tall{height:440px}
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+}
 </style>
 </head>
 <body>
@@ -425,11 +471,11 @@ const SAT_URL='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imager
 const LBL_URL='https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
 function addSatLayer(map){
   L.tileLayer(SAT_URL,{maxZoom:19}).addTo(map);
-  L.tileLayer(LBL_URL,{maxZoom:19,opacity:0.85}).addTo(map); // jalan + nama tempat
+  L.tileLayer(LBL_URL,{maxZoom:19,opacity:0.85}).addTo(map);
 }
 
 // ══════════════════════════
-// FOTO-PIN MARKER (pin dgn foto di tengah)
+// FOTO-PIN MARKER
 // ══════════════════════════
 function pinIcon(foto,name,color){
   color=color||'#ff3355';
@@ -477,7 +523,7 @@ function updateStats(){
 }
 
 // ══════════════════════════
-// MULTI-MAP — foto pin + alamat lengkap
+// MULTI-MAP
 // ══════════════════════════
 let mapMulti=null,multiMarkers={};
 function initMapMulti(){
@@ -532,7 +578,7 @@ function updateMultiMap(){
 }
 
 // ══════════════════════════
-// TARGET LOCATION — ANIMASI LEAFLET SATELIT
+// TARGET LOCATION — ANIMASI
 // ══════════════════════════
 let mapLink=null,lastAnimKey='';
 
@@ -541,7 +587,6 @@ function animasiMapLink(lat,lng,target,foto){
   if(key===lastAnimKey)return;
   lastAnimKey=key;
 
-  // reset
   if(mapLink){try{mapLink.remove()}catch(e){}mapLink=null}
 
   const container=document.getElementById('mapLink');
@@ -549,11 +594,9 @@ function animasiMapLink(lat,lng,target,foto){
   const coordsEl=document.getElementById('mapLinkCoords');
   coordsEl.innerText=lat.toFixed(4)+', '+lng.toFixed(4);
 
-  // init map di zoom 2
   mapLink=L.map(container,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView([0,20],2);
   addSatLayer(mapLink);
 
-  // stages zoom-in
   const stages=[
     {zoom:2, center:[0,20],   dur:900,  label:'◈ SATELIT ONLINE'},
     {zoom:4, center:[lat,lng],dur:900,  label:'◈ MENCARI SINYAL...'},
@@ -567,10 +610,7 @@ function animasiMapLink(lat,lng,target,foto){
   let idx=0;
   function step(){
     if(idx>=stages.length){
-      // pasang pin foto
       const mk=L.marker([lat,lng],{icon:pinIcon(foto||null,target,'#ff3355')}).addTo(mapLink);
-
-      // popup info lengkap
       const latestData=allData.find(([,d])=>d.lat&&Math.abs(d.lat-lat)<0.0001);
       const alamat=latestData?buildAlamat(latestData[1]):'-';
       const fotoHtml=foto?`<img src="${foto}" style="width:80px;height:60px;object-fit:cover;border:1px solid #4a3a00;border-radius:3px;display:block;margin-bottom:5px">`:'';
@@ -582,8 +622,6 @@ function animasiMapLink(lat,lng,target,foto){
           <div><span style="color:#444;display:inline-block;width:44px">KOORD</span><span style="color:#00d4ff">${lat.toFixed(5)}, ${lng.toFixed(5)}</span></div>
         </div>
       </div>`,{className:'target-popup',closeButton:false,maxWidth:230}).openPopup();
-
-      // aktifkan drag setelah animasi
       mapLink.dragging.enable();
       mapLink.scrollWheelZoom.enable();
       targetLockedSound();
@@ -672,14 +710,11 @@ window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=
 
 // GENERATE LINK
 let currentLink='';
-// -- ADDED: BASE URL CUSTOM --
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
 (function(){try{const s=localStorage.getItem('baseUrlCustom_'+user)||'';const el=document.getElementById('baseUrlCustom');if(el&&s)el.value=s}catch(e){}})();
 window.genLink=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (TRACK):';addLog('Link track: '+t);beep(900,.08)};
 window.copyLink=async()=>{if(!currentLink)return;try{await navigator.clipboard.writeText(currentLink);document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000)}catch(e){}};
-
-// ── ADDED: GENERATE MAPS LINK (hasil tampil di kotak link bersama) ──
 window.genLinkMaps=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);beep(900,.08)};
 
 // DATA
@@ -706,7 +741,7 @@ function renderData(){
   document.getElementById('countShown').innerText=filtered.length;
   document.getElementById('countTotal').innerText=allData.length;
   const c=document.getElementById('hasil');
-  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();return} // FIX: stats/multi/geofence tetap update walau daftar link kosong
+  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();return}
   c.innerHTML=filtered.map(([key,d])=>`
     <div class="card-data" id="card-${key}">
       <div class="card-top">
@@ -737,7 +772,6 @@ function renderData(){
       </div>
     </div>`).join('');
 
-  // trigger animasi untuk target terbaru yang punya koordinat
   const latest=filtered.find(([,d])=>d.lat&&d.lng);
   if(latest)animasiMapLink(latest[1].lat,latest[1].lng,latest[1].target||'unknown',latest[1].foto||null);
 
