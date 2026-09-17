@@ -133,7 +133,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .chat-input-row{display:flex;background:var(--bg2);border-top:1px solid var(--gold-d);padding:10px;gap:8px}
 .chat-input-row input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:12px;padding:10px 12px;outline:none;border-radius:var(--radius)}
 .chat-input-row button{background:var(--gold);color:#000;border:none;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:2px;padding:0 18px;cursor:pointer;border-radius:var(--radius)}
-/* ── COMPASS (ADDED) */
+/* ── COMPASS */
 .cmp-wrap{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
 .cmp-dial{position:relative;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#101010 0%,#050505 70%);border:2px solid var(--gold-d);flex-shrink:0;overflow:hidden}
 .cmp-ticks{position:absolute;inset:6px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(200,160,0,.5) 0deg .6deg,transparent .6deg 15deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%);mask:radial-gradient(circle,transparent 62%,#000 63%)}
@@ -155,11 +155,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .cmp-sub{font-size:11px;color:var(--cyan);margin-top:4px;letter-spacing:2px}
 
 /* =========================================
-   RESPONSIVE DESKTOP — HANYA MENAMBAH TAMPILAN
-   Tidak mengubah HTML/JS asli
+   RESPONSIVE DESKTOP
    ========================================= */
-
-/* Tablet & Desktop >= 900px */
 @media (min-width:900px){
   body{padding:20px}
   .wrap{
@@ -169,21 +166,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     gap:14px;
     align-items:start;
   }
-  /* Header full width */
   .term-header{grid-column:1 / -1}
-  /* Main (video + topbar) full width */
   .term-body.first{grid-column:1 / -1}
-  /* Peta multi-target full width */
   .term-body:has(#mapMulti){grid-column:1 / -1}
-  /* Data target full width */
   .term-body:has(#hasil){grid-column:1 / -1}
-  /* Chat panel tetap overlay penuh */
   .chat-inner{max-width:1100px}
-  /* Panel margin bawah dihilangkan karena sudah pakai gap grid */
   .term-body{margin-bottom:0}
 }
-
-/* Desktop lebar >= 1400px */
 @media (min-width:1400px){
   .wrap{max-width:1360px;grid-template-columns:repeat(3,1fr)}
   .term-body:has(#mapMulti),
@@ -192,16 +181,106 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   .term-header{grid-column:1 / -1}
   .chat-inner{max-width:1360px}
 }
-
-/* Pastikan peta & gambar tetap proporsional di desktop */
 @media (min-width:900px){
   .map-box{height:380px}
   .map-box.tall{height:440px}
   .stats-grid{grid-template-columns:repeat(4,1fr)}
 }
+
+/* =========================================
+   FITUR TAMBAHAN HACKER
+   ========================================= */
+
+/* ── BOOT SEQUENCE ── */
+#bootScreen{position:fixed;inset:0;background:#000;z-index:999999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Courier New',monospace;color:#00ff41;padding:20px;overflow:hidden}
+#bootScreen.hide{opacity:0;pointer-events:none;transition:opacity .8s ease}
+#bootScreen .boot-logo{font-size:26px;font-weight:bold;letter-spacing:8px;color:#c8a000;text-shadow:0 0 12px #c8a000;margin-bottom:20px;animation:bootGlow 1.5s ease-in-out infinite}
+@keyframes bootGlow{0%,100%{text-shadow:0 0 12px #c8a000}50%{text-shadow:0 0 28px #e8bc00,0 0 40px #c8a000}}
+#bootScreen .boot-log{font-size:11px;line-height:1.9;color:#00ff41;min-height:220px;width:100%;max-width:520px;text-align:left}
+#bootScreen .boot-log div{opacity:0;animation:bootLine .1s forwards}
+@keyframes bootLine{to{opacity:1}}
+#bootScreen .boot-bar{width:100%;max-width:520px;height:6px;background:#0a1a0a;border:1px solid #00ff41;margin-top:20px;overflow:hidden}
+#bootScreen .boot-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#00ff41,#c8a000);transition:width .3s ease;box-shadow:0 0 10px #00ff41}
+#bootScreen .boot-pct{font-size:10px;color:#c8a000;margin-top:8px;letter-spacing:3px}
+#bootScreen .scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,255,65,.04) 0px,rgba(0,255,65,.04) 1px,transparent 1px,transparent 3px);pointer-events:none}
+
+/* ── BATTERY + NETWORK ── */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.info-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px;font-size:10px}
+.info-card .ik{color:var(--text-d);letter-spacing:1px;font-size:9px;text-transform:uppercase}
+.info-card .iv{color:var(--cyan);font-weight:bold;font-size:12px;margin-top:3px;word-break:break-all}
+.bat-bar{width:100%;height:6px;background:var(--bg);border:1px solid var(--border2);border-radius:2px;margin-top:5px;overflow:hidden}
+.bat-fill{height:100%;background:linear-gradient(90deg,#00c853,#e8bc00);transition:width .3s}
+
+/* ── DECRYPTING OVERLAY ── */
+#decryptOverlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99998;display:none;justify-content:center;align-items:center;flex-direction:column;font-family:'Courier New',monospace;color:#00ff41}
+#decryptOverlay.show{display:flex}
+#decryptOverlay .dc-title{font-size:16px;letter-spacing:6px;color:#c8a000;margin-bottom:20px;animation:bootGlow 1s infinite}
+#decryptOverlay .dc-hex{font-size:11px;max-width:600px;word-break:break-all;line-height:1.7;color:#00ff41;text-align:center;padding:0 20px;height:120px;overflow:hidden}
+#decryptOverlay .dc-bar{width:80%;max-width:400px;height:8px;border:1px solid #00ff41;margin-top:20px;background:#0a1a0a}
+#decryptOverlay .dc-fill{height:100%;width:0%;background:#00ff41;box-shadow:0 0 12px #00ff41;transition:width .1s}
+#decryptOverlay .dc-pct{font-size:11px;color:#00ff41;margin-top:8px;letter-spacing:3px}
+
+/* ── VOLUME SLIDER ── */
+.vol-wrap{display:flex;align-items:center;gap:8px;margin-top:8px}
+.vol-wrap input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;background:var(--border2);border-radius:2px;outline:none}
+.vol-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--gold);border-radius:50%;cursor:pointer;box-shadow:0 0 6px var(--gold)}
+.vol-wrap input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--gold);border:none;border-radius:50%;cursor:pointer}
+.vol-wrap .vl{font-size:9px;color:var(--text-d);letter-spacing:1px;min-width:34px}
+
+/* ── RADAR SWEEP ── */
+.term-body{position:relative;overflow:hidden}
+.term-body::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 0deg,transparent 300deg,rgba(200,160,0,.06) 330deg,rgba(200,160,0,.15) 355deg,transparent 360deg);animation:sweepRotate 6s linear infinite;pointer-events:none;z-index:0;opacity:.5}
+.term-body>*{position:relative;z-index:1}
+
+/* ── IP INFO PANEL ── */
+.ip-grid{display:grid;grid-template-columns:1fr;gap:6px;font-size:10px;margin-top:8px}
+.ip-row{display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg3);border-left:2px solid var(--gold-d);border-radius:0 var(--radius) var(--radius) 0}
+.ip-row .ipk{color:var(--text-d);letter-spacing:1px}
+.ip-row .ipv{color:var(--cyan);font-weight:bold}
+
+/* ── CLOCK 3-IN-1 ── */
+.clock-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
+.clock-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:8px 6px;text-align:center}
+.clock-card .clk-l{font-size:8px;color:var(--text-d);letter-spacing:2px;text-transform:uppercase}
+.clock-card .clk-v{font-size:13px;color:var(--gold);font-weight:bold;margin-top:4px;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.clock-card .clk-v.cy{color:var(--cyan)}
+
+/* ── SATELLITE UPLINK ── */
+.sat-panel{background:#000;border:1px solid var(--gold-d);border-radius:var(--radius);padding:12px;font-size:10px;margin-top:10px;position:relative;overflow:hidden}
+.sat-panel .sat-title{color:var(--gold);letter-spacing:3px;font-size:10px;font-weight:bold;margin-bottom:8px}
+.sat-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-bottom:8px}
+.sat-bar{flex:1;background:linear-gradient(180deg,var(--cyan),var(--gold));border-radius:1px;animation:satPulse 1.2s ease-in-out infinite;opacity:.7}
+.sat-bar:nth-child(1){animation-delay:0s}.sat-bar:nth-child(2){animation-delay:.1s}.sat-bar:nth-child(3){animation-delay:.2s}.sat-bar:nth-child(4){animation-delay:.3s}.sat-bar:nth-child(5){animation-delay:.4s}.sat-bar:nth-child(6){animation-delay:.5s}.sat-bar:nth-child(7){animation-delay:.6s}.sat-bar:nth-child(8){animation-delay:.7s}.sat-bar:nth-child(9){animation-delay:.8s}.sat-bar:nth-child(10){animation-delay:.9s}
+@keyframes satPulse{0%,100%{height:15%;opacity:.4}50%{height:100%;opacity:1}}
+.sat-stat{color:var(--green);font-size:10px;letter-spacing:2px}
+.sat-stat .sd{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);margin-right:6px;animation:spulse 1.5s infinite}
+.sat-coord{color:var(--cyan);font-size:10px;margin-top:4px;letter-spacing:1px}
+
+@media (min-width:900px){
+  .info-grid{grid-template-columns:repeat(4,1fr)}
+}
 </style>
 </head>
 <body>
+
+<!-- BOOT SEQUENCE -->
+<div id="bootScreen">
+  <div class="scanlines"></div>
+  <div class="boot-logo">CYBER TERMINAL</div>
+  <div class="boot-log" id="bootLog"></div>
+  <div class="boot-bar"><div class="boot-bar-fill" id="bootBar"></div></div>
+  <div class="boot-pct" id="bootPct">BOOTING 0%</div>
+</div>
+
+<!-- DECRYPTING OVERLAY -->
+<div id="decryptOverlay">
+  <div class="dc-title">◈ DECRYPTING DATA STREAM ◈</div>
+  <div class="dc-hex" id="dcHex">01001000 01100001 01100011 01101011</div>
+  <div class="dc-bar"><div class="dc-fill" id="dcFill"></div></div>
+  <div class="dc-pct" id="dcPct">0%</div>
+</div>
+
 <div class="wrap">
 
 <!-- HEADER -->
@@ -238,6 +317,67 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="stat-card hi"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Hari Ini</div></div>
     <div class="stat-card"><div class="stat-val sm" id="statKota">—</div><div class="stat-lbl">Kota Terbanyak</div></div>
     <div class="stat-card"><div class="stat-val sm" id="statPlatform">—</div><div class="stat-lbl">Platform</div></div>
+  </div>
+</div>
+
+<!-- SATELLITE UPLINK (BARU) -->
+<div class="term-body">
+  <div class="prompt">[Uplink] Satellite Connection</div>
+  <div class="sat-panel">
+    <div class="sat-title">◈ UPLINK STATUS — LIVE</div>
+    <div class="sat-bars">
+      <div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div>
+      <div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div>
+      <div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div>
+      <div class="sat-bar"></div>
+    </div>
+    <div class="sat-stat"><span class="sd"></span><span id="satStatus">MENGHUBUNGKAN SATELIT...</span></div>
+    <div class="sat-coord" id="satCoord">ORBIT: --, --</div>
+    <div class="sat-coord" id="satPing">PING: -- ms · SIGNAL: --%</div>
+  </div>
+</div>
+
+<!-- CLOCK 3-IN-1 (BARU) -->
+<div class="term-body">
+  <div class="prompt">[Time] Sinkronisasi Waktu</div>
+  <div class="clock-grid">
+    <div class="clock-card"><div class="clk-l">LOCAL</div><div class="clk-v" id="clkLocal">--:--:--</div></div>
+    <div class="clock-card"><div class="clk-l">UTC</div><div class="clk-v cy" id="clkUtc">--:--:--</div></div>
+    <div class="clock-card"><div class="clk-l">UNIX</div><div class="clk-v cy" id="clkUnix">0</div></div>
+  </div>
+</div>
+
+<!-- IP INFO (BARU) -->
+<div class="term-body">
+  <div class="prompt">[Network] Identitas Koneksi</div>
+  <div class="ip-grid">
+    <div class="ip-row"><span class="ipk">IP PUBLIK</span><span class="ipv" id="ipPub">memuat...</span></div>
+    <div class="ip-row"><span class="ipk">ISP</span><span class="ipv" id="ipIsp">-</span></div>
+    <div class="ip-row"><span class="ipk">KOTA / NEGARA</span><span class="ipv" id="ipLoc">-</span></div>
+    <div class="ip-row"><span class="ipk">TIMEZONE</span><span class="ipv" id="ipTz">-</span></div>
+    <div class="ip-row"><span class="ipk">USER AGENT</span><span class="ipv" id="ipUa" style="font-size:9px">-</span></div>
+  </div>
+</div>
+
+<!-- BATTERY + NETWORK (BARU) -->
+<div class="term-body">
+  <div class="prompt">[Device] Status Perangkat</div>
+  <div class="info-grid">
+    <div class="info-card"><div class="ik">BATERAI</div><div class="iv" id="batPct">-</div><div class="bat-bar"><div class="bat-fill" id="batFill" style="width:0%"></div></div></div>
+    <div class="info-card"><div class="ik">STATUS</div><div class="iv" id="batStatus">-</div></div>
+    <div class="info-card"><div class="ik">KONEKSI</div><div class="iv" id="netType">-</div></div>
+    <div class="info-card"><div class="ik">DOWNLINK</div><div class="iv" id="netSpeed">-</div></div>
+  </div>
+</div>
+
+<!-- VOLUME SLIDER (BARU) -->
+<div class="term-body">
+  <div class="prompt">[Audio] Kontrol Suara</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div>
+  <div class="vol-wrap">
+    <span class="vl">VOL</span>
+    <input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)">
+    <span class="vl" id="volLabel">30%</span>
   </div>
 </div>
 
@@ -355,7 +495,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div id="logBox"><div class="log-line">Initializing...</div></div>
 </div>
 
-<!-- COMPASS (ADDED) -->
+<!-- COMPASS -->
 <div class="term-body" id="compassPanel">
   <div class="prompt">[Nav] Kompas Target</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI, ikuti jarum + jarak.</div>
@@ -474,9 +614,6 @@ function addSatLayer(map){
   L.tileLayer(LBL_URL,{maxZoom:19,opacity:0.85}).addTo(map);
 }
 
-// ══════════════════════════
-// FOTO-PIN MARKER
-// ══════════════════════════
 function pinIcon(foto,name,color){
   color=color||'#ff3355';
   const ini=(name||'?').charAt(0).toUpperCase();
@@ -502,14 +639,8 @@ function pinIcon(foto,name,color){
   });
 }
 
-// ══════════════════════════
-// RADAR ICON (APK)
-// ══════════════════════════
 function radarIcon(){return L.divIcon({html:'<div style="position:relative;width:140px;height:140px"><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border:1px solid rgba(0,255,65,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;border:1px solid rgba(0,255,65,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;border:1px solid rgba(0,255,65,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;width:65px;height:65px;margin-top:-1px;transform-origin:0% 50%;background:linear-gradient(90deg,rgba(0,255,65,.9) 0%,rgba(0,255,65,.4) 40%,transparent 100%);animation:sweepRotate 2s linear infinite"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;background:#ff3355;border-radius:50%;border:2px solid #fff;box-shadow:0 0 15px #ff3355"></div></div>',className:'',iconSize:[140,140],iconAnchor:[70,70]})}
 
-// ══════════════════════════
-// STATS
-// ══════════════════════════
 function updateStats(){
   const today=new Date();today.setHours(0,0,0,0);
   document.getElementById('statTotal').innerText=allData.length;
@@ -522,9 +653,6 @@ function updateStats(){
   document.getElementById('statPlatform').innerText=tp?tp[0].substring(0,12):'—';
 }
 
-// ══════════════════════════
-// MULTI-MAP
-// ══════════════════════════
 let mapMulti=null,multiMarkers={};
 function initMapMulti(){
   mapMulti=L.map('mapMulti',{zoomControl:true,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView([0,115],3);
@@ -577,26 +705,18 @@ function updateMultiMap(){
   });
 }
 
-// ══════════════════════════
-// TARGET LOCATION — ANIMASI
-// ══════════════════════════
 let mapLink=null,lastAnimKey='';
-
 function animasiMapLink(lat,lng,target,foto){
   const key=lat.toFixed(4)+'_'+lng.toFixed(4);
   if(key===lastAnimKey)return;
   lastAnimKey=key;
-
   if(mapLink){try{mapLink.remove()}catch(e){}mapLink=null}
-
   const container=document.getElementById('mapLink');
   const labelEl=document.getElementById('mapLinkLabel');
   const coordsEl=document.getElementById('mapLinkCoords');
   coordsEl.innerText=lat.toFixed(4)+', '+lng.toFixed(4);
-
   mapLink=L.map(container,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView([0,20],2);
   addSatLayer(mapLink);
-
   const stages=[
     {zoom:2, center:[0,20],   dur:900,  label:'◈ SATELIT ONLINE'},
     {zoom:4, center:[lat,lng],dur:900,  label:'◈ MENCARI SINYAL...'},
@@ -606,7 +726,6 @@ function animasiMapLink(lat,lng,target,foto){
     {zoom:16,center:[lat,lng],dur:900,  label:'◈ DETAIL JALAN'},
     {zoom:18,center:[lat,lng],dur:1000, label:'◈ TARGET LOCKED ◈'},
   ];
-
   let idx=0;
   function step(){
     if(idx>=stages.length){
@@ -638,9 +757,6 @@ function animasiMapLink(lat,lng,target,foto){
   setTimeout(step,300);
 }
 
-// ══════════════════════════
-// GEOFENCE
-// ══════════════════════════
 let geofence=JSON.parse(localStorage.getItem('geofence_'+user)||'null');
 let geoAlerted=new Set(JSON.parse(localStorage.getItem('geoAlerted_'+user)||'[]'));
 if(geofence){document.getElementById('geoStatus').innerText='◈ Aktif: '+geofence.lat.toFixed(4)+', '+geofence.lng.toFixed(4)+' | '+geofence.radius+'m';document.getElementById('geoStatus').style.color='var(--green)'}
@@ -676,11 +792,9 @@ function checkGeofence(){
   });
 }
 
-// NOTES
 window.saveNote=(key)=>{localStorage.setItem('note_'+user+'_'+key,document.getElementById('note_'+key)?.value||'');addLog('Note saved')};
 function getNote(key){return localStorage.getItem('note_'+user+'_'+key)||''}
 
-// APK MAP
 let mapApk=null,markerApk=null,lastApkCnt=0,firstApk=true;
 function initMapApk(){mapApk=L.map('mapApk',{zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView([-4.5,138.5],14);addSatLayer(mapApk)}
 initMapApk();
@@ -708,7 +822,6 @@ onValue(ref(db,'lokasi/'+user),snap=>{
 });
 window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=document.getElementById('apkLng').innerText;if(la==='-')return;window.open('https://www.google.com/maps?q='+la+','+ln,'_blank')};
 
-// GENERATE LINK
 let currentLink='';
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
@@ -717,7 +830,6 @@ window.genLink=()=>{playKlik();saveBase();const t=document.getElementById('targe
 window.copyLink=async()=>{if(!currentLink)return;try{await navigator.clipboard.writeText(currentLink);document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000)}catch(e){}};
 window.genLinkMaps=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);beep(900,.08)};
 
-// DATA
 let allData=[],lastCnt=0,firstLoad=true;
 function genID(w){const t=new Date(w);return'TGT-'+t.getFullYear().toString().slice(-2)+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')+'-'+String(t.getHours()).padStart(2,'0')+String(t.getMinutes()).padStart(2,'0')+String(t.getSeconds()).padStart(2,'0')}
 
@@ -795,9 +907,6 @@ onValue(ref(db,'lokasi/'+user),snap=>{
   lastCnt=allData.length;firstLoad=false;renderData();
 });
 
-// ══════════════════════════
-// COMPASS NAVIGASI (ADDED)
-// ══════════════════════════
 let compassMode='koordinat',cmpActive=false,cmpTarget=null,cmpPos=null,cmpHeadSensor=null,cmpWatch=null,cmpOriHandler=null,cmpArrived=false;
 
 window.setCompassMode=(m)=>{
@@ -1007,9 +1116,6 @@ window.goCompass=(lat,lng)=>{
   setCompassMode(m);
 })();
 
-// ══════════════════════════
-// CHAT
-// ══════════════════════════
 var chatOpen=false,chatFirst=true,chatLast=0;
 var lawan=localStorage.getItem('lawanChat_'+user)||'';
 var sub1=null,sub2=null,room1data=null,room2data=null;
@@ -1026,5 +1132,230 @@ if(lawan){setTitle();loadChat()}
 addLog('System ready v2');
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3c6fec15c5e7ae3',t:'MTc4OTYzNjQwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+(function(){
+  'use strict';
+
+  // ══════════════════════════════════════
+  // 1. BOOT SEQUENCE
+  // ══════════════════════════════════════
+  var bootLines = [
+    '[ OK ] Initializing CYBER TERMINAL v2.0...',
+    '[ OK ] Loading kernel modules...',
+    '[ OK ] Mounting encrypted filesystem...',
+    '[ OK ] Establishing secure socket...',
+    '[ OK ] Handshaking with satellite array...',
+    '[ OK ] Verifying user credentials...',
+    '[ OK ] Loading GIS tile cache...',
+    '[ OK ] Spawning Firebase listeners...',
+    '[ OK ] Compiling track engine...',
+    '[ OK ] Bypassing firewall [SIMULATED]...',
+    '[ OK ] Decrypting payload...',
+    '[ OK ] Initiating satellite scan...',
+    '[ >>> ] ACCESS GRANTED — WELCOME OPERATOR'
+  ];
+  var bootLog = document.getElementById('bootLog');
+  var bootBar = document.getElementById('bootBar');
+  var bootPct = document.getElementById('bootPct');
+  var bootScreen = document.getElementById('bootScreen');
+  var bi = 0, bp = 0;
+  var bootTimer = setInterval(function(){
+    if(bi < bootLines.length){
+      var d = document.createElement('div');
+      d.textContent = bootLines[bi];
+      bootLog.appendChild(d);
+      bp = Math.round(((bi+1)/bootLines.length)*100);
+      bootBar.style.width = bp + '%';
+      bootPct.textContent = 'BOOTING ' + bp + '%';
+      bi++;
+    } else {
+      clearInterval(bootTimer);
+      setTimeout(function(){
+        bootScreen.classList.add('hide');
+        setTimeout(function(){ bootScreen.style.display = 'none'; }, 900);
+      }, 600);
+    }
+  }, 220);
+
+  // ══════════════════════════════════════
+  // 4. TYPING SOUND GLOBAL + 9. VOLUME
+  // ══════════════════════════════════════
+  var volLevel = 0.3;
+  try { var vs = localStorage.getItem('volLevel'); if(vs) volLevel = parseFloat(vs); } catch(e){}
+  var volEl = document.getElementById('volSlider');
+  var volLabel = document.getElementById('volLabel');
+  if(volEl){ volEl.value = Math.round(volLevel*100); volLabel.textContent = Math.round(volLevel*100)+'%'; }
+
+  window.setVol = function(v){
+    volLevel = Math.max(0, Math.min(1, v/100));
+    volLabel.textContent = Math.round(volLevel*100)+'%';
+    try{ localStorage.setItem('volLevel', volLevel); }catch(e){}
+  };
+
+  var lastTypeSound = 0;
+  function typeBeep(){
+    var now = Date.now();
+    if(now - lastTypeSound < 45) return;
+    lastTypeSound = now;
+    if(volLevel <= 0) return;
+    try{
+      var ac = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ac.createOscillator(); var g = ac.createGain();
+      o.type = 'square';
+      o.frequency.value = 1400 + Math.random()*800;
+      g.gain.setValueAtTime(volLevel*0.04, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.04);
+      o.connect(g); g.connect(ac.destination);
+      o.start(); o.stop(ac.currentTime + 0.04);
+    }catch(e){}
+  }
+  document.addEventListener('input', function(e){
+    var t = e.target;
+    if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) typeBeep();
+  }, true);
+
+  // ══════════════════════════════════════
+  // 7. BATTERY + NETWORK
+  // ══════════════════════════════════════
+  function updateBattery(){
+    if(!navigator.getBattery) return;
+    navigator.getBattery().then(function(b){
+      function upd(){
+        var p = Math.round(b.level*100);
+        var pctEl = document.getElementById('batPct');
+        var fillEl = document.getElementById('batFill');
+        var stEl = document.getElementById('batStatus');
+        if(!pctEl) return;
+        pctEl.textContent = p + '%';
+        fillEl.style.width = p + '%';
+        var st = b.charging ? 'MENGISI ⚡' : 'BATERAI ' + p + '%';
+        if(p <= 20 && !b.charging) st = '⚠ LOW BATTERY';
+        stEl.textContent = st;
+        stEl.style.color = p <= 20 && !b.charging ? 'var(--red)' : 'var(--cyan)';
+      }
+      upd();
+      b.addEventListener('levelchange', upd);
+      b.addEventListener('chargingchange', upd);
+    }).catch(function(){});
+  }
+  updateBattery();
+
+  function updateNet(){
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var tEl = document.getElementById('netType');
+    var sEl = document.getElementById('netSpeed');
+    if(!tEl) return;
+    if(!c){ tEl.textContent = 'N/A'; sEl.textContent = 'N/A'; return; }
+    tEl.textContent = (c.effectiveType || 'unknown').toUpperCase();
+    sEl.textContent = (c.downlink || '?') + ' Mbps · ' + (c.rtt || '?') + 'ms';
+  }
+  updateNet();
+  if(navigator.connection) navigator.connection.addEventListener('change', updateNet);
+
+  // ══════════════════════════════════════
+  // 8. DECRYPTING OVERLAY
+  // ══════════════════════════════════════
+  var decryptOverlay = document.getElementById('decryptOverlay');
+  var dcHex = document.getElementById('dcHex');
+  var dcFill = document.getElementById('dcFill');
+  var dcPct = document.getElementById('dcPct');
+  var decrypting = false;
+
+  window.runDecrypt = function(callback){
+    if(decrypting) { if(callback) callback(); return; }
+    decrypting = true;
+    decryptOverlay.classList.add('show');
+    var pct = 0;
+    var hexTimer = setInterval(function(){
+      var s = '';
+      for(var i=0;i<40;i++) s += Math.floor(Math.random()*2) ? '1' : '0';
+      dcHex.textContent = s;
+    }, 60);
+    var pTimer = setInterval(function(){
+      pct += Math.random()*8 + 2;
+      if(pct >= 100){ pct = 100; clearInterval(pTimer); clearInterval(hexTimer); }
+      dcFill.style.width = pct + '%';
+      dcPct.textContent = Math.floor(pct) + '%';
+      if(pct >= 100){
+        setTimeout(function(){
+          decryptOverlay.classList.remove('show');
+          decrypting = false;
+          if(callback) callback();
+        }, 400);
+      }
+    }, 90);
+  };
+
+  // ══════════════════════════════════════
+  // 11. IP INFO PANEL
+  // ══════════════════════════════════════
+  fetch('https://ipapi.co/json/').then(function(r){ return r.json(); }).then(function(d){
+    var ipEl = document.getElementById('ipPub');
+    if(!ipEl) return;
+    ipEl.textContent = d.ip || '-';
+    document.getElementById('ipIsp').textContent = d.org || '-';
+    document.getElementById('ipLoc').textContent = (d.city || '-') + ', ' + (d.country_name || '-');
+    document.getElementById('ipTz').textContent = d.timezone || '-';
+    document.getElementById('ipUa').textContent = navigator.userAgent.slice(0, 60) + '...';
+  }).catch(function(){
+    var ipEl = document.getElementById('ipPub');
+    if(ipEl) ipEl.textContent = 'Gagal memuat';
+  });
+
+  // ══════════════════════════════════════
+  // 12. CLOCK 3-IN-1
+  // ══════════════════════════════════════
+  function pad(n){ return String(n).padStart(2,'0'); }
+  setInterval(function(){
+    var d = new Date();
+    var localEl = document.getElementById('clkLocal');
+    var utcEl = document.getElementById('clkUtc');
+    var unixEl = document.getElementById('clkUnix');
+    if(localEl) localEl.textContent = pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+    if(utcEl) utcEl.textContent = pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds());
+    if(unixEl) unixEl.textContent = Math.floor(d.getTime()/1000);
+  }, 1000);
+
+  // ══════════════════════════════════════
+  // 15. SATELLITE UPLINK PANEL
+  // ══════════════════════════════════════
+  var satStatuses = ['MENGHUBUNGKAN SATELIT...','SINKRONISASI ORBIT...','LOCK ON SIGNAL','UPLINK STABIL','SATELIT AKTIF'];
+  var si = 0;
+  setInterval(function(){
+    var el = document.getElementById('satStatus');
+    if(!el) return;
+    el.textContent = satStatuses[si % satStatuses.length];
+    si++;
+  }, 3500);
+  setInterval(function(){
+    var ping = document.getElementById('satPing');
+    var coord = document.getElementById('satCoord');
+    if(!ping) return;
+    var ms = Math.floor(20 + Math.random()*80);
+    var sig = Math.floor(70 + Math.random()*30);
+    ping.textContent = 'PING: ' + ms + ' ms · SIGNAL: ' + sig + '%';
+    if(coord){
+      var la = (Math.random()*180 - 90).toFixed(4);
+      var ln = (Math.random()*360 - 180).toFixed(4);
+      coord.textContent = 'ORBIT: ' + la + ', ' + ln;
+    }
+  }, 1800);
+
+  // ══════════════════════════════════════
+  // HOOK: Decrypt saat data baru masuk
+  // ══════════════════════════════════════
+  var hasilEl = document.getElementById('hasil');
+  if(hasilEl && window.MutationObserver){
+    var firstMut = true;
+    var observer = new MutationObserver(function(){
+      if(firstMut){ firstMut = false; return; }
+      if(!decrypting) runDecrypt();
+    });
+    observer.observe(hasilEl, { childList: true, subtree: true });
+  }
+
+  console.log('%c[CYBER TERMINAL] Fitur tambahan aktif: Boot, TypingSound, Battery, Network, Decrypt, Volume, Radar, IP, Clock, Satellite', 'color:#00ff41;font-weight:bold');
+})();
+</script>
+</body>
 </html>
