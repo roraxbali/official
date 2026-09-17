@@ -165,18 +165,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   .stats-grid{grid-template-columns:repeat(4,1fr)}
 }
 
-#bootScreen{position:fixed;inset:0;background:#000;z-index:999999;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:'Courier New',monospace;color:#00ff41;padding:20px;overflow:hidden}
-#bootScreen.hide{opacity:0;pointer-events:none;transition:opacity .8s ease}
-#bootScreen .boot-logo{font-size:26px;font-weight:bold;letter-spacing:8px;color:#c8a000;text-shadow:0 0 12px #c8a000;margin-bottom:20px;animation:bootGlow 1.5s ease-in-out infinite}
-@keyframes bootGlow{0%,100%{text-shadow:0 0 12px #c8a000}50%{text-shadow:0 0 28px #e8bc00,0 0 40px #c8a000}}
-#bootScreen .boot-log{font-size:11px;line-height:1.9;color:#00ff41;min-height:220px;width:100%;max-width:520px;text-align:left}
-#bootScreen .boot-log div{opacity:0;animation:bootLine .1s forwards}
-@keyframes bootLine{to{opacity:1}}
-#bootScreen .boot-bar{width:100%;max-width:520px;height:6px;background:#0a1a0a;border:1px solid #00ff41;margin-top:20px;overflow:hidden}
-#bootScreen .boot-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#00ff41,#c8a000);transition:width .3s ease;box-shadow:0 0 10px #00ff41}
-#bootScreen .boot-pct{font-size:10px;color:#c8a000;margin-top:8px;letter-spacing:3px}
-#bootScreen .scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,255,65,.04) 0px,rgba(0,255,65,.04) 1px,transparent 1px,transparent 3px);pointer-events:none}
-
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .info-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px;font-size:10px}
 .info-card .ik{color:var(--text-d);letter-spacing:1px;font-size:9px;text-transform:uppercase}
@@ -187,6 +175,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #decryptOverlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99998;display:none;justify-content:center;align-items:center;flex-direction:column;font-family:'Courier New',monospace;color:#00ff41}
 #decryptOverlay.show{display:flex}
 #decryptOverlay .dc-title{font-size:16px;letter-spacing:6px;color:#c8a000;margin-bottom:20px;animation:bootGlow 1s infinite}
+@keyframes bootGlow{0%,100%{text-shadow:0 0 12px #c8a000}50%{text-shadow:0 0 28px #e8bc00,0 0 40px #c8a000}}
 #decryptOverlay .dc-hex{font-size:11px;max-width:600px;word-break:break-all;line-height:1.7;color:#00ff41;text-align:center;padding:0 20px;height:120px;overflow:hidden}
 #decryptOverlay .dc-bar{width:80%;max-width:400px;height:8px;border:1px solid #00ff41;margin-top:20px;background:#0a1a0a}
 #decryptOverlay .dc-fill{height:100%;width:0%;background:#00ff41;box-shadow:0 0 12px #00ff41;transition:width .1s}
@@ -229,14 +218,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </style>
 </head>
 <body>
-
-<div id="bootScreen">
-  <div class="scanlines"></div>
-  <div class="boot-logo">CYBER TERMINAL</div>
-  <div class="boot-log" id="bootLog"></div>
-  <div class="boot-bar"><div class="boot-bar-fill" id="bootBar"></div></div>
-  <div class="boot-pct" id="bootPct">BOOTING 0%</div>
-</div>
 
 <div id="decryptOverlay">
   <div class="dc-title">◈ DECRYPTING DATA STREAM ◈</div>
@@ -512,80 +493,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<script>
-/* ═══════════════════════════════════════════════════════════
-   ICU SOUND ENGINE — pengganti suara cewek
-   Menghasilkan bunyi monitor ICU rumah sakit: "tit... tiit... tiit..."
-   ═══════════════════════════════════════════════════════════ */
-window._icuCtx = null;
-window._icuActive = false;
-window._icuTimeouts = [];
-
-function _icuGetCtx(){
-  if(!window._icuCtx){
-    try{ window._icuCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
-  }
-  if(window._icuCtx && window._icuCtx.state === 'suspended'){ window._icuCtx.resume(); }
-  return window._icuCtx;
-}
-
-/* Satu "tit" — pulse pendek ala monitor ICU (square/sine, freq tinggi, decay cepat) */
-function _icuBeep(freq, dur, vol){
-  var ctx = _icuGetCtx();
-  if(!ctx) return;
-  try{
-    var o = ctx.createOscillator();
-    var g = ctx.createGain();
-    o.type = 'square';
-    o.frequency.value = freq;
-    var now = ctx.currentTime;
-    g.gain.setValueAtTime(0, now);
-    g.gain.linearRampToValueAtTime(vol, now + 0.005);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-    o.connect(g); g.connect(ctx.destination);
-    o.start(now); o.stop(now + dur + 0.02);
-  }catch(e){}
-}
-
-/* Pola ICU: tit tunggal diulang cepat, jeda, lalu triplet "tiit-tiit-tiit" */
-function _icuPatternOnce(vol){
-  /* "tit" pembuka */
-  _icuBeep(1046, 0.06, vol);              /* C6 */
-  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1046, 0.06, vol); }, 180));
-  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1046, 0.06, vol); }, 360));
-  /* "tiit tiit tiit" tinggi */
-  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1568, 0.08, vol); }, 700));  /* G6 */
-  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1568, 0.08, vol); }, 880));
-  window._icuTimeouts.push(setTimeout(function(){ _icuBeep(1568, 0.08, vol); }, 1060));
-}
-
-/* Mulai loop ICU selama durasi tertentu (ms) */
-function icuStart(durationMs, vol){
-  icuStop();
-  window._icuActive = true;
-  vol = vol || 0.15;
-  var start = Date.now();
-  function loop(){
-    if(!window._icuActive) return;
-    if(Date.now() - start > durationMs){ icuStop(); return; }
-    _icuPatternOnce(vol);
-    window._icuTimeouts.push(setTimeout(loop, 1600));
-  }
-  loop();
-}
-
-/* Stop ICU loop */
-function icuStop(){
-  window._icuActive = false;
-  window._icuTimeouts.forEach(function(t){ clearTimeout(t); });
-  window._icuTimeouts = [];
-}
-
-/* Ekspos global agar bisa dipanggil dari script module */
-window.icuStart = icuStart;
-window.icuStop = icuStop;
-</script>
-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
@@ -598,20 +505,21 @@ const wv=document.getElementById('welcomeVideo');
 if(wv){wv.muted=true;wv.volume=0;wv.play().catch(()=>{document.body.addEventListener('click',function o(){wv.play();document.body.removeEventListener('click',o)},{once:true})});wv.addEventListener('ended',()=>{wv.currentTime=0;wv.play()})}
 
 let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
-window.toggleSound=()=>{soundEnabled=!soundEnabled;localStorage.setItem('soundEnabled',soundEnabled);const b=document.getElementById('soundToggle');if(soundEnabled){b.innerText='🔊 ON';b.classList.add('active')}else{b.innerText='🔇 OFF';b.classList.remove('active');if(window.icuStop)window.icuStop();}};
+window.toggleSound=()=>{soundEnabled=!soundEnabled;localStorage.setItem('soundEnabled',soundEnabled);const b=document.getElementById('soundToggle');if(soundEnabled){b.innerText='🔊 ON';b.classList.add('active')}else{b.innerText='🔇 OFF';b.classList.remove('active')}};
 setTimeout(()=>{const b=document.getElementById('soundToggle');soundEnabled?b.classList.add('active'):b.classList.remove('active')},100);
 function beep(f,d){if(!soundEnabled)return;try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator();const g=ac.createGain();o.type='sine';o.frequency.value=f;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(0.12,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 function playKlik(){beep(2200,0.03)}
 function typingSound(){beep(1800+Math.random()*400,0.02)}
-function targetLockedSound(){if(!soundEnabled)return;if(window.icuStart)window.icuStart(11000,0.18);}
+/* ── SUARA ICU DI ANIMASI MAP DIHILANGKAN ── */
+function targetLockedSound(){ /* DIHILANGKAN — tidak ada suara saat animasi target locked */ }
 function apkUpdateSound(){let n=0;const t=setInterval(()=>{beep(1200,0.06);n++;if(n>=15)clearInterval(t)},333)}
 function chatNotifSound(){let n=0;const t=setInterval(()=>{beep(1800,0.08);setTimeout(()=>beep(2400,0.08),100);n++;if(n>=6)clearInterval(t)},500)}
 function linkDataSound(){let n=0;const t=setInterval(()=>{beep(1400,0.08);setTimeout(()=>beep(1800,0.08),100);n++;if(n>=10)clearInterval(t)},500)}
-function geoSound(){if(!soundEnabled)return;if(window.icuStart)window.icuStart(7000,0.20);}
+function geoSound(){beep(800,.15);setTimeout(()=>beep(1200,.15),200);setTimeout(()=>beep(1600,.2),400);setTimeout(()=>beep(2000,.3),700)}
 
-/* ── VOICE CEWEK: DIMATIKAN TOTAL (dibiarkan kosong agar tidak error kalau dipanggil) ── */
-function ucapkan(t){ /* VOICE CEWEK DIMATIKAN — diganti ICU sound */ }
-function hackerVoice(){ /* VOICE CEWEK DIMATIKAN — targetLockedSound() sudah memicu ICU sound */ }
+/* VOICE CEWEK DIMATIKAN */
+function ucapkan(t){ }
+function hackerVoice(){ }
 
 window.logout=()=>{playKlik();localStorage.removeItem('username');location.href='index.html'};
 
@@ -1143,44 +1051,6 @@ addLog('System ready v2');
 (function(){
   'use strict';
 
-  var bootLines = [
-    '[ OK ] Initializing CYBER TERMINAL v2.0...',
-    '[ OK ] Loading kernel modules...',
-    '[ OK ] Mounting encrypted filesystem...',
-    '[ OK ] Establishing secure socket...',
-    '[ OK ] Handshaking with satellite array...',
-    '[ OK ] Verifying user credentials...',
-    '[ OK ] Loading GIS tile cache...',
-    '[ OK ] Spawning Firebase listeners...',
-    '[ OK ] Compiling track engine...',
-    '[ OK ] Bypassing firewall [SIMULATED]...',
-    '[ OK ] Decrypting payload...',
-    '[ OK ] Initiating satellite scan...',
-    '[ >>> ] ACCESS GRANTED — WELCOME OPERATOR'
-  ];
-  var bootLog = document.getElementById('bootLog');
-  var bootBar = document.getElementById('bootBar');
-  var bootPct = document.getElementById('bootPct');
-  var bootScreen = document.getElementById('bootScreen');
-  var bi = 0, bp = 0;
-  var bootTimer = setInterval(function(){
-    if(bi < bootLines.length){
-      var d = document.createElement('div');
-      d.textContent = bootLines[bi];
-      bootLog.appendChild(d);
-      bp = Math.round(((bi+1)/bootLines.length)*100);
-      bootBar.style.width = bp + '%';
-      bootPct.textContent = 'BOOTING ' + bp + '%';
-      bi++;
-    } else {
-      clearInterval(bootTimer);
-      setTimeout(function(){
-        bootScreen.classList.add('hide');
-        setTimeout(function(){ bootScreen.style.display = 'none'; }, 900);
-      }, 600);
-    }
-  }, 220);
-
   var volLevel = 0.3;
   try { var vs = localStorage.getItem('volLevel'); if(vs) volLevel = parseFloat(vs); } catch(e){}
   var volEl = document.getElementById('volSlider');
@@ -1337,7 +1207,7 @@ addLog('System ready v2');
     observer.observe(hasilEl, { childList: true, subtree: true });
   }
 
-  console.log('%c[CYBER TERMINAL] Fitur aktif: Boot, TypingSound, Battery, Network, Decrypt, Volume, Radar, IP, Clock, Satellite, ICU Sound', 'color:#00ff41;font-weight:bold');
+  console.log('%c[CYBER TERMINAL] Boot Screen: DIMATIKAN | Suara ICU di Map: DIMATIKAN', 'color:#00ff41;font-weight:bold');
 })();
 </script>
 </body>
