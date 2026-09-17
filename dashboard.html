@@ -215,9 +215,150 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 @media (min-width:900px){
   .info-grid{grid-template-columns:repeat(4,1fr)}
 }
+
+/* ═══════════════════════════════════
+   TAHAP 1: SECURITY — PIN Lock + Session Log
+   ═══════════════════════════════════ */
+#pinLockScreen{
+  position:fixed;inset:0;
+  background:linear-gradient(180deg,#050505,#0a0a0a);
+  z-index:9999999;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  font-family:'Courier New',monospace;color:#c8a000;
+  padding:20px;
+}
+#pinLockScreen.hide{display:none}
+#pinLockScreen .pin-logo{
+  font-size:24px;font-weight:bold;letter-spacing:8px;
+  text-shadow:0 0 12px #c8a000;margin-bottom:8px;
+  animation:bootGlow 1.5s ease-in-out infinite;
+}
+#pinLockScreen .pin-sub{
+  font-size:11px;color:#555;letter-spacing:3px;
+  margin-bottom:30px;
+}
+#pinLockScreen .pin-dots{
+  display:flex;gap:14px;margin-bottom:30px;
+}
+#pinLockScreen .pin-dot{
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid #4a3a00;background:transparent;
+  transition:all .2s;
+}
+#pinLockScreen .pin-dot.filled{
+  background:#c8a000;border-color:#c8a000;
+  box-shadow:0 0 10px #c8a000;
+}
+#pinLockScreen .pin-pad{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;width:100%;max-width:280px;
+}
+#pinLockScreen .pin-key{
+  background:rgba(200,160,0,.05);
+  border:1px solid #4a3a00;color:#c8a000;
+  font-family:'Courier New',monospace;
+  font-size:20px;font-weight:bold;
+  padding:18px 0;border-radius:8px;
+  cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+#pinLockScreen .pin-key:active{
+  background:rgba(200,160,0,.2);
+  border-color:#c8a000;
+}
+#pinLockScreen .pin-key.del{font-size:14px}
+#pinLockScreen .pin-key.ok{font-size:14px;background:rgba(0,200,83,.1);border-color:#00c853;color:#00c853}
+#pinLockScreen .pin-err{
+  color:#ff3355;font-size:11px;letter-spacing:2px;
+  margin-top:20px;min-height:16px;
+  text-transform:uppercase;
+}
+#pinLockScreen .pin-hint{
+  color:#333;font-size:9px;letter-spacing:1px;
+  margin-top:30px;text-align:center;line-height:1.8;
+}
+@keyframes pinShake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-10px)}
+  75%{transform:translateX(10px)}
+}
+#pinLockScreen.shake .pin-dots{
+  animation:pinShake .3s ease;
+}
+#pinLockScreen .pin-setup{
+  text-align:center;color:#c8a000;
+  font-size:12px;letter-spacing:2px;
+  margin-bottom:20px;line-height:1.8;
+  max-width:300px;
+}
+
+.sess-list{
+  max-height:240px;overflow-y:auto;
+  border:1px solid #272727;border-radius:4px;
+  padding:8px;background:#090909;margin-top:8px;
+}
+.sess-item{
+  padding:8px 10px;border-left:2px solid #4a3a00;
+  margin-bottom:6px;font-size:10px;line-height:1.7;
+  background:#101010;border-radius:0 4px 4px 0;
+}
+.sess-item.now{border-left-color:#00c853;background:#0a1a0a}
+.sess-item .sk{color:#555;display:inline-block;min-width:60px;font-size:9px;letter-spacing:1px}
+.sess-item .sv{color:#00d4ff}
+.sess-item.now .sv{color:#00c853}
+.sess-badge{
+  display:inline-block;font-size:8px;padding:1px 5px;
+  border-radius:2px;margin-left:4px;letter-spacing:1px;
+}
+.sess-badge.now{background:#00311a;color:#00c853;border:1px solid #00c853}
+.sess-badge.old{background:#1a1a1a;color:#555;border:1px solid #333}
+.sess-head{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10px;color:#555;margin-bottom:6px;
+}
+.sess-head button{
+  background:transparent;border:1px solid #333;color:#555;
+  font-family:'Courier New',monospace;font-size:9px;
+  padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:1px;
+}
+.sess-head button:hover{border-color:#ff3355;color:#ff3355}
 </style>
 </head>
 <body>
+
+<!-- ═══ TAHAP 1: PIN LOCK SCREEN ═══ -->
+<div id="pinLockScreen" class="hide">
+  <div class="pin-logo">CYBER LOCK</div>
+  <div class="pin-sub">MASUKKAN PIN UNTUK AKSES</div>
+  <div class="pin-setup" id="pinSetupText" style="display:none">
+    Buat PIN baru 6 digit.<br>PIN ini akan dipakai setiap kali buka dashboard.
+  </div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot"></div><div class="pin-dot"></div>
+    <div class="pin-dot"></div><div class="pin-dot"></div>
+    <div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="pin-pad" id="pinPad">
+    <button class="pin-key" data-k="1">1</button>
+    <button class="pin-key" data-k="2">2</button>
+    <button class="pin-key" data-k="3">3</button>
+    <button class="pin-key" data-k="4">4</button>
+    <button class="pin-key" data-k="5">5</button>
+    <button class="pin-key" data-k="6">6</button>
+    <button class="pin-key" data-k="7">7</button>
+    <button class="pin-key" data-k="8">8</button>
+    <button class="pin-key" data-k="9">9</button>
+    <button class="pin-key del" data-k="del">⌫ DEL</button>
+    <button class="pin-key" data-k="0">0</button>
+    <button class="pin-key ok" data-k="ok">✓ OK</button>
+  </div>
+  <div class="pin-err" id="pinErr"></div>
+  <div class="pin-hint">
+    › PIN tersimpan lokal di perangkat ini<br>
+    › Tidak dikirim ke server manapun
+  </div>
+</div>
 
 <div id="decryptOverlay">
   <div class="dc-title">◈ DECRYPTING DATA STREAM ◈</div>
@@ -425,6 +566,18 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div id="logBox"><div class="log-line">Initializing...</div></div>
 </div>
 
+<!-- ═══ TAHAP 1: SESSION LOG PANEL ═══ -->
+<div class="term-body">
+  <div class="prompt">[Security] Riwayat Sesi Login</div>
+  <div class="sess-head">
+    <span id="sessCount">0 sesi tercatat</span>
+    <button onclick="clearSessionLog()">🗑️ HAPUS SEMUA</button>
+  </div>
+  <div class="sess-list" id="sessionList">
+    <div class="empty">Belum ada riwayat</div>
+  </div>
+</div>
+
 <div class="term-body" id="compassPanel">
   <div class="prompt">[Nav] Kompas Target</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI, ikuti jarum + jarak.</div>
@@ -510,14 +663,12 @@ setTimeout(()=>{const b=document.getElementById('soundToggle');soundEnabled?b.cl
 function beep(f,d){if(!soundEnabled)return;try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator();const g=ac.createGain();o.type='sine';o.frequency.value=f;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(0.12,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 function playKlik(){beep(2200,0.03)}
 function typingSound(){beep(1800+Math.random()*400,0.02)}
-/* ── SUARA ICU DI ANIMASI MAP DIHILANGKAN ── */
-function targetLockedSound(){ /* DIHILANGKAN — tidak ada suara saat animasi target locked */ }
+function targetLockedSound(){ }
 function apkUpdateSound(){let n=0;const t=setInterval(()=>{beep(1200,0.06);n++;if(n>=15)clearInterval(t)},333)}
 function chatNotifSound(){let n=0;const t=setInterval(()=>{beep(1800,0.08);setTimeout(()=>beep(2400,0.08),100);n++;if(n>=6)clearInterval(t)},500)}
 function linkDataSound(){let n=0;const t=setInterval(()=>{beep(1400,0.08);setTimeout(()=>beep(1800,0.08),100);n++;if(n>=10)clearInterval(t)},500)}
 function geoSound(){beep(800,.15);setTimeout(()=>beep(1200,.15),200);setTimeout(()=>beep(1600,.2),400);setTimeout(()=>beep(2000,.3),700)}
 
-/* VOICE CEWEK DIMATIKAN */
 function ucapkan(t){ }
 function hackerVoice(){ }
 
@@ -1207,7 +1358,273 @@ addLog('System ready v2');
     observer.observe(hasilEl, { childList: true, subtree: true });
   }
 
-  console.log('%c[CYBER TERMINAL] Boot Screen: DIMATIKAN | Suara ICU di Map: DIMATIKAN', 'color:#00ff41;font-weight:bold');
+  console.log('%c[CYBER TERMINAL] Fitur aktif: Boot OFF, ICU OFF, PIN Lock, Session Log, Auto Logout', 'color:#00ff41;font-weight:bold');
+})();
+</script>
+
+<!-- ═══════════════════════════════════════
+     TAHAP 1: SECURITY — PIN Lock + Session Log + Auto Logout
+     ═══════════════════════════════════════ -->
+<script>
+(function(){
+  'use strict';
+
+  var user = localStorage.getItem('username') || '';
+  if (!user) return;
+
+  var PIN_KEY = 'cyberPin_' + user;
+  var SESS_KEY = 'cyberSess_' + user;
+  var PIN_MAX_TRY = 5;
+  var pinTryCount = 0;
+  var pinBuffer = '';
+  var pinMode = '';
+
+  var pinScreen = document.getElementById('pinLockScreen');
+  var pinDots = document.getElementById('pinDots');
+  var pinErr = document.getElementById('pinErr');
+  var pinSetupText = document.getElementById('pinSetupText');
+  var padEl = document.getElementById('pinPad');
+
+  function safeBeep(freq, dur){
+    try{
+      var ac = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ac.createOscillator(); var g = ac.createGain();
+      o.type = 'square';
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.08, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
+      o.connect(g); g.connect(ac.destination);
+      o.start(); o.stop(ac.currentTime + dur);
+    }catch(e){}
+  }
+
+  function updateDots(){
+    var dots = pinDots.children;
+    for(var i=0;i<dots.length;i++){
+      dots[i].classList.toggle('filled', i < pinBuffer.length);
+    }
+  }
+
+  function getDeviceInfo(){
+    var ua = navigator.userAgent;
+    var os = 'Unknown';
+    if(/Android/i.test(ua)) os = 'Android';
+    else if(/iPhone|iPad|iPod/i.test(ua)) os = 'iOS';
+    else if(/Windows/i.test(ua)) os = 'Windows';
+    else if(/Mac/i.test(ua)) os = 'macOS';
+    else if(/Linux/i.test(ua)) os = 'Linux';
+
+    var br = 'Unknown';
+    if(/Edg/i.test(ua)) br = 'Edge';
+    else if(/OPR|Opera/i.test(ua)) br = 'Opera';
+    else if(/Chrome/i.test(ua)) br = 'Chrome';
+    else if(/Firefox/i.test(ua)) br = 'Firefox';
+    else if(/Safari/i.test(ua)) br = 'Safari';
+
+    return {
+      os: os, browser: br,
+      screen: screen.width + 'x' + screen.height,
+      tz: (function(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){return '-';}})()
+    };
+  }
+
+  function getSessions(){
+    try { return JSON.parse(localStorage.getItem(SESS_KEY) || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveSessions(arr){
+    try { localStorage.setItem(SESS_KEY, JSON.stringify(arr.slice(0, 20))); }
+    catch(e){}
+  }
+
+  window.clearSessionLog = function(){
+    if(!confirm('Hapus semua riwayat sesi login?')) return;
+    localStorage.removeItem(SESS_KEY);
+    renderSessions();
+    safeBeep(600, 0.1);
+  };
+
+  function recordSession(ip){
+    var dev = getDeviceInfo();
+    var arr = getSessions();
+    arr.forEach(function(s){ s.now = false; });
+    var sess = {
+      now: true,
+      waktu: Date.now(),
+      ip: ip || 'memuat...',
+      os: dev.os,
+      browser: dev.browser,
+      screen: dev.screen,
+      tz: dev.tz,
+      agent: navigator.userAgent.slice(0, 80)
+    };
+    arr.unshift(sess);
+    saveSessions(arr);
+    renderSessions();
+    return arr.indexOf(sess);
+  }
+
+  function renderSessions(){
+    var listEl = document.getElementById('sessionList');
+    var cntEl = document.getElementById('sessCount');
+    if(!listEl) return;
+    var arr = getSessions();
+    if(cntEl) cntEl.textContent = arr.length + ' sesi tercatat';
+    if(!arr.length){
+      listEl.innerHTML = '<div class="empty">Belum ada riwayat</div>';
+      return;
+    }
+    var html = '';
+    arr.forEach(function(s, i){
+      var tgl = new Date(s.waktu).toLocaleString('id-ID');
+      var badge = s.now
+        ? '<span class="sess-badge now">● SEKARANG</span>'
+        : '<span class="sess-badge old">LAMA</span>';
+      html += '<div class="sess-item ' + (s.now ? 'now' : '') + '">'
+        + '<div>' + badge + ' <span style="color:#555">#' + (arr.length - i) + '</span></div>'
+        + '<div><span class="sk">WAKTU</span><span class="sv">' + tgl + '</span></div>'
+        + '<div><span class="sk">IP</span><span class="sv">' + (s.ip || '-') + '</span></div>'
+        + '<div><span class="sk">DEVICE</span><span class="sv">' + s.os + ' · ' + s.browser + ' · ' + s.screen + '</span></div>'
+        + '</div>';
+    });
+    listEl.innerHTML = html;
+  }
+
+  function startSetup(){
+    pinMode = 'setup';
+    pinBuffer = '';
+    pinTryCount = 0;
+    pinSetupText.style.display = 'block';
+    pinSetupText.innerHTML = 'Buat PIN baru 6 digit.<br>PIN ini akan dipakai setiap kali buka dashboard.';
+    pinErr.textContent = '';
+    updateDots();
+    pinScreen.classList.remove('hide');
+  }
+
+  function startVerify(){
+    pinMode = 'verify';
+    pinBuffer = '';
+    pinTryCount = 0;
+    pinSetupText.style.display = 'none';
+    pinErr.textContent = '';
+    updateDots();
+    pinScreen.classList.remove('hide');
+  }
+
+  function handleOK(){
+    if(pinBuffer.length !== 6){
+      pinErr.textContent = 'PIN harus 6 digit';
+      safeBeep(200, 0.15);
+      return;
+    }
+    var savedPin = localStorage.getItem(PIN_KEY);
+
+    if(pinMode === 'setup'){
+      localStorage.setItem(PIN_KEY, pinBuffer);
+      safeBeep(1200, 0.1);
+      setTimeout(function(){ safeBeep(1600, 0.1); }, 120);
+      unlockDashboard();
+      fetchIP(function(ip){ recordSession(ip); });
+      return;
+    }
+
+    if(pinBuffer === savedPin){
+      safeBeep(1200, 0.08);
+      setTimeout(function(){ safeBeep(1600, 0.12); }, 100);
+      pinErr.textContent = '✓ ACCESS GRANTED';
+      pinErr.style.color = '#00c853';
+      setTimeout(function(){
+        unlockDashboard();
+        fetchIP(function(ip){ recordSession(ip); });
+      }, 500);
+    } else {
+      pinTryCount++;
+      pinScreen.classList.add('shake');
+      setTimeout(function(){ pinScreen.classList.remove('shake'); }, 400);
+      safeBeep(200, 0.2);
+      pinErr.textContent = 'PIN SALAH · SISA ' + (PIN_MAX_TRY - pinTryCount) + 'x';
+      pinErr.style.color = '#ff3355';
+      pinBuffer = '';
+      updateDots();
+      if(pinTryCount >= PIN_MAX_TRY){
+        pinErr.textContent = 'TERKUNCI · TUTUP & BUKA ULANG';
+        padEl.style.pointerEvents = 'none';
+        padEl.style.opacity = '0.4';
+      }
+    }
+  }
+
+  function handleDEL(){
+    pinBuffer = pinBuffer.slice(0, -1);
+    updateDots();
+  }
+
+  padEl.addEventListener('click', function(e){
+    var btn = e.target.closest('.pin-key');
+    if(!btn) return;
+    var k = btn.getAttribute('data-k');
+    safeBeep(1800, 0.02);
+    if(k === 'del'){ handleDEL(); return; }
+    if(k === 'ok'){ handleOK(); return; }
+    if(pinBuffer.length >= 6) return;
+    pinBuffer += k;
+    updateDots();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(pinScreen.classList.contains('hide')) return;
+    if(e.key >= '0' && e.key <= '9'){
+      if(pinBuffer.length >= 6) return;
+      pinBuffer += e.key;
+      updateDots();
+      safeBeep(1800, 0.02);
+    } else if(e.key === 'Backspace'){
+      handleDEL();
+    } else if(e.key === 'Enter'){
+      handleOK();
+    }
+  });
+
+  function unlockDashboard(){
+    pinScreen.classList.add('hide');
+    document.body.style.overflow = '';
+  }
+
+  function fetchIP(cb){
+    fetch('https://api.ipify.org?format=json')
+      .then(function(r){ return r.json(); })
+      .then(function(d){ cb(d.ip || 'unknown'); })
+      .catch(function(){ cb('unknown'); });
+  }
+
+  var existingPin = localStorage.getItem(PIN_KEY);
+  if(existingPin){
+    startVerify();
+  } else {
+    startSetup();
+  }
+
+  var idleTimer = null;
+  var IDLE_MS = 30 * 60 * 1000;
+
+  function resetIdle(){
+    if(idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(function(){
+      startVerify();
+    }, IDLE_MS);
+  }
+
+  ['mousemove','keydown','click','touchstart','scroll'].forEach(function(ev){
+    document.addEventListener(ev, resetIdle, true);
+  });
+  resetIdle();
+
+  window.cyberLock = function(){
+    startVerify();
+  };
+
+  renderSessions();
+
 })();
 </script>
 </body>
