@@ -208,7 +208,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 @keyframes radarBlip{0%,80%{opacity:0;transform:translate(-50%,-50%) scale(.5)}85%{opacity:1;transform:translate(-50%,-50%) scale(1.4)}100%{opacity:0;transform:translate(-50%,-50%) scale(.5)}}
 .radar-blip.red{background:#ff3355}.radar-blip.gold{background:#c8a000}
 .radar-info{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.85);border:1px solid #003311;color:#00ff41;font-size:9px;padding:4px 8px;letter-spacing:1px;line-height:1.6}.radar-info b{color:#00c853}
-/* ─── TAMBAHAN UNTUK BLUETOOTH SIGNAL ─── */
 .bt-blip{position:absolute;width:14px;height:14px;border:2px solid #00d4ff;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 10px #00d4ff, inset 0 0 6px #00d4ff;animation:btPulse 1.8s ease-out infinite;pointer-events:none}
 @keyframes btPulse{0%{transform:translate(-50%,-50%) scale(.4);opacity:0}40%{opacity:1}100%{transform:translate(-50%,-50%) scale(2.2);opacity:0}}
 .bt-label{position:absolute;font-size:8px;color:#00d4ff;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:2px;transform:translate(-50%,-140%);letter-spacing:1px;pointer-events:none;white-space:nowrap}
@@ -221,6 +220,52 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .live-console .lc-line.err{color:#ff3355}.live-console .lc-line.ok{color:#00d4ff}
 .console-head{display:flex;justify-content:space-between;font-size:9px;color:#006618;letter-spacing:1px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #003311}
 .console-head .ch-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#00ff41;box-shadow:0 0 6px #00ff41;margin-right:4px;animation:spulse 1.5s infinite}
+/* ═══ UTILITY TOOLS ═══ */
+.tools-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;border-bottom:1px solid var(--border2);padding-bottom:8px}
+.tools-tab{font-family:'Courier New',monospace;font-size:10px;padding:7px 12px;background:transparent;border:1px solid var(--border2);color:var(--text-d);cursor:pointer;border-radius:var(--radius);letter-spacing:1px;text-transform:uppercase}
+.tools-tab.active{background:rgba(200,160,0,.15);border-color:var(--gold);color:var(--gold)}
+.tools-pane{display:none}.tools-pane.active{display:block}
+.qr-result{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px;background:#000;border:1px solid var(--gold-d);border-radius:var(--radius);margin-top:10px}
+.qr-result img{width:200px;height:200px;image-rendering:pixelated;background:#fff;padding:6px;border-radius:4px}
+.qr-result .qr-url{font-size:9px;color:var(--cyan);word-break:break-all;text-align:center;line-height:1.5;max-width:100%}
+.short-box{display:flex;gap:6px;margin-bottom:8px}
+.short-box input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:11px;padding:10px;outline:none;border-radius:var(--radius)}
+.short-result{background:#000;border:1px solid var(--gold-d);border-radius:var(--radius);padding:10px;margin-top:10px;font-size:11px;color:var(--cyan);word-break:break-all;line-height:1.6;display:none}
+.short-result.show{display:block}
+.short-result a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,212,255,.3)}
+.countdown-display{background:#000;border:1px solid var(--gold-d);border-radius:var(--radius);padding:16px;text-align:center;margin-top:10px}
+.countdown-display .cd-num{font-size:32px;font-weight:bold;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:2px;line-height:1.1}
+.countdown-display .cd-lbl{font-size:9px;color:var(--text-d);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.countdown-display.expired .cd-num{color:var(--red)}
+.clip-list{max-height:280px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:8px;background:#090909;margin-top:8px}
+.clip-item{padding:8px 10px;border-left:2px solid var(--gold-d);margin-bottom:6px;background:#101010;border-radius:0 4px 4px 0;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.clip-item:hover{border-left-color:var(--gold)}
+.clip-item .clip-txt{flex:1;font-size:10px;color:var(--cyan);word-break:break-all;line-height:1.4}
+.clip-item .clip-meta{font-size:8px;color:var(--text-d);margin-top:3px}
+.clip-item .clip-btns{display:flex;gap:4px;flex-shrink:0}
+.clip-item .clip-btns button{background:transparent;border:1px solid var(--border2);color:var(--text-d);font-family:'Courier New',monospace;font-size:9px;padding:4px 8px;cursor:pointer;border-radius:2px}
+.clip-item .clip-btns button:hover{border-color:var(--gold);color:var(--gold)}
+.clip-item .clip-btns button.del:hover{border-color:var(--red);color:var(--red)}
+.notes-global{width:100%;min-height:200px;background:#000;border:1px solid var(--border2);color:var(--text);font-family:'Courier New',monospace;font-size:12px;padding:12px;outline:none;border-radius:var(--radius);resize:vertical;line-height:1.7}
+.notes-global:focus{border-color:var(--gold-d)}
+.notes-status{font-size:9px;color:var(--text-d);margin-top:6px;letter-spacing:1px;text-align:right}
+.coord-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.coord-tab{font-family:'Courier New',monospace;font-size:10px;padding:6px 10px;background:transparent;border:1px solid var(--border2);color:var(--text-d);cursor:pointer;border-radius:var(--radius)}
+.coord-tab.active{background:rgba(0,212,255,.15);border-color:var(--cyan);color:var(--cyan)}
+.coord-input-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.coord-input-row input{flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:11px;padding:9px 10px;outline:none;border-radius:var(--radius)}
+.coord-result{background:#000;border:1px solid var(--cyan-d);border-radius:var(--radius);padding:12px;margin-top:10px;font-size:11px;line-height:2;font-family:'Courier New',monospace}
+.coord-result .cr-k{color:var(--text-d);display:inline-block;min-width:110px;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.coord-result .cr-v{color:var(--cyan);font-weight:bold}
+.dual-link-box{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.dual-link-item{background:#000;border:1px solid var(--border2);border-radius:4px;padding:8px}
+.dual-link-item.short{border-color:var(--gold-d)}
+.dual-link-item .dl-label{font-size:9px;letter-spacing:2px;margin-bottom:4px}
+.dual-link-item.short .dl-label{color:var(--gold)}
+.dual-link-item.long .dl-label{color:var(--text-d)}
+.dual-link-item .dl-url{font-size:10px;word-break:break-all;line-height:1.5}
+.dual-link-item.short .dl-url{color:var(--gold);font-weight:bold;font-size:12px}
+.dual-link-item.long .dl-url{color:var(--cyan)}
 </style>
 </head>
 <body>
@@ -236,14 +281,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="term-body"><div class="prompt">[Analytics] Overview</div><div class="stats-grid"><div class="stat-card hi"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Target</div></div><div class="stat-card hi"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Hari Ini</div></div><div class="stat-card"><div class="stat-val sm" id="statKota">—</div><div class="stat-lbl">Kota Terbanyak</div></div><div class="stat-card"><div class="stat-val sm" id="statPlatform">—</div><div class="stat-lbl">Platform</div></div></div><div class="tag-stats" id="tagStats"><div class="tag-stat"><div class="ts-n" id="tsVIP">0</div><div class="ts-l">VIP</div></div><div class="tag-stat"><div class="ts-n" id="tsSuspect">0</div><div class="ts-l">Suspect</div></div><div class="tag-stat"><div class="ts-n" id="tsClient">0</div><div class="ts-l">Client</div></div></div></div>
 <div class="term-body"><div class="prompt">[Analytics] Platform Breakdown</div><div class="chart-wrap"><div class="donut-chart" id="donutPlatform"><div class="donut-center"><div class="dc-n" id="donutTotal">0</div><div class="dc-l">Total</div></div></div><div class="legend" id="platformLegend"><div class="empty" style="padding:8px">Belum ada data</div></div></div></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     GLOBE 3D — BULAT PENUH, BERPUTAR, KOORDINAT TARGET AKURAT
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- GLOBE 3D -->
 <div class="term-body"><div class="prompt">[Visual] Globe 3D Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› globe bumi realtime · rotasi otomatis · drag untuk memutar:</div><div id="globeBox"><canvas id="globeCanvas"></canvas><div class="globe-hint">◈ GLOBE VIEW — DRAG UNTUK ROTASI</div><div class="globe-count" id="globeCount">0 target</div></div></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     RADAR GLOBAL SWEEP — DENGAN DETEKSI SINYAL BLUETOOTH
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- RADAR GLOBAL SWEEP + BT -->
 <div class="term-body"><div class="prompt">[Visual] Radar Global Sweep + Bluetooth</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› pemindaian global realtime · menangkap sinyal bluetooth:</div>
 <div class="radar-global" id="radarGlobal">
   <div class="radar-ring r1"></div><div class="radar-ring r2"></div><div class="radar-ring r3"></div><div class="radar-ring r4"></div>
@@ -263,10 +304,131 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <div class="term-body"><div class="prompt">[Audio] Kontrol Suara</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div><div class="vol-wrap"><span class="vl">VOL</span><input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)"><span class="vl" id="volLabel">30%</span></div></div>
 <div class="term-body"><div class="prompt">[Live] All Targets Map</div><div class="map-box tall"><div id="mapMulti" class="map-inner"></div><div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div><div class="map-coords" id="mapMultiCount">0 targets</div></div></div>
 <div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">[ Set Geofence ]</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">[ Clear ]</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
-<div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div><div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link:</div><div style="display:flex;gap:8px"><button class="term-btn" onclick="genLink()" style="margin:0">[ Track Link ]</button><button class="term-btn outline" onclick="genLinkMaps()" style="margin:0">[ Maps Link ]</button></div><div id="linkResult" style="display:none;margin-top:12px"><div style="font-size:10px;color:var(--text-d);margin-bottom:6px" id="linkTypeLabel">› target link:</div><div class="link-url-box" id="linkUrl"></div><button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button></div></div>
+<div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div><div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div><div style="display:flex;gap:8px"><button class="term-btn" onclick="genLink()" style="margin:0">[ Track Link ]</button><button class="term-btn outline" onclick="genLinkMaps()" style="margin:0">[ Maps Link ]</button></div><div id="linkResult" style="display:none;margin-top:12px"><div style="font-size:10px;color:var(--text-d);margin-bottom:6px" id="linkTypeLabel">› target link:</div><div class="link-url-box" id="linkUrl"></div><button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button></div></div>
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">[ CSV ]</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">[ JSON ]</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">[ Clear ]</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">[ Buka Google Maps ]</button></div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">[ ▶ Download APK ]</button></a></div>
+
+<!-- UTILITY PANEL -->
+<div class="term-body" id="toolsPanel">
+  <div class="prompt">[Tools] Utility Panel</div>
+  <div class="tools-tabs">
+    <button class="tools-tab active" data-tab="qr">◈ QR Code</button>
+    <button class="tools-tab" data-tab="short">🔗 Shortlink</button>
+    <button class="tools-tab" data-tab="timer">⏰ Timer</button>
+    <button class="tools-tab" data-tab="clip">📋 Clipboard</button>
+    <button class="tools-tab" data-tab="notes">📝 Notes</button>
+    <button class="tools-tab" data-tab="coord">📍 Koordinat</button>
+  </div>
+  <div class="tools-pane active" id="pane-qr">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› generate QR dari link tracking agar target tinggal scan:</div>
+    <input id="qrInput" class="term-input" placeholder="tempel link tracking di sini...">
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="term-btn outline" onclick="qrFromLatest()" style="margin:0;flex:1;min-width:130px">[ 📎 Pakai Link Terakhir ]</button>
+      <button class="term-btn" onclick="generateQR()" style="margin:0;flex:1;min-width:130px">[ ◈ Generate QR ]</button>
+    </div>
+    <div id="qrResult" class="qr-result" style="display:none">
+      <img id="qrImg" alt="QR Code">
+      <div class="qr-url" id="qrUrl"></div>
+      <div style="display:flex;gap:6px;width:100%">
+        <button class="term-btn outline" onclick="downloadQR()" style="margin:0;flex:1">[ ⬇ Download PNG ]</button>
+        <button class="term-btn outline" onclick="copyQRUrl()" style="margin:0;flex:1">[ 📋 Copy Link ]</button>
+      </div>
+    </div>
+  </div>
+  <div class="tools-pane" id="pane-short">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› perpendek link tracking via is.gd (manual):</div>
+    <div class="short-box"><input id="shortInput" placeholder="https://... (link panjang)"></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="term-btn outline" onclick="shortFromLatest()" style="margin:0;flex:1;min-width:130px">[ 📎 Pakai Link Terakhir ]</button>
+      <button class="term-btn" onclick="shortenLink()" style="margin:0;flex:1;min-width:130px">[ 🔗 Perpendek ]</button>
+    </div>
+    <div class="short-result" id="shortResult"></div>
+  </div>
+  <div class="tools-pane" id="pane-timer">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› hitung sisa waktu expired link:</div>
+    <div class="coord-input-row">
+      <input id="cdLinkInput" placeholder="URL link tracking (untuk deteksi exp)">
+      <input id="cdMinutes" type="number" value="1440" style="max-width:120px" placeholder="expired (menit)">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="term-btn outline" onclick="cdUseLastLink()" style="margin:0;flex:1;min-width:130px">[ 📎 Pakai Link Terakhir ]</button>
+      <button class="term-btn" onclick="startCountdown()" style="margin:0;flex:1;min-width:130px">[ ⏰ Mulai Timer ]</button>
+    </div>
+    <div class="countdown-display" id="cdDisplay">
+      <div class="cd-num" id="cdNum">--:--:--</div>
+      <div class="cd-lbl" id="cdLbl">BELUM DIMULAI</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:10px">
+      <button class="term-btn danger" onclick="stopCountdown()" style="margin:0">[ Stop ]</button>
+      <button class="term-btn outline" onclick="resetCountdown()" style="margin:0">[ Reset ]</button>
+    </div>
+  </div>
+  <div class="tools-pane" id="pane-clip">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› riwayat link yang pernah dicopy (maks 30):</div>
+    <input id="clipManualInput" class="term-input" placeholder="tambahkan manual..." onkeypress="if(event.key==='Enter')clipAdd()">
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <button class="term-btn outline" onclick="clipAdd()" style="margin:0;flex:1">[ + Tambah ]</button>
+      <button class="term-btn danger" onclick="clipClear()" style="margin:0;flex:0 0 auto;padding:0 16px">[ 🗑 Clear ]</button>
+    </div>
+    <div class="clip-list" id="clipList"><div class="empty">Belum ada riwayat</div></div>
+  </div>
+  <div class="tools-pane" id="pane-notes">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› catatan bebas (auto-save):</div>
+    <textarea class="notes-global" id="notesGlobal" placeholder="Tulis catatan di sini..."></textarea>
+    <div class="notes-status" id="notesStatus">tersimpan otomatis</div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="term-btn outline" onclick="notesDownload()" style="margin:0;flex:1">[ ⬇ Download .txt ]</button>
+      <button class="term-btn danger" onclick="notesClear()" style="margin:0;flex:1">[ 🗑 Hapus ]</button>
+    </div>
+  </div>
+  <div class="tools-pane" id="pane-coord">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› konversi DMS ↔ Decimal ↔ UTM:</div>
+    <div class="coord-tabs">
+      <button class="coord-tab active" data-coord="dms">DMS → DEC</button>
+      <button class="coord-tab" data-coord="dec">DEC → DMS + UTM</button>
+      <button class="coord-tab" data-coord="utm">UTM → DEC</button>
+    </div>
+    <div id="coordPaneDms">
+      <div class="coord-input-row">
+        <input id="dmsLatD" placeholder="Lat °" type="number" step="any">
+        <input id="dmsLatM" placeholder="Lat '" type="number" step="any">
+        <input id="dmsLatS" placeholder="Lat &quot;" type="number" step="any">
+        <select id="dmsLatHemi" class="geo-inp" style="max-width:70px"><option value="N">N</option><option value="S">S</option></select>
+      </div>
+      <div class="coord-input-row">
+        <input id="dmsLngD" placeholder="Lng °" type="number" step="any">
+        <input id="dmsLngM" placeholder="Lng '" type="number" step="any">
+        <input id="dmsLngS" placeholder="Lng &quot;" type="number" step="any">
+        <select id="dmsLngHemi" class="geo-inp" style="max-width:70px"><option value="E">E</option><option value="W">W</option></select>
+      </div>
+      <button class="term-btn" onclick="convertDmsToDec()" style="margin-top:6px">[ Konversi ke Decimal ]</button>
+    </div>
+    <div id="coordPaneDec" style="display:none">
+      <div class="coord-input-row">
+        <input id="decLat" placeholder="Latitude (contoh: -6.2088)" type="number" step="any">
+        <input id="decLng" placeholder="Longitude (contoh: 106.8456)" type="number" step="any">
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <button class="term-btn" onclick="convertDecAll()" style="margin:0;flex:1">[ Konversi ]</button>
+        <button class="term-btn outline" onclick="decUseLatest()" style="margin:0;flex:1">[ 📎 Target Terakhir ]</button>
+      </div>
+    </div>
+    <div id="coordPaneUtm" style="display:none">
+      <div class="coord-input-row">
+        <input id="utmZone" placeholder="Zona (54M)" style="max-width:96px">
+        <input id="utmEast" placeholder="Easting" type="number" step="any">
+        <input id="utmNorth" placeholder="Northing" type="number" step="any">
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <button class="term-btn" onclick="convertUtmToDec()" style="margin:0;flex:1">[ Konversi ke Decimal ]</button>
+        <button class="term-btn outline" onclick="utmUseFromLastTarget()" style="margin:0;flex:1">[ 📎 UTM Target Terakhir ]</button>
+      </div>
+    </div>
+    <div class="coord-result" id="coordResult" style="display:none"></div>
+  </div>
+</div>
+
 <div class="term-body"><div class="prompt">[System] Log</div><div id="logBox"><div class="log-line">Initializing...</div></div></div>
 <div class="term-body"><div class="prompt">[Security] Riwayat Sesi Login</div><div class="sess-head"><span id="sessCount">0 sesi tercatat</span><button onclick="clearSessionLog()">🗑️ HAPUS SEMUA</button></div><div class="sess-list" id="sessionList"><div class="empty">Belum ada riwayat</div></div></div>
 <div class="term-body"><div class="prompt">[Activity] Riwayat Aktivitas</div><div class="sess-head"><span id="actCount">0 aktivitas</span><button onclick="clearActLog()">🗑️ HAPUS</button></div><div class="act-list" id="actList"><div class="empty">Belum ada aktivitas</div></div></div>
@@ -375,13 +537,121 @@ function initMapApk(){mapApk=L.map('mapApk',{zoomControl:false,attributionContro
 initMapApk();
 onValue(ref(db,'lokasi/'+user),snap=>{const data=snap.val();if(!data)return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');const ae=Object.entries(data).filter(([k,d])=>d.mode&&!d.target&&!bl.includes(k)).sort((a,b)=>b[1].waktu-a[1].waktu);if(!ae.length)return;const lt=ae[0][1];document.getElementById('apkUser').innerText=lt.user||user;document.getElementById('apkLat').innerText=lt.lat?lt.lat.toFixed(6):'-';document.getElementById('apkLng').innerText=lt.lng?lt.lng.toFixed(6):'-';document.getElementById('apkAkurasi').innerText=lt.akurasi?lt.akurasi.toFixed(2)+' m':'-';document.getElementById('apkDevice').innerText=lt.device||'-';document.getElementById('apkTime').innerText=new Date(lt.waktu).toLocaleString('id-ID');if(lt.lat&&lt.lng){document.getElementById('mapApkCoords').innerText=lt.lat.toFixed(4)+', '+lt.lng.toFixed(4);if(markerApk)markerApk.setLatLng([lt.lat,lt.lng]);else{markerApk=L.marker([lt.lat,lt.lng],{icon:radarIcon()}).addTo(mapApk);markerApk.bindPopup('<div style="font-family:Courier New;text-align:center;padding:6px"><b>'+(lt.user||user).toUpperCase()+'</b><br>'+lt.lat.toFixed(5)+', '+lt.lng.toFixed(5)+'</div>',{className:'target-popup',closeButton:false}).openPopup()}mapApk.setView([lt.lat,lt.lng],mapApk.getZoom())}if(!firstApk&&ae.length>lastApkCnt){apkUpdateSound();addLog('📡 APK kirim lokasi baru!','warn');actLog('📡 APK kirim lokasi baru','info')}lastApkCnt=ae.length;firstApk=false});
 window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=document.getElementById('apkLng').innerText;if(la==='-')return;window.open('https://www.google.com/maps?q='+la+','+ln,'_blank')};
+
+/* ═══ AUTO-SHORTLINK — genLink & genLinkMaps (menggantikan fungsi lama) ═══ */
 let currentLink='';window.currentLink='';
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
 (function(){try{const s=localStorage.getItem('baseUrlCustom_'+user)||'';const el=document.getElementById('baseUrlCustom');if(el&&s)el.value=s}catch(e){}})();
-window.genLink=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;window.currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (TRACK):';addLog('Link track: '+t);actLog('🔗 Link track dibuat: '+t,'link');beep(900,.08)};
-window.copyLink=async()=>{if(!currentLink)return;try{await navigator.clipboard.writeText(currentLink);document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000)}catch(e){}};
-window.genLinkMaps=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;window.currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);actLog('🔗 Link maps dibuat: '+t,'link');beep(900,.08)};
+
+async function autoShorten(longUrl){
+  try{
+    const api='https://is.gd/create.php?format=json&url='+encodeURIComponent(longUrl);
+    const r=await fetch(api);
+    const j=await r.json();
+    if(j.shorturl)return{ok:true,short:j.shorturl};
+    return{ok:false,error:j.errormessage||'unknown'};
+  }catch(e){return{ok:false,error:e.message}}
+}
+function showBothLinks(longUrl,shortUrl,type){
+  const resBox=document.getElementById('linkResult');
+  const urlBox=document.getElementById('linkUrl');
+  const labelEl=document.getElementById('linkTypeLabel');
+  if(!resBox||!urlBox)return;
+  resBox.style.display='block';
+  if(labelEl)labelEl.innerText='› target link ('+type+')'+(shortUrl?' — AUTO-SHORTENED':'');
+  let html='';
+  if(shortUrl){
+    html+='<div class="dual-link-item short"><div class="dl-label">◈ SHORTLINK (is.gd)</div><div class="dl-url">'+shortUrl+'</div></div>';
+  }
+  html+='<div class="dual-link-item long"><div class="dl-label">◈ LINK PANJANG</div><div class="dl-url">'+longUrl+'</div></div>';
+  urlBox.innerHTML=html;
+  const btnCopy=document.getElementById('btnCopy');
+  if(btnCopy){
+    btnCopy.onclick=function(){
+      const toCopy=shortUrl||longUrl;
+      navigator.clipboard.writeText(toCopy).then(()=>{
+        btnCopy.innerText='[ ✓ Tersalin: '+(shortUrl?'SHORT':'LONG')+' ]';
+        setTimeout(()=>btnCopy.innerText='[ 📋 Salin Link ]',2000);
+        if(window.clipAdd)clipAdd(toCopy,shortUrl?'SHORT':'LONG');
+        if(window.beep)beep(1800,0.06);
+      });
+    };
+  }
+}
+function showLoading(type){
+  const resBox=document.getElementById('linkResult');
+  const urlBox=document.getElementById('linkUrl');
+  const labelEl=document.getElementById('linkTypeLabel');
+  if(!resBox||!urlBox)return;
+  resBox.style.display='block';
+  if(labelEl)labelEl.innerText='› target link ('+type+') — MEMPERPENDEK...';
+  urlBox.innerHTML='<div style="padding:12px;text-align:center;color:var(--gold);font-size:11px;letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
+}
+
+window.genLink=async function(){
+  playKlik();saveBase();
+  const t=document.getElementById('targetName').value.trim()||'target';
+  const longUrl=linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);
+  window.currentLink=longUrl;window.lastLongLink=longUrl;
+  addLog('Link track: '+t);
+  showLoading('TRACK');
+  const result=await autoShorten(longUrl);
+  if(result.ok){
+    window.currentShortLink=result.short;
+    showBothLinks(longUrl,result.short,'TRACK');
+    addLog('✓ Shortlink: '+result.short);
+    actLog('🔗 Link TRACK + shortlink: '+t,'link');
+    if(window.clipAdd)clipAdd(result.short,'SHORT');
+    if(window.clipAdd)clipAdd(longUrl,'TRACK');
+    beep(1800,0.08);
+    const qr=document.getElementById('qrInput'),sh=document.getElementById('shortInput');
+    if(qr)qr.value=result.short;
+    if(sh)sh.value=longUrl;
+  } else {
+    showBothLinks(longUrl,null,'TRACK');
+    addLog('⚠ Shortlink gagal: '+(result.error||'?')+' — pakai link panjang','warn');
+    actLog('🔗 Link TRACK dibuat: '+t,'link');
+    if(window.clipAdd)clipAdd(longUrl,'TRACK');
+  }
+};
+window.genLinkMaps=async function(){
+  playKlik();saveBase();
+  const t=document.getElementById('targetName').value.trim()||'target';
+  const longUrl=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);
+  window.currentLink=longUrl;window.lastLongLink=longUrl;
+  addLog('Link maps: '+t);
+  showLoading('MAPS');
+  const result=await autoShorten(longUrl);
+  if(result.ok){
+    window.currentShortLink=result.short;
+    showBothLinks(longUrl,result.short,'MAPS');
+    addLog('✓ Shortlink: '+result.short);
+    actLog('🔗 Link MAPS + shortlink: '+t,'link');
+    if(window.clipAdd)clipAdd(result.short,'SHORT');
+    if(window.clipAdd)clipAdd(longUrl,'MAPS');
+    beep(1800,0.08);
+    const qr=document.getElementById('qrInput'),sh=document.getElementById('shortInput');
+    if(qr)qr.value=result.short;
+    if(sh)sh.value=longUrl;
+  } else {
+    showBothLinks(longUrl,null,'MAPS');
+    addLog('⚠ Shortlink gagal: '+(result.error||'?')+' — pakai link panjang','warn');
+    actLog('🔗 Link MAPS dibuat: '+t,'link');
+    if(window.clipAdd)clipAdd(longUrl,'MAPS');
+  }
+};
+window.copyLink=async()=>{
+  const link=window.currentShortLink||window.currentLink;
+  if(!link)return;
+  try{
+    await navigator.clipboard.writeText(link);
+    document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';
+    setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000);
+    if(window.clipAdd)clipAdd(link,window.currentShortLink?'SHORT':'LONG');
+  }catch(e){}
+};
+
 let allData=[],lastCnt=0,firstLoad=true;window.allData=[];
 function genID(w){const t=new Date(w);return'TGT-'+t.getFullYear().toString().slice(-2)+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')+'-'+String(t.getHours()).padStart(2,'0')+String(t.getMinutes()).padStart(2,'0')+String(t.getSeconds()).padStart(2,'0')}
 function getFiltered(){const s=(document.getElementById('searchInput')?.value||'').toLowerCase();const df=document.getElementById('filterDate')?.value||'all';const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');const ts=new Date();ts.setHours(0,0,0,0);const tags=getTags();return allData.filter(([k,d])=>{if(bl.includes(k))return false;if(currentFolder!=='all'){var tag=tags[k]||'';if(currentFolder==='untagged'&&tag)return false;if(currentFolder!=='untagged'&&tag!==currentFolder)return false}if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}if(df==='today'&&d.waktu<ts.getTime())return false;if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;if(df==='30days'&&d.waktu<ts.getTime()-30*86400000)return false;return true})}
@@ -436,11 +706,8 @@ function renderPlatformChart(){var donut=document.getElementById('donutPlatform'
 setTimeout(function(){renderPlatformChart();updateLocTime()},1500);
 setInterval(function(){renderPlatformChart()},3000);
 
-/* ═══════════════════════════════════════════════════════════════════
-   GLOBE 3D — BULAT PENUH, BERPUTAR OTOMATIS, MARKER AKURAT
-   ═══════════════════════════════════════════════════════════════════ */
+/* ═══ GLOBE 3D ═══ */
 var globeScene,globeCamera,globeRenderer,globeGroup,globeMarkers=[],globeRotating=true,globeDragging=false,globePrevX=0,globePrevY=0,globePaused=false;
-
 function latLngToVector3(lat,lng,radius){
   var phi=(90-lat)*Math.PI/180;
   var theta=(lng+180)*Math.PI/180;
@@ -449,7 +716,6 @@ function latLngToVector3(lat,lng,radius){
   var y= radius*Math.cos(phi);
   return new THREE.Vector3(x,y,z);
 }
-
 function initGlobe(){
   var canvas=document.getElementById('globeCanvas');
   if(!canvas||typeof THREE==='undefined')return;
@@ -462,142 +728,62 @@ function initGlobe(){
   globeRenderer.setSize(W,H);
   globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   globeGroup=new THREE.Group();
-
-  // Bumi bulat penuh dengan tekstur
   var loader=new THREE.TextureLoader();
   loader.crossOrigin='anonymous';
-  var earthTex=loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',function(t){
-    t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;
-  },undefined,function(err){
-    // fallback ke earth-dark kalau gagal
-    loader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg',function(t2){
-      t2.minFilter=THREE.LinearFilter;t2.magFilter=THREE.LinearFilter;
-      earthMat.map=t2;earthMat.needsUpdate=true;
-    });
-  });
-  var earthMat=new THREE.MeshPhongMaterial({
-    map:earthTex,
-    color:0xffffff,
-    transparent:true,
-    opacity:0.95,
-    shininess:8,
-    specular:0x224466
-  });
+  var earthMat=new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:0.95,shininess:8,specular:0x224466});
+  var earthTex=loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',function(t){t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;earthMat.map=t;earthMat.needsUpdate=true;},undefined,function(){loader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg',function(t2){t2.minFilter=THREE.LinearFilter;t2.magFilter=THREE.LinearFilter;earthMat.map=t2;earthMat.needsUpdate=true;})});
   var earthGeo=new THREE.SphereGeometry(1,64,64);
-  var earthMesh=new THREE.Mesh(earthGeo,earthMat);
-  globeGroup.add(earthMesh);
-
-  // Garis grid wireframe tipis
+  globeGroup.add(new THREE.Mesh(earthGeo,earthMat));
   var wireGeo=new THREE.SphereGeometry(1.006,36,24);
   var wireMat=new THREE.MeshBasicMaterial({color:0x00d4ff,wireframe:true,transparent:true,opacity:0.10});
   globeGroup.add(new THREE.Mesh(wireGeo,wireMat));
-
-  // Atmosphere glow
   var glowGeo=new THREE.SphereGeometry(1.06,32,32);
   var glowMat=new THREE.MeshBasicMaterial({color:0x00d4ff,wireframe:true,transparent:true,opacity:0.05});
   globeGroup.add(new THREE.Mesh(glowGeo,glowMat));
-
-  // Cahaya
-  var amb=new THREE.AmbientLight(0xffffff,0.8);
-  globeScene.add(amb);
-  var dir=new THREE.DirectionalLight(0xffffff,0.9);
-  dir.position.set(5,3,5);
-  globeScene.add(dir);
-
+  globeScene.add(new THREE.AmbientLight(0xffffff,0.8));
+  var dir=new THREE.DirectionalLight(0xffffff,0.9);dir.position.set(5,3,5);globeScene.add(dir);
   globeScene.add(globeGroup);
-
-  // Kontrol drag
   canvas.addEventListener('mousedown',function(e){globeDragging=true;globePrevX=e.clientX;globePrevY=e.clientY;globeRotating=false;globePaused=true});
-  canvas.addEventListener('mousemove',function(e){
-    if(!globeDragging)return;
-    var dx=e.clientX-globePrevX;
-    var dy=e.clientY-globePrevY;
-    globeGroup.rotation.y+=dx*0.005;
-    globeGroup.rotation.x+=dy*0.005;
-    globePrevX=e.clientX;globePrevY=e.clientY;
-  });
+  canvas.addEventListener('mousemove',function(e){if(!globeDragging)return;var dx=e.clientX-globePrevX;var dy=e.clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.clientX;globePrevY=e.clientY;});
   window.addEventListener('mouseup',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});
   canvas.addEventListener('touchstart',function(e){if(e.touches.length===1){globeDragging=true;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY;globeRotating=false;globePaused=true}},{passive:true});
-  canvas.addEventListener('touchmove',function(e){
-    if(!globeDragging||e.touches.length!==1)return;
-    var dx=e.touches[0].clientX-globePrevX;
-    var dy=e.touches[0].clientY-globePrevY;
-    globeGroup.rotation.y+=dx*0.005;
-    globeGroup.rotation.x+=dy*0.005;
-    globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY;
-  },{passive:true});
+  canvas.addEventListener('touchmove',function(e){if(!globeDragging||e.touches.length!==1)return;var dx=e.touches[0].clientX-globePrevX;var dy=e.touches[0].clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY;},{passive:true});
   canvas.addEventListener('touchend',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});
-
-  window.addEventListener('resize',function(){
-    if(!globeRenderer)return;
-    var w=box.clientWidth,h=box.clientHeight;
-    globeCamera.aspect=w/h;
-    globeCamera.updateProjectionMatrix();
-    globeRenderer.setSize(w,h);
-  });
-
+  window.addEventListener('resize',function(){if(!globeRenderer)return;var w=box.clientWidth,h=box.clientHeight;globeCamera.aspect=w/h;globeCamera.updateProjectionMatrix();globeRenderer.setSize(w,h);});
   animateGlobe();
 }
-
 function refreshGlobeMarkers(){
   if(!globeGroup||typeof THREE==='undefined')return;
-  // Hapus marker lama
-  globeMarkers.forEach(function(m){
-    try{
-      globeGroup.remove(m);
-      if(m.geometry)m.geometry.dispose();
-      if(m.material){if(m.material.map)m.material.map.dispose();m.material.dispose()}
-    }catch(e){}
-  });
+  globeMarkers.forEach(function(m){try{globeGroup.remove(m);if(m.geometry)m.geometry.dispose();if(m.material){if(m.material.map)m.material.map.dispose();m.material.dispose()}}catch(e){}});
   globeMarkers=[];
   if(!window.allData)return;
   var valid=window.allData.filter(function(x){return x[1]&&x[1].lat&&x[1].lng});
   var cnt=document.getElementById('globeCount');
   if(cnt)cnt.textContent=valid.length+' target';
-
   valid.forEach(function(item,idx){
     var d=item[1];
     var lat=parseFloat(d.lat),lng=parseFloat(d.lng);
     if(!isFinite(lat)||!isFinite(lng))return;
     var pos=latLngToVector3(lat,lng,1.02);
     var color=idx%3===0?0xff3355:(idx%3===1?0xc8a000:0x00d4ff);
-
-    // Marker sphere
     var dotGeo=new THREE.SphereGeometry(0.018,12,12);
     var dotMat=new THREE.MeshBasicMaterial({color:color});
-    var dot=new THREE.Mesh(dotGeo,dotMat);
-    dot.position.copy(pos);
-    globeGroup.add(dot);
-    globeMarkers.push(dot);
-
-    // Ring pulse
+    var dot=new THREE.Mesh(dotGeo,dotMat);dot.position.copy(pos);globeGroup.add(dot);globeMarkers.push(dot);
     var ringGeo=new THREE.RingGeometry(0.022,0.032,24);
     var ringMat=new THREE.MeshBasicMaterial({color:color,side:THREE.DoubleSide,transparent:true,opacity:0.85});
-    var ring=new THREE.Mesh(ringGeo,ringMat);
-    ring.position.copy(pos);
-    ring.lookAt(0,0,0);
-    globeGroup.add(ring);
-    globeMarkers.push(ring);
-
-    // Garis dari permukaan (pin)
+    var ring=new THREE.Mesh(ringGeo,ringMat);ring.position.copy(pos);ring.lookAt(0,0,0);globeGroup.add(ring);globeMarkers.push(ring);
     var lineGeo=new THREE.BufferGeometry().setFromPoints([pos,pos.clone().multiplyScalar(1.08)]);
     var lineMat=new THREE.LineBasicMaterial({color:color,transparent:true,opacity:0.7});
-    var line=new THREE.Line(lineGeo,lineMat);
-    globeGroup.add(line);
-    globeMarkers.push(line);
+    var line=new THREE.Line(lineGeo,lineMat);globeGroup.add(line);globeMarkers.push(line);
   });
 }
-
 var _globeLastFrame=0;
 function animateGlobe(){
   requestAnimationFrame(animateGlobe);
   var now=Date.now();
   if(now-_globeLastFrame<33)return;
   _globeLastFrame=now;
-  if(globeRotating&&globeGroup&&!globePaused){
-    globeGroup.rotation.y+=0.0018;
-  }
-  // Pulse ring markers
+  if(globeRotating&&globeGroup&&!globePaused)globeGroup.rotation.y+=0.0018;
   globeMarkers.forEach(function(m,i){
     if(m.geometry&&m.geometry.type==='RingGeometry'){
       var s=1+0.35*Math.sin(now*0.004+i);
@@ -607,42 +793,26 @@ function animateGlobe(){
   });
   if(globeRenderer&&globeScene&&globeCamera)globeRenderer.render(globeScene,globeCamera);
 }
-
 setTimeout(function(){initGlobe();refreshGlobeMarkers()},2000);
 setInterval(refreshGlobeMarkers,5000);
 
-/* ═══════════════════════════════════════════════════════════════════
-   RADAR GLOBAL SWEEP + DETEKSI SINYAL BLUETOOTH
-   ═══════════════════════════════════════════════════════════════════ */
+/* ═══ RADAR + BLUETOOTH ═══ */
 var radarSectorNames=['ALPHA','BRAVO','CHARLIE','DELTA','ECHO','FOXTROT','GOLF','HOTEL'];
 var bluetoothDevices=[];
-
-// Simulasi perangkat Bluetooth di sekitar (berbasis koordinat target)
 function simulateBluetoothDevices(){
-  if(!window.allData||!window.allData.length){bluetoothDevices=[];return}
+  if(!window.allData||!window.allData.length){bluetoothDevices=[];updateBluetoothPanel();return}
   var valid=window.allData.filter(function(x){return x[1]&&x[1].lat&&x[1].lng});
   bluetoothDevices=[];
-  valid.forEach(function(item,idx){
+  valid.forEach(function(item){
     var d=item[1];
-    // Posisi BT di sekitar target, dengan offset acak kecil
     var offLat=(Math.random()-0.5)*8;
     var offLng=(Math.random()-0.5)*8;
-    var btLat=parseFloat(d.lat)+offLat;
-    var btLng=parseFloat(d.lng)+offLng;
     var names=['BT-Audio','BT-HP','BT-Watch','BT-Earbud','BT-Speaker','BT-Mouse','BT-Keyboard','BT-Tag','BT-Beacon','BT-IoT'];
     var nm=names[Math.floor(Math.random()*names.length)]+'-'+Math.random().toString(36).slice(2,5).toUpperCase();
-    bluetoothDevices.push({
-      name:nm,
-      lat:btLat,
-      lng:btLng,
-      rssi:-(40+Math.floor(Math.random()*50)),
-      target:d.target||'unknown',
-      time:Date.now()
-    });
+    bluetoothDevices.push({name:nm,lat:parseFloat(d.lat)+offLat,lng:parseFloat(d.lng)+offLng,rssi:-(40+Math.floor(Math.random()*50)),target:d.target||'unknown',time:Date.now()});
   });
   updateBluetoothPanel();
 }
-
 function updateBluetoothPanel(){
   var cnt=document.getElementById('btCount');
   var list=document.getElementById('btList');
@@ -652,13 +822,10 @@ function updateBluetoothPanel(){
   if(list){
     if(!bluetoothDevices.length){list.textContent='— none —';}
     else{
-      list.innerHTML=bluetoothDevices.slice(0,4).map(function(b){
-        return '<span class="bt-dev">📶 '+b.name+' ('+b.rssi+'dBm)</span>';
-      }).join('')+(bluetoothDevices.length>4?'<span class="bt-dev">+ '+(bluetoothDevices.length-4)+' more</span>':'');
+      list.innerHTML=bluetoothDevices.slice(0,4).map(function(b){return '<span class="bt-dev">📶 '+b.name+' ('+b.rssi+'dBm)</span>';}).join('')+(bluetoothDevices.length>4?'<span class="bt-dev">+ '+(bluetoothDevices.length-4)+' more</span>':'');
     }
   }
 }
-
 function refreshRadarBlips(){
   var container=document.getElementById('radarBlips');
   if(!container)return;
@@ -666,89 +833,54 @@ function refreshRadarBlips(){
   if(!window.allData)return;
   var valid=window.allData.filter(function(x){return x[1]&&x[1].lat&&x[1].lng});
   document.getElementById('radarTarget').textContent=valid.length;
-
-  // Blip target
   valid.forEach(function(item,idx){
     var d=item[1];
     var xPct=((parseFloat(d.lng)+180)/360)*100;
     var yPct=(1-((parseFloat(d.lat)+90)/180))*100;
     var blip=document.createElement('div');
     blip.className='radar-blip '+(idx%3===0?'red':(idx%3===1?'gold':''));
-    blip.style.left=xPct+'%';
-    blip.style.top=yPct+'%';
-    blip.style.animationDelay=(idx*0.3)+'s';
+    blip.style.left=xPct+'%';blip.style.top=yPct+'%';blip.style.animationDelay=(idx*0.3)+'s';
     container.appendChild(blip);
   });
-
-  // Blip Bluetooth (lingkaran cyan + label)
   bluetoothDevices.forEach(function(bt,idx){
     var xPct=((bt.lng+180)/360)*100;
     var yPct=(1-((bt.lat+90)/180))*100;
     var btBlip=document.createElement('div');
     btBlip.className='bt-blip';
-    btBlip.style.left=xPct+'%';
-    btBlip.style.top=yPct+'%';
-    btBlip.style.animationDelay=(idx*0.25)+'s';
+    btBlip.style.left=xPct+'%';btBlip.style.top=yPct+'%';btBlip.style.animationDelay=(idx*0.25)+'s';
     container.appendChild(btBlip);
-
     var lbl=document.createElement('div');
     lbl.className='bt-label';
-    lbl.style.left=xPct+'%';
-    lbl.style.top=yPct+'%';
+    lbl.style.left=xPct+'%';lbl.style.top=yPct+'%';
     lbl.textContent='📶 '+bt.name.slice(0,10);
     container.appendChild(lbl);
   });
 }
-
 setTimeout(function(){simulateBluetoothDevices();refreshRadarBlips()},2500);
 setInterval(function(){simulateBluetoothDevices();refreshRadarBlips()},6000);
-
 setInterval(function(){
   var scan=document.getElementById('radarScan');
   var sector=document.getElementById('radarSector');
   if(scan)scan.textContent=Math.floor(Date.now()/10%360)+'°';
   if(sector)sector.textContent=radarSectorNames[Math.floor(Date.now()/3000)%radarSectorNames.length];
 },100);
-
-// Coba Web Bluetooth API (jika didukung browser)
 async function tryRealBluetoothScan(){
-  if(!navigator.bluetooth){
-    console.log('[BT] Web Bluetooth tidak didukung browser ini — pakai simulasi');
-    return;
-  }
+  if(!navigator.bluetooth){console.log('[BT] Web Bluetooth tidak didukung');return}
   try{
-    const device=await navigator.bluetooth.requestDevice({
-      acceptAllDevices:true,
-      optionalServices:['battery_service','device_information']
-    });
+    const device=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['battery_service','device_information']});
     if(device){
-      console.log('[BT] Device ditemukan:',device.name||'(no name)',device.id);
       pushConsoleLine('📶 BT device found: '+(device.name||device.id),'ok');
-      bluetoothDevices.push({
-        name:(device.name||'BT-Device').slice(0,20),
-        lat:(Math.random()*180-90),
-        lng:(Math.random()*360-180),
-        rssi:-50,
-        target:'REAL-BT',
-        time:Date.now()
-      });
-      updateBluetoothPanel();
-      refreshRadarBlips();
+      bluetoothDevices.push({name:(device.name||'BT-Device').slice(0,20),lat:(Math.random()*180-90),lng:(Math.random()*360-180),rssi:-50,target:'REAL-BT',time:Date.now()});
+      updateBluetoothPanel();refreshRadarBlips();
     }
-  }catch(e){
-    // User cancel atau error — abaikan
-    console.log('[BT] Scan cancelled:',e.message);
-  }
+  }catch(e){console.log('[BT] Scan cancelled:',e.message)}
 }
-
 var lcMsgPool=['Scanning ports 22,80,443...','Encrypted tunnel established','Beacon ping OK','Fetching GPS coords...','TLS handshake complete','Reverse DNS lookup...','Decrypting packet','Session token refreshed','Geo-fence check OK','Battery status ping','Route trace complete','Subroutine execute OK','Background worker idle','Sync Firebase OK','Bluetooth scan active...','Sniffing BT packets...'];
 function pushConsoleLine(msg,type){var c=document.getElementById('liveConsole');if(!c)return;var t=new Date().toLocaleTimeString('id-ID');var div=document.createElement('div');div.className='lc-line '+(type||'');div.innerHTML='<span class="lc-time">['+t+']</span>'+msg;c.appendChild(div);while(c.children.length>50)c.removeChild(c.firstChild);c.scrollTop=c.scrollHeight}
 window.pushConsoleLine=pushConsoleLine;
 setInterval(function(){if(Math.random()<0.4){var msg=lcMsgPool[Math.floor(Math.random()*lcMsgPool.length)];var type=Math.random()<0.1?'warn':(Math.random()<0.05?'err':'ok');pushConsoleLine(msg,type)}var ct=document.getElementById('consoleTime');if(ct)ct.textContent=new Date().toLocaleTimeString('id-ID')},2500);
 pushConsoleLine('Firebase connected — /lokasi/'+user,'ok');
-pushConsoleLine('Bluetooth scanner initialized (simulation mode)','ok');
-
-// Trigger scan Bluetooth nyata kalau browser mendukung (butuh interaksi user)
+pushConsoleLine('Bluetooth scanner initialized','ok');
 setTimeout(function(){tryRealBluetoothScan()},8000);
 
 console.log('%c[CYBER TERMINAL] Loaded','color:#00ff41;font-weight:bold');
@@ -762,6 +894,331 @@ function renderSessions(){var listEl=document.getElementById('sessionList');var 
 function recordSession(){var u=localStorage.getItem('username')||'';if(!u)return;var ua=navigator.userAgent;var os='Unknown';if(/Android/i.test(ua))os='Android';else if(/iPhone|iPad|iPod/i.test(ua))os='iOS';else if(/Windows/i.test(ua))os='Windows';else if(/Mac/i.test(ua))os='macOS';else if(/Linux/i.test(ua))os='Linux';var br='Unknown';if(/Edg/i.test(ua))br='Edge';else if(/OPR|Opera/i.test(ua))br='Opera';else if(/Chrome/i.test(ua))br='Chrome';else if(/Firefox/i.test(ua))br='Firefox';else if(/Safari/i.test(ua))br='Safari';var sess={now:true,waktu:Date.now(),ip:'memuat...',os:os,browser:br,screen:screen.width+'x'+screen.height};var arr=[];try{arr=JSON.parse(localStorage.getItem('cyberSess_'+u)||'[]')}catch(e){}arr.forEach(function(s){s.now=false});arr.unshift(sess);try{localStorage.setItem('cyberSess_'+u,JSON.stringify(arr.slice(0,20)))}catch(e){}renderSessions();fetch('https://api.ipify.org?format=json').then(function(r){return r.json()}).then(function(d){var a2=[];try{a2=JSON.parse(localStorage.getItem('cyberSess_'+u)||'[]')}catch(e){}if(a2[0]){a2[0].ip=d.ip||'unknown';try{localStorage.setItem('cyberSess_'+u,JSON.stringify(a2))}catch(e){}renderSessions()}}).catch(function(){})}
 setTimeout(function(){recordSession()},1500);
 setTimeout(renderSessions,2000);
+</script>
+<script>
+/* ═══ UTILITY TOOLS — QR / Shortlink / Timer / Clipboard / Notes / Koordinat ═══ */
+(function(){
+  'use strict';
+  const U = window.user || localStorage.getItem('username') || 'guest';
+
+  /* TAB SWITCHER */
+  document.querySelectorAll('.tools-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tools-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tools-pane').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      const pane=document.getElementById('pane-'+btn.dataset.tab);
+      if(pane)pane.classList.add('active');
+    });
+  });
+
+  /* QR CODE */
+  window.qrFromLatest=function(){
+    const last=getLastLink();
+    if(!last){alert('Belum ada link tracking.');return;}
+    document.getElementById('qrInput').value=last;
+    generateQR();
+  };
+  window.generateQR=function(){
+    const url=document.getElementById('qrInput').value.trim();
+    if(!url){alert('Isi link dulu.');return;}
+    const qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(url)+'&bgcolor=ffffff&color=000000&margin=10';
+    document.getElementById('qrImg').src=qrUrl;
+    document.getElementById('qrUrl').textContent=url;
+    document.getElementById('qrResult').style.display='flex';
+    if(window.beep)beep(1800,0.08);
+    if(window.addLog)addLog('QR Code generated');
+  };
+  window.downloadQR=function(){
+    const img=document.getElementById('qrImg');
+    if(!img.src)return;
+    fetch(img.src).then(r=>r.blob()).then(b=>{
+      const url=URL.createObjectURL(b);
+      const a=document.createElement('a');a.href=url;a.download='qrcode_'+Date.now()+'.png';a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),2000);
+    }).catch(()=>window.open(img.src,'_blank'));
+  };
+  window.copyQRUrl=function(){
+    const url=document.getElementById('qrInput').value.trim();
+    if(!url)return;
+    navigator.clipboard.writeText(url).then(()=>{
+      clipAdd(url,'QR');
+      if(window.addLog)addLog('Link QR dicopy');
+    });
+  };
+
+  /* SHORTLINK MANUAL */
+  window.shortFromLatest=function(){
+    const last=getLastLink();
+    if(!last){alert('Belum ada link tracking.');return;}
+    document.getElementById('shortInput').value=last;
+  };
+  window.shortenLink=async function(){
+    const url=document.getElementById('shortInput').value.trim();
+    if(!url){alert('Isi link dulu.');return;}
+    if(!/^https?:\/\//i.test(url)){alert('Link harus mulai dengan http:// atau https://');return;}
+    const res=document.getElementById('shortResult');
+    res.classList.add('show');
+    res.innerHTML='⏳ Memperpendek...';
+    try{
+      const api='https://is.gd/create.php?format=json&url='+encodeURIComponent(url);
+      const r=await fetch(api);
+      const j=await r.json();
+      if(j.shorturl){
+        res.innerHTML='✓ Shortlink:<br><a href="'+j.shorturl+'" target="_blank">'+j.shorturl+'</a><br><br><button class="term-btn outline" style="margin:0;padding:6px 12px;width:auto" onclick="clipAdd(\''+j.shorturl+'\',\'SHORT\')">[ 📋 Simpan ke Clipboard ]</button>';
+        if(window.beep)beep(1800,0.08);
+        if(window.addLog)addLog('Shortlink: '+j.shorturl);
+        if(window.actLog)actLog('🔗 Shortlink dibuat: '+j.shorturl,'link');
+        clipAdd(j.shorturl,'SHORT');
+      } else if(j.errormessage){res.innerHTML='✗ Error: '+j.errormessage;}
+      else{res.innerHTML='✗ Gagal memperpendek.';}
+    }catch(e){res.innerHTML='✗ Error: '+e.message;}
+  };
+
+  /* COUNTDOWN TIMER */
+  let cdInterval=null;
+  let cdEndTime=0;
+  window.cdUseLastLink=function(){
+    const last=getLastLink();
+    if(last){
+      document.getElementById('cdLinkInput').value=last;
+      const m=last.match(/[?&]exp=(\d+)/);
+      if(m)document.getElementById('cdMinutes').value=m[1];
+    } else alert('Belum ada link tracking.');
+  };
+  window.startCountdown=function(){
+    const mins=parseInt(document.getElementById('cdMinutes').value)||0;
+    if(mins<=0){alert('Isi durasi expired (menit) > 0.');return;}
+    cdEndTime=Date.now()+mins*60000;
+    const link=document.getElementById('cdLinkInput').value.trim();
+    if(link){
+      try{localStorage.setItem('cdLink_'+U,link);localStorage.setItem('cdEnd_'+U,cdEndTime);}catch(e){}
+    }
+    if(cdInterval)clearInterval(cdInterval);
+    document.getElementById('cdDisplay').classList.remove('expired');
+    document.getElementById('cdLbl').textContent='SISA WAKTU EXPIRED';
+    tickCountdown();
+    cdInterval=setInterval(tickCountdown,1000);
+    if(window.beep)beep(1400,0.08);
+    if(window.addLog)addLog('Countdown dimulai: '+mins+' menit');
+  };
+  function tickCountdown(){
+    const sisa=cdEndTime-Date.now();
+    const el=document.getElementById('cdNum');
+    const disp=document.getElementById('cdDisplay');
+    if(sisa<=0){
+      el.textContent='00:00:00';
+      document.getElementById('cdLbl').textContent='⚠ EXPIRED';
+      disp.classList.add('expired');
+      if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
+      if(window.beep){beep(400,.2);setTimeout(()=>beep(300,.3),250);}
+      if(window.addLog)addLog('⏰ Timer expired!','warn');
+      return;
+    }
+    const h=Math.floor(sisa/3600000);
+    const m=Math.floor((sisa%3600000)/60000);
+    const s=Math.floor((sisa%60000)/1000);
+    el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+  window.stopCountdown=function(){
+    if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
+    document.getElementById('cdLbl').textContent='DIHENTIKAN';
+  };
+  window.resetCountdown=function(){
+    if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
+    cdEndTime=0;
+    document.getElementById('cdNum').textContent='--:--:--';
+    document.getElementById('cdLbl').textContent='BELUM DIMULAI';
+    document.getElementById('cdDisplay').classList.remove('expired');
+  };
+  setTimeout(()=>{
+    try{
+      const end=parseInt(localStorage.getItem('cdEnd_'+U)||'0');
+      const link=localStorage.getItem('cdLink_'+U)||'';
+      if(end&&end>Date.now()){
+        cdEndTime=end;
+        document.getElementById('cdLinkInput').value=link;
+        document.getElementById('cdDisplay').classList.remove('expired');
+        document.getElementById('cdLbl').textContent='SISA WAKTU EXPIRED';
+        tickCountdown();
+        cdInterval=setInterval(tickCountdown,1000);
+      }
+    }catch(e){}
+  },500);
+
+  /* CLIPBOARD HISTORY */
+  function clipLoad(){try{return JSON.parse(localStorage.getItem('clipHist_'+U)||'[]')}catch(e){return[]}}
+  function clipSave(arr){try{localStorage.setItem('clipHist_'+U,JSON.stringify(arr.slice(0,30)))}catch(e){}}
+  window.clipAdd=function(txt,tag){
+    const v=txt||(document.getElementById('clipManualInput').value.trim());
+    if(!v)return;
+    const arr=clipLoad();
+    const filtered=arr.filter(x=>x.txt!==v);
+    filtered.unshift({txt:v,tag:tag||'MANUAL',waktu:Date.now()});
+    clipSave(filtered);
+    const inp=document.getElementById('clipManualInput');
+    if(inp)inp.value='';
+    renderClipboard();
+  };
+  window.clipDel=function(idx){
+    const arr=clipLoad();
+    arr.splice(idx,1);
+    clipSave(arr);
+    renderClipboard();
+  };
+  window.clipCopy=function(idx){
+    const arr=clipLoad();
+    if(!arr[idx])return;
+    navigator.clipboard.writeText(arr[idx].txt).then(()=>{
+      if(window.beep)beep(1800,0.06);
+      if(window.addLog)addLog('Link dicopy dari history');
+    });
+  };
+  window.clipClear=function(){
+    if(!confirm('Hapus semua riwayat clipboard?'))return;
+    try{localStorage.removeItem('clipHist_'+U)}catch(e){}
+    renderClipboard();
+  };
+  function renderClipboard(){
+    const el=document.getElementById('clipList');
+    if(!el)return;
+    const arr=clipLoad();
+    if(!arr.length){el.innerHTML='<div class="empty">Belum ada riwayat</div>';return;}
+    el.innerHTML=arr.map((item,idx)=>{
+      const tgl=new Date(item.waktu).toLocaleString('id-ID');
+      const tag=item.tag?'<span style="color:var(--gold);font-size:8px">['+item.tag+']</span> ':'';
+      return '<div class="clip-item"><div style="flex:1"><div class="clip-txt">'+tag+escapeHtml(item.txt)+'</div><div class="clip-meta">'+tgl+'</div></div><div class="clip-btns"><button onclick="clipCopy('+idx+')">COPY</button><button class="del" onclick="clipDel('+idx+')">DEL</button></div></div>';
+    }).join('');
+  }
+  document.addEventListener('copy',function(){
+    try{
+      const sel=window.getSelection().toString();
+      if(sel&&sel.length>10&&/^https?:\/\//i.test(sel))clipAdd(sel.trim(),'AUTO');
+    }catch(err){}
+  });
+  renderClipboard();
+
+  /* NOTES GLOBAL */
+  const notesEl=document.getElementById('notesGlobal');
+  const notesStatus=document.getElementById('notesStatus');
+  let notesTimer=null;
+  try{notesEl.value=localStorage.getItem('notesGlobal_'+U)||'';}catch(e){}
+  notesEl.addEventListener('input',()=>{
+    notesStatus.textContent='menyimpan...';
+    if(notesTimer)clearTimeout(notesTimer);
+    notesTimer=setTimeout(()=>{
+      try{
+        localStorage.setItem('notesGlobal_'+U,notesEl.value);
+        notesStatus.textContent='✓ tersimpan '+new Date().toLocaleTimeString('id-ID');
+      }catch(e){notesStatus.textContent='✗ gagal simpan';}
+    },600);
+  });
+  window.notesDownload=function(){
+    const txt=notesEl.value;
+    if(!txt){alert('Catatan kosong.');return;}
+    const blob=new Blob([txt],{type:'text/plain'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='notes_'+U+'_'+Date.now()+'.txt';a.click();
+  };
+  window.notesClear=function(){
+    if(!confirm('Hapus semua catatan?'))return;
+    notesEl.value='';
+    try{localStorage.removeItem('notesGlobal_'+U)}catch(e){}
+    notesStatus.textContent='dihapus';
+  };
+
+  /* KALKULATOR KOORDINAT */
+  document.querySelectorAll('.coord-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.coord-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('coordPaneDms').style.display=tab.dataset.coord==='dms'?'block':'none';
+      document.getElementById('coordPaneDec').style.display=tab.dataset.coord==='dec'?'block':'none';
+      document.getElementById('coordPaneUtm').style.display=tab.dataset.coord==='utm'?'block':'none';
+    });
+  });
+  function showResult(html){
+    const el=document.getElementById('coordResult');
+    el.style.display='block';
+    el.innerHTML=html;
+  }
+  window.convertDmsToDec=function(){
+    const d1=parseFloat(document.getElementById('dmsLatD').value)||0;
+    const m1=parseFloat(document.getElementById('dmsLatM').value)||0;
+    const s1=parseFloat(document.getElementById('dmsLatS').value)||0;
+    const h1=document.getElementById('dmsLatHemi').value;
+    const d2=parseFloat(document.getElementById('dmsLngD').value)||0;
+    const m2=parseFloat(document.getElementById('dmsLngM').value)||0;
+    const s2=parseFloat(document.getElementById('dmsLngS').value)||0;
+    const h2=document.getElementById('dmsLngHemi').value;
+    let lat=d1+m1/60+s1/3600;if(h1==='S')lat=-lat;
+    let lng=d2+m2/60+s2/3600;if(h2==='W')lng=-lng;
+    if(Math.abs(lat)>90||Math.abs(lng)>180){showResult('<span style="color:var(--red)">✗ Koordinat di luar batas valid.</span>');return;}
+    const utm=latLngToUtm(lat,lng);
+    showResult('<div><span class="cr-k">DECIMAL LAT</span><span class="cr-v">'+lat.toFixed(6)+'</span></div><div><span class="cr-k">DECIMAL LNG</span><span class="cr-v">'+lng.toFixed(6)+'</span></div><div><span class="cr-k">UTM ZONA</span><span class="cr-v">'+utm.zone+utm.hemi+'</span></div><div><span class="cr-k">UTM EAST</span><span class="cr-v">'+utm.easting+'</span></div><div><span class="cr-k">UTM NORTH</span><span class="cr-v">'+utm.northing+'</span></div><div style="margin-top:8px"><button class="term-btn outline" style="margin:0;padding:6px 12px;width:auto" onclick="clipAdd(\''+lat.toFixed(6)+','+lng.toFixed(6)+'\',\'COORD\')">[ 📋 Copy DEC ]</button></div>');
+  };
+  window.convertDecAll=function(){
+    const lat=parseFloat(document.getElementById('decLat').value);
+    const lng=parseFloat(document.getElementById('decLng').value);
+    if(!isFinite(lat)||!isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180){showResult('<span style="color:var(--red)">✗ Koordinat tidak valid.</span>');return;}
+    const dmsLat=decToDms(lat,'lat');
+    const dmsLng=decToDms(lng,'lng');
+    const utm=latLngToUtm(lat,lng);
+    showResult('<div><span class="cr-k">DMS LAT</span><span class="cr-v">'+dmsLat+'</span></div><div><span class="cr-k">DMS LNG</span><span class="cr-v">'+dmsLng+'</span></div><div><span class="cr-k">DECIMAL</span><span class="cr-v">'+lat.toFixed(6)+', '+lng.toFixed(6)+'</span></div><div><span class="cr-k">UTM ZONA</span><span class="cr-v">'+utm.zone+utm.hemi+'</span></div><div><span class="cr-k">UTM EAST</span><span class="cr-v">'+utm.easting+'</span></div><div><span class="cr-k">UTM NORTH</span><span class="cr-v">'+utm.northing+'</span></div>');
+  };
+  window.decUseLatest=function(){
+    const f=(window.allData||[]).find(x=>x[1]&&x[1].lat&&x[1].lng);
+    if(!f){alert('Belum ada target berkoordinat.');return;}
+    document.getElementById('decLat').value=f[1].lat;
+    document.getElementById('decLng').value=f[1].lng;
+    convertDecAll();
+  };
+  window.convertUtmToDec=function(){
+    const zoneStr=document.getElementById('utmZone').value.trim().toUpperCase();
+    const east=parseFloat(document.getElementById('utmEast').value);
+    const north=parseFloat(document.getElementById('utmNorth').value);
+    const m=zoneStr.match(/^(\d{1,2})\s*([A-Z])?$/);
+    if(!m){showResult('<span style="color:var(--red)">✗ Format zona salah. Contoh: 54M</span>');return;}
+    const zone=parseInt(m[1]);
+    const hemi=(m[2]&&'NPQRSTUVWX'.indexOf(m[2])>=0)?'N':((m[2]==='S'||!m[2])?'S':'N');
+    const result=utmToLatLng(zone,hemi,east,north);
+    if(!result){showResult('<span style="color:var(--red)">✗ Koordinat UTM tidak valid.</span>');return;}
+    const dmsLat=decToDms(result.lat,'lat');
+    const dmsLng=decToDms(result.lng,'lng');
+    showResult('<div><span class="cr-k">DECIMAL LAT</span><span class="cr-v">'+result.lat.toFixed(6)+'</span></div><div><span class="cr-k">DECIMAL LNG</span><span class="cr-v">'+result.lng.toFixed(6)+'</span></div><div><span class="cr-k">DMS LAT</span><span class="cr-v">'+dmsLat+'</span></div><div><span class="cr-k">DMS LNG</span><span class="cr-v">'+dmsLng+'</span></div>');
+  };
+  window.utmUseFromLastTarget=function(){
+    const f=(window.allData||[]).find(x=>x[1]&&x[1].lat&&x[1].lng);
+    if(!f){alert('Belum ada target berkoordinat.');return;}
+    const u=latLngToUtm(f[1].lat,f[1].lng);
+    document.getElementById('utmZone').value=u.zone+u.hemi;
+    document.getElementById('utmEast').value=u.easting;
+    document.getElementById('utmNorth').value=u.northing;
+    convertUtmToDec();
+  };
+  function decToDms(dec,type){
+    const hemi=type==='lat'?(dec>=0?'N':'S'):(dec>=0?'E':'W');
+    const abs=Math.abs(dec);
+    const d=Math.floor(abs);
+    const m=Math.floor((abs-d)*60);
+    const s=(((abs-d)*60)-m)*60;
+    return d+'° '+m+"' "+s.toFixed(2)+'" '+hemi;
+  }
+  function getLastLink(){
+    if(window.currentShortLink)return window.currentShortLink;
+    if(window.currentLink)return window.currentLink;
+    if(window.lastLongLink)return window.lastLongLink;
+    try{
+      const arr=JSON.parse(localStorage.getItem('clipHist_'+U)||'[]');
+      const linkItem=arr.find(x=>/^https?:\/\//i.test(x.txt)&&/track\.html|maps\.html|is\.gd/.test(x.txt));
+      if(linkItem)return linkItem.txt;
+    }catch(e){}
+    return '';
+  }
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+  if(window.addLog)addLog('Utility Panel loaded');
+  console.log('%c[UTILITY] 6 fitur aktif','color:#00d4ff;font-weight:bold');
+})();
 </script>
 </body>
 </html>
