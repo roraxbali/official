@@ -323,6 +323,109 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:1px;
 }
 .sess-head button:hover{border-color:#ff3355;color:#ff3355}
+
+/* ═══════════════════════════════════
+   TAHAP 2: TARGET MANAGEMENT
+   ═══════════════════════════════════ */
+
+/* ── Tag Badges ── */
+.tag-badge{
+  display:inline-block;font-size:8px;padding:2px 6px;
+  border-radius:2px;letter-spacing:1px;font-weight:bold;
+  margin-left:4px;text-transform:uppercase;
+}
+.tag-VIP{background:#4a3a00;color:#e8bc00;border:1px solid #c8a000}
+.tag-Suspect{background:#4a0000;color:#ff3355;border:1px solid #ff3355}
+.tag-Client{background:#00311a;color:#00c853;border:1px solid #00c853}
+.tag-Family{background:#003a4a;color:#00d4ff;border:1px solid #00d4ff}
+.tag-Other{background:#1a1a1a;color:#888;border:1px solid #333}
+
+/* ── Folder Selector ── */
+.folder-bar{
+  display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;
+  padding:8px;background:#0a0a0a;border:1px solid #272727;border-radius:4px;
+}
+.folder-chip{
+  font-family:'Courier New',monospace;font-size:9px;
+  padding:5px 10px;border-radius:12px;cursor:pointer;
+  background:transparent;border:1px solid #333;color:#666;
+  letter-spacing:1px;transition:all .15s;
+}
+.folder-chip:hover{border-color:#c8a000;color:#c8a000}
+.folder-chip.active{
+  background:rgba(200,160,0,.15);border-color:#c8a000;color:#c8a000;
+  box-shadow:0 0 6px rgba(200,160,0,.3);
+}
+
+/* ── Tag Editor Popup ── */
+#tagEditor{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  z-index:999999;display:none;
+  justify-content:center;align-items:center;padding:20px;
+}
+#tagEditor.show{display:flex}
+.tag-editor-box{
+  background:#101010;border:1px solid #c8a000;
+  border-radius:6px;padding:20px;
+  max-width:340px;width:100%;
+  font-family:'Courier New',monospace;
+}
+.tag-editor-box h3{
+  color:#c8a000;font-size:12px;letter-spacing:3px;
+  margin-bottom:14px;text-align:center;
+}
+.tag-options{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tag-opt{
+  font-family:'Courier New',monospace;font-size:10px;
+  padding:8px 12px;border-radius:4px;cursor:pointer;
+  background:transparent;border:1px solid #333;color:#888;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.tag-opt:hover{border-color:#c8a000;color:#c8a000}
+.tag-opt.active{background:#c8a000;color:#000;border-color:#c8a000;font-weight:bold}
+.tag-editor-actions{display:flex;gap:8px}
+.tag-editor-actions button{flex:1;padding:10px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;border-radius:4px;text-transform:uppercase}
+.tag-save{background:#c8a000;color:#000;border:none;font-weight:bold}
+.tag-cancel{background:transparent;color:#888;border:1px solid #333}
+
+/* ── Duplicate Warning ── */
+.dup-warn{
+  background:rgba(255,143,0,.08);border:1px solid #ff8f00;
+  padding:8px 10px;border-radius:4px;
+  font-size:10px;color:#ff8f00;margin-bottom:10px;
+  line-height:1.6;
+}
+.dup-warn b{color:#ff8f00}
+
+/* ── Stats Tag ── */
+.tag-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:6px;margin-top:8px;
+}
+.tag-stat{
+  background:#0a0a0a;border:1px solid #272727;
+  border-radius:4px;padding:8px;text-align:center;
+}
+.tag-stat .ts-n{font-size:14px;font-weight:bold;color:#c8a000}
+.tag-stat .ts-l{font-size:8px;color:#555;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+
+/* ── Activity Log ── */
+.act-list{
+  max-height:200px;overflow-y:auto;
+  border:1px solid #272727;border-radius:4px;
+  padding:8px;background:#090909;margin-top:8px;
+}
+.act-item{
+  padding:6px 8px;border-left:2px solid #4a3a00;
+  margin-bottom:4px;font-size:10px;line-height:1.6;
+  background:#101010;border-radius:0 4px 4px 0;
+}
+.act-item .at{color:#555;font-size:9px;letter-spacing:1px}
+.act-item .am{color:#00d4ff}
+.act-item.type-link{border-left-color:#c8a000}
+.act-item.type-note{border-left-color:#00c853}
+.act-item.type-tag{border-left-color:#a855f7}
+.act-item.type-del{border-left-color:#ff3355}
 </style>
 </head>
 <body>
@@ -357,6 +460,25 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="pin-hint">
     › PIN tersimpan lokal di perangkat ini<br>
     › Tidak dikirim ke server manapun
+  </div>
+</div>
+
+<!-- ═══ TAHAP 2: TAG EDITOR POPUP ═══ -->
+<div id="tagEditor">
+  <div class="tag-editor-box">
+    <h3>◈ PILIH TAG TARGET</h3>
+    <div class="tag-options" id="tagOptions">
+      <button class="tag-opt" data-tag="">-NONE-</button>
+      <button class="tag-opt" data-tag="VIP">VIP</button>
+      <button class="tag-opt" data-tag="Suspect">SUSPECT</button>
+      <button class="tag-opt" data-tag="Client">CLIENT</button>
+      <button class="tag-opt" data-tag="Family">FAMILY</button>
+      <button class="tag-opt" data-tag="Other">OTHER</button>
+    </div>
+    <div class="tag-editor-actions">
+      <button class="tag-save" onclick="saveTagEdit()">SIMPAN</button>
+      <button class="tag-cancel" onclick="closeTagEditor()">BATAL</button>
+    </div>
   </div>
 </div>
 
@@ -400,6 +522,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="stat-card hi"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Hari Ini</div></div>
     <div class="stat-card"><div class="stat-val sm" id="statKota">—</div><div class="stat-lbl">Kota Terbanyak</div></div>
     <div class="stat-card"><div class="stat-val sm" id="statPlatform">—</div><div class="stat-lbl">Platform</div></div>
+  </div>
+  <!-- TAHAP 2: Tag Stats -->
+  <div class="tag-stats" id="tagStats">
+    <div class="tag-stat"><div class="ts-n" id="tsVIP">0</div><div class="ts-l">VIP</div></div>
+    <div class="tag-stat"><div class="ts-n" id="tsSuspect">0</div><div class="ts-l">Suspect</div></div>
+    <div class="tag-stat"><div class="ts-n" id="tsClient">0</div><div class="ts-l">Client</div></div>
   </div>
 </div>
 
@@ -510,6 +638,15 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div>
     <div class="map-coords" id="mapLinkCoords">--, --</div>
   </div>
+  <!-- TAHAP 2: Folder Bar -->
+  <div class="folder-bar" id="folderBar">
+    <button class="folder-chip active" data-folder="all">◈ SEMUA</button>
+    <button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button>
+    <button class="folder-chip" data-folder="VIP">★ VIP</button>
+    <button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button>
+    <button class="folder-chip" data-folder="Client">◆ CLIENT</button>
+    <button class="folder-chip" data-folder="Family">♥ FAMILY</button>
+  </div>
   <div class="search-row">
     <input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()">
     <select id="filterDate" onchange="filterData()">
@@ -522,6 +659,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">
     Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b>
   </div>
+  <div id="dupWarnBox"></div>
   <div id="hasil"><div class="empty">Waiting for data...</div></div>
   <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
     <button class="term-btn outline" onclick="exportCSV()" style="margin:0">[ CSV ]</button>
@@ -575,6 +713,18 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
   <div class="sess-list" id="sessionList">
     <div class="empty">Belum ada riwayat</div>
+  </div>
+</div>
+
+<!-- ═══ TAHAP 2: ACTIVITY LOG ═══ -->
+<div class="term-body">
+  <div class="prompt">[Activity] Riwayat Aktivitas</div>
+  <div class="sess-head">
+    <span id="actCount">0 aktivitas</span>
+    <button onclick="clearActLog()">🗑️ HAPUS</button>
+  </div>
+  <div class="act-list" id="actList">
+    <div class="empty">Belum ada aktivitas</div>
   </div>
 </div>
 
@@ -668,7 +818,6 @@ function apkUpdateSound(){let n=0;const t=setInterval(()=>{beep(1200,0.06);n++;i
 function chatNotifSound(){let n=0;const t=setInterval(()=>{beep(1800,0.08);setTimeout(()=>beep(2400,0.08),100);n++;if(n>=6)clearInterval(t)},500)}
 function linkDataSound(){let n=0;const t=setInterval(()=>{beep(1400,0.08);setTimeout(()=>beep(1800,0.08),100);n++;if(n>=10)clearInterval(t)},500)}
 function geoSound(){beep(800,.15);setTimeout(()=>beep(1200,.15),200);setTimeout(()=>beep(1600,.2),400);setTimeout(()=>beep(2000,.3),700)}
-
 function ucapkan(t){ }
 function hackerVoice(){ }
 
@@ -678,6 +827,55 @@ setInterval(()=>{const n=new Date();document.getElementById('liveClock').innerTe
 
 function addLog(msg,type){const b=document.getElementById('logBox');const l=document.createElement('div');l.className='log-line '+(type||'');l.innerText='['+new Date().toLocaleTimeString('id-ID')+'] '+msg;b.appendChild(l);while(b.children.length>20)b.removeChild(b.firstChild)}
 addLog('Terminal v2 ready — user: '+user);
+
+/* ═══════════════════════════════════════
+   TAHAP 2: ACTIVITY LOG SYSTEM
+   ═══════════════════════════════════════ */
+function actLog(msg, type){
+  try{
+    var ACT_KEY = 'cyberAct_' + user;
+    var arr = JSON.parse(localStorage.getItem(ACT_KEY) || '[]');
+    arr.unshift({ waktu: Date.now(), msg: msg, type: type || 'info' });
+    localStorage.setItem(ACT_KEY, JSON.stringify(arr.slice(0, 50)));
+    renderActLog();
+  }catch(e){}
+}
+function renderActLog(){
+  var el = document.getElementById('actList');
+  var cnt = document.getElementById('actCount');
+  if(!el) return;
+  var arr = JSON.parse(localStorage.getItem('cyberAct_' + user) || '[]');
+  if(cnt) cnt.textContent = arr.length + ' aktivitas';
+  if(!arr.length){
+    el.innerHTML = '<div class="empty">Belum ada aktivitas</div>';
+    return;
+  }
+  el.innerHTML = arr.map(function(a){
+    var t = new Date(a.waktu).toLocaleTimeString('id-ID');
+    return '<div class="act-item type-' + a.type + '">'
+      + '<span class="at">' + t + '</span> · '
+      + '<span class="am">' + a.msg + '</span>'
+      + '</div>';
+  }).join('');
+}
+window.clearActLog = function(){
+  if(!confirm('Hapus semua riwayat aktivitas?')) return;
+  localStorage.removeItem('cyberAct_' + user);
+  renderActLog();
+  safeBeepGlobal(600, 0.1);
+};
+function safeBeepGlobal(f, d){
+  try{
+    var ac = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ac.createOscillator(); var g = ac.createGain();
+    o.type='square'; o.frequency.value=f;
+    g.gain.setValueAtTime(0.08, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + d);
+    o.connect(g); g.connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + d);
+  }catch(e){}
+}
+renderActLog();
 
 const SAT_URL='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const LBL_URL='https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
@@ -718,6 +916,20 @@ function updateStats(){
   const pm={};allData.forEach(([,d])=>{if(d.platform){pm[d.platform]=(pm[d.platform]||0)+1}});
   const tp=Object.entries(pm).sort((a,b)=>b[1]-a[1])[0];
   document.getElementById('statPlatform').innerText=tp?tp[0].substring(0,12):'—';
+  // TAHAP 2: Tag Stats
+  try{
+    var tagMap = JSON.parse(localStorage.getItem('cyberTags_' + user) || '{}');
+    var cVIP=0, cSus=0, cCli=0;
+    allData.forEach(function(item){
+      var tag = tagMap[item[0]] || '';
+      if(tag === 'VIP') cVIP++;
+      else if(tag === 'Suspect') cSus++;
+      else if(tag === 'Client') cCli++;
+    });
+    document.getElementById('tsVIP').textContent = cVIP;
+    document.getElementById('tsSuspect').textContent = cSus;
+    document.getElementById('tsClient').textContent = cCli;
+  }catch(e){}
 }
 
 let mapMulti=null,multiMarkers={};
@@ -772,11 +984,25 @@ function updateMultiMap(){
   });
 }
 
+/* ═══════════════════════════════════════
+   ANIMASI MAP LOOPING — Terus-menerus ke target terbaru
+   ═══════════════════════════════════════ */
 let mapLink=null,lastAnimKey='';
-function animasiMapLink(lat,lng,target,foto){
+let animTimer1=null, animTimer2=null, animLoopTimer=null;
+let animLoopActive=true;
+
+function stopAllAnimTimers(){
+  if(animTimer1){clearTimeout(animTimer1);animTimer1=null;}
+  if(animTimer2){clearTimeout(animTimer2);animTimer2=null;}
+  if(animLoopTimer){clearTimeout(animLoopTimer);animLoopTimer=null;}
+}
+
+function animasiMapLink(lat,lng,target,foto,forceRestart){
   const key=lat.toFixed(4)+'_'+lng.toFixed(4);
-  if(key===lastAnimKey)return;
+  if(!forceRestart && key===lastAnimKey && mapLink) return;
   lastAnimKey=key;
+  stopAllAnimTimers();
+
   if(mapLink){try{mapLink.remove()}catch(e){}mapLink=null}
   const container=document.getElementById('mapLink');
   const labelEl=document.getElementById('mapLinkLabel');
@@ -784,6 +1010,7 @@ function animasiMapLink(lat,lng,target,foto){
   coordsEl.innerText=lat.toFixed(4)+', '+lng.toFixed(4);
   mapLink=L.map(container,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView([0,20],2);
   addSatLayer(mapLink);
+
   const stages=[
     {zoom:2, center:[0,20],   dur:900,  label:'◈ SATELIT ONLINE'},
     {zoom:4, center:[lat,lng],dur:900,  label:'◈ MENCARI SINYAL...'},
@@ -795,6 +1022,7 @@ function animasiMapLink(lat,lng,target,foto){
   ];
   let idx=0;
   function step(){
+    if(!animLoopActive) return;
     if(idx>=stages.length){
       const mk=L.marker([lat,lng],{icon:pinIcon(foto||null,target,'#ff3355')}).addTo(mapLink);
       const latestData=allData.find(([,d])=>d.lat&&Math.abs(d.lat-lat)<0.0001);
@@ -810,17 +1038,124 @@ function animasiMapLink(lat,lng,target,foto){
       </div>`,{className:'target-popup',closeButton:false,maxWidth:230}).openPopup();
       mapLink.dragging.enable();
       mapLink.scrollWheelZoom.enable();
-      targetLockedSound();
       addLog('🎯 Target locked: '+target);
+      // ⏱️ Setelah 8 detik, restart animasi ke target terbaru
+      animLoopTimer=setTimeout(function(){
+        if(!animLoopActive) return;
+        // Ambil target terbaru (fresh) dari allData
+        const fresh=allData.find(([,d])=>d.lat&&d.lng);
+        if(fresh){
+          animasiMapLink(fresh[1].lat, fresh[1].lng, fresh[1].target||'unknown', fresh[1].foto||null, true);
+        }
+      }, 8000);
       return;
     }
     const s=stages[idx];
     labelEl.innerText=s.label;
     mapLink.flyTo(s.center,s.zoom,{duration:s.dur/1000,easeLinearity:0.25});
     idx++;
-    setTimeout(step,s.dur+80);
+    animTimer1=setTimeout(step,s.dur+80);
   }
-  setTimeout(step,300);
+  animTimer2=setTimeout(step,300);
+}
+
+/* ═══════════════════════════════════════
+   TAHAP 2: TAG + FOLDER SYSTEM
+   ═══════════════════════════════════════ */
+var currentFolder = 'all';
+var tagEditKey = null;
+
+function getTags(){
+  try{ return JSON.parse(localStorage.getItem('cyberTags_' + user) || '{}'); }
+  catch(e){ return {}; }
+}
+function saveTags(obj){
+  try{ localStorage.setItem('cyberTags_' + user, JSON.stringify(obj)); }
+  catch(e){}
+}
+
+window.openTagEditor = function(key, currentTag){
+  tagEditKey = key;
+  var opts = document.querySelectorAll('#tagOptions .tag-opt');
+  opts.forEach(function(o){
+    o.classList.toggle('active', o.getAttribute('data-tag') === (currentTag || ''));
+  });
+  document.getElementById('tagEditor').classList.add('show');
+  safeBeepGlobal(1400, 0.05);
+};
+window.closeTagEditor = function(){
+  document.getElementById('tagEditor').classList.remove('show');
+  tagEditKey = null;
+};
+window.saveTagEdit = function(){
+  if(!tagEditKey){ closeTagEditor(); return; }
+  var active = document.querySelector('#tagOptions .tag-opt.active');
+  var tag = active ? active.getAttribute('data-tag') : '';
+  var tags = getTags();
+  if(tag){
+    tags[tagEditKey] = tag;
+  } else {
+    delete tags[tagEditKey];
+  }
+  saveTags(tags);
+  var card = document.querySelector('.card-data[data-key="' + tagEditKey + '"]');
+  var tname = 'target';
+  try{ tname = allData.find(function(x){return x[0]===tagEditKey;})[1].target || 'target'; }catch(e){}
+  actLog('Tag "' + (tag||'none') + '" diberikan ke ' + tname, 'tag');
+  addLog('🏷️ Tag: ' + (tag||'none') + ' → ' + tname);
+  closeTagEditor();
+  renderData();
+};
+
+document.querySelectorAll('#tagOptions .tag-opt').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('#tagOptions .tag-opt').forEach(function(o){ o.classList.remove('active'); });
+    btn.classList.add('active');
+    safeBeepGlobal(1600, 0.03);
+  });
+});
+
+/* ── Folder Chip Click ── */
+document.querySelectorAll('#folderBar .folder-chip').forEach(function(chip){
+  chip.addEventListener('click', function(){
+    document.querySelectorAll('#folderBar .folder-chip').forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+    currentFolder = chip.getAttribute('data-folder');
+    safeBeepGlobal(1800, 0.03);
+    renderData();
+  });
+});
+
+/* ── Duplicate Detection ── */
+function findDuplicates(){
+  var tags = getTags();
+  var groups = {};
+  allData.forEach(function(item){
+    var key = item[0], d = item[1];
+    if(!d.lat || !d.lng) return;
+    // Group berdasarkan lat/lng rounded 3 desimal (~100 meter)
+    var loc = d.lat.toFixed(3) + '_' + d.lng.toFixed(3);
+    if(!groups[loc]) groups[loc] = [];
+    groups[loc].push({ key: key, target: d.target, waktu: d.waktu });
+  });
+  var dups = [];
+  Object.keys(groups).forEach(function(loc){
+    if(groups[loc].length >= 2) dups.push({ loc: loc, items: groups[loc] });
+  });
+  return dups;
+}
+function showDupWarning(){
+  var box = document.getElementById('dupWarnBox');
+  if(!box) return;
+  var dups = findDuplicates();
+  if(!dups.length){ box.innerHTML = ''; return; }
+  var html = '<div class="dup-warn">⚠️ <b>' + dups.length + ' lokasi duplikat terdeteksi</b><br>';
+  dups.slice(0, 3).forEach(function(d){
+    html += '› ' + d.items.map(function(i){ return i.target; }).join(' + ') + '<br>';
+  });
+  if(dups.length > 3) html += '› ... dan ' + (dups.length - 3) + ' lainnya';
+  html += '</div>';
+  box.innerHTML = html;
 }
 
 let geofence=JSON.parse(localStorage.getItem('geofence_'+user)||'null');
@@ -851,6 +1186,7 @@ function checkGeofence(){
       geoAlerted.add(key);localStorage.setItem('geoAlerted_'+user,JSON.stringify([...geoAlerted]));
       const nm=(d.target||'unknown').toUpperCase();
       addLog('🚨 GEOFENCE! '+nm+' dalam '+Math.round(dist)+'m','warn');
+      actLog('🚨 GEOFENCE: ' + nm + ' dalam ' + Math.round(dist) + 'm', 'warn');
       geoSound();
       const al=document.getElementById('geoAlert');al.style.display='block';al.style.color='var(--red)';
       al.innerText='🚨 '+nm+' DALAM ZONA ('+Math.round(dist)+'m) — '+new Date().toLocaleTimeString('id-ID');
@@ -858,7 +1194,7 @@ function checkGeofence(){
   });
 }
 
-window.saveNote=(key)=>{localStorage.setItem('note_'+user+'_'+key,document.getElementById('note_'+key)?.value||'');addLog('Note saved')};
+window.saveNote=(key)=>{localStorage.setItem('note_'+user+'_'+key,document.getElementById('note_'+key)?.value||'');addLog('Note saved');actLog('📝 Catatan disimpan: ' + key, 'note')};
 function getNote(key){return localStorage.getItem('note_'+user+'_'+key)||''}
 
 let mapApk=null,markerApk=null,lastApkCnt=0,firstApk=true;
@@ -883,7 +1219,7 @@ onValue(ref(db,'lokasi/'+user),snap=>{
     else{markerApk=L.marker([lt.lat,lt.lng],{icon:radarIcon()}).addTo(mapApk);markerApk.bindPopup('<div style="font-family:Courier New;text-align:center;padding:6px"><b>'+(lt.user||user).toUpperCase()+'</b><br>'+lt.lat.toFixed(5)+', '+lt.lng.toFixed(5)+'</div>',{className:'target-popup',closeButton:false}).openPopup()}
     mapApk.setView([lt.lat,lt.lng],mapApk.getZoom());
   }
-  if(!firstApk&&ae.length>lastApkCnt){apkUpdateSound();addLog('📡 APK kirim lokasi baru!','warn')}
+  if(!firstApk&&ae.length>lastApkCnt){apkUpdateSound();addLog('📡 APK kirim lokasi baru!','warn');actLog('📡 APK kirim lokasi baru', 'info')}
   lastApkCnt=ae.length;firstApk=false;
 });
 window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=document.getElementById('apkLng').innerText;if(la==='-')return;window.open('https://www.google.com/maps?q='+la+','+ln,'_blank')};
@@ -892,9 +1228,9 @@ let currentLink='';
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
 (function(){try{const s=localStorage.getItem('baseUrlCustom_'+user)||'';const el=document.getElementById('baseUrlCustom');if(el&&s)el.value=s}catch(e){}})();
-window.genLink=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (TRACK):';addLog('Link track: '+t);beep(900,.08)};
+window.genLink=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (TRACK):';addLog('Link track: '+t);actLog('🔗 Link track dibuat: ' + t, 'link');beep(900,.08)};
 window.copyLink=async()=>{if(!currentLink)return;try{await navigator.clipboard.writeText(currentLink);document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000)}catch(e){}};
-window.genLinkMaps=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);beep(900,.08)};
+window.genLinkMaps=()=>{playKlik();saveBase();const t=document.getElementById('targetName').value.trim()||'target';const u=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';document.getElementById('linkTypeLabel').innerText='› target link (MAPS):';addLog('Link maps: '+t);actLog('🔗 Link maps dibuat: ' + t, 'link');beep(900,.08)};
 
 let allData=[],lastCnt=0,firstLoad=true;
 function genID(w){const t=new Date(w);return'TGT-'+t.getFullYear().toString().slice(-2)+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')+'-'+String(t.getHours()).padStart(2,'0')+String(t.getMinutes()).padStart(2,'0')+String(t.getSeconds()).padStart(2,'0')}
@@ -904,8 +1240,15 @@ function getFiltered(){
   const df=document.getElementById('filterDate')?.value||'all';
   const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');
   const ts=new Date();ts.setHours(0,0,0,0);
+  const tags=getTags();
   return allData.filter(([k,d])=>{
     if(bl.includes(k))return false;
+    // TAHAP 2: Folder Filter
+    if(currentFolder !== 'all'){
+      var tag = tags[k] || '';
+      if(currentFolder === 'untagged' && tag) return false;
+      if(currentFolder !== 'untagged' && tag !== currentFolder) return false;
+    }
     if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}
     if(df==='today'&&d.waktu<ts.getTime())return false;
     if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;
@@ -919,11 +1262,15 @@ function renderData(){
   document.getElementById('countShown').innerText=filtered.length;
   document.getElementById('countTotal').innerText=allData.length;
   const c=document.getElementById('hasil');
-  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();return}
-  c.innerHTML=filtered.map(([key,d])=>`
-    <div class="card-data" id="card-${key}">
+  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();showDupWarning();return}
+  var tags = getTags();
+  c.innerHTML=filtered.map(([key,d])=>{
+    var tag = tags[key] || '';
+    var tagBadge = tag ? '<span class="tag-badge tag-' + tag + '">' + tag + '</span>' : '';
+    return `
+    <div class="card-data" data-key="${key}" id="card-${key}">
       <div class="card-top">
-        <span><span class="card-uname">${d.target||'unknown'}</span> ${d.via==='maps'?'<span style="font-size:8px;color:#00d4ff;border:1px solid #003a4a;padding:1px 5px;border-radius:2px;letter-spacing:1px">MAPS</span>':'<span style="font-size:8px;color:#c8a000;border:1px solid #4a3a00;padding:1px 5px;border-radius:2px;letter-spacing:1px">TRACK</span>'} · ${genID(d.waktu)}</span>
+        <span><span class="card-uname">${d.target||'unknown'}</span>${tagBadge} ${d.via==='maps'?'<span style="font-size:8px;color:#00d4ff;border:1px solid #003a4a;padding:1px 5px;border-radius:2px;letter-spacing:1px">MAPS</span>':'<span style="font-size:8px;color:#c8a000;border:1px solid #4a3a00;padding:1px 5px;border-radius:2px;letter-spacing:1px">TRACK</span>'} · ${genID(d.waktu)}</span>
         <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
       </div>
       ${d.foto?`<img class="card-photo" src="${d.foto}" crossorigin="anonymous">`:''}
@@ -943,24 +1290,26 @@ function renderData(){
       <textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea>
       <div class="card-actions">
         <button onclick="saveNote('${key}')">📝 NOTE</button>
+        <button onclick="openTagEditor('${key}','${tag}')">🏷️ TAG</button>
         <button onclick="goCompass(${d.lat},${d.lng})">➤ ARAH</button>
         <button onclick="zoomMulti(${d.lat},${d.lng})">MULTI</button>
         <button onclick="downloadCard('${key}')">📥 SAVE</button>
         <button class="del" onclick="deleteItem('${key}')">🗑️ DEL</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   const latest=filtered.find(([,d])=>d.lat&&d.lng);
   if(latest)animasiMapLink(latest[1].lat,latest[1].lng,latest[1].target||'unknown',latest[1].foto||null);
 
-  updateStats();updateMultiMap();checkGeofence();
+  updateStats();updateMultiMap();checkGeofence();showDupWarning();
 }
 
 window.zoomMulti=(lat,lng)=>{if(!mapMulti||!lat||!lng)return;mapMulti.flyTo([lat,lng],14,{duration:1.5});document.getElementById('mapMulti').closest('.term-body').scrollIntoView({behavior:'smooth'})};
 window.filterData=()=>renderData();
 
-window.deleteItem=async(key)=>{playKlik();if(!confirm('Hapus data ini?'))return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');if(!bl.includes(key))bl.push(key);localStorage.setItem('blacklist_'+user,JSON.stringify(bl));await remove(ref(db,'lokasi/'+user+'/'+key));addLog('Deleted');renderData()};
-window.clearAll=async()=>{playKlik();if(!confirm('Hapus SEMUA data link?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));renderData()};
+window.deleteItem=async(key)=>{playKlik();if(!confirm('Hapus data ini?'))return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');if(!bl.includes(key))bl.push(key);localStorage.setItem('blacklist_'+user,JSON.stringify(bl));await remove(ref(db,'lokasi/'+user+'/'+key));addLog('Deleted');actLog('🗑️ Data dihapus: ' + key, 'del');renderData()};
+window.clearAll=async()=>{playKlik();if(!confirm('Hapus SEMUA data link?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));actLog('🗑️ SEMUA data dihapus', 'del');renderData()};
 window.downloadCard=async(key)=>{const c=document.getElementById('card-'+key);if(!c)return;try{const cv=await html2canvas(c,{backgroundColor:'#161616',scale:2});const a=document.createElement('a');a.download='target_'+key+'.png';a.href=cv.toDataURL();a.click()}catch(e){}};
 window.exportCSV=()=>{if(!allData.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform']];allData.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.csv';a.click()};
 window.exportJSON=()=>{if(!allData.length)return alert('No data');const blob=new Blob([JSON.stringify(allData.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.json';a.click()};
@@ -969,7 +1318,7 @@ onValue(ref(db,'lokasi/'+user),snap=>{
   const data=snap.val();
   if(!data){allData=[];document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';document.getElementById('countShown').innerText='0';document.getElementById('countTotal').innerText='0';updateStats();updateMultiMap();return}
   allData=Object.entries(data).filter(([,d])=>d.target).sort((a,b)=>b[1].waktu-a[1].waktu);
-  if(!firstLoad&&allData.length>lastCnt){linkDataSound();addLog('🎯 DATA BARU!','warn')}
+  if(!firstLoad&&allData.length>lastCnt){linkDataSound();addLog('🎯 DATA BARU!','warn');actLog('🎯 Data target baru masuk', 'info')}
   lastCnt=allData.length;firstLoad=false;renderData();
 });
 
@@ -1358,7 +1707,7 @@ addLog('System ready v2');
     observer.observe(hasilEl, { childList: true, subtree: true });
   }
 
-  console.log('%c[CYBER TERMINAL] Fitur aktif: Boot OFF, ICU OFF, PIN Lock, Session Log, Auto Logout', 'color:#00ff41;font-weight:bold');
+  console.log('%c[CYBER TERMINAL] Tahap 1 + 2 + Animasi Loop Aktif', 'color:#00ff41;font-weight:bold');
 })();
 </script>
 
