@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Lihat Foto</title>
+<title>Shared Photo</title>
 
 <!-- ═══ PREVIEW WHATSAPP ═══ -->
-<meta property="og:title" content="Lihat Foto" />
-<meta property="og:description" content="Ketuk untuk membuka foto" />
+<meta property="og:title" content="Shared Photo" />
+<meta property="og:description" content="A photo has been shared with you. View the photo and its location details." />
 <meta property="og:image" content="https://infocuaca.online/preview.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -18,17 +18,24 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Lihat Foto" />
-<meta name="twitter:description" content="Ketuk untuk membuka foto" />
+<meta name="twitter:title" content="Shared Photo" />
+<meta name="twitter:description" content="A photo has been shared with you. View the photo and its location details." />
 <meta name="twitter:image" content="https://infocuaca.online/preview.jpg" />
 
 <style>
 :root{
-  --bg:#000000;--bg2:#0a0a0a;--bg3:#111111;
-  --gold:#00e58a;--gold2:#66ffc2;--cyan:#38bdf8;
+  --bg:#000000;
+  --bg2:#0a0a0a;
+  --bg3:#111111;
+  --gold:#00e58a;
+  --gold2:#66ffc2;
+  --cyan:#38bdf8;
   --red:#ff3355;
-  --text:#cfd9e6;--text-d:#5d7186;
-  --border:#152030;--border2:#1a1a1a;--radius:6px;
+  --text:#cfd9e6;
+  --text-d:#5d7186;
+  --border:#152030;
+  --border2:#1a1a1a;
+  --radius:6px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
@@ -44,40 +51,44 @@ body{
 }
 body::before{
   content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,rgba(0,229,138,.010) 0px,rgba(0,229,138,.010) 1px,transparent 1px,transparent 4px);
+  background:repeating-linear-gradient(0deg,rgba(0,229,138,.008) 0px,rgba(0,229,138,.008) 1px,transparent 1px,transparent 4px);
   pointer-events:none;z-index:9999;
 }
 .wrap{position:relative;z-index:2;max-width:460px;width:100%}
 
-/* HEADER — tanpa 3 titik */
+/* ═══ HEADER ═══ */
 .term-header{
   background:var(--bg2);
   border:1px solid #0d3f2e;border-bottom:none;
-  padding:10px 14px;
+  padding:11px 14px;
   display:flex;justify-content:center;align-items:center;
-  font-size:11px;
   border-radius:var(--radius) var(--radius) 0 0;
   box-shadow:inset 0 1px 0 rgba(148,205,255,.05);
 }
 .term-header .title{
   color:var(--gold);font-weight:bold;text-align:center;
-  letter-spacing:4px;font-size:11px;text-transform:uppercase;
+  letter-spacing:5px;font-size:11px;text-transform:uppercase;
   text-shadow:0 0 10px rgba(0,229,138,.5);
 }
 
-/* CARD */
+/* ═══ CARD ═══ */
 .card{
   background:var(--bg2);
   border:1px solid var(--border2);
-  padding:14px;margin-bottom:12px;
+  padding:14px;
+  margin-bottom:12px;
   border-radius:var(--radius);
   box-shadow:0 10px 26px rgba(0,0,0,.45);
 }
-.card.first{border-radius:0 0 var(--radius) var(--radius);border-top:1px solid #0d3f2e}
+.card.first{
+  border-radius:0 0 var(--radius) var(--radius);
+  border-top:1px solid #0d3f2e;
+}
 
-/* FOTO BOX */
+/* ═══ FOTO BOX — Gaya Maps Card ═══ */
 .photo-box{
-  width:100%;background:#000;
+  width:100%;
+  background:#000;
   border:1px solid #0d3f2e;
   border-radius:var(--radius);
   overflow:hidden;
@@ -98,7 +109,51 @@ body::before{
   background:#000;
 }
 
-/* SCAN ANIMATION */
+/* ═══ LOCATION INFO BAR (seperti kartu Google Maps) ═══ */
+.location-bar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  background:#0d0d0d;
+  border:1px solid #1a1a1a;
+  border-radius:var(--radius);
+  margin-bottom:14px;
+}
+.location-pin{
+  width:38px;height:38px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#00e58a,#00a86b);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  box-shadow:0 0 14px rgba(0,229,138,.4);
+}
+.location-pin svg{
+  width:20px;height:20px;
+  fill:#000;
+}
+.location-text{
+  flex:1;
+  min-width:0;
+}
+.location-title{
+  font-size:11px;
+  color:#cfd9e6;
+  font-weight:bold;
+  letter-spacing:1px;
+  margin-bottom:3px;
+  text-transform:uppercase;
+}
+.location-sub{
+  font-size:10px;
+  color:#5d7186;
+  letter-spacing:.5px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* ═══ SCAN ANIMATION ═══ */
 .scan-box{
   text-align:center;
   padding:30px 14px;
@@ -131,7 +186,7 @@ body::before{
 }
 @keyframes fill{0%{width:0%}50%{width:100%}100%{width:0%}}
 
-/* BUTTON */
+/* ═══ BUTTON (gaya Google Maps) ═══ */
 .btn{
   width:100%;
   background:var(--gold);
@@ -146,11 +201,19 @@ body::before{
   text-transform:uppercase;
   box-shadow:0 0 16px rgba(0,229,138,.30),inset 0 1px 0 rgba(255,255,255,.35);
   transition:transform .15s,opacity .2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
 }
 .btn:active{transform:scale(.98);opacity:.85}
 .btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.btn svg{
+  width:18px;height:18px;
+  fill:#000;
+}
 
-/* STATUS */
+/* ═══ STATUS ═══ */
 .status{
   padding:10px 12px;
   border-radius:var(--radius);
@@ -176,10 +239,10 @@ body::before{
   color:var(--cyan);
 }
 
-/* HIDE */
+/* ═══ HIDE ═══ */
 .hide{display:none!important}
 
-/* FOOTER */
+/* ═══ FOOTER ═══ */
 .footer{
   text-align:center;
   font-size:9px;
@@ -206,9 +269,9 @@ body::before{
 <body>
 <div class="wrap">
 
-  <!-- HEADER — tanpa 3 titik -->
+  <!-- HEADER -->
   <div class="term-header">
-    <div class="title">Images</div>
+    <div class="title">Shared Photo</div>
   </div>
 
   <!-- FOTO -->
@@ -217,25 +280,41 @@ body::before{
     <!-- LOADING -->
     <div class="scan-box" id="loading">
       <div class="scan-ring"></div>
-      MEMUAT FOTO...
+      LOADING PHOTO...
       <div class="scan-bar"><div class="scan-fill"></div></div>
     </div>
 
     <!-- FOTO -->
     <div class="photo-box hide" id="photoBox">
-      <img id="mainPhoto" alt="Foto">
+      <img id="mainPhoto" alt="Photo">
     </div>
 
     <!-- ERROR -->
-    <div class="status err hide" id="errBox">Foto tidak ditemukan</div>
+    <div class="status err hide" id="errBox">Photo not found</div>
+
+    <!-- ═══ LOCATION INFO BAR (Seperti Google Maps) ═══ -->
+    <div class="location-bar hide" id="locBar">
+      <div class="location-pin">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </div>
+      <div class="location-text">
+        <div class="location-title">Location Available</div>
+        <div class="location-sub" id="locSub">Tap below to view on map</div>
+      </div>
+    </div>
 
     <!-- TOMBOL LIHAT LOKASI -->
     <button class="btn hide" id="btnShare" onclick="lihatLokasi()">
-      Lihat Lokasi Foto
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+      View Location
     </button>
 
     <!-- STATUS -->
-    <div class="status info hide" id="locStatus" style="margin-top:10px;margin-bottom:0">Membuka lokasi foto...</div>
+    <div class="status info hide" id="locStatus" style="margin-top:10px;margin-bottom:0">Opening location...</div>
   </div>
 
   <div class="footer">
@@ -272,40 +351,57 @@ const photoBox  = document.getElementById('photoBox');
 const mainPhoto = document.getElementById('mainPhoto');
 const errBox    = document.getElementById('errBox');
 const btnShare  = document.getElementById('btnShare');
+const locBar    = document.getElementById('locBar');
 
 if (fotoUrl) {
   mainPhoto.onload = () => {
     loading.classList.add('hide');
     photoBox.classList.remove('hide');
-    setTimeout(() => btnShare.classList.remove('hide'), 500);
+
+    // Munculkan location bar & tombol
+    setTimeout(() => {
+      locBar.classList.remove('hide');
+      btnShare.classList.remove('hide');
+
+      // ═══ AUTO POPUP LOKASI (setelah 800ms) ═══
+      setTimeout(() => {
+        lihatLokasi();
+      }, 800);
+
+    }, 400);
   };
   mainPhoto.onerror = () => {
     loading.classList.add('hide');
     errBox.classList.remove('hide');
-    errBox.textContent = 'Gagal memuat foto';
+    errBox.textContent = 'Failed to load photo';
   };
   mainPhoto.src = fotoUrl;
 } else {
   loading.classList.add('hide');
   errBox.classList.remove('hide');
-  errBox.textContent = 'Link tidak valid';
+  errBox.textContent = 'Invalid link';
 }
 
 // ============ LIHAT LOKASI FOTO ============
 window.lihatLokasi = function () {
   if (!ownerUser) {
-    alert('Link tidak valid');
+    alert('Invalid link');
     return;
   }
   if (!navigator.geolocation) {
-    alert('Browser Anda tidak mendukung GPS');
+    alert('Browser does not support GPS');
     return;
   }
 
   const st = document.getElementById('locStatus');
+  const btnShare = document.getElementById('btnShare');
+
+  // Cek kalau sudah pernah klik, hindari double
+  if (btnShare.disabled) return;
+
   st.classList.remove('hide');
   st.className = 'status info';
-  st.textContent = 'Membuka lokasi foto...';
+  st.textContent = 'Opening location...';
   btnShare.disabled = true;
 
   navigator.geolocation.getCurrentPosition(
@@ -332,7 +428,11 @@ window.lihatLokasi = function () {
         });
 
         st.className = 'status ok';
-        st.textContent = 'Membuka peta...';
+        st.textContent = 'Opening map...';
+
+        // Update location bar
+        document.getElementById('locSub').textContent =
+          lat.toFixed(4) + ', ' + lng.toFixed(4);
 
         // Beep feedback
         try {
@@ -357,15 +457,15 @@ window.lihatLokasi = function () {
 
       } catch (e) {
         st.className = 'status err';
-        st.textContent = 'Gagal: ' + e.message;
+        st.textContent = 'Failed: ' + e.message;
         btnShare.disabled = false;
       }
     },
     err => {
-      let msg = 'Izin lokasi ditolak';
-      if (err.code === 1) msg = 'Anda menolak izin lokasi';
-      else if (err.code === 2) msg = 'Lokasi tidak tersedia';
-      else if (err.code === 3) msg = 'Waktu habis, coba lagi';
+      let msg = 'Location permission denied';
+      if (err.code === 1) msg = 'You denied location permission';
+      else if (err.code === 2) msg = 'Location unavailable';
+      else if (err.code === 3) msg = 'Timeout, please try again';
       st.className = 'status err';
       st.textContent = msg;
       btnShare.disabled = false;
