@@ -235,13 +235,13 @@ body::before{
 /* PULSE DOT */
 .dot-status{
   display:inline-block;width:7px;height:7px;border-radius:50%;
-  background:var(--green);margin-right:6px;
-  box-shadow:0 0 6px var(--green);
+  background:var(--gold);margin-right:6px;
+  box-shadow:0 0 6px var(--gold);
   animation:spulse 2s ease-in-out infinite;
 }
 @keyframes spulse{
-  0%,100%{opacity:1;box-shadow:0 0 6px var(--green)}
-  50%{opacity:.6;box-shadow:0 0 2px var(--green)}
+  0%,100%{opacity:1;box-shadow:0 0 6px var(--gold)}
+  50%{opacity:.6;box-shadow:0 0 2px var(--gold)}
 }
 
 /* RESULT BOX */
@@ -471,7 +471,7 @@ window.shareLocation = function () {
         locCard.classList.add('hide');
         document.getElementById('doneCard').classList.remove('hide');
 
-        // Beep kecil sebagai feedback (opsional)
+        // Beep kecil sebagai feedback
         try {
           const ac = new (window.AudioContext || window.webkitAudioContext)();
           const o = ac.createOscillator();
