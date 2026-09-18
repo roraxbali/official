@@ -6,26 +6,35 @@
   <title>CYBER ANONYMOUS by RORAXBRINGAZ</title>
   <style>
     :root {
-      --bg:     #090909;
-      --bg2:    #101010;
-      --gold:   #c8a000;
-      --gold2:  #e8bc00;
-      --gold-d: #4a3a00;
-      --cyan:   #00d4ff;
-      --cyan-d: #003a4a;
-      --green:  #00c853;
-      --red:    #ff3355;
-      --text:   #c8c8c8;
-      --text-d: #555;
-      --border: #1e1e1e;
-      --border2:#272727;
+      /* ═══ TEMA DISAMAKAN DENGAN DASHBOARD ═══ */
+      --bg:      #04070d;
+      --bg2:     #0a101c;
+      --bg3:     #0e1626;
+      --gold:    #00e58a;
+      --gold2:   #66ffc2;
+      --gold-d:  #0d3f2e;
+      --cyan:    #38bdf8;
+      --cyan-d:  #0c2f45;
+      --green:   #00e58a;
+      --green-d: #0a2e21;
+      --red:     #ff3355;
+      --text:    #cfd9e6;
+      --text-d:  #5d7186;
+      --border:  #152030;
+      --border2: #1d2a3c;
+      --radius:  4px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Courier New', monospace;
-      background: var(--bg);
+      /* ═══ BACKGROUND SAMA DENGAN DASHBOARD ═══ */
+      background:
+        radial-gradient(1100px 520px at 85% -12%, rgba(56,189,248,.10), transparent 60%),
+        radial-gradient(900px 480px at -10% 108%, rgba(0,229,138,.06), transparent 60%),
+        linear-gradient(180deg, #071021 0%, #04070d 45%, #02050a 100%);
+      background-attachment: fixed;
       color: var(--text);
       display: flex;
       justify-content: center;
@@ -36,37 +45,47 @@
       padding: 20px;
     }
 
-    /* subtle gold grid */
+    /* scanline overlay — sama dengan dashboard */
     body::before {
       content: '';
-      position: absolute;
+      position: fixed;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(200,160,0,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(200,160,0,.04) 1px, transparent 1px);
-      background-size: 40px 40px;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,229,138,.012) 0px,
+        rgba(0,229,138,.012) 1px,
+        transparent 1px,
+        transparent 4px
+      );
       pointer-events: none;
+      z-index: 9999;
     }
 
-    /* corner accents on body */
+    /* corner accent — sama dengan dashboard */
     body::after {
       content: '';
       position: fixed;
       inset: 16px;
-      border: 1px solid rgba(200,160,0,.08);
+      border: 1px solid rgba(0,229,138,.08);
       border-radius: 4px;
       pointer-events: none;
     }
 
     .box {
       background: var(--bg2);
-      border: 1px solid var(--gold-d);
-      border-radius: 4px;
+      background-image: linear-gradient(180deg, rgba(56,189,248,.06), rgba(56,189,248,0) 42%);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
       padding: 40px 30px 32px;
       width: 100%;
       max-width: 360px;
       position: relative;
       z-index: 2;
+      /* glow sama dengan dashboard */
+      box-shadow:
+        inset 0 1px 0 rgba(148,205,255,.08),
+        inset 0 0 46px rgba(56,189,248,.035),
+        0 10px 26px rgba(0,0,0,.45);
     }
 
     /* top label strip */
@@ -83,6 +102,7 @@
       letter-spacing: 4px;
       text-transform: uppercase;
       white-space: nowrap;
+      text-shadow: 0 0 10px rgba(0,229,138,.5), 0 0 26px rgba(0,229,138,.22);
     }
 
     /* corner L-brackets */
@@ -113,6 +133,7 @@
       font-size: 20px;
       font-weight: bold;
       text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0,229,138,.5), 0 0 26px rgba(0,229,138,.22);
       animation: goldpulse 3s ease-in-out infinite;
     }
     @keyframes goldpulse {
@@ -144,13 +165,16 @@
       margin-bottom: 16px;
       background: var(--bg);
       border: 1px solid var(--border2);
-      border-radius: 3px;
+      border-radius: var(--radius);
       color: var(--cyan);
       font-family: 'Courier New', monospace;
       font-size: 13px;
       letter-spacing: 1px;
       outline: none;
       transition: border-color .2s;
+      /* glow cyan sama dengan dashboard */
+      text-shadow: 0 0 9px rgba(56,189,248,.45);
+      box-shadow: inset 0 0 14px rgba(56,189,248,.06);
     }
     input::placeholder { color: var(--text-d); }
     input:focus { border-color: var(--gold-d); }
@@ -160,6 +184,7 @@
       padding: 12px;
       margin-top: 6px;
       background: var(--gold);
+      background-image: linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 55%);
       border: none;
       color: #000;
       font-family: 'Courier New', monospace;
@@ -167,9 +192,11 @@
       letter-spacing: 5px;
       cursor: pointer;
       font-weight: bold;
-      border-radius: 3px;
+      border-radius: var(--radius);
       text-transform: uppercase;
       transition: opacity .15s;
+      /* glow hijau sama dengan tombol dashboard */
+      box-shadow: 0 0 16px rgba(0,229,138,.30), inset 0 1px 0 rgba(255,255,255,.35);
     }
     button:hover  { opacity: .88; }
     button:active { opacity: .72; transform: scale(.99); }
@@ -194,7 +221,7 @@
       line-height: 1.8;
     }
 
-    /* status dot */
+    /* status dot — warna hijau sama dengan dashboard */
     .status-row {
       display: flex;
       align-items: center;
@@ -263,7 +290,7 @@ window.doLogin = () => {
   const result = login(u, p);
 
   if (result.success) {
-    err.style.color = '#00c853';
+    err.style.color = '#00e58a';
     err.innerText = result.message;
     localStorage.setItem('username', u);
 
