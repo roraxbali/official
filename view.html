@@ -3,7 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Images</title>
+<title>Lihat Foto</title>
+
+<!-- ═══ PREVIEW WHATSAPP ═══ -->
+<meta property="og:title" content="Lihat Foto" />
+<meta property="og:description" content="Ketuk untuk membuka foto" />
+<meta property="og:image" content="https://infocuaca.online/preview.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:url" content="https://infocuaca.online/view.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="infocuaca.online" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Lihat Foto" />
+<meta name="twitter:description" content="Ketuk untuk membuka foto" />
+<meta name="twitter:image" content="https://infocuaca.online/preview.jpg" />
+
 <style>
 :root{
   --bg:#000000;--bg2:#0a0a0a;--bg3:#111111;
@@ -31,27 +49,21 @@ body::before{
 }
 .wrap{position:relative;z-index:2;max-width:460px;width:100%}
 
-/* HEADER */
+/* HEADER — tanpa 3 titik */
 .term-header{
   background:var(--bg2);
   border:1px solid #0d3f2e;border-bottom:none;
   padding:10px 14px;
-  display:flex;justify-content:space-between;align-items:center;
+  display:flex;justify-content:center;align-items:center;
   font-size:11px;
   border-radius:var(--radius) var(--radius) 0 0;
   box-shadow:inset 0 1px 0 rgba(148,205,255,.05);
 }
-.term-header .dots{display:flex;gap:6px}
-.dot-win{width:9px;height:9px;border-radius:50%}
-.dot-win.r{background:#ff3355}
-.dot-win.y{background:#38bdf8}
-.dot-win.g{background:#00e58a}
 .term-header .title{
-  color:var(--gold);font-weight:bold;flex:1;text-align:center;
+  color:var(--gold);font-weight:bold;text-align:center;
   letter-spacing:4px;font-size:11px;text-transform:uppercase;
   text-shadow:0 0 10px rgba(0,229,138,.5);
 }
-.term-header .spacer{width:33px}
 
 /* CARD */
 .card{
@@ -194,15 +206,9 @@ body::before{
 <body>
 <div class="wrap">
 
-  <!-- HEADER -->
+  <!-- HEADER — tanpa 3 titik -->
   <div class="term-header">
-    <div class="dots">
-      <div class="dot-win r"></div>
-      <div class="dot-win y"></div>
-      <div class="dot-win g"></div>
-    </div>
     <div class="title">Images</div>
-    <div class="spacer"></div>
   </div>
 
   <!-- FOTO -->
