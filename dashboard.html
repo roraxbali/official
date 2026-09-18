@@ -44,6 +44,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .map-box::before{top:0;left:0;border-top:2px solid var(--red);border-left:2px solid var(--red)}
 .map-box::after{bottom:0;right:0;border-bottom:2px solid var(--red);border-right:2px solid var(--red)}
 .map-inner{position:absolute;inset:0;width:100%;height:100%}
+/* Paksa latar leaflet HITAM supaya tidak putih/terang saat tile gagal load */
+.leaflet-container{background:#05080f !important}
 /* Animasi kedap kedip MERAH untuk titik target */
 .pulse-ring{position:absolute;top:26px;left:27px;width:18px;height:18px;border-radius:50%;background:var(--red);transform:translate(-50%,-50%);animation:redPulse 1.5s ease-in-out infinite}
 @keyframes redPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,51,85,.7)}50%{opacity:.8;box-shadow:0 0 0 12px rgba(255,51,85,0)}}
@@ -210,7 +212,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #globeBox::before,#globeBox::after{content:'';position:absolute;z-index:500;pointer-events:none;width:16px;height:16px}
 #globeBox::before{top:0;left:0;border-top:2px solid var(--red);border-left:2px solid var(--red)}
 #globeBox::after{bottom:0;right:0;border-bottom:2px solid var(--red);border-right:2px solid var(--red)}
-#globeCanvas{width:100%;height:100%;display:block}
+#globeCanvas{width:100%;height:100%;display:block;background:#000 !important}
 .globe-hint{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.85);border:1px solid rgba(255,51,85,.4);color:var(--red);font-size:9px;padding:3px 8px;letter-spacing:1px}
 .globe-count{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.85);border:1px solid rgba(255,51,85,.4);color:var(--red);font-size:9px;padding:3px 8px;letter-spacing:1px}
 .radar-global{position:relative;width:100%;height:280px;background:radial-gradient(circle at 50% 50%,#1a0707 0%,#000 70%);border:1px solid rgba(255,51,85,.4);border-radius:4px;overflow:hidden;margin-top:10px}
@@ -550,10 +552,17 @@ window.actLog=actLog;
 function renderActLog(){var el=document.getElementById('actList');var cnt=document.getElementById('actCount');if(!el)return;var a=JSON.parse(localStorage.getItem('cyberAct_'+user)||'[]');if(cnt)cnt.textContent=a.length+' aktivitas';if(!a.length){el.innerHTML='<div class="empty">Belum ada aktivitas</div>';return}el.innerHTML=a.map(function(x){var t=new Date(x.waktu).toLocaleTimeString('id-ID');return '<div class="act-item type-'+x.type+'"><span class="at">'+t+'</span> · <span class="am">'+x.msg+'</span></div>';}).join('')}
 window.clearActLog=function(){if(!confirm('Hapus semua riwayat aktivitas?'))return;localStorage.removeItem('cyberAct_'+user);renderActLog();};
 renderActLog();
-// MAP TILES: NIGHT BLACK MARBLE (CITY LIGHTS) MODE - SESUAI GAMBAR REFERENSI
-const SAT_URL='https://server.arcgisonline.com/ArcGIS/rest/services/World/BlackMarble_2016/MapServer/tile/{z}/{y}/{x}';
-const LBL_URL='https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
-function addSatLayer(map){L.tileLayer(SAT_URL,{maxZoom:19}).addTo(map);L.tileLayer(LBL_URL,{maxZoom:19,opacity:0.9}).addTo(map)}
+// MAP TILES: NIGHT/DARK MODE - CITY LIGHTS STYLE (CartoDB Dark Matter - reliable)
+const SAT_URL='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const SAT_SUBS=['a','b','c','d'];
+function addSatLayer(map){
+  L.tileLayer(SAT_URL,{
+    maxZoom:19,
+    subdomains:SAT_SUBS,
+    attribution:''
+  }).addTo(map);
+  // Overlay glow untuk efek city-lights keemasan di area padat (via CartoDB dark_all sudah include)
+}
 function pinIcon(foto,name,color){color=color||'#ff3355';const ini=(name||'?').charAt(0).toUpperCase();const imgEl=foto?`<image href="${foto}" x="9" y="8" width="36" height="36" clip-path="url(#cp)" preserveAspectRatio="xMidYMid slice"/>`:`<text x="27" y="31" text-anchor="middle" font-family="Courier New" font-size="15" font-weight="bold" fill="#000">${ini}</text>`;const svg=`<svg width="54" height="72" viewBox="0 0 54 72" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="cp"><circle cx="27" cy="26" r="17"/></clipPath></defs><path d="M27 1C13.2 1 2 12.2 2 26C2 44 27 71 27 71C27 71 52 44 52 26C52 12.2 40.8 1 27 1Z" fill="${color}" stroke="rgba(0,0,0,.4)" stroke-width="1.5"/><circle cx="27" cy="26" r="19" fill="white"/><circle cx="27" cy="26" r="17" fill="${foto?'transparent':'#eef4fb'}"/>${imgEl}<circle cx="27" cy="26" r="17" fill="none" stroke="${color}" stroke-width="2"/></svg>`;return L.divIcon({html:`<div style="text-align:center;position:relative">${svg}<div class="pulse-ring"></div><div style="font-family:'Courier New';font-size:9px;color:#ff3355;font-weight:bold;letter-spacing:1px;margin-top:1px;white-space:nowrap;background:rgba(0,0,0,.88);padding:2px 5px;border:1px solid rgba(255,51,85,.4);border-radius:2px;display:inline-block">${(name||'').toUpperCase()}</div></div>`,className:'',iconSize:[80,92],iconAnchor:[40,71],popupAnchor:[0,-72]})}
 function radarIcon(){return L.divIcon({html:'<div style="position:relative;width:140px;height:140px"><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border:1px solid rgba(255,51,85,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;border:1px solid rgba(255,51,85,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;border:1px solid rgba(255,51,85,.5);border-radius:50%"></div><div style="position:absolute;top:50%;left:50%;width:65px;height:65px;margin-top:-1px;transform-origin:0% 50%;background:linear-gradient(90deg,rgba(255,51,85,.9) 0%,rgba(255,51,85,.4) 40%,transparent 100%);animation:sweepRotate 2s linear infinite"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;background:#ff3355;border-radius:50%;border:2px solid #fff;box-shadow:0 0 15px #ff3355"></div></div>',className:'',iconSize:[140,140],iconAnchor:[70,70]})}
 function updateStats(){const today=new Date();today.setHours(0,0,0,0);document.getElementById('statTotal').innerText=allData.length;document.getElementById('statToday').innerText=allData.filter(([,d])=>d.waktu>=today.getTime()).length;const km={};allData.forEach(([,d])=>{if(d.kota){const k=d.kota.split(',')[0].trim();km[k]=(km[k]||0)+1}});const tk=Object.entries(km).sort((a,b)=>b[1]-a[1])[0];document.getElementById('statKota').innerText=tk?tk[0].substring(0,14):'—';const pm={};allData.forEach(([,d])=>{if(d.platform){pm[d.platform]=(pm[d.platform]||0)+1}});const tp=Object.entries(pm).sort((a,b)=>b[1]-a[1])[0];document.getElementById('statPlatform').innerText=tp?tp[0].substring(0,12):'—';try{var tm=JSON.parse(localStorage.getItem('cyberTags_'+user)||'{}');var cv=0,cs=0,cc=0;allData.forEach(function(it){var t=tm[it[0]]||'';if(t==='VIP')cv++;else if(t==='Suspect')cs++;else if(t==='Client')cc++;});document.getElementById('tsVIP').textContent=cv;document.getElementById('tsSuspect').textContent=cs;document.getElementById('tsClient').textContent=cc;}catch(e){}}
@@ -939,9 +948,23 @@ setTimeout(function(){renderPlatformChart();updateLocTime()},1500);
 setInterval(function(){renderPlatformChart()},3000);
 var globeScene,globeCamera,globeRenderer,globeGroup,globeMarkers=[],globeRotating=true,globeDragging=false,globePrevX=0,globePrevY=0,globePaused=false;
 function latLngToVector3(lat,lng,radius){var phi=(90-lat)*Math.PI/180;var theta=(lng+180)*Math.PI/180;var x=-radius*Math.sin(phi)*Math.cos(theta);var z=radius*Math.sin(phi)*Math.sin(theta);var y=radius*Math.cos(phi);return new THREE.Vector3(x,y,z)}
-function initGlobe(){var canvas=document.getElementById('globeCanvas');if(!canvas||typeof THREE==='undefined')return;var box=document.getElementById('globeBox');var W=box.clientWidth,H=box.clientHeight;globeScene=new THREE.Scene();globeCamera=new THREE.PerspectiveCamera(45,W/H,0.1,1000);globeCamera.position.z=2.8;globeRenderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});globeRenderer.setSize(W,H);globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));globeGroup=new THREE.Group();var loader=new THREE.TextureLoader();loader.crossOrigin='anonymous';var earthMat=new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:0.95,shininess:8,specular:0x224466});
-// Load NIGHT LIGHTS texture (city lights) - SESUAI GAMBAR REFERENSI
-loader.load('https://unpkg.com/three-globe/example/img/earth-night.jpg',function(t){t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;earthMat.map=t;earthMat.needsUpdate=true},undefined,function(){loader.load('https://unpkg.com/three-globe/example/img/earth-dark.jpg',function(t2){t2.minFilter=THREE.LinearFilter;t2.magFilter=THREE.LinearFilter;earthMat.map=t2;earthMat.needsUpdate=true})});
+function initGlobe(){var canvas=document.getElementById('globeCanvas');if(!canvas||typeof THREE==='undefined')return;var box=document.getElementById('globeBox');var W=box.clientWidth,H=box.clientHeight;globeScene=new THREE.Scene();globeCamera=new THREE.PerspectiveCamera(45,W/H,0.1,1000);globeCamera.position.z=2.8;globeRenderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});globeRenderer.setSize(W,H);globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));globeGroup=new THREE.Group();var loader=new THREE.TextureLoader();loader.crossOrigin='anonymous';var earthMat=new THREE.MeshPhongMaterial({color:0x111111,transparent:true,opacity:0.95,shininess:8,specular:0x224466});
+// Load NIGHT LIGHTS texture - multi-fallback CDN
+var _earthUrls=[
+  'https://cdn.jsdelivr.net/npm/three-globe@2.31.1/example/img/earth-night.jpg',
+  'https://unpkg.com/three-globe@2.31.1/example/img/earth-night.jpg',
+  'https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg',
+  'https://unpkg.com/three-globe/example/img/earth-dark.jpg'
+];
+var _urlIdx=0;
+function _loadNextEarth(){
+  if(_urlIdx>=_earthUrls.length)return;
+  loader.load(_earthUrls[_urlIdx],function(t){
+    t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;
+    earthMat.map=t;earthMat.needsUpdate=true;earthMat.color.set(0xffffff);
+  },undefined,function(){_urlIdx++;_loadNextEarth()});
+}
+_loadNextEarth();
 var earthGeo=new THREE.SphereGeometry(1,64,64);globeGroup.add(new THREE.Mesh(earthGeo,earthMat));var wireGeo=new THREE.SphereGeometry(1.006,36,24);
 // Red wireframe untuk border globe
 var wireMat=new THREE.MeshBasicMaterial({color:0xff3355,wireframe:true,transparent:true,opacity:0.10});globeGroup.add(new THREE.Mesh(wireGeo,wireMat));var glowGeo=new THREE.SphereGeometry(1.06,32,32);var glowMat=new THREE.MeshBasicMaterial({color:0xff3355,wireframe:true,transparent:true,opacity:0.05});globeGroup.add(new THREE.Mesh(glowGeo,glowMat));globeScene.add(new THREE.AmbientLight(0xffffff,0.8));var dir=new THREE.DirectionalLight(0xffffff,0.9);dir.position.set(5,3,5);globeScene.add(dir);globeScene.add(globeGroup);canvas.addEventListener('mousedown',function(e){globeDragging=true;globePrevX=e.clientX;globePrevY=e.clientY;globeRotating=false;globePaused=true});canvas.addEventListener('mousemove',function(e){if(!globeDragging)return;var dx=e.clientX-globePrevX;var dy=e.clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.clientX;globePrevY=e.clientY});window.addEventListener('mouseup',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});canvas.addEventListener('touchstart',function(e){if(e.touches.length===1){globeDragging=true;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY;globeRotating=false;globePaused=true}},{passive:true});canvas.addEventListener('touchmove',function(e){if(!globeDragging||e.touches.length!==1)return;var dx=e.touches[0].clientX-globePrevX;var dy=e.touches[0].clientY-globePrevY;globeGroup.rotation.y+=dx*0.005;globeGroup.rotation.x+=dy*0.005;globePrevX=e.touches[0].clientX;globePrevY=e.touches[0].clientY},{passive:true});canvas.addEventListener('touchend',function(){globeDragging=false;setTimeout(function(){if(!globeDragging){globeRotating=true;globePaused=false}},1500)});window.addEventListener('resize',function(){if(!globeRenderer)return;var w=box.clientWidth,h=box.clientHeight;globeCamera.aspect=w/h;globeCamera.updateProjectionMatrix();globeRenderer.setSize(w,h)});animateGlobe()}
@@ -1042,5 +1065,5 @@ setTimeout(renderSessions,2000);
   console.log('%c[UTILITY] Aktif','color:#38bdf8;font-weight:bold');
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3d257b7ac9a5a7c',t:'MTc4OTc1NTM5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3d2698c6ddd3841',t:'MTc4OTc1NjEyNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
