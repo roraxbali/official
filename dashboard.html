@@ -368,21 +368,25 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="koord-box" id="koordBox">
   <div class="koord-title">Lokasi Foto (untuk target lihat)</div>
   <div class="koord-hint">
-    › Isi koordinat lokasi yang mau ditampilkan ke target saat mereka klik tombol "Lihat Lokasi Foto"<br>
-    › Kosongkan jika tidak perlu — target akan lihat lokasi default
+    › Isi alamat lokasi di bawah ini — otomatis akan mencari koordinatnya.<br>
+    › Atau klik tombol "Pakai Lokasi Saya" untuk menggunakan lokasi Anda saat ini.
   </div>
   
+  <!-- FITUR BARU: INPUT ALAMAT DENGAN PENCARIAN OTOMATIS -->
+  <input id="dashCariAlamat" class="term-input" placeholder="Ketik alamat lengkap... (contoh: Monas Jakarta)" style="margin-bottom:8px">
+  <button class="term-btn outline" onclick="dashCariKoordinat()" style="margin-bottom:8px">🔍 Cari Koordinat dari Alamat</button>
+  
   <div class="geo-row">
-    <input id="dashLat" class="geo-inp" type="number" step="any" placeholder="Latitude (-8.4095)">
-    <input id="dashLng" class="geo-inp" type="number" step="any" placeholder="Longitude (115.1889)">
+    <input id="dashLat" class="geo-inp" type="number" step="any" placeholder="Latitude (otomatis)" readonly>
+    <input id="dashLng" class="geo-inp" type="number" step="any" placeholder="Longitude (otomatis)" readonly>
   </div>
   
   <input id="dashNamaLokasi" class="term-input" placeholder="Nama lokasi (opsional) — Pantai Kuta" style="margin-bottom:8px">
   
-  <!-- PERBAIKAN TOMBOL CLEAR MENGGUNAKAN GRID -->
+  <!-- PERBAIKAN TOMBOL CLEAR MENGGUNAKAN GRID, SIMBOL 📍 DIHILANGKAN -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
     <button class="term-btn outline" onclick="dashAmbilLokasiSaya()" style="margin:0;width:100%">
-      📍 Pakai Lokasi Saya
+      Pakai Lokasi Saya
     </button>
     <button class="term-btn danger" onclick="dashClearLokasi()" style="margin:0;width:100%">
       Clear
@@ -753,8 +757,8 @@ window.dashAmbilLokasiSaya = function(){
       document.getElementById('dashLng').value = lng;
       status.textContent = '✅ Lokasi: ' + lat + ', ' + lng + ' (±' + Math.round(pos.coords.accuracy) + 'm)';
       status.style.color = 'var(--green)';
-      if(window.addLog) addLog('📍 Lokasi foto diset: ' + lat + ', ' + lng, 'ok');
-      if(window.actLog) actLog('📍 Koordinat foto diambil', 'info');
+      if(window.addLog) addLog('Lokasi foto diset: ' + lat + ', ' + lng, 'ok');
+      if(window.actLog) actLog('Koordinat foto diambil', 'info');
       if(window.beep) beep(1800, 0.08);
     },
     err => {
@@ -766,10 +770,54 @@ window.dashAmbilLokasiSaya = function(){
   );
 };
 
+// FITUR BARU: CARI KOORDINAT DARI ALAMAT
+window.dashCariKoordinat = async function(){
+  const alamat = document.getElementById('dashCariAlamat').value.trim();
+  if(!alamat){
+    alert('Ketik alamat terlebih dahulu.');
+    return;
+  }
+  const status = document.getElementById('dashLokasiStatus');
+  status.textContent = '⏳ Mencari koordinat dari alamat...';
+  status.style.color = 'var(--gold)';
+  
+  try {
+    // Menggunakan Nominatim OpenStreetMap API (gratis, tanpa API key)
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(alamat) + '&limit=1';
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'CyberTerminal/1.0'
+      }
+    });
+    const data = await response.json();
+    
+    if(data && data.length > 0){
+      const lat = parseFloat(data[0].lat).toFixed(6);
+      const lng = parseFloat(data[0].lon).toFixed(6);
+      document.getElementById('dashLat').value = lat;
+      document.getElementById('dashLng').value = lng;
+      status.textContent = '✅ Ditemukan: ' + data[0].display_name.substring(0, 50) + '... (' + lat + ', ' + lng + ')';
+      status.style.color = 'var(--green)';
+      if(window.addLog) addLog('Koordinat ditemukan: ' + lat + ', ' + lng, 'ok');
+      if(window.actLog) actLog('Cari alamat: ' + alamat, 'info');
+      if(window.beep) beep(1800, 0.08);
+    } else {
+      status.textContent = '❌ Alamat tidak ditemukan. Coba lebih spesifik.';
+      status.style.color = 'var(--red)';
+      if(window.addLog) addLog('Alamat tidak ditemukan: ' + alamat, 'err');
+    }
+  } catch(e){
+    status.textContent = '❌ Gagal mencari: ' + e.message;
+    status.style.color = 'var(--red)';
+    if(window.addLog) addLog('Gagal cari alamat: ' + e.message, 'err');
+  }
+};
+
 window.dashClearLokasi = function(){
   document.getElementById('dashLat').value = '';
   document.getElementById('dashLng').value = '';
   document.getElementById('dashNamaLokasi').value = '';
+  document.getElementById('dashCariAlamat').value = '';
   const status = document.getElementById('dashLokasiStatus');
   status.textContent = 'Belum diset — target akan lihat lokasi default';
   status.style.color = '';
