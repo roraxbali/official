@@ -1,9 +1,23 @@
 export default function handler(req, res) {
-  // 1. Ambil parameter dari URL
-  // Kita gunakan req.url untuk mem-parsing manual jika req.query gagal
-  const { foto, u, lat, lng, nama } = req.query;
+  // 1. Ambil URL lengkap setelah tanda tanya (?)
+  const queryString = req.url.split('?')[1] || '';
   
-  // 2. Validasi apakah foto ada
+  // 2. Pecah berdasarkan tanda '&' untuk mendapatkan setiap parameter
+  const params = {};
+  queryString.split('&').forEach(param => {
+    const [key, value] = param.split('=');
+    if (key && value) {
+      params[key] = decodeURIComponent(value);
+    }
+  });
+
+  // 3. Ambil data dari params
+  const foto = params.foto;
+  const lat = params.lat;
+  const lng = params.lng;
+  const user = params.u || 'images';
+
+  // 4. Jika tidak ada foto, tampilkan error
   if (!foto) {
     return res.status(400).send(`
       <html>
@@ -15,24 +29,10 @@ export default function handler(req, res) {
     `);
   }
 
-  // 3. Decode URL foto agar bisa ditampilkan
-  const fotoUrl = decodeURIComponent(foto);
-  
-  // 4. Cek apakah lat dan lng ada. Jika tidak ada, coba baca dari URL mentah
-  let finalLat = lat;
-  let finalLng = lng;
-  
-  if (!finalLat || !finalLng) {
-    // Fallback: Baca manual dari URL jika req.query gagal
-    const urlParams = new URLSearchParams(req.url.split('?')[1]);
-    finalLat = urlParams.get('lat');
-    finalLng = urlParams.get('lng');
-  }
-
-  // 5. Tentukan apakah lokasi tersedia
-  const hasLocation = finalLat && finalLng;
+  // 5. Cek apakah lokasi tersedia
+  const hasLocation = lat && lng;
   const mapsLink = hasLocation 
-    ? `https://www.google.com/maps?q=${finalLat},${finalLng}` 
+    ? `https://www.google.com/maps?q=${lat},${lng}` 
     : '#';
 
   // 6. Tampilkan HTML
@@ -44,12 +44,12 @@ export default function handler(req, res) {
 <title>Foto Dibagikan</title>
 <meta property="og:title" content="Foto Dibagikan" />
 <meta property="og:description" content="Seseorang membagikan foto kepada Anda. Klik untuk melihat lokasinya." />
-<meta property="og:image" content="${fotoUrl}" />
+<meta property="og:image" content="${foto}" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="${fotoUrl}" />
+<meta name="twitter:image" content="${foto}" />
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background: #111; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
   .container { text-align: center; padding: 20px; max-width: 500px; width: 100%; }
@@ -62,7 +62,7 @@ export default function handler(req, res) {
 </head>
 <body>
   <div class="container">
-    <img src="${fotoUrl}" alt="Foto Dibagikan">
+    <img src="${foto}" alt="Foto Dibagikan">
     <br>
     ${hasLocation 
       ? `<a href="${mapsLink}" class="btn" target="_blank">📍 Lihat Lokasi Foto</a>`
