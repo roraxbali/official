@@ -1,27 +1,41 @@
 export default function handler(req, res) {
-  // 1. Ambil semua parameter dari URL, termasuk lat dan lng
+  // 1. Ambil parameter dari URL
+  // Kita gunakan req.url untuk mem-parsing manual jika req.query gagal
   const { foto, u, lat, lng, nama } = req.query;
   
-  // 2. Jika tidak ada foto, redirect ke halaman utama
+  // 2. Validasi apakah foto ada
   if (!foto) {
-    res.writeHead(302, { Location: 'https://infocuaca.online/view.html' });
-    res.end();
-    return;
+    return res.status(400).send(`
+      <html>
+        <body style="font-family: sans-serif; text-align: center; padding: 50px; background: #111; color: #fff;">
+          <h1>Link Tidak Valid</h1>
+          <p>Foto tidak ditemukan di link ini.</p>
+        </body>
+      </html>
+    `);
   }
-  
+
+  // 3. Decode URL foto agar bisa ditampilkan
   const fotoUrl = decodeURIComponent(foto);
-  const user = u || 'images';
-  const lokasiNama = nama || 'Lokasi Foto';
   
-  // 3. Cek apakah koordinat lat & lng tersedia
-  const hasLocation = lat && lng;
+  // 4. Cek apakah lat dan lng ada. Jika tidak ada, coba baca dari URL mentah
+  let finalLat = lat;
+  let finalLng = lng;
   
-  // 4. Buat link Google Maps jika koordinat tersedia
+  if (!finalLat || !finalLng) {
+    // Fallback: Baca manual dari URL jika req.query gagal
+    const urlParams = new URLSearchParams(req.url.split('?')[1]);
+    finalLat = urlParams.get('lat');
+    finalLng = urlParams.get('lng');
+  }
+
+  // 5. Tentukan apakah lokasi tersedia
+  const hasLocation = finalLat && finalLng;
   const mapsLink = hasLocation 
-    ? `https://www.google.com/maps?q=${lat},${lng}` 
+    ? `https://www.google.com/maps?q=${finalLat},${finalLng}` 
     : '#';
 
-  // 5. Tampilkan halaman HTML langsung (tanpa redirect ke domain lain)
+  // 6. Tampilkan HTML
   const html = `<!DOCTYPE html>
 <html lang="id">
 <head>
