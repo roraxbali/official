@@ -27,7 +27,7 @@ export default function handler(req, res) {
     `);
   }
 
-  // 3. Bangun URL redirect ke view.html (untuk JavaScript redirect)
+  // 3. Bangun URL redirect ke view.html
   let redirectUrl = 'https://infocuaca.online/view.html?foto=' + encodeURIComponent(foto) + '&u=' + encodeURIComponent(user);
   
   if (lat) redirectUrl += '&lat=' + lat;
@@ -35,7 +35,7 @@ export default function handler(req, res) {
   if (nama) redirectUrl += '&nama=' + encodeURIComponent(nama);
 
   // 4. Tampilkan HTML dengan Meta Tag Open Graph (untuk preview WhatsApp)
-  // Lalu redirect via JavaScript setelah halaman dimuat
+  // Lalu redirect ke view.html via JavaScript setelah delay
   const html = `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -52,7 +52,6 @@ export default function handler(req, res) {
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="infocuaca.online" />
-<meta property="og:url" content="https://official-brown-iota.vercel.app/api/p?foto=${encodeURIComponent(foto)}&u=${encodeURIComponent(user)}${lat ? '&lat=' + lat : ''}${lng ? '&lng=' + lng : ''}" />
 
 <!-- ═══ META TAG TWITTER CARD ═══ -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -70,10 +69,10 @@ export default function handler(req, res) {
 <!-- ═══ REDIRECT VIA JAVASCRIPT (SETELAH META TAG DIBACA) ═══ -->
 <script>
   // Redirect ke view.html setelah halaman dimuat
-  // Menggunakan setTimeout agar WhatsApp sempat membaca meta tag
+  // Menggunakan setTimeout 300ms agar WhatsApp sempat membaca meta tag
   setTimeout(function() {
     window.location.href = "${redirectUrl}";
-  }, 100);
+  }, 300);
 </script>
 
 </head>
