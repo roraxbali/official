@@ -5,29 +5,37 @@
   "start_url": "/dashboard.html",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "portrait-primary",
   "background_color": "#04070d",
   "theme_color": "#00e58a",
   "lang": "id",
   "dir": "ltr",
-  "categories": ["utilities", "security"],
+  "categories": ["utilities", "security", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg",
+      "src": "/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg",
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
@@ -35,20 +43,54 @@
     {
       "name": "Radar Server",
       "short_name": "Radar",
+      "description": "Pantau status server online/offline",
       "url": "/dashboard.html#radarGlobal",
-      "icons": [{ "src": "https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Peta Multi Target",
       "short_name": "Peta",
+      "description": "Lihat semua target di peta",
       "url": "/dashboard.html#mapMulti",
-      "icons": [{ "src": "https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Generate Link",
       "short_name": "Link",
+      "description": "Buat link tracking baru",
       "url": "/dashboard.html#targetName",
-      "icons": [{ "src": "https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Kompas Target",
+      "short_name": "Kompas",
+      "description": "Navigasi ke target",
+      "url": "/dashboard.html#compassPanel",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
