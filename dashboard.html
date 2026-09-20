@@ -1399,9 +1399,9 @@ setTimeout(renderSessions,2000);
     deferredPrompt = e;
     if (installBtn) {
       installBtn.classList.add('show');
-      installBtn.textContent = '📲 Install App';
+      installBtn.textContent = 'Install App';
     }
-    if (window.addLog) addLog('📲 Aplikasi bisa di-install ke home screen', 'ok');
+    if (window.addLog) addLog('Aplikasi bisa di-install ke home screen', 'ok');
   });
 
   window.pwaInstall = async function() {
@@ -1421,7 +1421,7 @@ setTimeout(renderSessions,2000);
 
   if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
     if (installBtn) installBtn.style.display = 'none';
-    if (window.addLog) addLog('📱 Berjalan sebagai PWA (standalone mode)', 'ok');
+    if (window.addLog) addLog('Berjalan sebagai PWA (standalone mode)', 'ok');
   }
 
   if ('serviceWorker' in navigator) {
