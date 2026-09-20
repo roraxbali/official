@@ -385,6 +385,63 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 #pwaInstallBtn.show{display:block}
 #pwaInstallBtn:active{transform:scale(.95)}
 @keyframes pwaBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* === UPGRADED FEATURES CSS === */
+.notify-panel .nt-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.notify-panel input{flex:1;min-width:120px;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:11px;padding:9px 10px;outline:none;border-radius:var(--radius)}
+.notify-panel .nt-status{font-size:10px;padding:8px;background:var(--bg3);border-radius:var(--radius);margin-top:8px;line-height:1.6}
+.timeline-controls{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.timeline-controls select,.timeline-controls input{background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:11px;padding:9px 10px;outline:none;border-radius:var(--radius)}
+.timeline-controls select{flex:1;min-width:120px}
+.timeline-map{width:100%;height:320px;border:1px solid var(--gold-d);border-radius:var(--radius);background:#000;position:relative;overflow:hidden}
+.timeline-slider{width:100%;margin:10px 0}
+.timeline-info{display:flex;justify-content:space-between;font-size:10px;color:var(--text-d);margin-top:6px}
+.link-manager-list{max-height:320px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:8px;background:#04070d}
+.link-m-item{padding:10px;border-left:3px solid var(--gold-d);background:#0a101c;margin-bottom:8px;border-radius:0 4px 4px 0}
+.link-m-item.expired{border-left-color:var(--red);opacity:.7}
+.link-m-item .lm-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.link-m-item .lm-name{color:var(--gold);font-weight:bold;font-size:11px;letter-spacing:1px}
+.link-m-item .lm-meta{font-size:9px;color:var(--text-d);margin-top:4px;line-height:1.6}
+.link-m-item .lm-url{font-size:9px;color:var(--cyan);word-break:break-all;background:#000;padding:6px;border-radius:3px;margin-top:6px;border:1px solid var(--border2)}
+.link-m-item .lm-actions{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.link-m-item .lm-actions button{background:transparent;border:1px solid var(--border2);color:var(--text-d);font-family:'Courier New',monospace;font-size:9px;padding:5px 8px;cursor:pointer;border-radius:3px}
+.link-m-item .lm-actions button:hover{border-color:var(--gold);color:var(--gold)}
+.link-m-item .lm-actions button.del:hover{border-color:var(--red);color:var(--red)}
+.health-grid{display:grid;grid-template-columns:1fr;gap:6px}
+.health-item{padding:10px;background:var(--bg3);border-left:3px solid var(--border2);border-radius:0 4px 4px 0;display:flex;justify-content:space-between;align-items:center}
+.health-item.online{border-left-color:var(--green)}
+.health-item.offline{border-left-color:var(--red)}
+.health-item.warning{border-left-color:var(--amber)}
+.health-item .h-name{color:var(--cyan);font-weight:bold;font-size:11px}
+.health-item .h-meta{font-size:9px;color:var(--text-d);margin-top:2px}
+.health-item .h-status{font-size:10px;font-weight:bold}
+.health-item.online .h-status{color:var(--green)}
+.health-item.offline .h-status{color:var(--red)}
+.health-item.warning .h-status{color:var(--amber)}
+.report-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.ai-summary-box{background:linear-gradient(180deg,rgba(0,229,138,.08),rgba(0,0,0,.4));border:1px solid var(--gold-d);border-radius:var(--radius);padding:14px;font-size:11px;line-height:1.8;color:var(--text)}
+.ai-summary-box b{color:var(--gold)}
+.ai-summary-box .ai-hl{color:var(--cyan);font-weight:bold}
+.team-list{max-height:260px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:8px;background:#04070d}
+.team-item{padding:8px 10px;background:#0a101c;border-left:2px solid var(--cyan-d);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.team-item.admin{border-left-color:var(--gold)}
+.team-item.viewer{border-left-color:var(--text-d)}
+.team-item .t-name{color:var(--cyan);font-weight:bold;font-size:11px}
+.team-item .t-role{font-size:8px;padding:2px 6px;border-radius:3px;letter-spacing:1px}
+.team-item .t-role.admin{background:rgba(0,229,138,.15);color:var(--gold);border:1px solid var(--gold-d)}
+.team-item .t-role.editor{background:rgba(56,189,248,.15);color:var(--cyan);border:1px solid var(--cyan-d)}
+.team-item .t-role.viewer{background:rgba(93,113,134,.1);color:var(--text-d);border:1px solid var(--border2)}
+.context-box{background:#000;border:1px solid var(--cyan-d);border-radius:var(--radius);padding:10px;margin-top:8px;font-size:10px;line-height:1.8}
+.context-box .ctx-k{color:var(--text-d);display:inline-block;min-width:90px;font-size:9px;letter-spacing:1px;text-transform:uppercase}
+.context-box .ctx-v{color:var(--cyan);font-weight:bold}
+.share-btns{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.share-btns button{flex:1;min-width:80px;background:transparent;border:1px solid var(--border2);color:var(--text);font-family:'Courier New',monospace;font-size:10px;padding:8px 6px;cursor:pointer;border-radius:var(--radius);letter-spacing:1px}
+.share-btns button.wa{border-color:#25D366;color:#25D366}
+.share-btns button.wa:hover{background:rgba(37,211,102,.1)}
+.share-btns button.tg{border-color:#0088cc;color:#38bdf8}
+.share-btns button.tg:hover{background:rgba(0,136,204,.1)}
+.share-btns button.qr{border-color:var(--gold-d);color:var(--gold)}
+
 </style>
 </head>
 <body>
@@ -682,6 +739,77 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body"><div class="prompt">[Activity] Riwayat Aktivitas</div><div class="sess-head"><span id="actCount">0 aktivitas</span><button onclick="clearActLog()">🗑️ HAPUS</button></div><div class="act-list" id="actList"><div class="empty">Belum ada aktivitas</div></div></div>
 <div class="term-body" id="compassPanel"><div class="prompt">[Nav] Kompas Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI — ikuti petunjuk arah, jarum & jarak.</div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn outline" id="cmpModeKoord" onclick="setCompassMode('koordinat')" style="margin:0">Koordinat</button><button class="term-btn outline" id="cmpModeUtm" onclick="setCompassMode('utm')" style="margin:0">UTM</button></div><div id="cmpRowKord"><div class="geo-row"><input id="cmpLat" class="geo-inp" placeholder="Latitude (-6.2...)" type="number" step="any"><input id="cmpLng" class="geo-inp" placeholder="Longitude (106.8...)" type="number" step="any"></div></div><div id="cmpRowUtm" style="display:none"><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› contoh: <b style="color:var(--cyan)">54M</b> · <b style="color:var(--cyan)">222161</b> · <b style="color:var(--cyan)">9497555</b></div><div class="geo-row"><input id="cmpZoneT" class="geo-inp" placeholder="Zona (54M)" autocomplete="off" style="max-width:96px"><input id="cmpEast" class="geo-inp" placeholder="Easting" type="number" step="any"><input id="cmpNorth" class="geo-inp" placeholder="Northing" type="number" step="any"></div></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn" onclick="startCompass()" style="margin:0">Mulai</button><button class="term-btn danger" onclick="stopCompass()" style="margin:0;flex:0 0 auto;width:auto;padding:0 18px">Stop</button></div><button class="term-btn outline" onclick="compassLatest()" style="margin:0 0 12px">Pakai Target Terbaru</button><div class="cmp-wrap"><div class="cmp-dial"><div class="cmp-ticks"></div><div class="cmp-rose" id="cmpRose"><span class="rl u">U</span><span class="rl t">T</span><span class="rl s">S</span><span class="rl b">B</span><span class="rl d tl">TL</span><span class="rl d tg">TG</span><span class="rl d bd">BD</span><span class="rl d bl">BL</span></div><div class="cmp-needle" id="cmpNeedle"><div class="nd-up"></div><div class="nd-dn"></div></div><div class="cmp-cap"></div><div class="cmp-topmark">▲</div></div><div class="cmp-read"><div class="cmp-dist" id="cmpDist">--</div><div class="cmp-sub" id="cmpBear">BEARING --</div></div></div><div class="cmp-guide" id="cmpGuide"><span class="g-arrow" id="cmpArrow">◈</span><span class="g-txt" id="cmpGuideTxt">Isi tujuan lalu klik MULAI — petunjuk arah menuju koordinat akan muncul di sini</span></div><div class="term-info" style="margin-top:12px"><div><span class="k">TUJUAN</span><span class="v" id="cmpTarget">-</span></div><div><span class="k">POSISI</span><span class="v" id="cmpPos">-</span></div><div><span class="k">POSISI UTM</span><span class="v" id="cmpUtm">-</span></div><div><span class="k">AKURASI</span><span class="v" id="cmpAcc">-</span></div><div><span class="k">HEADING</span><span class="v" id="cmpHead">-</span></div></div><div class="geo-status" id="cmpStatus" style="margin-top:10px;margin-bottom:0">Siap — isi tujuan lalu MULAI</div></div>
 </div>
+
+<!-- === UPGRADED: NOTIFIKASI REAL-TIME === -->
+<div class="term-body notify-panel"><div class="prompt">[Notify] Push & Telegram Alert</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› dapatkan notif instan saat target baru masuk / masuk geofence:</div>
+<div class="nt-row"><button class="term-btn outline" onclick="requestPushPermission()" style="margin:0;flex:1">🔔 Aktifkan Push Browser</button><button class="term-btn outline" onclick="testNotify()" style="margin:0;flex:1">🔊 Test Notif</button></div>
+<div style="font-size:10px;color:var(--gold);margin:12px 0 6px;letter-spacing:1px">› TELEGRAM BOT (opsional):</div>
+<div class="nt-row"><input id="tgBotToken" placeholder="Bot Token (123456:ABC...)" autocomplete="off"><input id="tgChatId" placeholder="Chat ID (123456789)" autocomplete="off"></div>
+<div class="nt-row"><button class="term-btn outline" onclick="saveTelegramConfig()" style="margin:0;flex:1">💾 Simpan Telegram</button><button class="term-btn outline" onclick="testTelegram()" style="margin:0;flex:1">📤 Test Telegram</button></div>
+<div class="nt-status" id="notifyStatus">Push: <span id="pushStatus">belum diaktifkan</span> · Telegram: <span id="tgStatus">belum diset</span></div>
+<div style="display:flex;gap:6px;margin-top:8px"><label style="font-size:10px;color:var(--text-d);display:flex;align-items:center;gap:6px"><input type="checkbox" id="notifyNewTarget" checked> Notif target baru</label><label style="font-size:10px;color:var(--text-d);display:flex;align-items:center;gap:6px"><input type="checkbox" id="notifyGeofence" checked> Notif geofence</label><label style="font-size:10px;color:var(--text-d);display:flex;align-items:center;gap:6px"><input type="checkbox" id="notifyOffline" checked> Notif offline</label></div>
+</div>
+
+<!-- === UPGRADED: MANAJEMEN LINK AKTIF === -->
+<div class="term-body"><div class="prompt">[Links] Manajemen Link Aktif</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› semua link tracking yang pernah kamu buat — auto revoke setelah expired:</div>
+<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap"><select id="linkFilterType" onchange="renderLinkManager()" style="flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:10px;padding:8px;border-radius:4px"><option value="all">Semua Tipe</option><option value="TRACK">TRACK</option><option value="MAPS">MAPS</option><option value="FOTO">Share Loc 1</option><option value="DYNAMIC FOTO">Share Loc 2</option></select><button class="term-btn danger" onclick="clearExpiredLinks()" style="margin:0;width:auto;padding:0 12px">🗑️ Hapus Expired</button><button class="term-btn outline" onclick="clearAllLinks()" style="margin:0;width:auto;padding:0 12px">Clear All</button></div>
+<div class="link-manager-list" id="linkManagerList"><div class="empty">Belum ada link</div></div>
+<div class="term-info" style="margin-top:10px"><div><span class="k">TOTAL LINK</span><span class="v" id="lmTotal">0</span></div><div><span class="k">AKTIF</span><span class="v" id="lmActive" style="color:var(--green)">0</span></div><div><span class="k">EXPIRED</span><span class="v" id="lmExpired" style="color:var(--red)">0</span></div></div>
+</div>
+
+<!-- === UPGRADED: TIMELINE PLAYBACK === -->
+<div class="term-body"><div class="prompt">[Timeline] Playback Jejak Target</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› lihat perjalanan target dari waktu ke waktu — animasi polyline:</div>
+<div class="timeline-controls"><select id="playbackTargetSelect"><option value="">— Pilih Target —</option></select><select id="playbackDateFilter"><option value="all">Semua Waktu</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div>
+<div class="timeline-controls"><button class="term-btn outline" onclick="loadPlaybackData()" style="margin:0;flex:1">🔍 Load Jejak</button><button class="term-btn" onclick="togglePlayback()" id="playbackBtn" style="margin:0;flex:1">▶️ Play</button></div>
+<div class="timeline-map" id="timelineMapBox"><div id="mapPlayback" style="width:100%;height:100%"></div><div class="map-label">◈ PLAYBACK TIMELINE</div><div class="map-coords" id="playbackCoords">0 titik</div></div>
+<input type="range" id="playbackSlider" class="timeline-slider" min="0" max="100" value="0" oninput="seekPlayback(this.value)">
+<div class="timeline-info"><span id="playbackTime">--:--:--</span><span id="playbackProgress">0 / 0</span><span id="playbackSpeed" style="cursor:pointer;color:var(--gold)" onclick="changePlaybackSpeed()">1x</span></div>
+<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><button class="term-btn outline" onclick="toggleHeatmap()" id="heatmapBtn" style="margin:0;flex:1">🔥 Heatmap OFF</button><button class="term-btn outline" onclick="exportPlaybackGPX()" style="margin:0;flex:1">⬇️ Export GPX</button></div>
+<div class="term-info" style="margin-top:10px"><div><span class="k">JARAK TOTAL</span><span class="v" id="pbDistance">-</span></div><div><span class="k">DURASI</span><span class="v" id="pbDuration">-</span></div><div><span class="k">KECEPATAN AVG</span><span class="v" id="pbAvgSpeed">-</span></div></div>
+</div>
+
+<!-- === UPGRADED: HEALTH MONITOR === -->
+<div class="term-body"><div class="prompt">[Health] Kesehatan Device Target</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› pantau target yang offline, low-bat, atau tidak update:</div>
+<div class="health-grid" id="healthGrid"><div class="empty">Memuat...</div></div>
+<div style="display:flex;gap:6px;margin-top:10px"><button class="term-btn outline" onclick="refreshHealth()" style="margin:0;flex:1">🔄 Refresh</button><button class="term-btn outline" onclick="checkTargetHealth(true)" style="margin:0;flex:1">🚨 Cek Sekarang</button></div>
+</div>
+
+<!-- === UPGRADED: CONTEXT LOKASI === -->
+<div class="term-body"><div class="prompt">[Context] Cuaca & Info Lokasi</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› info lingkungan otomatis untuk target terbaru:</div>
+<div id="contextBox" class="context-box"><div class="empty">Belum ada target</div></div>
+<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><button class="term-btn outline" onclick="refreshContext()" style="margin:0;flex:1">🌦️ Refresh Cuaca</button><button class="term-btn outline" onclick="openStreetView()" style="margin:0;flex:1">🏙️ Street View</button><button class="term-btn outline" onclick="copyPlusCode()" style="margin:0;flex:1">📋 Plus Code</button></div>
+</div>
+
+<!-- === UPGRADED: LAPORAN PDF === -->
+<div class="term-body"><div class="prompt">[Report] Laporan Otomatis</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› generate laporan PDF rapi untuk atasan / arsip:</div>
+<div class="timeline-controls"><select id="reportPeriod"><option value="today">Hari Ini</option><option value="7days">7 Hari Terakhir</option><option value="30days">30 Hari Terakhir</option><option value="all">Semua Data</option></select><select id="reportTarget"><option value="all">Semua Target</option></select></div>
+<div class="report-actions"><button class="term-btn" onclick="generatePDFReport()" style="margin:0;flex:1">📄 Generate PDF</button><button class="term-btn outline" onclick="generateCSVReport()" style="margin:0;flex:1">📊 CSV Detail</button><button class="term-btn outline" onclick="generateKMLReport()" style="margin:0;flex:1">🌍 KML / GPX</button></div>
+<div class="term-info" style="margin-top:10px"><div><span class="k">DATA SIAP</span><span class="v" id="reportCount">0 record</span></div><div><span class="k">EST. HALAMAN</span><span class="v" id="reportPages">-</span></div></div>
+</div>
+
+<!-- === UPGRADED: TEAM MANAGEMENT === -->
+<div class="term-body"><div class="prompt">[Team] Manajemen Tim</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› kelola akses tim — viewer / editor / admin:</div>
+<div class="nt-row"><input id="teamUserInput" placeholder="Username (contoh: budi)" autocomplete="off"><select id="teamRoleInput" style="max-width:110px;background:var(--bg);border:1px solid var(--border2);color:var(--cyan);font-family:'Courier New',monospace;font-size:10px;padding:9px;border-radius:4px"><option value="viewer">Viewer</option><option value="editor">Editor</option><option value="admin">Admin</option></select><button class="term-btn" onclick="addTeamMember()" style="margin:0;width:auto;padding:0 14px">+ Add</button></div>
+<div class="team-list" id="teamList"><div class="empty">Belum ada tim</div></div>
+<div style="display:flex;gap:6px;margin-top:10px"><button class="term-btn outline" onclick="generateTeamInvite()" style="margin:0;flex:1">🔗 Invite Link</button><button class="term-btn outline" onclick="syncTeamFromFirebase()" style="margin:0;flex:1">🔄 Sync Users</button></div>
+<div class="nt-status" id="teamStatus">Tim lokal — belum sync</div>
+</div>
+
+<!-- === UPGRADED: AI RINGKASAN === -->
+<div class="term-body"><div class="prompt">[AI] Ringkasan Cerdas</div>
+<div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› analisis otomatis pola pergerakan & anomali:</div>
+<div class="ai-summary-box" id="aiSummaryBox"><div class="empty">Klik Generate untuk analisis...</div></div>
+<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><button class="term-btn" onclick="generateAISummary()" style="margin:0;flex:1">🤖 Generate Ringkasan</button><button class="term-btn outline" onclick="copyAISummary()" style="margin:0;flex:1">📋 Copy</button><button class="term-btn outline" onclick="speakAISummary()" style="margin:0;flex:1">🔊 Bacakan</button></div>
+<div class="term-info" style="margin-top:10px"><div><span class="k">POLA</span><span class="v" id="aiPattern">-</span></div><div><span class="k">ANOMALI</span><span class="v" id="aiAnomaly" style="color:var(--amber)">-</span></div><div><span class="k">REKOMENDASI</span><span class="v" id="aiRecomend">-</span></div></div>
+</div>
+
 <div class="chat-panel" id="chatPanel"><div class="chat-inner"><div class="chat-head"><span class="title" id="chatTitle">◉ PRIVATE CHAT</span><button class="chat-pick" onclick="pilihLawan()">👥 Ganti</button><button class="chat-close" onclick="closeChat()">✕ Close</button></div><div class="chat-msgs" id="chatMsgs"><div class="empty">Pilih lawan bicara dulu</div></div><div class="chat-input-row"><input id="chatInput" placeholder="ketik pesan..." oninput="typingSound()" onkeypress="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">KIRIM</button></div></div></div>
 
 <script type="module">
@@ -887,6 +1015,22 @@ function showBothLinks(longUrl,shortUrl,type){
       });
     };
   }
+  // === UPGRADED: save to link manager ===
+  try{
+    if(window.saveActiveLink){
+      const tName=(document.getElementById('targetName')?.value||'').trim()||'target';
+      saveActiveLink({type:type, targetName:tName, longUrl:longUrl, shortUrl:shortUrl||'', expiryMinutes:1440});
+    }
+  }catch(e){}
+  // === UPGRADED: share buttons WA + TG ===
+  try{
+    const shareUrl = shortUrl || longUrl;
+    const shareText = encodeURIComponent('📍 Lokasi: '+ (document.getElementById('targetName')?.value||'target') + ' - ' + shareUrl);
+    const waUrl = 'https://wa.me/?text=' + shareText;
+    const tgUrl = 'https://t.me/share/url?url=' + encodeURIComponent(shareUrl) + '&text=' + shareText;
+    const shareHtml = '<div class="share-btns"><button class="wa" onclick="window.open(\''+waUrl+'\',\'_blank\')">📱 WA</button><button class="tg" onclick="window.open(\''+tgUrl+'\',\'_blank\')">✈️ Telegram</button><button class="qr" onclick="shareToQR(\''+shareUrl.replace(/'/g,'\\\'')+'\')">◈ QR</button><button class="outline" onclick="copyShareLink(\''+shareUrl.replace(/'/g,'\\\'')+'\')">📋 Copy Share</button></div>';
+    urlBox.innerHTML += shareHtml;
+  }catch(e){}
 }
 function showLoading(type){
   const resBox=document.getElementById((type==='DYNAMIC FOTO'?'PRO':type)+'Result');
@@ -1441,5 +1585,632 @@ setTimeout(renderSessions,2000);
   console.log('%c[PWA] Bootstrap selesai','color:#00e58a;font-weight:bold');
 })();
 </script>
+
+<!-- JSPDF for report -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// === UPGRADED FEATURES JS - TANPA UBAH FUNGSI ASLI ===
+(function(){
+'use strict';
+const U = window.user || localStorage.getItem('username') || 'guest';
+console.log('%c[UPGRADED] Loading 9 new features...','color:#00e58a;font-weight:bold');
+
+// ---------- 1. NOTIFIKASI REAL-TIME ----------
+window.requestPushPermission = async function(){
+  if(!('Notification' in window)){ alert('Browser tidak support Notification'); return; }
+  const perm = await Notification.requestPermission();
+  document.getElementById('pushStatus').textContent = perm;
+  if(perm==='granted'){
+    localStorage.setItem('pushEnabled_'+U,'true');
+    if(window.addLog) addLog('🔔 Push notification diaktifkan','ok');
+    new Notification('CYBER TERMINAL',['body'=>'Notifikasi aktif! Kamu akan dapat alert target baru.','icon'=>'/icon-192.png']);
+  }
+};
+window.testNotify = function(){
+  if(Notification.permission!=='granted'){ requestPushPermission(); return; }
+  new Notification('TEST ALERT - CYBER TERMINAL',{body:'Target RORAX masuk zona! Lat: -6.2, Lng: 106.8','icon':'/icon-192.png'});
+  if(window.beep) beep(2000,0.15);
+  sendTelegramMessage('🔔 TEST NOTIFIKASI dari CYBER TERMINAL\nUser: '+U+'\nWaktu: '+new Date().toLocaleString('id-ID'));
+};
+function loadNotifyConfig(){
+  const pushEn = localStorage.getItem('pushEnabled_'+U)==='true';
+  const tgToken = localStorage.getItem('tgBotToken_'+U)||'';
+  const tgChat = localStorage.getItem('tgChatId_'+U)||'';
+  document.getElementById('tgBotToken').value = tgToken;
+  document.getElementById('tgChatId').value = tgChat;
+  document.getElementById('pushStatus').textContent = Notification.permission==='granted'?'aktif ('+Notification.permission+')':Notification.permission;
+  document.getElementById('tgStatus').textContent = (tgToken && tgChat) ? 'terhubung ✓' : 'belum diset';
+  document.getElementById('notifyNewTarget').checked = localStorage.getItem('notifyNewTarget_'+U)!=='false';
+  document.getElementById('notifyGeofence').checked = localStorage.getItem('notifyGeofence_'+U)!=='false';
+  document.getElementById('notifyOffline').checked = localStorage.getItem('notifyOffline_'+U)!=='false';
+}
+window.saveTelegramConfig = function(){
+  const token = document.getElementById('tgBotToken').value.trim();
+  const chatId = document.getElementById('tgChatId').value.trim();
+  if(!token || !chatId){ alert('Isi Bot Token & Chat ID'); return; }
+  localStorage.setItem('tgBotToken_'+U, token);
+  localStorage.setItem('tgChatId_'+U, chatId);
+  document.getElementById('tgStatus').textContent='terhubung ✓';
+  if(window.addLog) addLog('📤 Telegram config disimpan','ok');
+  if(window.beep) beep(1800,0.08);
+};
+window.testTelegram = function(){
+  const token = document.getElementById('tgBotToken').value.trim() || localStorage.getItem('tgBotToken_'+U);
+  const chatId = document.getElementById('tgChatId').value.trim() || localStorage.getItem('tgChatId_'+U);
+  if(!token || !chatId){ alert('Set Telegram dulu'); return; }
+  sendTelegramMessage('✅ TEST dari CYBER TERMINAL\nUser: '+U+'\nStatus: Bot terhubung!\nWaktu: '+new Date().toLocaleString('id-ID'));
+};
+window.sendTelegramMessage = async function(text){
+  const token = localStorage.getItem('tgBotToken_'+U);
+  const chatId = localStorage.getItem('tgChatId_'+U);
+  if(!token || !chatId) return false;
+  try{
+    const url = 'https://api.telegram.org/bot'+token+'/sendMessage';
+    const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:chatId,text:text,parse_mode:'HTML'})});
+    const j = await res.json();
+    if(j.ok){
+      if(window.addLog) addLog('📤 Telegram terkirim','ok');
+      document.getElementById('notifyStatus').textContent='Telegram: terkirim ✓ ' + new Date().toLocaleTimeString('id-ID');
+      return true;
+    } else {
+      if(window.addLog) addLog('✗ Telegram gagal: '+(j.description||'?'),'err');
+      return false;
+    }
+  }catch(e){
+    if(window.addLog) addLog('✗ Telegram error: '+e.message,'err');
+    return false;
+  }
+};
+window.pushBrowserNotify = function(title,body){
+  if(Notification.permission!=='granted') return;
+  if(localStorage.getItem('pushEnabled_'+U)!=='true') return;
+  try{ new Notification(title,{body:body,icon:'/icon-192.png'}); }catch(e){}
+};
+document.getElementById('notifyNewTarget').addEventListener('change',e=>localStorage.setItem('notifyNewTarget_'+U,e.target.checked));
+document.getElementById('notifyGeofence').addEventListener('change',e=>localStorage.setItem('notifyGeofence_'+U,e.target.checked));
+document.getElementById('notifyOffline').addEventListener('change',e=>localStorage.setItem('notifyOffline_'+U,e.target.checked));
+setTimeout(loadNotifyConfig,800);
+
+// Hook ke data baru untuk notif
+let _lastNotifyCount = 0;
+setInterval(()=>{
+  if(!window.allData) return;
+  if(_lastNotifyCount===0){ _lastNotifyCount=window.allData.length; return; }
+  if(window.allData.length > _lastNotifyCount){
+    const newItems = window.allData.slice(0, window.allData.length - _lastNotifyCount);
+    if(localStorage.getItem('notifyNewTarget_'+U)!=='false'){
+      newItems.forEach(([k,d])=>{
+        const msg = '🎯 TARGET BARU: '+(d.target||'unknown').toUpperCase()+'\n📍 '+(d.kota|| (d.lat?.toFixed(4)+','+d.lng?.toFixed(4)))+'\n⏰ '+new Date(d.waktu).toLocaleString('id-ID');
+        pushBrowserNotify('TARGET BARU: '+(d.target||'unknown'), (d.kota||'Lokasi baru terdeteksi'));
+        sendTelegramMessage('🎯 <b>TARGET BARU MASUK</b>\n👤 '+(d.target||'unknown')+'\n📍 '+(d.kota||'')+'\n🌐 '+(d.lat?.toFixed(5)+', '+d.lng?.toFixed(5))+'\n⏰ '+new Date(d.waktu).toLocaleString('id-ID')+'\n🔗 https://www.google.com/maps?q='+d.lat+','+d.lng);
+      });
+    }
+    _lastNotifyCount = window.allData.length;
+  }
+},3000);
+
+// ---------- 3. MANAJEMEN LINK AKTIF ----------
+window.saveActiveLink = function({type,targetName,longUrl,shortUrl,expiryMinutes}){
+  const key='cyberLinks_'+U;
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){}
+  const now=Date.now();
+  const item={id:'LNK-'+now+'-'+Math.floor(Math.random()*999),type:type||'TRACK',targetName:targetName||'target',longUrl:longUrl,shortUrl:shortUrl||'',createdAt:now,expiryMinutes:expiryMinutes||1440,expiryAt:now+(expiryMinutes||1440)*60000,clicks:0};
+  arr.unshift(item);
+  try{ localStorage.setItem(key, JSON.stringify(arr.slice(0,100))); }catch(e){}
+  renderLinkManager();
+  if(window.actLog) actLog('🔗 Link disimpan ke manager: '+type,'link');
+};
+window.renderLinkManager = function(){
+  const el=document.getElementById('linkManagerList');
+  const totalEl=document.getElementById('lmTotal');
+  const activeEl=document.getElementById('lmActive');
+  const expiredEl=document.getElementById('lmExpired');
+  if(!el) return;
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem('cyberLinks_'+U)||'[]'); }catch(e){}
+  const filter=document.getElementById('linkFilterType')?.value||'all';
+  let filtered = filter==='all'?arr:arr.filter(x=>x.type===filter);
+  const now=Date.now();
+  let active=0, expired=0;
+  arr.forEach(x=>{ if(x.expiryAt>now) active++; else expired++; });
+  if(totalEl) totalEl.textContent=arr.length;
+  if(activeEl) activeEl.textContent=active;
+  if(expiredEl) expiredEl.textContent=expired;
+  if(!filtered.length){ el.innerHTML='<div class="empty">Belum ada link untuk filter ini</div>'; return; }
+  el.innerHTML = filtered.map(item=>{
+    const isExpired = item.expiryAt <= now;
+    const sisa = isExpired?0:item.expiryAt-now;
+    const sisaTxt = isExpired?'EXPIRED': (sisa>3600000? Math.floor(sisa/3600000)+' jam '+Math.floor((sisa%3600000)/60000)+' menit' : Math.floor(sisa/60000)+' menit');
+    const shortDisplay = item.shortUrl? '<div class="lm-url" style="border-color:var(--gold-d);color:var(--gold)">SHORT: '+item.shortUrl+'</div>' : '';
+    return '<div class="link-m-item '+(isExpired?'expired':'')+'"><div class="lm-top"><span class="lm-name">◈ '+item.type+' — '+(item.targetName||'').toUpperCase()+'</span><span style="font-size:9px;color:'+(isExpired?'var(--red)':'var(--green)')+'">'+sisaTxt+'</span></div><div class="lm-meta">Dibuat: '+new Date(item.createdAt).toLocaleString('id-ID')+' · Exp: '+new Date(item.expiryAt).toLocaleString('id-ID')+'</div>'+shortDisplay+'<div class="lm-url">'+item.longUrl+'</div><div class="lm-actions"><button onclick="copyLinkManager(\''+item.id+'\')">📋 Copy</button><button onclick="shareLinkManager(\''+item.id+'\')">📤 Share</button><button onclick="extendLinkManager(\''+item.id+'\')">⏰ +24J</button><button class="del" onclick="deleteLinkManager(\''+item.id+'\')">🗑️ Hapus</button></div></div>';
+  }).join('');
+};
+window.copyLinkManager = function(id){
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem('cyberLinks_'+U)||'[]'); }catch(e){}
+  const it=arr.find(x=>x.id===id); if(!it) return;
+  const url=it.shortUrl||it.longUrl;
+  navigator.clipboard.writeText(url).then(()=>{ if(window.beep) beep(1800,0.06); if(window.addLog) addLog('Link dicopy: '+it.type); });
+};
+window.shareLinkManager = function(id){
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem('cyberLinks_'+U)||'[]'); }catch(e){}
+  const it=arr.find(x=>x.id===id); if(!it) return;
+  const url=it.shortUrl||it.longUrl;
+  const text=encodeURIComponent('📍 Tracking Link '+it.targetName+': '+url);
+  window.open('https://wa.me/?text='+text,'_blank');
+};
+window.extendLinkManager = function(id){
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem('cyberLinks_'+U)||'[]'); }catch(e){}
+  const it=arr.find(x=>x.id===id); if(!it) return;
+  it.expiryAt = Date.now()+24*3600000;
+  it.expiryMinutes=1440;
+  localStorage.setItem('cyberLinks_'+U, JSON.stringify(arr));
+  renderLinkManager();
+  if(window.addLog) addLog('⏰ Link diperpanjang 24 jam','ok');
+};
+window.deleteLinkManager = function(id){
+  if(!confirm('Hapus link ini dari manager?')) return;
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem('cyberLinks_'+U)||'[]'); }catch(e){}
+  arr=arr.filter(x=>x.id!==id);
+  localStorage.setItem('cyberLinks_'+U, JSON.stringify(arr));
+  renderLinkManager();
+};
+window.clearExpiredLinks = function(){
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem('cyberLinks_'+U)||'[]'); }catch(e){}
+  const now=Date.now();
+  const before=arr.length;
+  arr=arr.filter(x=>x.expiryAt>now);
+  localStorage.setItem('cyberLinks_'+U, JSON.stringify(arr));
+  renderLinkManager();
+  alert('Dihapus '+(before-arr.length)+' link expired');
+};
+window.clearAllLinks = function(){
+  if(!confirm('Hapus SEMUA link di manager?')) return;
+  localStorage.removeItem('cyberLinks_'+U);
+  renderLinkManager();
+};
+setTimeout(renderLinkManager,1200);
+setInterval(renderLinkManager,10000);
+
+// Share helpers
+window.shareToQR = function(url){
+  const qrInput=document.getElementById('qrInput');
+  if(qrInput){ qrInput.value=url; document.querySelectorAll('.tools-tab').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.tools-pane').forEach(p=>p.classList.remove('active')); const tab=document.querySelector('.tools-tab[data-tab="qr"]'); const pane=document.getElementById('pane-qr'); if(tab) tab.classList.add('active'); if(pane) pane.classList.add('active'); document.getElementById('toolsPanel').scrollIntoView({behavior:'smooth'}); if(window.generateQR) setTimeout(()=>generateQR(),300); }
+};
+window.copyShareLink = function(url){
+  navigator.clipboard.writeText(url).then(()=>{ if(window.beep) beep(1800,0.06); alert('Link disalin: '+url); });
+};
+
+// ---------- 2. TIMELINE PLAYBACK ----------
+let playbackMap=null, playbackMarkers=[], playbackPolyline=null, playbackData=[], playbackIndex=0, playbackTimer=null, playbackSpeed=1, isPlaying=false, heatmapLayer=null, heatmapOn=false;
+function initPlaybackMap(){
+  if(playbackMap) return;
+  const el=document.getElementById('mapPlayback');
+  if(!el || typeof L==='undefined') return;
+  playbackMap=L.map('mapPlayback',{zoomControl:true,attributionControl:false}).setView([-2,118],5);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}).addTo(playbackMap);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,opacity:0.85}).addTo(playbackMap);
+}
+setTimeout(initPlaybackMap,2000);
+
+function getUniqueTargets(){
+  if(!window.allData) return [];
+  const set=new Set(); window.allData.forEach(([,d])=>{ if(d.target) set.add(d.target); });
+  return Array.from(set);
+}
+function refreshPlaybackTargetSelect(){
+  const sel=document.getElementById('playbackTargetSelect');
+  const reportSel=document.getElementById('reportTarget');
+  if(!sel) return;
+  const targets=getUniqueTargets();
+  sel.innerHTML='<option value="">— Pilih Target —</option>'+targets.map(t=>'<option value="'+t+'">'+t+'</option>').join('');
+  if(reportSel){ reportSel.innerHTML='<option value="all">Semua Target</option>'+targets.map(t=>'<option value="'+t+'">'+t+'</option>').join(''); }
+}
+setTimeout(refreshPlaybackTargetSelect,2500);
+setInterval(refreshPlaybackTargetSelect,8000);
+
+window.loadPlaybackData = function(){
+  const target=document.getElementById('playbackTargetSelect').value;
+  const dateFilter=document.getElementById('playbackDateFilter').value;
+  if(!target){ alert('Pilih target dulu'); return; }
+  if(!window.allData){ alert('Belum ada data'); return; }
+  let filtered=window.allData.filter(([,d])=>d.target===target && d.lat && d.lng);
+  const now=Date.now();
+  if(dateFilter==='today'){ const start=new Date(); start.setHours(0,0,0,0); filtered=filtered.filter(([,d])=>d.waktu>=start.getTime()); }
+  else if(dateFilter==='7days'){ filtered=filtered.filter(([,d])=>d.waktu>=now-7*86400000); }
+  else if(dateFilter==='30days'){ filtered=filtered.filter(([,d])=>d.waktu>=now-30*86400000); }
+  filtered.sort((a,b)=>a[1].waktu-b[1].waktu);
+  playbackData=filtered.map(([,d])=>({lat:d.lat,lng:d.lng,waktu:d.waktu,kota:d.kota||'',alamat:(window.buildAlamat?buildAlamat(d):''),target:d.target}));
+  if(!playbackData.length){ alert('Tidak ada jejak untuk filter ini'); return; }
+  document.getElementById('playbackCoords').textContent=playbackData.length+' titik';
+  document.getElementById('playbackSlider').max=Math.max(0,playbackData.length-1);
+  document.getElementById('playbackSlider').value=0;
+  playbackIndex=0;
+  drawPlayback();
+  calcPlaybackStats();
+  if(window.addLog) addLog('▶️ Playback loaded: '+playbackData.length+' titik untuk '+target,'ok');
+};
+
+function drawPlayback(){
+  if(!playbackMap) initPlaybackMap();
+  if(!playbackMap || !playbackData.length) return;
+  // clear
+  playbackMarkers.forEach(m=>{ try{playbackMap.removeLayer(m)}catch(e){} });
+  playbackMarkers=[];
+  if(playbackPolyline){ try{playbackMap.removeLayer(playbackPolyline)}catch(e){} }
+  if(heatmapLayer){ try{playbackMap.removeLayer(heatmapLayer)}catch(e){} heatmapLayer=null; }
+  const latlngs=playbackData.map(p=>[p.lat,p.lng]);
+  playbackPolyline=L.polyline(latlngs,{color:'#00e58a',weight:3,opacity:0.7,dashArray:'6,8'}).addTo(playbackMap);
+  // markers for start/end
+  if(latlngs.length){
+    const startIcon=L.divIcon({html:'<div style="background:#00e58a;color:#000;font-family:Courier New;font-size:9px;font-weight:bold;padding:3px 6px;border-radius:3px;border:1px solid #000">START</div>',className:'',iconSize:[40,20]});
+    const endIcon=L.divIcon({html:'<div style="background:#ff3355;color:#fff;font-family:Courier New;font-size:9px;font-weight:bold;padding:3px 6px;border-radius:3px;border:1px solid #000">END</div>',className:'',iconSize:[30,20]});
+    playbackMarkers.push(L.marker(latlngs[0],{icon:startIcon}).addTo(playbackMap));
+    if(latlngs.length>1) playbackMarkers.push(L.marker(latlngs[latlngs.length-1],{icon:endIcon}).addTo(playbackMap));
+    playbackMap.fitBounds(playbackPolyline.getBounds(),{padding:[20,20]});
+  }
+  updatePlaybackPosition();
+  if(heatmapOn) toggleHeatmap(true);
+}
+function updatePlaybackPosition(){
+  if(!playbackData.length) return;
+  const p=playbackData[playbackIndex];
+  if(!p) return;
+  document.getElementById('playbackTime').textContent=new Date(p.waktu).toLocaleString('id-ID');
+  document.getElementById('playbackProgress').textContent=(playbackIndex+1)+' / '+playbackData.length;
+  document.getElementById('playbackCoords').textContent=(playbackIndex+1)+'/'+playbackData.length+' titik';
+  // current position marker
+  // remove old current
+  playbackMarkers = playbackMarkers.filter(m=>{
+    if(m._isCurrent){ try{playbackMap.removeLayer(m)}catch(e){} return false; }
+    return true;
+  });
+  const curIcon=L.divIcon({html:'<div style="width:16px;height:16px;background:#00e58a;border:2px solid #fff;border-radius:50%;box-shadow:0 0 10px #00e58a"></div>',className:'',iconSize:[16,16],iconAnchor:[8,8]});
+  const curMarker=L.marker([p.lat,p.lng],{icon:curIcon}).addTo(playbackMap);
+  curMarker._isCurrent=true;
+  playbackMarkers.push(curMarker);
+}
+window.seekPlayback = function(val){
+  playbackIndex=parseInt(val)||0;
+  updatePlaybackPosition();
+};
+window.togglePlayback = function(){
+  if(!playbackData.length){ alert('Load jejak dulu'); return; }
+  const btn=document.getElementById('playbackBtn');
+  if(isPlaying){
+    isPlaying=false; clearInterval(playbackTimer); playbackTimer=null; btn.textContent='▶️ Play'; btn.style.background='var(--gold)';
+  } else {
+    isPlaying=true; btn.textContent='⏸️ Pause';
+    playbackTimer=setInterval(()=>{
+      playbackIndex++;
+      if(playbackIndex>=playbackData.length){ playbackIndex=0; isPlaying=false; clearInterval(playbackTimer); btn.textContent='▶️ Play'; }
+      document.getElementById('playbackSlider').value=playbackIndex;
+      updatePlaybackPosition();
+    }, 800 / playbackSpeed);
+  }
+};
+window.changePlaybackSpeed = function(){
+  const speeds=[0.5,1,1.5,2,3]; let idx=speeds.indexOf(playbackSpeed); idx=(idx+1)%speeds.length; playbackSpeed=speeds[idx];
+  document.getElementById('playbackSpeed').textContent=playbackSpeed+'x';
+  if(isPlaying){ clearInterval(playbackTimer); playbackTimer=setInterval(()=>{ playbackIndex++; if(playbackIndex>=playbackData.length){ playbackIndex=0; isPlaying=false; clearInterval(playbackTimer); document.getElementById('playbackBtn').textContent='▶️ Play'; } document.getElementById('playbackSlider').value=playbackIndex; updatePlaybackPosition(); }, 800/playbackSpeed); }
+};
+window.toggleHeatmap = function(forceOn){
+  if(typeof forceOn==='boolean') heatmapOn=forceOn; else heatmapOn=!heatmapOn;
+  const btn=document.getElementById('heatmapBtn');
+  if(btn) btn.textContent=heatmapOn?'🔥 Heatmap ON':'🔥 Heatmap OFF';
+  if(!playbackMap || !playbackData.length) return;
+  if(heatmapLayer){ try{playbackMap.removeLayer(heatmapLayer)}catch(e){} heatmapLayer=null; }
+  if(heatmapOn){
+    const group=L.layerGroup();
+    playbackData.forEach(p=>{
+      const c=L.circle([p.lat,p.lng],{radius:80,color:'#ff8f00',fillColor:'#ff8f00',fillOpacity:0.25,weight:1}).addTo(group);
+    });
+    heatmapLayer=group; group.addTo(playbackMap);
+  }
+};
+function calcPlaybackStats(){
+  if(playbackData.length<2){ document.getElementById('pbDistance').textContent='-'; document.getElementById('pbDuration').textContent='-'; document.getElementById('pbAvgSpeed').textContent='-'; return; }
+  let dist=0; for(let i=1;i<playbackData.length;i++){ dist+=haversine(playbackData[i-1].lat,playbackData[i-1].lng,playbackData[i].lat,playbackData[i].lng); }
+  const dur=playbackData[playbackData.length-1].waktu - playbackData[0].waktu;
+  const durH=Math.floor(dur/3600000), durM=Math.floor((dur%3600000)/60000);
+  document.getElementById('pbDistance').textContent= dist<1000? Math.round(dist)+' m' : (dist/1000).toFixed(2)+' km';
+  document.getElementById('pbDuration').textContent=durH+'j '+durM+'m';
+  document.getElementById('pbAvgSpeed').textContent= dur>0? ((dist/1000)/(dur/3600000)).toFixed(1)+' km/h' : '-';
+}
+function haversine(la1,lo1,la2,lo2){ const R=6371000,p=Math.PI/180; const dl=(la2-la1)*p,dg=(lo2-lo1)*p; const a=Math.sin(dl/2)**2+Math.cos(la1*p)*Math.cos(la2*p)*Math.sin(dg/2)**2; return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); }
+window.exportPlaybackGPX = function(){
+  if(!playbackData.length){ alert('Belum ada data playback'); return; }
+  let gpx='<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Cyber Terminal"><trk><name>Track '+playbackData[0].target+'</name><trkseg>';
+  playbackData.forEach(p=>{ gpx+='<trkpt lat="'+p.lat+'" lon="'+p.lng+'"><time>'+new Date(p.waktu).toISOString()+'</time></trkpt>'; });
+  gpx+='</trkseg></trk></gpx>';
+  const blob=new Blob([gpx],{type:'application/gpx+xml'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='track_'+playbackData[0].target+'_'+Date.now()+'.gpx'; a.click();
+};
+
+// ---------- 4. CONTEXT LOKASI (Cuaca, Plus Code, Street View) ----------
+let lastContextData=null;
+let lastPlusCode='';
+window.refreshContext = async function(){
+  const box=document.getElementById('contextBox');
+  if(!window.allData || !window.allData.length){ box.innerHTML='<div class="empty">Belum ada target</div>'; return; }
+  const latest=window.allData.find(([,d])=>d.lat&&d.lng);
+  if(!latest){ box.innerHTML='<div class="empty">Belum ada target berkoordinat</div>'; return; }
+  const d=latest[1];
+  lastContextData=d;
+  box.innerHTML='<div style="color:var(--gold)">⏳ Memuat cuaca & info lokasi...</div>';
+  try{
+    // Weather via open-meteo (free no key)
+    const weatherUrl='https://api.open-meteo.com/v1/forecast?latitude='+d.lat+'&longitude='+d.lng+'&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&timezone=auto';
+    const res=await fetch(weatherUrl); const j=await res.json();
+    const cur=j.current||{};
+    const temp=cur.temperature_2m??'-';
+    const wind=cur.wind_speed_10m??'-';
+    const hum=cur.relative_humidity_2m??'-';
+    const wcode=cur.weather_code??0;
+    const wDesc={0:'Cerah',1:'Cerah Berawan',2:'Berawan',3:'Mendung',45:'Berkabut',51:'Gerimis',61:'Hujan Ringan',65:'Hujan Sedang',80:'Hujan',95:'Badai Petir'}[wcode]||('Kode '+wcode);
+    // Reverse geocode via nominatim
+    let alamatDetail='-';
+    try{
+      const rev=await fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+d.lat+'&lon='+d.lng+'&zoom=18&addressdetails=1',{headers:{'User-Agent':'CyberTerminal/1.0'}});
+      const rj=await rev.json(); alamatDetail=rj.display_name||'-';
+    }catch(e){ alamatDetail=(window.buildAlamat?buildAlamat(d):d.kota||'-'); }
+    // Plus code (simple encode using OLC approximation - we use plus.codes API fallback)
+    let plus='-';
+    try{ plus = await encodePlusCode(d.lat,d.lng); lastPlusCode=plus; }catch(e){ plus=d.lat.toFixed(5)+','+d.lng.toFixed(5); }
+    box.innerHTML='<div><span class="ctx-k">TARGET</span><span class="ctx-v">'+(d.target||'').toUpperCase()+'</span></div><div><span class="ctx-k">ALAMAT</span><span class="ctx-v">'+alamatDetail+'</span></div><div><span class="ctx-k">KOORD</span><span class="ctx-v">'+d.lat.toFixed(6)+', '+d.lng.toFixed(6)+'</span></div><div><span class="ctx-k">PLUS CODE</span><span class="ctx-v">'+plus+'</span></div><div><span class="ctx-k">CUACA</span><span class="ctx-v">'+wDesc+' · '+temp+'°C</span></div><div><span class="ctx-k">ANGIN</span><span class="ctx-v">'+wind+' km/h · Hum '+hum+'%</span></div><div><span class="ctx-k">WAKTU</span><span class="ctx-v">'+new Date(d.waktu).toLocaleString('id-ID')+'</span></div><div style="margin-top:8px"><a href="https://www.google.com/maps?q='+d.lat+','+d.lng+'" target="_blank" style="color:var(--cyan);font-size:10px;border-bottom:1px solid rgba(56,189,248,.3);text-decoration:none">📍 Buka Google Maps →</a> · <a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+d.lat+','+d.lng+'" target="_blank" style="color:var(--gold);font-size:10px;border-bottom:1px solid rgba(0,229,138,.3);text-decoration:none">🏙️ Street View</a></div>';
+    if(window.addLog) addLog('🌦️ Context cuaca dimuat: '+wDesc,'ok');
+  }catch(e){
+    box.innerHTML='<div style="color:var(--red)">✗ Gagal: '+e.message+'</div>';
+  }
+};
+async function encodePlusCode(lat,lng){
+  // Try using open-location-code via CDN if available, else simple fallback
+  if(window.OpenLocationCode){ try{ return window.OpenLocationCode.encode(lat,lng,10); }catch(e){} }
+  // fallback: fetch from plus.codes API via proxy? Use simple approximation
+  return lat.toFixed(5)+','+lng.toFixed(5)+' (Plus Code via Maps)';
+}
+window.openStreetView = function(){
+  if(!lastContextData){ alert('Belum ada target'); return; }
+  window.open('https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+lastContextData.lat+','+lastContextData.lng,'_blank');
+};
+window.copyPlusCode = function(){
+  if(!lastPlusCode){ alert('Plus Code belum ada'); return; }
+  navigator.clipboard.writeText(lastPlusCode).then(()=>{ if(window.beep) beep(1800,0.06); });
+};
+setTimeout(refreshContext,4000);
+setInterval(refreshContext,60000);
+
+// Enhance card-data with context buttons (hook renderData)
+const _origRenderData = window.renderData;
+if(typeof _origRenderData==='function'){
+  window.renderData = function(){
+    _origRenderData();
+    // add weather button to each card
+    try{
+      document.querySelectorAll('.card-data').forEach(card=>{
+        if(card.querySelector('.ctx-btn')) return;
+        const actions=card.querySelector('.card-actions');
+        if(!actions) return;
+        const key=card.getAttribute('data-key');
+        const btn=document.createElement('button');
+        btn.className='ctx-btn';
+        btn.textContent='🌦️ CUACA';
+        btn.onclick=async ()=>{
+          const d = window.allData?.find(([k])=>k===key)?.[1];
+          if(!d||!d.lat) return alert('Tidak ada koordinat');
+          btn.textContent='⏳...';
+          try{
+            const url='https://api.open-meteo.com/v1/forecast?latitude='+d.lat+'&longitude='+d.lng+'&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto';
+            const r=await fetch(url); const j=await r.json(); const cur=j.current||{};
+            alert('Cuaca di '+ (d.target||'target') +':\n'+ (cur.temperature_2m||'-')+'°C, Angin '+ (cur.wind_speed_10m||'-')+' km/h\nKoord: '+d.lat.toFixed(5)+','+d.lng.toFixed(5));
+          }catch(e){ alert('Gagal ambil cuaca'); }
+          btn.textContent='🌦️ CUACA';
+        };
+        actions.insertBefore(btn, actions.firstChild);
+      });
+    }catch(e){}
+    // update report count
+    const rc=document.getElementById('reportCount');
+    if(rc && window.allData) rc.textContent=window.allData.length+' record';
+  };
+}
+
+// ---------- 5 & 6. HEALTH MONITOR ----------
+window.refreshHealth = function(){ checkTargetHealth(false); };
+window.checkTargetHealth = function(showAlert){
+  const grid=document.getElementById('healthGrid');
+  if(!grid) return;
+  if(!window.allData || !window.allData.length){ grid.innerHTML='<div class="empty">Belum ada target</div>'; return; }
+  // Group by target name latest
+  const latestByTarget={};
+  window.allData.forEach(([,d])=>{ if(!d.target) return; if(!latestByTarget[d.target] || d.waktu>latestByTarget[d.target].waktu) latestByTarget[d.target]=d; });
+  const now=Date.now();
+  const items=Object.entries(latestByTarget).map(([name,d])=>{
+    const age=now-d.waktu;
+    let status='online', statusTxt='ONLINE', cls='online';
+    if(age>3600000*3){ status='offline'; statusTxt='OFFLINE '+Math.floor(age/3600000)+'j'; cls='offline'; }
+    else if(age>3600000){ status='warning'; statusTxt='LAMBAT '+Math.floor(age/60000)+'m'; cls='warning'; }
+    return {name,d,age,status,statusTxt,cls};
+  }).sort((a,b)=>b.age-a.age);
+  grid.innerHTML=items.map(it=>{
+    return '<div class="health-item '+it.cls+'"><div><div class="h-name">'+it.name.toUpperCase()+'</div><div class="h-meta">'+ (it.d.kota||it.d.lat?.toFixed(4)+','+it.d.lng?.toFixed(4))+' · '+new Date(it.d.waktu).toLocaleTimeString('id-ID')+'</div></div><div class="h-status">'+it.statusTxt+'</div></div>';
+  }).join('');
+  if(showAlert){
+    const offline=items.filter(x=>x.status==='offline');
+    if(offline.length){
+      const msg='🚨 '+offline.length+' target OFFLINE >3 jam: '+offline.map(x=>x.name).join(', ');
+      if(window.addLog) addLog(msg,'warn');
+      pushBrowserNotify('Target Offline', offline.map(x=>x.name).join(', ')+' offline');
+      sendTelegramMessage('🚨 <b>HEALTH ALERT</b>\n'+offline.length+' target offline >3 jam:\n'+offline.map(x=>'• '+x.name+' ('+Math.floor(x.age/3600000)+'j lalu)').join('\n'));
+    } else {
+      if(window.addLog) addLog('✓ Semua target online','ok');
+    }
+  }
+};
+setTimeout(()=>checkTargetHealth(false),3500);
+setInterval(()=>checkTargetHealth(false),60000);
+
+// ---------- 8. LAPORAN PDF ----------
+window.generatePDFReport = async function(){
+  const period=document.getElementById('reportPeriod').value;
+  const targetFilter=document.getElementById('reportTarget').value;
+  if(!window.allData || !window.allData.length){ alert('Belum ada data'); return; }
+  let filtered=window.allData;
+  const now=Date.now();
+  if(period==='today'){ const s=new Date(); s.setHours(0,0,0,0); filtered=filtered.filter(([,d])=>d.waktu>=s.getTime()); }
+  else if(period==='7days'){ filtered=filtered.filter(([,d])=>d.waktu>=now-7*86400000); }
+  else if(period==='30days'){ filtered=filtered.filter(([,d])=>d.waktu>=now-30*86400000); }
+  if(targetFilter!=='all'){ filtered=filtered.filter(([,d])=>d.target===targetFilter); }
+  if(!filtered.length){ alert('Tidak ada data untuk filter ini'); return; }
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  doc.setFont('courier');
+  doc.setFontSize(14); doc.text('CYBER TERMINAL - LAPORAN LOKASI',10,15);
+  doc.setFontSize(9); doc.text('User: '+U+' | Periode: '+period+' | Target: '+targetFilter+' | Total: '+filtered.length+' record',10,22);
+  doc.text('Generated: '+new Date().toLocaleString('id-ID'),10,26);
+  let y=32;
+  doc.setFontSize(8);
+  filtered.slice(0,80).forEach(([k,d],i)=>{
+    if(y>280){ doc.addPage(); y=15; }
+    const line=(i+1)+'. '+(d.target||'').toUpperCase()+' | '+(d.kota||d.lat?.toFixed(4)+','+d.lng?.toFixed(4))+' | '+new Date(d.waktu).toLocaleString('id-ID')+' | '+ (d.lat?.toFixed(5)||'')+','+(d.lng?.toFixed(5)||'');
+    doc.text(line.substring(0,110),10,y);
+    y+=5;
+  });
+  if(filtered.length>80){ doc.text('... dan '+(filtered.length-80)+' record lainnya (lihat CSV untuk lengkap)',10,y); }
+  doc.save('laporan_cyber_'+U+'_'+Date.now()+'.pdf');
+  if(window.addLog) addLog('📄 PDF report generated: '+filtered.length+' record','ok');
+};
+window.generateCSVReport = function(){
+  if(!window.allData || !window.allData.length){ alert('No data'); return; }
+  const period=document.getElementById('reportPeriod').value;
+  const targetFilter=document.getElementById('reportTarget').value;
+  let filtered=window.allData;
+  const now=Date.now();
+  if(period==='today'){ const s=new Date(); s.setHours(0,0,0,0); filtered=filtered.filter(([,d])=>d.waktu>=s.getTime()); }
+  else if(period==='7days'){ filtered=filtered.filter(([,d])=>d.waktu>=now-7*86400000); }
+  else if(period==='30days'){ filtered=filtered.filter(([,d])=>d.waktu>=now-30*86400000); }
+  if(targetFilter!=='all'){ filtered=filtered.filter(([,d])=>d.target===targetFilter); }
+  const rows=[['No','Target','Waktu','Alamat','Lat','Lng','Kota','IP','Platform']];
+  filtered.forEach(([,d],i)=>rows.push([i+1,d.target||'',new Date(d.waktu).toLocaleString('id-ID'),(window.buildAlamat?buildAlamat(d):d.kota||''),d.lat||'',d.lng||'',d.kota||'',d.ip||'',d.platform||'']));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='laporan_detail_'+U+'_'+Date.now()+'.csv'; a.click();
+};
+window.generateKMLReport = function(){
+  if(!window.allData || !window.allData.length){ alert('No data'); return; }
+  let filtered=window.allData.filter(([,d])=>d.lat&&d.lng);
+  let kml='<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Cyber Terminal Track</name>';
+  filtered.forEach(([,d])=>{
+    kml+='<Placemark><name>'+(d.target||'target')+'</name><description>'+new Date(d.waktu).toLocaleString('id-ID')+' - '+(d.kota||'')+'</description><Point><coordinates>'+d.lng+','+d.lat+',0</coordinates></Point></Placemark>';
+  });
+  kml+='</Document></kml>';
+  const blob=new Blob([kml],{type:'application/vnd.google-earth.kml+xml'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='track_'+U+'_'+Date.now()+'.kml'; a.click();
+};
+
+// ---------- 9. TEAM MANAGEMENT ----------
+window.addTeamMember = function(){
+  const userInput=document.getElementById('teamUserInput').value.trim();
+  const role=document.getElementById('teamRoleInput').value;
+  if(!userInput){ alert('Isi username'); return; }
+  let team=[]; try{ team=JSON.parse(localStorage.getItem('cyberTeam_'+U)||'[]'); }catch(e){}
+  if(team.some(t=>t.username===userInput)){ alert('User sudah ada di tim'); return; }
+  team.push({username:userInput,role:role,addedAt:Date.now()});
+  localStorage.setItem('cyberTeam_'+U, JSON.stringify(team));
+  document.getElementById('teamUserInput').value='';
+  renderTeam();
+  if(window.addLog) addLog('👥 Team ditambah: '+userInput+' ('+role+')','ok');
+};
+window.renderTeam = function(){
+  const el=document.getElementById('teamList');
+  if(!el) return;
+  let team=[]; try{ team=JSON.parse(localStorage.getItem('cyberTeam_'+U)||'[]'); }catch(e){}
+  if(!team.length){ el.innerHTML='<div class="empty">Belum ada tim — sync dari Firebase atau tambah manual</div>'; return; }
+  el.innerHTML=team.map((t,i)=>'<div class="team-item '+t.role+'"><div><div class="t-name">'+t.username.toUpperCase()+'</div><div style="font-size:9px;color:var(--text-d)">Added: '+new Date(t.addedAt).toLocaleDateString('id-ID')+'</div></div><div style="display:flex;gap:6px;align-items:center"><span class="t-role '+t.role+'">'+t.role.toUpperCase()+'</span><button onclick="removeTeam('+i+')" style="background:transparent;border:1px solid #24344c;color:#ff3355;font-size:9px;padding:3px 6px;cursor:pointer;border-radius:2px">✕</button></div></div>').join('');
+  document.getElementById('teamStatus').textContent=team.length+' anggota tim';
+};
+window.removeTeam = function(idx){
+  if(!confirm('Hapus anggota tim ini?')) return;
+  let team=[]; try{ team=JSON.parse(localStorage.getItem('cyberTeam_'+U)||'[]'); }catch(e){}
+  team.splice(idx,1);
+  localStorage.setItem('cyberTeam_'+U, JSON.stringify(team));
+  renderTeam();
+};
+window.generateTeamInvite = function(){
+  const link=location.origin+'/index.html?invite='+encodeURIComponent(U)+'&team='+Date.now();
+  prompt('Copy invite link untuk tim:', link);
+  if(window.clipAdd) clipAdd(link,'TEAM-INVITE');
+};
+window.syncTeamFromFirebase = async function(){
+  try{
+    const res=await fetch('https://infocuaca.online/users.json');
+    const users=await res.json();
+    const list=Object.keys(users).filter(u=>u!==U);
+    let team=[]; try{ team=JSON.parse(localStorage.getItem('cyberTeam_'+U)||'[]'); }catch(e){}
+    let added=0;
+    list.forEach(u=>{
+      if(!team.some(t=>t.username===u)){ team.push({username:u,role:'viewer',addedAt:Date.now()}); added++; }
+    });
+    localStorage.setItem('cyberTeam_'+U, JSON.stringify(team));
+    renderTeam();
+    alert('Sync selesai: '+added+' user baru ditambahkan dari Firebase');
+  }catch(e){ alert('Gagal sync: '+e.message); }
+};
+setTimeout(renderTeam,1000);
+
+// ---------- 10. AI RINGKASAN ----------
+window.generateAISummary = function(){
+  const box=document.getElementById('aiSummaryBox');
+  const patEl=document.getElementById('aiPattern');
+  const anomEl=document.getElementById('aiAnomaly');
+  const recEl=document.getElementById('aiRecomend');
+  if(!window.allData || !window.allData.length){ box.innerHTML='<div class="empty">Belum ada data untuk dianalisis</div>'; return; }
+  box.innerHTML='⏳ Menganalisis '+window.allData.length+' data...';
+  setTimeout(()=>{
+    const data=window.allData;
+    const total=data.length;
+    const today=new Date(); today.setHours(0,0,0,0);
+    const todayCount=data.filter(([,d])=>d.waktu>=today.getTime()).length;
+    // kota terbanyak
+    const kotaMap={}; data.forEach(([,d])=>{ const k=(d.kota||'Unknown').split(',')[0]; kotaMap[k]=(kotaMap[k]||0)+1; });
+    const topKota=Object.entries(kotaMap).sort((a,b)=>b[1]-a[1])[0];
+    // target terbanyak
+    const targetMap={}; data.forEach(([,d])=>{ targetMap[d.target||'unknown']=(targetMap[d.target||'unknown']||0)+1; });
+    const topTarget=Object.entries(targetMap).sort((a,b)=>b[1]-a[1])[0];
+    // jam aktif
+    const hourMap={}; data.forEach(([,d])=>{ const h=new Date(d.waktu).getHours(); hourMap[h]=(hourMap[h]||0)+1; });
+    const topHour=Object.entries(hourMap).sort((a,b)=>b[1]-a[1])[0];
+    // jarak total
+    const sorted=data.slice().sort((a,b)=>a[1].waktu-b[1].waktu);
+    let totalDist=0; for(let i=1;i<sorted.length;i++){ const a=sorted[i-1][1], b=sorted[i][1]; if(a.lat&&a.lng&&b.lat&&b.lng) totalDist+=haversine(a.lat,a.lng,b.lat,b.lng); }
+    // anomali: gerakan malam 00-05
+    const nightMoves=data.filter(([,d])=>{ const h=new Date(d.waktu).getHours(); return h>=0 && h<=5; }).length;
+    const farMoves=(()=>{ if(sorted.length<2) return 0; let cnt=0; for(let i=1;i<sorted.length;i++){ const a=sorted[i-1][1], b=sorted[i][1]; if(a.lat&&b.lat){ const dist=haversine(a.lat,a.lng,b.lat,b.lng); if(dist>50000) cnt++; } } return cnt; })();
+    let anomalyText='-';
+    if(nightMoves>0) anomalyText+= nightMoves+' pergerakan malam (00-05) terdeteksi. ';
+    if(farMoves>0) anomalyText+= farMoves+' perpindahan jarak jauh >50km. ';
+    if(anomalyText==='-') anomalyText='Tidak ada anomali signifikan ✓';
+    const summary='<b>📊 RINGKASAN OTOMATIS</b><br>• Total <span class="ai-hl">'+total+'</span> data lokasi dari <span class="ai-hl">'+Object.keys(targetMap).length+'</span> target unik.<br>• Hari ini: <span class="ai-hl">'+todayCount+'</span> aktivitas.<br>• Kota paling sering: <span class="ai-hl">'+(topKota?topKota[0]+' ('+topKota[1]+'x)':'-')+'</span><br>• Target paling aktif: <span class="ai-hl">'+(topTarget?topTarget[0]+' ('+topTarget[1]+'x)':'-')+'</span><br>• Jam paling aktif: <span class="ai-hl">'+(topHour?topHour[0]+':00 ('+topHour[1]+'x)':'-')+'</span><br>• Estimasi jarak tempuh total: <span class="ai-hl">'+(totalDist<1000?Math.round(totalDist)+' m':(totalDist/1000).toFixed(1)+' km')+'</span><br><br><b>🔍 ANOMALI:</b> '+anomalyText+'<br><br><b>💡 REKOMENDASI:</b> '+(nightMoves>3?'Periksa aktivitas malam, mungkin perlu konfirmasi. ':'')+(farMoves>0?'Ada perpindahan jauh, cek apakah sesuai rute kerja. ':'')+'Aktifkan notifikasi Telegram untuk alert real-time.';
+    box.innerHTML=summary;
+    if(patEl) patEl.textContent='Aktif jam '+(topHour?topHour[0]+':00':'-')+' di '+(topKota?topKota[0]:'-');
+    if(anomEl) anomEl.textContent=anomalyText.substring(0,60);
+    if(recEl) recEl.textContent= nightMoves>0||farMoves>0 ? 'Perlu perhatian' : 'Normal ✓';
+    if(window.addLog) addLog('🤖 AI summary generated','ok');
+    window._lastAISummary=summary.replace(/<[^>]*>/g,'');
+  },800);
+};
+window.copyAISummary = function(){
+  if(!window._lastAISummary){ alert('Generate dulu'); return; }
+  navigator.clipboard.writeText(window._lastAISummary).then(()=>{ if(window.beep) beep(1800,0.06); });
+};
+window.speakAISummary = function(){
+  if(!window._lastAISummary){ alert('Generate dulu'); return; }
+  if('speechSynthesis' in window){
+    const utter=new SpeechSynthesisUtterance(window._lastAISummary.substring(0,300));
+    utter.lang='id-ID'; speechSynthesis.speak(utter);
+  } else { alert('Browser tidak support TTS'); }
+};
+
+console.log('%c[UPGRADED] 9 fitur berhasil dimuat ✓','color:#00e58a;font-weight:bold');
+if(window.addLog) addLog('✨ UPGRADED 9 fitur loaded: Notify, Links, Timeline, Health, Context, Report, Team, AI, Share','ok');
+})();
+</script>
 </body>
 </html>
+
