@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>CYBER TERMINAL — RECON</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00e58a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CyberTerm">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -363,9 +369,24 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 .info-panel ul{margin-left:16px;margin-bottom:6px}
 .info-panel li{font-size:10px;line-height:1.7;margin-bottom:3px}
 .info-panel .ip-law{color:var(--amber);font-weight:bold}
+
+/* ═══ PWA OFFLINE BANNER ═══ */
+#pwaOfflineBanner{position:fixed;top:0;left:0;right:0;background:linear-gradient(180deg,rgba(255,51,85,.95),rgba(180,20,40,.95));color:#fff;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:1px;text-align:center;padding:8px 12px;z-index:999999;transform:translateY(-100%);transition:transform .3s ease;box-shadow:0 2px 12px rgba(0,0,0,.6);display:flex;justify-content:center;align-items:center;gap:10px}
+#pwaOfflineBanner.show{transform:translateY(0)}
+#pwaOfflineBanner .pob-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:pwaBlink 1s ease-in-out infinite}
+#pwaOnlineBanner{position:fixed;top:0;left:0;right:0;background:linear-gradient(180deg,rgba(0,229,138,.95),rgba(0,160,90,.95));color:#000;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:1px;text-align:center;padding:8px 12px;z-index:999999;transform:translateY(-100%);transition:transform .3s ease;box-shadow:0 2px 12px rgba(0,0,0,.6)}
+#pwaOnlineBanner.show{transform:translateY(0)}
+@keyframes pwaBlink{0%,100%{opacity:1}50%{opacity:.3}}
+#pwaInstallBtn{position:fixed;bottom:18px;right:18px;background:linear-gradient(180deg,#00e58a,#00b870);color:#000;border:none;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:1px;padding:12px 18px;border-radius:8px;cursor:pointer;z-index:99998;box-shadow:0 4px 20px rgba(0,229,138,.5),inset 0 1px 0 rgba(255,255,255,.4);display:none;animation:pwaBounce 2s ease-in-out infinite}
+#pwaInstallBtn.show{display:block}
+#pwaInstallBtn:active{transform:scale(.95)}
+@keyframes pwaBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
 </head>
 <body>
+<div id="pwaOfflineBanner"><span class="pob-dot"></span>⚠ OFFLINE — menampilkan data terakhir dari cache</div>
+<div id="pwaOnlineBanner">✓ ONLINE — data tersinkron</div>
+<button id="pwaInstallBtn" onclick="pwaInstall()">📲 Install App</button>
 <div id="tagEditor"><div class="tag-editor-box"><h3>◈ PILIH TAG TARGET</h3><div class="tag-options" id="tagOptions"><button class="tag-opt" data-tag="">-NONE-</button><button class="tag-opt" data-tag="VIP">VIP</button><button class="tag-opt" data-tag="Suspect">SUSPECT</button><button class="tag-opt" data-tag="Client">CLIENT</button><button class="tag-opt" data-tag="Family">FAMILY</button><button class="tag-opt" data-tag="Other">OTHER</button></div><div class="tag-editor-actions"><button class="tag-save" onclick="saveTagEdit()">SIMPAN</button><button class="tag-cancel" onclick="closeTagEditor()">BATAL</button></div></div></div>
 <div id="decryptOverlay"><div class="dc-title">◈ DECRYPTING DATA STREAM ◈</div><div class="dc-hex" id="dcHex">01001000 01100001 01100011 01101011</div><div class="dc-bar"><div class="dc-fill" id="dcFill"></div></div><div class="dc-pct" id="dcPct">0%</div></div>
 <div class="wrap">
@@ -1316,5 +1337,112 @@ setTimeout(renderSessions,2000);
   console.log('%c[UTILITY] Aktif','color:#38bdf8;font-weight:bold');
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3d284f0acb4d901',t:'MTc4OTc1NzI0OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+/* ═══════════════════════════════════════════════
+   CYBER TERMINAL — PWA Bootstrap
+   ═══════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  /* 1. Register Service Worker */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          console.log('[PWA] Service Worker registered:', reg.scope);
+          setInterval(() => reg.update(), 60 * 60 * 1000);
+          reg.addEventListener('updatefound', () => {
+            const nw = reg.installing;
+            if (!nw) return;
+            nw.addEventListener('statechange', () => {
+              if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                if (window.addLog) addLog('🔄 Versi baru tersedia — refresh untuk update', 'warn');
+              }
+            });
+          });
+        })
+        .catch(err => console.warn('[PWA] SW gagal daftar:', err));
+    });
+  }
+
+  /* 2. Offline / Online Detection */
+  const offlineBanner = document.getElementById('pwaOfflineBanner');
+  const onlineBanner = document.getElementById('pwaOnlineBanner');
+
+  function showOffline() {
+    if (!offlineBanner) return;
+    offlineBanner.classList.add('show');
+    onlineBanner.classList.remove('show');
+    if (window.addLog) addLog('⚠ Koneksi terputus — mode offline', 'warn');
+    if (window.beep) beep(600, 0.15);
+  }
+
+  function showOnline() {
+    if (!onlineBanner) return;
+    onlineBanner.classList.add('show');
+    offlineBanner.classList.remove('show');
+    setTimeout(() => onlineBanner.classList.remove('show'), 2500);
+    if (window.addLog) addLog('✓ Koneksi kembali — data tersinkron', 'ok');
+    if (window.beep) beep(1800, 0.10);
+  }
+
+  window.addEventListener('offline', showOffline);
+  window.addEventListener('online', showOnline);
+  if (!navigator.onLine) showOffline();
+
+  /* 3. Install Prompt */
+  let deferredPrompt = null;
+  const installBtn = document.getElementById('pwaInstallBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) {
+      installBtn.classList.add('show');
+      installBtn.textContent = '📲 Install App';
+    }
+    if (window.addLog) addLog('📲 Aplikasi bisa di-install ke home screen', 'ok');
+  });
+
+  window.pwaInstall = async function() {
+    if (!deferredPrompt) {
+      alert('Untuk install:\n\nAndroid Chrome: Menu ⋮ → "Install app"\niOS Safari: Share → "Add to Home Screen"');
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      if (window.addLog) addLog('✓ Aplikasi di-install ke home screen', 'ok');
+      if (window.beep) beep(1800, 0.12);
+      if (installBtn) installBtn.classList.remove('show');
+    }
+    deferredPrompt = null;
+  };
+
+  /* Sembunyikan tombol kalau sudah standalone */
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    if (installBtn) installBtn.style.display = 'none';
+    if (window.addLog) addLog('📱 Berjalan sebagai PWA (standalone mode)', 'ok');
+  }
+
+  /* 4. SW message listener */
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'SYNC_NOW') {
+        console.log('[PWA] SW minta sync sekarang');
+      }
+    });
+  }
+
+  /* 5. Sinkronisasi ulang saat online */
+  window.addEventListener('online', () => {
+    if (window.renderData) setTimeout(() => window.renderData(), 500);
+    if (window.updateMultiMap) setTimeout(() => window.updateMultiMap(), 800);
+    if (window.refreshGlobeMarkers) setTimeout(() => window.refreshGlobeMarkers(), 1000);
+  });
+
+  console.log('%c[PWA] Bootstrap selesai','color:#00e58a;font-weight:bold');
+})();
+</script>
+</body>
 </html>
