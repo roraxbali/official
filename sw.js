@@ -1,17 +1,21 @@
-/* ═══════════════════════════════════════════════
-   CYBER TERMINAL — Service Worker
-   Strategi: Cache-First untuk aset statis,
-             Network-First untuk data live
-   ═══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   CYBER TRACKER — Service Worker (versi 2, revisi 6e)
+   PERUBAHAN PENTING:
+     • HALAMAN (dashboard.html / 2-dashboard.html / index.html)  -> NETWORK-FIRST
+       Artinya: file terbaru dari GitHub SELALU yang dipakai. Tidak lagi
+       "nyangkut" di versi lama seperti cache-first versi sebelumnya.
+     • Pustaka CDN (leaflet, three.js, crypto-js, gambar)        -> CACHE-FIRST
+       (biar tetap cepat & bisa offline)
+     • Data live (Firebase, IP, dsb)                             -> NETWORK ONLY
+   ══════════════════════════════════════════════════════════════════════════ */
 
-const VERSION = 'cyberterm-v1.0.0';
-const STATIC_CACHE = `${VERSION}-static`;
-const RUNTIME_CACHE = `${VERSION}-runtime`;
+const VERSION       = 'cyberterm-v2.0.0';
+const STATIC_CACHE  = VERSION + '-static';
+const RUNTIME_CACHE = VERSION + '-runtime';
+const HALAMAN_CACHE = VERSION + '-halaman';
 
-/* Aset yang di-cache saat install (biar offline tetap jalan) */
+/* Pustaka yang di-cache saat install (HALAMAN TIDAK di-cache di sini) */
 const STATIC_ASSETS = [
-  '/dashboard.html',
-  '/manifest.json',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
@@ -20,66 +24,63 @@ const STATIC_ASSETS = [
   'https://cdn.jsdelivr.net/gh/roraxbali/image-hosting@main/malam.jpg'
 ];
 
-/* Domain yang TIDAK boleh di-cache (data live) */
+/* Selalu ambil dari internet (data live) */
 const NETWORK_ONLY = [
-  'firebaseio.com',
-  'firebasedatabase.app',
-  'googleapis.com',
-  'ipapi.co',
-  'api.ipify.org',
-  'is.gd',
-  'nominatim.openstreetmap.org',
-  'api.qrserver.com',
-  'infocuaca.online'
+  'firebaseio.com', 'firebasedatabase.app', 'googleapis.com',
+  'ipapi.co', 'api.ipify.org', 'is.gd',
+  'nominatim.openstreetmap.org', 'api.qrserver.com'
 ];
 
+/* Halaman (HTML) yang dipakai network-first */
+function halamanHTML(url, request) {
+  if (request.mode === 'navigate') return true;
+  if (request.destination === 'document') return true;
+  return /\.html($|\?)/i.test(url);
+}
+
 /* ─── INSTALL ─── */
-self.addEventListener('install', event => {
+self.addEventListener('install', function (event) {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(STATIC_CACHE).then(cache => {
+    caches.open(STATIC_CACHE).then(function (cache) {
       return Promise.allSettled(
-        STATIC_ASSETS.map(url =>
-          cache.add(url).catch(err => console.warn('[SW] Skip cache:', url, err.message))
-        )
+        STATIC_ASSETS.map(function (url) {
+          return cache.add(url).catch(function (e) { console.warn('[SW] lewat:', url, e.message); });
+        })
       );
     })
   );
 });
 
-/* ─── ACTIVATE ─── */
-self.addEventListener('activate', event => {
+/* ─── ACTIVATE: buang SEMUA cache versi lama ─── */
+self.addEventListener('activate', function (event) {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(k => k.startsWith('cyberterm-') && k !== STATIC_CACHE && k !== RUNTIME_CACHE)
-          .map(k => caches.delete(k))
-      )
-    ).then(() => self.clients.claim())
+    caches.keys().then(function (keys) {
+      return Promise.all(keys.map(function (k) {
+        if (k !== STATIC_CACHE && k !== RUNTIME_CACHE && k !== HALAMAN_CACHE) {
+          console.log('[SW] hapus cache lama:', k);
+          return caches.delete(k);
+        }
+        return null;
+      }));
+    }).then(function () { return self.clients.claim(); })
   );
 });
 
 /* ─── FETCH ─── */
-self.addEventListener('fetch', event => {
-  const { request } = event;
+self.addEventListener('fetch', function (event) {
+  const request = event.request;
   const url = request.url;
 
-  /* Skip non-GET */
   if (request.method !== 'GET') return;
+  if (url.indexOf('http') !== 0) return;
 
-  /* Skip chrome-extension, data:, dll */
-  if (!url.startsWith('http')) return;
-
-  /* Network-only untuk data live (Firebase, IP, shortlink, dll) */
-  const isNetworkOnly = NETWORK_ONLY.some(d => url.includes(d));
-  if (isNetworkOnly) {
+  /* 1) data live -> selalu internet */
+  if (NETWORK_ONLY.some(function (d) { return url.indexOf(d) > -1; })) {
     event.respondWith(
-      fetch(request).catch(() => {
-        /* Kalau offline & data live → kembalikan response kosong biar tidak error */
+      fetch(request).catch(function () {
         return new Response(JSON.stringify({ offline: true }), {
-          status: 503,
-          statusText: 'Offline — data live tidak tersedia',
+          status: 503, statusText: 'Offline',
           headers: { 'Content-Type': 'application/json' }
         });
       })
@@ -87,56 +88,61 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  /* Cache-first untuk aset statis (dashboard, library, gambar, tile peta) */
-  event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) {
-        /* Update cache di background (stale-while-revalidate) */
-        fetch(request)
-          .then(res => {
-            if (res && res.status === 200 && res.type === 'basic') {
-              caches.open(RUNTIME_CACHE).then(c => c.put(request, res.clone()));
-            }
-          })
-          .catch(() => {});
-        return cached;
-      }
-
-      /* Belum ada di cache → fetch & simpan */
-      return fetch(request)
-        .then(res => {
-          if (!res || res.status !== 200 || res.type === 'opaque') return res;
-          const resClone = res.clone();
-          caches.open(RUNTIME_CACHE).then(c => c.put(request, resClone));
+  /* 2) HALAMAN -> NETWORK-FIRST (selalu ambil file terbaru) */
+  if (halamanHTML(url, request)) {
+    event.respondWith(
+      fetch(request, { cache: 'no-store' })
+        .then(function (res) {
+          if (res && res.status === 200 && res.type === 'basic') {
+            var salinan = res.clone();
+            caches.open(HALAMAN_CACHE).then(function (c) { c.put(request, salinan); });
+          }
           return res;
         })
-        .catch(() => {
-          /* Fallback: halaman offline sederhana */
-          if (request.mode === 'navigate') {
-            return caches.match('/dashboard.html');
-          }
-          return new Response('', { status: 408, statusText: 'Offline' });
-        });
+        .catch(function () {
+          /* offline -> pakai salinan terakhir */
+          return caches.match(request).then(function (c) {
+            if (c) return c;
+            return caches.match('2-dashboard.html').then(function (c2) {
+              return c2 || new Response(
+                '<h1 style="font-family:sans-serif">Sedang offline</h1>' +
+                '<p style="font-family:sans-serif">Sambungkan internet lalu muat ulang.</p>',
+                { status: 200, headers: { 'Content-Type': 'text/html' } });
+            });
+          });
+        })
+    );
+    return;
+  }
+
+  /* 3) aset lain (pustaka, gambar, ubin peta) -> CACHE-FIRST */
+  event.respondWith(
+    caches.match(request).then(function (cached) {
+      if (cached) return cached;
+      return fetch(request).then(function (res) {
+        if (!res || res.status !== 200 || res.type === 'opaque') return res;
+        var salinan = res.clone();
+        caches.open(RUNTIME_CACHE).then(function (c) { c.put(request, salinan); });
+        return res;
+      }).catch(function () {
+        return new Response('', { status: 408, statusText: 'Offline' });
+      });
     })
   );
 });
 
-/* ─── MESSAGE (dari halaman) ─── */
-self.addEventListener('message', event => {
-  if (event.data === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
+/* ─── PESAN DARI HALAMAN ─── */
+self.addEventListener('message', function (event) {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
 
-/* ─── BACKGROUND SYNC (opsional, untuk retry data) ─── */
-self.addEventListener('sync', event => {
-  if (event.tag === 'sync-targets') {
+  /* dashboard bisa minta cache dibersihkan (misal setelah update) */
+  if (event.data === 'BERSIHKAN_CACHE') {
     event.waitUntil(
-      self.clients.matchAll().then(clients => {
-        clients.forEach(c => c.postMessage({ type: 'SYNC_NOW' }));
+      caches.keys().then(function (keys) {
+        return Promise.all(keys.map(function (k) { return caches.delete(k); }));
       })
     );
   }
 });
 
-console.log('[SW] Cyber Terminal Service Worker v1.0.0 loaded');
+console.log('[SW] Cyber Tracker Service Worker ' + VERSION + ' — halaman memakai network-first');
