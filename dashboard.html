@@ -1,27 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<script>
-/* Pengaman untuk jendela pratinjau (sandbox): kalau penyimpanan dilarang browser,
-   pakai penyimpanan sementara di memori supaya halaman tetap jalan normal. */
-(function(){
-  var boleh = true;
-  try { window.localStorage.getItem('cek'); } catch (e) { boleh = false; }
-  if (!boleh) {
-    var isi = {};
-    var tiruan = {
-      getItem: function(k){ return Object.prototype.hasOwnProperty.call(isi, k) ? isi[k] : null; },
-      setItem: function(k, v){ isi[k] = String(v); },
-      removeItem: function(k){ delete isi[k]; },
-      clear: function(){ isi = {}; },
-      key: function(i){ return Object.keys(isi)[i] || null; }
-    };
-    try { Object.defineProperty(window, 'localStorage', { value: tiruan, configurable: true }); }
-    catch (e) { try { window.localStorage = tiruan; } catch (e2) {} }
-  }
-})();
-</script>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>CYBER TERMINAL — RECON</title>
@@ -37,6 +16,270 @@
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 <meta property="og:image:type" content="image/png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 <style>
 :root{--bg:#04070d;--bg2:#0a101c;--bg3:#0e1626;--gold:#00e58a;--gold2:#66ffc2;--gold-d:#0d3f2e;--cyan:#38bdf8;--cyan-d:#0c2f45;--green:#00e58a;--green-d:#0a2e21;--red:#ff3355;--amber:#ff8f00;--text:#cfd9e6;--text-d:#5d7186;--border:#152030;--border2:#1d2a3c;--radius:4px}
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
@@ -536,12 +779,24 @@ body::after{display:none}
 .pro-viewhead .pro-count{font-size:11px;color:var(--pro-muted)}
 
 /* ---------- pemilih halaman (isi disembunyikan) ---------- */
-.term-body[data-view]{display:none}
+/* PANEL TERSEMBUNYI: jangan pakai display:none, karena peta Leaflet & globe 3D
+   butuh mengukur ukuran kotaknya. Panel dipindah ke luar layar (tetap terukur),
+   jadi ubin peta & globe sudah siap sebelum tab dibuka. */
+.term-body[data-view]{
+  position:absolute !important;left:-300vw;top:0;width:100%;
+  visibility:hidden !important;pointer-events:none;opacity:0;z-index:-1;
+}
 body[data-view="kontrol"] .term-body[data-view="kontrol"],
 body[data-view="lokasi"] .term-body[data-view="lokasi"],
 body[data-view="analitik"] .term-body[data-view="analitik"],
 body[data-view="tools"] .term-body[data-view="tools"],
-body[data-view="sistem"] .term-body[data-view="sistem"]{display:block}
+body[data-view="sistem"] .term-body[data-view="sistem"]{
+  position:static !important;left:auto;width:auto;
+  visibility:visible !important;pointer-events:auto;opacity:1;z-index:auto;
+}
+body:not([data-view]) .term-body[data-view="kontrol"]{
+  display:block;position:static !important;left:auto;visibility:visible !important;pointer-events:auto;opacity:1
+}
 .term-body[data-span="full"]{grid-column:1 / -1}
 @media (min-width:900px){
   .term-body:has(#mapMulti),.term-body:has(#hasil),.term-body:has(.map-box){grid-column:1 / -1}
@@ -755,58 +1010,6 @@ body[data-view]:not([data-view="kontrol"]) .pro-hero,
 body[data-view]:not([data-view="kontrol"]) .welcome-video{display:none !important}
 .term-body.first .pro-hero{margin-bottom:0}
 </style>
-<style id="proPreview">
-  /* kotak pengganti peta & globe (di pratinjau tidak ada internet) */
-  .map-box,.map-box.tall{
-    background:
-      repeating-linear-gradient(0deg,#0d1727 0 23px,#0b1424 23px 24px),
-      repeating-linear-gradient(90deg,#0d1727 0 23px,#0b1424 23px 24px) !important;
-    display:grid;place-items:center;height:300px;
-  }
-  .map-box.tall{height:340px}
-  .map-box::after{
-    content:'🗺  PETA AKTIF SETELAH DI-UPLOAD KE GITHUB';
-    position:static !important;border:none !important;width:auto !important;height:auto !important;
-    color:#5d7186;font-size:11px;letter-spacing:.6px;background:#0b1424cc;
-    padding:9px 14px;border-radius:999px;border:1px solid #24334d !important;z-index:501;
-  }
-  #globeCanvas{display:none !important}
-  .term-body:has(#globeBox) .map-box,.term-body:has(#globeBox)::after{content:none}
-  .pro-hero{
-    border:1px solid #24334d;border-radius:14px;margin-bottom:14px;padding:26px 20px;text-align:center;
-    background:radial-gradient(700px 200px at 50% 0%,#1b2f4d 0%,#0e1728 70%);
-  }
-  .pro-hero .h1{font-size:20px;font-weight:700;letter-spacing:3px;color:#eaf1fb}
-  .pro-hero .h2{font-size:12.5px;color:#93a3b8;margin-top:5px}
-  .pro-hero .h3{font-size:11px;color:#5d7186;margin-top:9px;letter-spacing:.4px}
-  #previewTag{
-    grid-column:1 / -1;display:flex;align-items:center;gap:9px;
-    font-size:11.5px;color:#fbbf24;background:#2a1d0d;border:1px solid #4d3413;
-    border-radius:12px;padding:10px 14px;margin:10px 0 0;
-  }
-  #previewTag b{color:#fde68a}
-</style>
-<script>
-/* Tiruan pustaka (Leaflet/three/CryptoJS) supaya pratinjau tidak error
-   tanpa internet. Semua panggilan diabaikan dengan aman. */
-(function(){
-  var P = new Proxy(function(){}, {
-    get: function(t,k){
-      if(typeof k === 'symbol') return undefined;                       /* Symbol.* -> aman */
-      if(k==='then'||k==='inspect'||k==='catch'||k==='finally') return undefined;
-      if(k==='toString') return function(){ return '[tiruan]'; };
-      if(k==='valueOf')  return function(){ return 0; };
-      if(k==='length')   return 0;
-      return P;
-    },
-    apply: function(){ return P; }, construct: function(){ return P; }, has: function(){ return true; }
-  });
-  window.L = P; window.THREE = P; window.CryptoJS = P; window.firebase = P;
-  window.addEventListener('error', function(e){
-    console.log('[PRATINJAU] bagian ini dilewati (butuh internet): ' + (e.message||'').slice(0,90));
-  });
-})();
-</script>
 </head>
 <body data-view="kontrol">
 <div id="pwaOfflineBanner"><span class="pob-dot"></span>⚠ OFFLINE — menampilkan data terakhir dari cache</div>
@@ -834,7 +1037,7 @@ body[data-view]:not([data-view="kontrol"]) .welcome-video{display:none !importan
 </div>
 <div class="term-body first" style="padding:14px">
 <div class="top-bar"><div>USER&nbsp;<span id="userLabel" style="color:var(--cyan)">...</span></div><div class="time" id="liveClock">--:--:--</div><button class="logout-btn" onclick="logout()">EXIT</button></div>
-<div class="pro-hero"><div class="h1">CYBER TRACKER</div><div class="h2">Panel pemantauan &amp; kontrol perangkat</div><div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div></div>
+<video class="welcome-video" id="welcomeVideo" autoplay muted playsinline loop><source src="https://cdn.jsdelivr.net/gh/roraxbali/official@main/CyberTracker.mp4" type="video/mp4"></video>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-size:10px;color:var(--text-d)"><span class="dot-status"></span>ONLINE</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="compact-btn" id="compactToggle" onclick="toggleCompactMode()">📱 Mode Kompak</button><button class="chat-btn" onclick="openChat()">💬 CHAT <span id="chatBadge" style="display:none;background:var(--red);color:#fff;padding:1px 5px;font-size:9px;border-radius:8px;margin-left:4px">0</span></button><button class="sound-btn active" id="soundToggle" onclick="toggleSound()">🔊 ON</button></div></div>
 </div>
 
@@ -1160,6 +1363,10 @@ body[data-view]:not([data-view="kontrol"]) .welcome-video{display:none !importan
       </div>
     </div>
   </div>
+      <button class="term-btn outline" onclick="cekTampilan()" style="width:100%">🖥 Cek Peta, Globe &amp; Video</button>
+      <div class="pro-detail" id="tampilanDetail">
+        <pre id="petaIsi" style="margin:10px 0 0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:#cfe0f5;max-height:260px;overflow:auto">-</pre>
+      </div>
 </div>
 <div class="term-body" data-view="tools"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
 <div class="term-body" id="toolsPanel" data-view="tools">
@@ -1292,7 +1499,7 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app
 import{getDatabase,ref,onValue,push,remove,set,update}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 const FC={apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",authDomain:"roraxbali-65802.firebaseapp.com",databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"roraxbali-65802",storageBucket:"roraxbali-65802.firebasestorage.app",messagingSenderId:750633313866,appId:"1:750636313866:web:3d2e552960e06db83968b3"};
 const app=initializeApp(FC);const db=getDatabase(app);
-var user='budi (contoh)';try{user=localStorage.getItem('username')||user;}catch(e){}
+const user=localStorage.getItem('username');if(!user)location.href='index.html';
 document.getElementById('userLabel').innerText=user;
 window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;window.set=set;window.update=update;
 const wv=document.getElementById('welcomeVideo');
@@ -2566,7 +2773,9 @@ function statSubscribe(){
   var INFO = {
     lampu:  { id: 'lampDetail',  judul: 'Info Senter / Lampu', ico: '🔦' },
     cari:   { id: 'cariDetail',  judul: 'Info Cari HP',        ico: '🔔' },
-    status: { id: 'statDetail',  judul: 'Detail Perangkat',    ico: '📊' }
+    status: { id: 'statDetail',  judul: 'Detail Perangkat',    ico: '📊' },
+    tampilan: { id: 'tampilanDetail', judul: 'Cek Peta, Globe & Video', ico: '🖥',
+                sub: 'hasil pemeriksaan peta, globe 3D & video sambutan' }
   };
 
   window.lihatInfo = function (jenis) {
@@ -2574,6 +2783,7 @@ function statSubscribe(){
     if (!info || !modal || !modalBody) return;
     var src = el(info.id);
     if (!src) return;
+    if (terpasang && terpasang.el === src) { modal.classList.add('open'); return; }
     if (terpasang) kembalikan();
     terpasang = { el: src, induk: src.parentNode, sblm: src.nextSibling };
     modalBody.innerHTML = '';
@@ -2581,7 +2791,7 @@ function statSubscribe(){
     src.style.display = 'block';
     if (el('proModalTitle')) el('proModalTitle').innerText = info.judul;
     if (el('proModalIco')) el('proModalIco').innerText = info.ico;
-    if (el('proModalSub')) el('proModalSub').innerText = 'data terakhir yang dikirim perangkat target';
+    if (el('proModalSub')) el('proModalSub').innerText = info.sub || 'data terakhir yang dikirim perangkat target';
     modal.classList.add('open');
     salinUlang();
   };
@@ -2684,6 +2894,42 @@ function statSubscribe(){
     var d3 = el('stWaktuDetail'); if (d3) d3.innerText = teks('stWaktu');
   }
 
+  /* ---------- 5b) cek peta, globe, dan video ---------- */
+  window.cekTampilan = function () {
+    var isi = el('petaIsi');
+    var baris = [];
+    function t(s) { baris.push(s); }
+    t('CEK TAMPILAN - ' + new Date().toLocaleString('id-ID'));
+    t('Leaflet (peta)   : ' + (typeof L !== 'undefined' ? 'ADA' : 'TIDAK ADA'));
+    t('THREE (globe 3D) : ' + (typeof THREE !== 'undefined' ? 'ADA' : 'TIDAK ADA'));
+    ['mapMulti', 'mapApk', 'mapLink'].forEach(function (id) {
+      var n = el(id);
+      if (!n) { t('Peta ' + id + ' : tidak ada di halaman'); return; }
+      var k = (n.closest && n.closest('.leaflet-container')) || n;
+      var r = k.getBoundingClientRect();
+      var siap = k.querySelectorAll('img.leaflet-tile-loaded').length;
+      var total = k.querySelectorAll('img.leaflet-tile').length;
+      t('Peta ' + id + ' : ' + Math.round(r.width) + 'x' + Math.round(r.height)
+        + ' - ubin termuat ' + siap + '/' + total
+        + (total === 0 ? '  (belum dipakai - normal)' : (siap > 0 ? '  OK' : '  MENUNGGU INTERNET')));
+    });
+    var gb = el('globeBox'), gc = el('globeCanvas');
+    t('Globe 3D        : kotak ' + (gb ? gb.clientWidth + 'x' + gb.clientHeight : '-')
+      + ' - canvas ' + (gc ? gc.width + 'x' + gc.height : '-'));
+    var v = el('welcomeVideo');
+    if (v) {
+      t('Video sambutan  : ' + (v.readyState >= 3 ? 'SIAP' : 'BELUM SIAP') + ' ' + v.videoWidth + 'x' + v.videoHeight
+        + ' - ' + (v.paused ? 'berhenti' : 'sedang jalan'));
+      t('   sumber: ' + (v.currentSrc || '(kosong)').replace('https://', '').slice(0, 62));
+    } else { t('Video sambutan  : tidak ada di halaman'); }
+    t('');
+    t('CATATAN: kalau peta menulis 0 ubin atau Leaflet TIDAK ADA, berarti file yang');
+    t('di-upload ke GitHub bukan 2-dashboard.html (file pratinjau memang tanpa peta).');
+    if (isi) isi.innerText = baris.join('\n');
+    if (window.addLog) addLog('🖥 Cek peta/globe/video dijalankan', 'ok');
+    if (typeof lihatInfo === 'function') lihatInfo('tampilan');
+  };
+
   /* ---------- 6) jalan ---------- */
   function mulai() {
     var simpan = 'kontrol';
@@ -2702,65 +2948,836 @@ function statSubscribe(){
 </script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
-   MODE PRATINJAU — hanya untuk file contoh (bukan untuk di-upload).
-   Mengisi panel dengan data contoh supaya desain barunya bisa dinilai
-   tanpa upload ke GitHub. Data asli dari Firebase akan menimpanya sendiri
-   kalau dashboard ini dibuka dalam keadaan login.
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
    ══════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
-  var CONTOH = {
-    lampStateTxt: 'NYALA',
-    lampSubTxt: 'Konfirmasi dari HP target: OK · cara: CameraManager',
-    lampDev: 'Xiaomi Redmi 9A',
-    lampCmdTxt: 'on · 02:41:07',
-    lampConfirm: 'NYALA (CameraManager)',
-    lampSyncTxt: 'baru saja',
-    lampPathTxt: 'kontrol/budi/lampu',
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
 
-    cariState: 'SEDANG BERBUNYI',
-    cariTime: 'baru saja',
-    cariDevice: 'Xiaomi Redmi 9A',
-    cariPath: 'kontrol/budi/cari',
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
 
-    stBaterai: '88%',
-    stJaringan: 'WIFI',
-    stWaktu: 'baru saja',
-    stMengisi: 'YA (sedang di-charge)',
-    stSuhu: '36.4 \u00b0C',
-    stBunyi: 'berbunyi',
-    stWifi: 'Wifi Rumah',
-    stOperator: 'Telkomsel',
-    stPosisi: '-7.25750, 112.75210 (\u00b112 m)',
-    stHp: 'Xiaomi Redmi 9A \u00b7 Android 13',
-    stPath: 'kontrol/budi/perangkat',
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
 
-    apkUser: 'budi', apkDevice: 'Xiaomi Redmi 9A',
-    apkLat: '-7.25750', apkLng: '112.75210', apkAkurasi: '12 m',
-    apkTime: '02:41:07',
-    ipPub: '103.28.14.77', ipIsp: 'Telkomsel', ipLoc: 'Surabaya, ID', ipTz: 'WIB (UTC+7)',
-    locTargetName: 'Surabaya, Jawa Timur',
-    countTotal: '7', countShown: '7', donutTotal: '7'
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    var siap3D = false;
+    try { siap3D = (typeof THREE !== 'undefined') && !!window.globeRenderer; } catch (e) {}
+    if (!siap3D) {
+      if (cv.dataset.globe2d === '1') return;
+      cv.dataset.globe2d = '1';
+      globe2D();
+    }
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 5000);
+  setTimeout(cekGlobe, 9000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 2500);
+  setTimeout(function () { clearInterval(pengintai); }, 30000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globeCatatan || 'globe 3D normal (WebGL)'));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
   };
-
-  /* di pratinjau, data contoh SELALU menang (file ini tidak dipakai untuk GitHub) */
-  function isi(id, nilai) {
-    var n = document.getElementById(id);
-    if (!n) return;
-    if ((n.innerText || '').trim() !== nilai) n.innerText = nilai;
-  }
-
-  function jalan() {
-    for (var id in CONTOH) { if (CONTOH.hasOwnProperty(id)) isi(id, CONTOH[id]); }
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    jalan();
-    setInterval(jalan, 600);
-    console.log('%c[PRATINJAU] Data contoh aktif - hanya untuk melihat desain', 'color:#f59e0b;font-weight:bold');
-  });
 })();
-
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3ef98cf188c5a7c',t:'MTc5MDA2MjE0OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
+
+  /* ---------------- 0) DETEKSI GLOBE 3D ----------------
+     Kita pasang kait pada THREE.WebGLRenderer. Begitu aplikasi membuat globe 3D,
+     penanda ini menyala - jadi globe 2D cadangan TIDAK ikut menggambar. */
+  window.__globe3dAktif = false;
+  (function pasangKait() {
+    try {
+      if (!window.THREE || !THREE.WebGLRenderer || typeof Proxy === 'undefined') return;
+      THREE.WebGLRenderer = new Proxy(THREE.WebGLRenderer, {
+        construct: function (t, a) {
+          window.__globe3dAktif = true;
+          try { console.log('[GLOBE] Globe 3D aktif (WebGL) - globe 2D cadangan tidak dipakai'); } catch (e) {}
+          return new t(a[0] || {});
+        }
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
+
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
+
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      if (window.__globe3dAktif) {          /* globe 3D sudah jalan -> berhenti */
+        ctx.clearRect(0, 0, W, H);
+        delete cv.dataset.globe2d;
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    if (window.__globe3dAktif) return;              /* globe 3D jalan - tidak perlu cadangan */
+    if (cv.dataset.globe2d === '1') return;
+    cv.dataset.globe2d = '1';
+    globe2D();
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 5000);
+  setTimeout(cekGlobe, 9000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 2500);
+  setTimeout(function () { clearInterval(pengintai); }, 30000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globe3dAktif ? 'globe 3D normal (WebGL)' : (window.__globeCatatan || 'globe 2D cadangan')));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
+  };
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
+
+  /* ---------------- 0) DETEKSI GLOBE 3D ----------------
+     Kita pasang kait pada THREE.WebGLRenderer. Begitu aplikasi membuat globe 3D,
+     penanda ini menyala - jadi globe 2D cadangan TIDAK ikut menggambar. */
+  window.__globe3dAktif = false;
+  (function pasangKait() {
+    try {
+      if (!window.THREE || !THREE.WebGLRenderer || typeof Proxy === 'undefined') return;
+      THREE.WebGLRenderer = new Proxy(THREE.WebGLRenderer, {
+        construct: function (t, a) {
+          window.__globe3dAktif = true;
+          try { console.log('[GLOBE] Globe 3D aktif (WebGL) - globe 2D cadangan tidak dipakai'); } catch (e) {}
+          return new t(a[0] || {});
+        }
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
+
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
+
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      if (window.__globe3dAktif) {          /* globe 3D sudah jalan -> berhenti */
+        ctx.clearRect(0, 0, W, H);
+        delete cv.dataset.globe2d;
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    if (window.__globe3dAktif) return;              /* globe 3D jalan - tidak perlu cadangan */
+    /* kalau three.js sudah ada, tunggu globe 3D dulu (jangan buru-buru pakai cadangan) */
+    if (typeof THREE !== 'undefined' && THREE.WebGLRenderer && !cv.dataset.globe2d) {
+      try { if (cv.getContext('webgl') || cv.getContext('webgl2')) return; } catch (e) {}
+    }
+    if (cv.dataset.globe2d === '1') return;
+    cv.dataset.globe2d = '1';
+    globe2D();
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 8000);      /* beri waktu globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 12000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 3000);
+  setTimeout(function () { clearInterval(pengintai); }, 40000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globe3dAktif ? 'globe 3D normal (WebGL)' : (window.__globeCatatan || 'globe 2D cadangan')));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
+  };
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
+
+  /* ---------------- 0) DETEKSI GLOBE 3D ----------------
+     Kita pasang kait pada THREE.WebGLRenderer. Begitu aplikasi membuat globe 3D,
+     penanda ini menyala - jadi globe 2D cadangan TIDAK ikut menggambar. */
+  window.__globe3dAktif = false;
+  (function pasangKait() {
+    try {
+      if (!window.THREE || !THREE.WebGLRenderer || typeof Proxy === 'undefined') return;
+      THREE.WebGLRenderer = new Proxy(THREE.WebGLRenderer, {
+        construct: function (t, a) {
+          window.__globe3dAktif = true;
+          try { console.log('[GLOBE] Globe 3D aktif (WebGL) - globe 2D cadangan tidak dipakai'); } catch (e) {}
+          return new t(a[0] || {});
+        }
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
+
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) { delete cv.dataset.globe2d; return; }   /* canvas sedang dipakai globe 3D - biarkan */
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
+
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      if (window.__globe3dAktif) {          /* globe 3D sudah jalan -> berhenti */
+        ctx.clearRect(0, 0, W, H);
+        delete cv.dataset.globe2d;
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    if (window.__globe3dAktif) return;              /* globe 3D jalan - tidak perlu cadangan */
+    /* kalau three.js sudah ada, tunggu globe 3D dulu (jangan buru-buru pakai cadangan) */
+    if (typeof THREE !== 'undefined' && THREE.WebGLRenderer && !cv.dataset.globe2d) {
+      try { if (cv.getContext('webgl') || cv.getContext('webgl2')) return; } catch (e) {}
+    }
+    if (cv.dataset.globe2d === '1') return;
+    cv.dataset.globe2d = '1';
+    globe2D();
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 8000);      /* beri waktu globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 12000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 3000);
+  setTimeout(function () { clearInterval(pengintai); }, 40000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globe3dAktif ? 'globe 3D normal (WebGL)' : (window.__globeCatatan || 'globe 2D cadangan')));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
+  };
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
+
+  /* ---------------- 0) DETEKSI GLOBE 3D ----------------
+     Kita pasang kait pada THREE.WebGLRenderer. Begitu aplikasi membuat globe 3D,
+     penanda ini menyala - jadi globe 2D cadangan TIDAK ikut menggambar. */
+  window.__globe3dAktif = false;
+  (function pasangKait() {
+    try {
+      if (!window.THREE || !THREE.WebGLRenderer || typeof Proxy === 'undefined') return;
+      THREE.WebGLRenderer = new Proxy(THREE.WebGLRenderer, {
+        construct: function (t, a) {
+          window.__globe3dAktif = true;
+          try { console.log('[GLOBE] Globe 3D aktif (WebGL) - globe 2D cadangan tidak dipakai'); } catch (e) {}
+          return new t(a[0] || {});
+        }
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
+
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;                  /* canvas sedang dipakai globe 3D - biarkan */
+    cv.dataset.globe2d = '1';          /* penanda: cadangan benar-benar dipakai */
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
+
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      if (window.__globe3dAktif) {          /* globe 3D sudah jalan -> berhenti */
+        ctx.clearRect(0, 0, W, H);
+        delete cv.dataset.globe2d;
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    if (window.__globe3dAktif) return;              /* globe 3D jalan - tidak perlu cadangan */
+    /* kalau three.js sudah ada, tunggu globe 3D dulu (jangan buru-buru pakai cadangan) */
+    if (typeof THREE !== 'undefined' && THREE.WebGLRenderer && !cv.dataset.globe2d) {
+      try { if (cv.getContext('webgl') || cv.getContext('webgl2')) return; } catch (e) {}
+    }
+    if (cv.dataset.globe2d === '1') return;
+    globe2D();
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 8000);      /* beri waktu globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 12000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 3000);
+  setTimeout(function () { clearInterval(pengintai); }, 40000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globe3dAktif ? 'globe 3D normal (WebGL)' : (window.__globeCatatan || 'globe 2D cadangan')));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
+  };
+})();
+</script>
+</body>
 </html>
