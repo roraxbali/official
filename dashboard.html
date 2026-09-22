@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>
+/* Pengaman untuk jendela pratinjau (sandbox): kalau penyimpanan dilarang browser,
+   pakai penyimpanan sementara di memori supaya halaman tetap jalan normal. */
+(function(){
+  var boleh = true;
+  try { window.localStorage.getItem('cek'); } catch (e) { boleh = false; }
+  if (!boleh) {
+    var isi = {};
+    var tiruan = {
+      getItem: function(k){ return Object.prototype.hasOwnProperty.call(isi, k) ? isi[k] : null; },
+      setItem: function(k, v){ isi[k] = String(v); },
+      removeItem: function(k){ delete isi[k]; },
+      clear: function(){ isi = {}; },
+      key: function(i){ return Object.keys(isi)[i] || null; }
+    };
+    try { Object.defineProperty(window, 'localStorage', { value: tiruan, configurable: true }); }
+    catch (e) { try { window.localStorage = tiruan; } catch (e2) {} }
+  }
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>CYBER TERMINAL — RECON</title>
@@ -16,10 +37,6 @@
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 <meta property="og:image:type" content="image/png">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 <style>
 :root{--bg:#04070d;--bg2:#0a101c;--bg3:#0e1626;--gold:#00e58a;--gold2:#66ffc2;--gold-d:#0d3f2e;--cyan:#38bdf8;--cyan-d:#0c2f45;--green:#00e58a;--green-d:#0a2e21;--red:#ff3355;--amber:#ff8f00;--text:#cfd9e6;--text-d:#5d7186;--border:#152030;--border2:#1d2a3c;--radius:4px}
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
@@ -386,23 +403,450 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 #pwaInstallBtn:active{transform:scale(.95)}
 @keyframes pwaBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
+<style id="proTheme">
+/* ══════════════════════════════════════════════════════════════════════════
+   TEMA PROFESIONAL (revisi 6) - dipasang paling akhir, menimpa gaya lama.
+   Tujuan: tampilan bersih, tidak rame, enak dibaca, tombol besar & jelas.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root,body{
+  --bg:#0b1120; --bg2:#0f172a; --bg3:#111c30;
+  --gold:#3b82f6; --gold2:#60a5fa; --gold-d:#1d4ed8;
+  --cyan:#60a5fa; --cyan-d:#1e3a5f;
+  --green:#10b981; --green-d:#064e3b;
+  --red:#ef4444; --amber:#f59e0b;
+  --text:#e6edf7; --text-d:#8b9cb5;
+  --border:#1e293b; --border2:#233045;
+  --radius:14px;
+  --pro-line:#1e293b; --pro-line2:#26354d; --pro-muted:#8b9cb5;
+  --pro-card:#101a2c; --pro-accent:#3b82f6;
+}
+*{scrollbar-width:thin;scrollbar-color:#26354d transparent}
+*::-webkit-scrollbar{width:9px;height:9px}
+*::-webkit-scrollbar-thumb{background:#26354d;border-radius:9px}
+*::-webkit-scrollbar-track{background:transparent}
+
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif !important;
+  background:radial-gradient(1100px 560px at 50% -8%,#17253f 0%,#0b1120 62%) fixed,#0b1120 !important;
+  color:var(--text);padding:0 14px 100px;line-height:1.55;
+}
+body::before{display:none !important}                     /* garis scanline dibuang */
+body::after{display:none}
+
+/* ---------- tata letak ---------- */
+.wrap{max-width:1180px !important;margin:0 auto}
+@media (min-width:900px){
+  .wrap{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:14px}
+  .term-body{margin-bottom:0 !important}
+}
+@media (min-width:1340px){.wrap{grid-template-columns:repeat(3,minmax(0,1fr)) !important}}
+
+/* ---------- kartu ---------- */
+.term-body,.term-body.first{
+  background:linear-gradient(180deg,#111c2f 0%,#0e1727 100%) !important;
+  border:1px solid var(--pro-line) !important;
+  border-radius:16px !important;
+  padding:18px !important;
+  margin-bottom:14px;
+  box-shadow:0 18px 40px -32px #000, inset 0 1px 0 #ffffff08;
+}
+.prompt{
+  color:#dbe6f5 !important;font-size:13px !important;font-weight:600 !important;
+  letter-spacing:.2px !important;text-transform:none !important;
+  margin-bottom:14px !important;padding-bottom:11px !important;
+  border-bottom:1px solid #1b2434 !important;
+  display:flex;align-items:center;gap:9px;line-height:1.35;
+}
+.prompt::before{
+  content:'' !important;width:3px;height:15px;border-radius:2px;
+  background:linear-gradient(180deg,#60a5fa,#2563eb);display:inline-block;flex:0 0 auto;
+}
+
+/* ---------- tombol ---------- */
+.term-btn{
+  background:linear-gradient(180deg,#3b82f6,#2563eb) !important;color:#fff !important;
+  border:none !important;border-radius:11px !important;
+  font-family:inherit !important;font-size:13px !important;font-weight:600 !important;
+  letter-spacing:.2px !important;text-transform:none !important;
+  padding:12px 14px !important;margin-bottom:0 !important;cursor:pointer;
+  box-shadow:0 10px 22px -16px #2563eb;transition:filter .15s,transform .05s;
+}
+.term-btn:hover{filter:brightness(1.09)}
+.term-btn:active{transform:translateY(1px)}
+.term-btn.outline{background:#141f33 !important;color:#dbe6f5 !important;border:1px solid #2a3b56 !important;box-shadow:none}
+.term-btn.outline:hover{border-color:#3b82f6 !important;color:#fff !important}
+.term-btn.danger{background:#1c1421 !important;color:#fca5a5 !important;border:1px solid #4c2230 !important;box-shadow:none}
+.term-btn.danger:hover{background:#3d1622 !important;color:#fff !important}
+.term-btn.sel{box-shadow:0 0 0 3px #3b82f64d,0 10px 22px -16px #2563eb}
+
+/* ---------- kolom isian ---------- */
+.geo-inp,.term-input,input[type=text],input[type=number],input[type=password],input[type=url],select,textarea{
+  background:#0b1424 !important;border:1px solid #26354d !important;border-radius:11px !important;
+  color:#eaf1fb !important;font-family:inherit !important;font-size:13.5px !important;
+  padding:11px 13px !important;outline:none !important;width:100%;
+}
+.geo-inp:focus,.term-input:focus,input:focus,select:focus,textarea:focus{
+  border-color:#3b82f6 !important;box-shadow:0 0 0 3px #3b82f61f;
+}
+::placeholder{color:#5d7186 !important}
+
+/* ---------- kepala aplikasi baru ---------- */
+.pro-header{
+  grid-column:1 / -1;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:16px 18px;margin:8px 0 0;
+  background:linear-gradient(135deg,#13223a 0%,#0d1728 100%);
+  border:1px solid #24334d;border-radius:18px;
+  box-shadow:0 22px 44px -34px #000;
+}
+.pro-logo{
+  width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:0 0 auto;
+  font-size:20px;background:linear-gradient(135deg,#3b82f6,#0ea5e9);
+  box-shadow:0 12px 26px -16px #3b82f6;
+}
+.pro-brand h1{font-size:16px;font-weight:700;letter-spacing:.2px;margin:0;color:#f2f7fd}
+.pro-brand p{font-size:11.5px;color:var(--pro-muted);margin:1px 0 0}
+.pro-head-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pro-pill{
+  font-size:11px;font-weight:600;padding:6px 12px;border-radius:999px;
+  background:#0d2a1f;color:#34d399;border:1px solid #14532d;display:inline-flex;align-items:center;gap:6px;
+}
+.pro-pill i{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;animation:spulse 2.2s ease-in-out infinite}
+.pro-user{font-size:11.5px;color:var(--pro-muted)}
+.pro-user b{color:#cfe0f5;font-weight:600}
+
+/* ---------- navigasi ---------- */
+.pro-nav{
+  grid-column:1 / -1;display:flex;gap:6px;overflow-x:auto;padding:6px;margin:12px 0 2px;
+  background:#0e1728;border:1px solid var(--pro-line);border-radius:14px;
+}
+.pro-nav::-webkit-scrollbar{display:none}
+.pro-nav button{
+  flex:1 0 auto;background:transparent;border:none;color:#8b9cb5;cursor:pointer;
+  font-family:inherit;font-size:12.5px;font-weight:600;letter-spacing:.2px;
+  padding:11px 16px;border-radius:10px;white-space:nowrap;transition:.15s;
+}
+.pro-nav button:hover{color:#dbe6f5;background:#152238}
+.pro-nav button.active{background:linear-gradient(180deg,#28405f,#1c2f49);color:#fff;box-shadow:inset 0 1px 0 #ffffff1a}
+.pro-nav button .n{font-size:13px}
+
+/* ---------- judul tiap halaman ---------- */
+.pro-viewhead{grid-column:1 / -1;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:14px 4px 2px;flex-wrap:wrap}
+.pro-viewhead h2{font-size:17px;font-weight:700;margin:0;color:#f2f7fd;letter-spacing:.2px}
+.pro-viewhead p{font-size:12px;color:var(--pro-muted);margin:2px 0 0}
+.pro-viewhead .pro-count{font-size:11px;color:var(--pro-muted)}
+
+/* ---------- pemilih halaman (isi disembunyikan) ---------- */
+.term-body[data-view]{display:none}
+body[data-view="kontrol"] .term-body[data-view="kontrol"],
+body[data-view="lokasi"] .term-body[data-view="lokasi"],
+body[data-view="analitik"] .term-body[data-view="analitik"],
+body[data-view="tools"] .term-body[data-view="tools"],
+body[data-view="sistem"] .term-body[data-view="sistem"]{display:block}
+.term-body[data-span="full"]{grid-column:1 / -1}
+@media (min-width:900px){
+  .term-body:has(#mapMulti),.term-body:has(#hasil),.term-body:has(.map-box){grid-column:1 / -1}
+}
+
+/* ---------- kartu kontrol APK ---------- */
+.pro-card .pro-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pro-ico{
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:0 0 auto;
+  font-size:19px;background:#152238;border:1px solid #23324a;
+}
+.pro-head-txt h3{font-size:14.5px;font-weight:650;margin:0;color:#f2f7fd}
+.pro-head-txt p{font-size:11.5px;color:var(--pro-muted);margin:1px 0 0}
+.pro-badge{
+  margin-left:auto;font-size:11px;font-weight:600;padding:6px 11px;border-radius:999px;
+  background:#152238;border:1px solid #23324a;color:#93c5fd;white-space:nowrap;
+}
+.pro-badge.on{background:#0d2a1f;color:#34d399;border-color:#14532d}
+.pro-badge.off{background:#171d29;color:#93a3b8;border-color:#26354d}
+.pro-badge.warn{background:#2a1d0d;color:#fbbf24;border-color:#4d3413}
+.pro-info-btn{
+  width:100%;margin-top:14px;background:#101b2e;border:1px solid #26354d;color:#c7d5ea;
+  font-family:inherit;font-size:12.5px;font-weight:600;padding:12px;border-radius:11px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;
+}
+.pro-info-btn:hover{border-color:#3b82f6;color:#fff;background:#132340}
+.pro-detail{display:none}
+
+/* ---------- ringkasan angka ---------- */
+.pro-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pro-mini>div{background:#0d1727;border:1px solid var(--pro-line);border-radius:13px;padding:12px}
+.pro-mini b{display:block;font-size:16px;font-weight:700;color:#eaf1fb;letter-spacing:.2px}
+.pro-mini span{font-size:10px;color:var(--pro-muted);letter-spacing:.5px;text-transform:uppercase}
+.pro-mini .pos{color:#34d399}.pro-mini .neg{color:#f87171}.pro-mini .warn{color:#fbbf24}
+
+/* ---------- baris info ---------- */
+.term-info>div,.dev-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  padding:9px 0 !important;border-bottom:1px dashed #1b2434 !important;font-size:12.5px;line-height:1.5;
+}
+.term-info>div:last-child,.dev-row:last-child{border-bottom:none !important}
+.term-info .k,.dev-k{color:var(--pro-muted) !important;letter-spacing:.2px;min-width:130px;display:inline-block}
+.term-info .v,.dev-v{
+  color:#cfe0f5 !important;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace !important;
+  font-size:12px !important;text-align:right;word-break:break-word;
+}
+.stat-grid{display:grid !important;grid-template-columns:1fr 1fr;gap:0 18px}
+.stat-col{min-width:0}
+@media (max-width:520px){.stat-grid{grid-template-columns:1fr}}
+.stat-num{font-size:17px !important;letter-spacing:.4px}
+
+/* ---------- lampu ---------- */
+.lamp-wrap{display:flex;align-items:center;gap:16px;padding:14px;background:#0d1727;border:1px solid var(--pro-line);border-radius:14px;margin-bottom:14px}
+.lamp-bulb{
+  width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:24px;flex:0 0 auto;
+  background:#141f33;border:1px solid #2a3b56;transition:.2s;
+}
+.lamp-bulb.on{background:radial-gradient(circle at 50% 40%,#fde68a,#f59e0b);border-color:#fbbf24;box-shadow:0 0 26px -4px #f59e0b}
+.lamp-big{font-size:15px;font-weight:700;letter-spacing:.3px;color:#eaf1fb;text-transform:none}
+.lamp-sub{font-size:11.5px;color:var(--pro-muted);margin-top:3px}
+.lamp-ctrl{display:flex;gap:8px;margin-bottom:12px}
+.lamp-ctrl .term-btn{flex:1;margin:0 !important}
+.lamp-ctrl .term-btn:last-child{flex:0 0 auto;min-width:96px}
+.lamp-id-row{display:flex;gap:8px;align-items:center}
+.lamp-id-row .term-btn{margin:0 !important;flex:0 0 auto;width:auto !important;padding:12px 16px !important}
+
+/* ---------- panel tambahan lain (biar seragam) ---------- */
+.map-box{border-radius:14px !important;border:1px solid var(--pro-line) !important;overflow:hidden}
+.map-box::before,.map-box::after{display:none !important}
+.tools-tabs{border-bottom:1px solid var(--pro-line) !important}
+.tools-tab{font-family:inherit !important;border-radius:9px !important}
+.dot-status{box-shadow:0 0 8px #10b981 !important}
+.top-bar{border-bottom:1px solid var(--pro-line);padding-bottom:10px;margin-bottom:14px}
+.top-bar .time{color:#cfe0f5 !important;font-weight:600 !important;letter-spacing:1px}
+.logout-btn,.chat-btn,.sound-btn,.compact-btn{font-family:inherit !important;border-radius:9px !important;font-weight:600 !important}
+.logout-btn{background:#1c1421 !important;color:#fca5a5 !important;border:1px solid #4c2230 !important}
+.chat-btn{background:#132340 !important;color:#93c5fd !important;border:1px solid #26354d !important}
+.sound-btn{background:#141f33 !important;color:#a8b8ce !important;border:1px solid #26354d !important}
+.compact-btn{display:none !important}                       /* diganti navigasi halaman */
+.welcome-video{border-radius:14px !important;border:1px solid var(--pro-line) !important;opacity:.92}
+.term-header{display:none !important}
+
+/* ---------- lembar informasi (modal) ---------- */
+.pro-modal{position:fixed;inset:0;z-index:10000;display:none}
+.pro-modal.open{display:block}
+.pro-modal-bg{position:absolute;inset:0;background:rgba(4,8,15,.72);backdrop-filter:blur(4px)}
+.pro-sheet{
+  position:absolute;right:0;top:0;bottom:0;width:min(470px,100%);
+  background:#0e1728;border-left:1px solid #24334d;display:flex;flex-direction:column;
+  box-shadow:-30px 0 60px -30px #000;animation:proIn .22s ease;
+}
+@keyframes proIn{from{transform:translateX(26px);opacity:.5}to{transform:none;opacity:1}}
+.pro-sheet-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid #1b2434}
+.pro-sheet-head .ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#152238;border:1px solid #23324a;font-size:17px}
+.pro-sheet-head h3{font-size:14px;font-weight:700;margin:0;color:#f2f7fd}
+.pro-sheet-head p{font-size:11px;color:var(--pro-muted);margin:1px 0 0}
+.pro-sheet-x{margin-left:auto;background:#141f33;border:1px solid #26354d;color:#a8b8ce;width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:15px;line-height:1}
+.pro-sheet-x:hover{color:#fff;border-color:#3b82f6}
+.pro-sheet-body{padding:16px 18px;overflow:auto;flex:1}
+.pro-sheet-foot{padding:14px 18px;border-top:1px solid #1b2434;display:flex;gap:8px}
+.pro-sheet-foot .term-btn{flex:1}
+.pro-note{font-size:10.5px;color:#5d7186;margin-top:12px;line-height:1.6}
+@media (max-width:720px){
+  .pro-sheet{left:0;right:0;top:auto;bottom:0;height:84%;width:auto;border-left:none;border-top:1px solid #24334d;border-radius:20px 20px 0 0;animation:proUp .22s ease}
+  @keyframes proUp{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+}
+
+/* ---------- ponsel: navigasi di bawah ---------- */
+@media (max-width:760px){
+  body{padding:0 10px 104px}
+  .pro-nav{
+    position:fixed;left:10px;right:10px;bottom:10px;z-index:9998;margin:0;
+    background:#0d1626f2;border:1px solid #24334d;border-radius:16px;
+    box-shadow:0 20px 44px -18px #000;backdrop-filter:blur(8px);
+  }
+  .pro-nav button{flex:1 1 0;padding:9px 4px;font-size:10.5px;text-align:center;line-height:1.35}
+  .pro-nav button .n{display:block;font-size:15px;margin-bottom:1px}
+  .pro-header{padding:14px}
+  .pro-viewhead{margin-top:12px}
+  .pro-mini{grid-template-columns:1fr 1fr}
+  .lamp-ctrl{flex-wrap:wrap}
+  .lamp-ctrl .term-btn:last-child{flex:1 1 100%;min-width:0}
+}
+
+/* ---------- rapikan tombol bawaan browser di ponsel ---------- */
+@media (max-width:760px){
+  #pwaInstallBtn{bottom:106px !important}
+  #pwaOfflineBanner,#pwaOnlineBanner{font-size:10.5px}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TAMBAHAN REVISI 6b — sidebar kiri (fixed) di layar lebar, gaya panel admin
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* sentuhan halus biar terasa lebih hidup */
+.term-body{transition:border-color .2s}
+.term-body:hover{border-color:#2a3b56 !important}
+.pro-nav button{transition:background .15s,color .15s,transform .05s}
+.pro-nav button:active{transform:scale(.985)}
+.pro-mini>div{transition:border-color .2s}
+.pro-mini>div:hover{border-color:#2a3b56}
+.pro-viewhead{border-bottom:1px solid var(--pro-line);padding-bottom:12px}
+
+/* pengaman: kalau program tab gagal jalan, halaman Kontrol tetap tampil */
+body:not([data-view]) .term-body[data-view="kontrol"]{display:block}
+
+/* panel kepala (jam, user, tombol) & peta selalu selebar layar */
+.term-body.first,.pro-header,.pro-nav,.pro-viewhead{grid-column:1 / -1}
+
+/* dua kolom isi mulai 760px */
+@media (min-width:760px){
+  .wrap{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:14px}
+  .term-body{margin-bottom:0 !important}
+  .term-body:has(.map-box),.term-body:has(#globeBox),.term-body:has(#radarGlobal),
+  .term-body:has(#liveConsole),.term-body:has(.cmp-wrap){grid-column:1 / -1}
+  .term-body[data-span="full"]{grid-column:1 / -1}
+}
+
+/* ─── layar lebar: sidebar diam di kiri, isi di kanan ─── */
+@media (min-width:1080px){
+  body{padding:0 22px 40px 276px}          /* ruang untuk sidebar */
+  .wrap{max-width:none !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .pro-nav{
+    position:fixed !important;left:22px;top:22px;width:232px;z-index:60;
+    flex-direction:column;gap:4px;padding:10px;margin:0;overflow:auto;
+    max-height:calc(100vh - 44px);
+    background:linear-gradient(180deg,#101c30,#0c1524);
+    border:1px solid #24334d;border-radius:16px;
+    box-shadow:0 18px 40px -30px #000;
+  }
+  .pro-nav button{
+    flex:0 0 auto;width:100%;text-align:left;position:relative;
+    display:flex;align-items:center;gap:11px;
+    padding:12px 13px;font-size:13px;border-radius:11px;
+  }
+  .pro-nav button .n{width:22px;text-align:center;font-size:16px;margin:0}
+  .pro-nav button.active{background:linear-gradient(90deg,#22405f,#1a2f49);color:#fff}
+  .pro-nav button.active::before{
+    content:'';position:absolute;left:0;top:11px;bottom:11px;width:3px;border-radius:3px;
+    background:linear-gradient(180deg,#60a5fa,#2563eb);
+  }
+  .pro-nav::after{
+    content:'panel kontrol · v6';display:block;margin-top:8px;padding:9px 12px 3px;
+    font-size:10px;letter-spacing:.4px;color:#5d7186;border-top:1px solid #1b2434;
+  }
+  .pro-header{padding:18px 20px;margin-top:10px}
+  .pro-brand h1{font-size:17px}
+}
+
+/* ─── layar sangat lebar: 3 kolom isi ─── */
+@media (min-width:1560px){
+  .wrap{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+}
+
+/* ─── perbaikan: baris tombol tidak boleh meluber keluar kartu ─── */
+.lamp-ctrl{flex-wrap:wrap}
+.lamp-ctrl .term-btn{width:auto !important;min-width:0;flex:1 1 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lamp-ctrl .term-btn:last-child{flex:0 1 auto;min-width:104px}
+.lamp-id-row .geo-inp{min-width:0}
+.lamp-id-row .term-btn{width:auto !important;white-space:nowrap}
+.pro-info-btn{width:100%}
+/* kartu Cari HP: angka ringkas jangan melar berlebihan */
+.pro-mini b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1240px){
+  .pro-mini{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pro-mini>div:last-child{grid-column:1 / -1}
+}
+
+/* ─── polesan: kotak sambutan besar & video hanya di halaman Kontrol ─── */
+body[data-view]:not([data-view="kontrol"]) .pro-hero,
+body[data-view]:not([data-view="kontrol"]) .welcome-video{display:none !important}
+.term-body.first .pro-hero{margin-bottom:0}
+</style>
+<style id="proPreview">
+  /* kotak pengganti peta & globe (di pratinjau tidak ada internet) */
+  .map-box,.map-box.tall{
+    background:
+      repeating-linear-gradient(0deg,#0d1727 0 23px,#0b1424 23px 24px),
+      repeating-linear-gradient(90deg,#0d1727 0 23px,#0b1424 23px 24px) !important;
+    display:grid;place-items:center;height:300px;
+  }
+  .map-box.tall{height:340px}
+  .map-box::after{
+    content:'🗺  PETA AKTIF SETELAH DI-UPLOAD KE GITHUB';
+    position:static !important;border:none !important;width:auto !important;height:auto !important;
+    color:#5d7186;font-size:11px;letter-spacing:.6px;background:#0b1424cc;
+    padding:9px 14px;border-radius:999px;border:1px solid #24334d !important;z-index:501;
+  }
+  #globeCanvas{display:none !important}
+  .term-body:has(#globeBox) .map-box,.term-body:has(#globeBox)::after{content:none}
+  .pro-hero{
+    border:1px solid #24334d;border-radius:14px;margin-bottom:14px;padding:26px 20px;text-align:center;
+    background:radial-gradient(700px 200px at 50% 0%,#1b2f4d 0%,#0e1728 70%);
+  }
+  .pro-hero .h1{font-size:20px;font-weight:700;letter-spacing:3px;color:#eaf1fb}
+  .pro-hero .h2{font-size:12.5px;color:#93a3b8;margin-top:5px}
+  .pro-hero .h3{font-size:11px;color:#5d7186;margin-top:9px;letter-spacing:.4px}
+  #previewTag{
+    grid-column:1 / -1;display:flex;align-items:center;gap:9px;
+    font-size:11.5px;color:#fbbf24;background:#2a1d0d;border:1px solid #4d3413;
+    border-radius:12px;padding:10px 14px;margin:10px 0 0;
+  }
+  #previewTag b{color:#fde68a}
+</style>
+<script>
+/* Tiruan pustaka (Leaflet/three/CryptoJS) supaya pratinjau tidak error
+   tanpa internet. Semua panggilan diabaikan dengan aman. */
+(function(){
+  var P = new Proxy(function(){}, {
+    get: function(t,k){
+      if(typeof k === 'symbol') return undefined;                       /* Symbol.* -> aman */
+      if(k==='then'||k==='inspect'||k==='catch'||k==='finally') return undefined;
+      if(k==='toString') return function(){ return '[tiruan]'; };
+      if(k==='valueOf')  return function(){ return 0; };
+      if(k==='length')   return 0;
+      return P;
+    },
+    apply: function(){ return P; }, construct: function(){ return P; }, has: function(){ return true; }
+  });
+  window.L = P; window.THREE = P; window.CryptoJS = P; window.firebase = P;
+  window.addEventListener('error', function(e){
+    console.log('[PRATINJAU] bagian ini dilewati (butuh internet): ' + (e.message||'').slice(0,90));
+  });
+})();
+</script>
 </head>
-<body>
+<body data-view="kontrol">
 <div id="pwaOfflineBanner"><span class="pob-dot"></span>⚠ OFFLINE — menampilkan data terakhir dari cache</div>
 <div id="pwaOnlineBanner">✓ ONLINE — data tersinkron</div>
 <button id="pwaInstallBtn" onclick="pwaInstall()">📲 Install App</button>
 <div id="tagEditor"><div class="tag-editor-box"><h3>◈ PILIH TAG TARGET</h3><div class="tag-options" id="tagOptions"><button class="tag-opt" data-tag="">-NONE-</button><button class="tag-opt" data-tag="VIP">VIP</button><button class="tag-opt" data-tag="Suspect">SUSPECT</button><button class="tag-opt" data-tag="Client">CLIENT</button><button class="tag-opt" data-tag="Family">FAMILY</button><button class="tag-opt" data-tag="Other">OTHER</button></div><div class="tag-editor-actions"><button class="tag-save" onclick="saveTagEdit()">SIMPAN</button><button class="tag-cancel" onclick="closeTagEditor()">BATAL</button></div></div></div>
 <div id="decryptOverlay"><div class="dc-title">◈ DECRYPTING DATA STREAM ◈</div><div class="dc-hex" id="dcHex">01001000 01100001 01100011 01101011</div><div class="dc-bar"><div class="dc-fill" id="dcFill"></div></div><div class="dc-pct" id="dcPct">0%</div></div>
 <div class="wrap">
-<div class="term-header"><div class="dots"><div class="dot-win r"></div><div class="dot-win y"></div><div class="dot-win g"></div></div><div class="title">Cyber Terminal</div><div style="width:40px"></div></div>
+<div class="pro-header">
+  <div class="pro-logo">◈</div>
+  <div class="pro-brand">
+    <h1>Cyber Tracker</h1>
+    <p>Panel kontrol &amp; pemantauan perangkat</p>
+  </div>
+  <div class="pro-head-right">
+    <span class="pro-pill"><i></i>ONLINE</span>
+  </div>
+</div>
+<div class="pro-nav" id="proNav">
+  <button class="active" data-view="kontrol"><span class="n">🎛</span>Kontrol</button>
+  <button data-view="lokasi"><span class="n">📍</span>Lokasi</button>
+  <button data-view="analitik"><span class="n">📊</span>Analitik</button>
+  <button data-view="tools"><span class="n">🧰</span>Tools</button>
+  <button data-view="sistem"><span class="n">⚙️</span>Sistem</button>
+</div>
 <div class="term-body first" style="padding:14px">
 <div class="top-bar"><div>USER&nbsp;<span id="userLabel" style="color:var(--cyan)">...</span></div><div class="time" id="liveClock">--:--:--</div><button class="logout-btn" onclick="logout()">EXIT</button></div>
-<video class="welcome-video" id="welcomeVideo" autoplay muted playsinline loop><source src="https://cdn.jsdelivr.net/gh/roraxbali/official@main/CyberTracker.mp4" type="video/mp4"></video>
+<div class="pro-hero"><div class="h1">CYBER TRACKER</div><div class="h2">Panel pemantauan &amp; kontrol perangkat</div><div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div></div>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-size:10px;color:var(--text-d)"><span class="dot-status"></span>ONLINE</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="compact-btn" id="compactToggle" onclick="toggleCompactMode()">📱 Mode Kompak</button><button class="chat-btn" onclick="openChat()">💬 CHAT <span id="chatBadge" style="display:none;background:var(--red);color:#fff;padding:1px 5px;font-size:9px;border-radius:8px;margin-left:4px">0</span></button><button class="sound-btn active" id="soundToggle" onclick="toggleSound()">🔊 ON</button></div></div>
 </div>
 
+<div class="pro-viewhead">
+  <div>
+    <h2 id="proViewTitle">Kontrol Perangkat</h2>
+    <p id="proViewSub">Senter, cari HP, dan status perangkat target</p>
+  </div>
+  <span class="pro-count" id="proViewCount"></span>
+</div>
 <!-- ═══ INFO PANEL ═══ -->
-<div class="term-body"><div class="prompt">[Info] Tentang Aplikasi</div><div class="info-panel">
+<div class="term-body" data-view="sistem"><div class="prompt">[Info] Tentang Aplikasi</div><div class="info-panel">
   <div class="ip-title">◈ CYBER TERMINAL — RECON</div>
   <div class="ip-text">Dikembangkan oleh <b style="color:var(--gold)">Cyber Anonymous by RoraxBringaz</b></div>
   <div class="ip-sub">🎯 TUJUAN APLIKASI</div>
@@ -428,12 +872,12 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
   <div class="ip-text"><span class="ip-warn">Gunakan hanya untuk tujuan yang sah dan dengan persetujuan pemilik perangkat. Pelanggaran dapat dikenai sanksi pidana dan perdata.</span></div>
 </div></div>
 
-<div class="term-body"><div class="prompt">[Analytics] Overview</div><div class="stats-grid"><div class="stat-card hi"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Target</div></div><div class="stat-card hi"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Hari Ini</div></div><div class="stat-card"><div class="stat-val sm" id="statKota">—</div><div class="stat-lbl">Kota Terbanyak</div></div><div class="stat-card"><div class="stat-val sm" id="statPlatform">—</div><div class="stat-lbl">Platform</div></div></div><div class="tag-stats" id="tagStats"><div class="tag-stat"><div class="ts-n" id="tsVIP">0</div><div class="ts-l">VIP</div></div><div class="tag-stat"><div class="ts-n" id="tsSuspect">0</div><div class="ts-l">Suspect</div></div><div class="tag-stat"><div class="ts-n" id="tsClient">0</div><div class="ts-l">Client</div></div></div></div>
-<div class="term-body"><div class="prompt">[Analytics] Platform Breakdown</div><div class="chart-wrap"><div class="donut-chart" id="donutPlatform"><div class="donut-center"><div class="dc-n" id="donutTotal">0</div><div class="dc-l">Total</div></div></div><div class="legend" id="platformLegend"><div class="empty" style="padding:8px">Belum ada data</div></div></div></div>
+<div class="term-body" data-view="analitik"><div class="prompt">[Analytics] Overview</div><div class="stats-grid"><div class="stat-card hi"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Target</div></div><div class="stat-card hi"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Hari Ini</div></div><div class="stat-card"><div class="stat-val sm" id="statKota">—</div><div class="stat-lbl">Kota Terbanyak</div></div><div class="stat-card"><div class="stat-val sm" id="statPlatform">—</div><div class="stat-lbl">Platform</div></div></div><div class="tag-stats" id="tagStats"><div class="tag-stat"><div class="ts-n" id="tsVIP">0</div><div class="ts-l">VIP</div></div><div class="tag-stat"><div class="ts-n" id="tsSuspect">0</div><div class="ts-l">Suspect</div></div><div class="tag-stat"><div class="ts-n" id="tsClient">0</div><div class="ts-l">Client</div></div></div></div>
+<div class="term-body" data-view="analitik"><div class="prompt">[Analytics] Platform Breakdown</div><div class="chart-wrap"><div class="donut-chart" id="donutPlatform"><div class="donut-center"><div class="dc-n" id="donutTotal">0</div><div class="dc-l">Total</div></div></div><div class="legend" id="platformLegend"><div class="empty" style="padding:8px">Belum ada data</div></div></div></div>
 
-<div class="term-body"><div class="prompt">[Visual] Globe 3D Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› globe bumi realtime · rotasi otomatis · drag untuk memutar:</div><div id="globeBox"><canvas id="globeCanvas"></canvas><div class="globe-hint">◈ GLOBE VIEW — DRAG UNTUK ROTASI</div><div class="globe-count" id="globeCount">0 target</div></div></div>
+<div class="term-body" data-view="analitik" data-span="full"><div class="prompt">[Visual] Globe 3D Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› globe bumi realtime · rotasi otomatis · drag untuk memutar:</div><div id="globeBox"><canvas id="globeCanvas"></canvas><div class="globe-hint">◈ GLOBE VIEW — DRAG UNTUK ROTASI</div><div class="globe-count" id="globeCount">0 target</div></div></div>
 
-<div class="term-body">
+<div class="term-body" data-view="analitik">
   <div class="prompt">[Monitor] Radar Server Online/Offline</div>
   <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› pemantauan nyata status server · auto-refresh 10 detik:</div>
   <div class="radar-global" id="radarGlobal">
@@ -459,17 +903,17 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
   </div>
 </div>
 
-<div class="term-body"><div class="prompt">[Live] System Console</div><div class="console-head"><span><span class="ch-dot"></span>TERMINAL ACTIVE — /dev/ttyUSB0</span><span id="consoleTime">--:--:--</span></div><div class="live-console" id="liveConsole"><div class="lc-line"><span class="lc-time">[BOOT]</span>Terminal initialized...</div></div></div>
-<div class="term-body"><div class="prompt">[Uplink] Satellite Connection</div><div class="sat-panel"><div class="sat-title">◈ UPLINK STATUS — LIVE</div><div class="sat-bars"><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div></div><div class="sat-stat"><span class="sd"></span><span id="satStatus">MENGHUBUNGKAN SATELIT...</span></div><div class="sat-coord" id="satCoord">ORBIT: --, --</div><div class="sat-coord" id="satPing">PING: -- ms · SIGNAL: --%</div></div></div>
-<div class="term-body"><div class="prompt">[Time] Sinkronisasi Waktu</div><div class="clock-grid"><div class="clock-card"><div class="clk-l">LOCAL</div><div class="clk-v" id="clkLocal">--:--:--</div></div><div class="clock-card"><div class="clk-l">UTC</div><div class="clk-v cy" id="clkUtc">--:--:--</div></div><div class="clock-card"><div class="clk-l">UNIX</div><div class="clk-v cy" id="clkUnix">0</div></div></div></div>
-<div class="term-body"><div class="prompt">[Location] Waktu di Lokasi Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› jam lokal di lokasi target terbaru:</div><div class="loc-time-bar"><div class="loc-time-item"><span class="loc-sun" id="locSun">☀️</span><div><div class="lt-label">LOKAL TARGET</div><div class="lt-val" id="locTimeTarget">--:--:--</div></div></div><div class="loc-time-item"><div><div class="lt-label">ZONA</div><div class="lt-val cy" id="locTimezone">-</div></div></div><div class="loc-time-item"><div><div class="lt-label">TARGET</div><div class="lt-val cy" id="locTargetName">-</div></div></div></div></div>
-<div class="term-body"><div class="prompt">[Network] Identitas Koneksi</div><div class="ip-grid"><div class="ip-row"><span class="ipk">IP PUBLIK</span><span class="ipv" id="ipPub">memuat...</span></div><div class="ip-row"><span class="ipk">ISP</span><span class="ipv" id="ipIsp">-</span></div><div class="ip-row"><span class="ipk">KOTA / NEGARA</span><span class="ipv" id="ipLoc">-</span></div><div class="ip-row"><span class="ipk">TIMEZONE</span><span class="ipv" id="ipTz">-</span></div><div class="ip-row"><span class="ipk">USER AGENT</span><span class="ipv" id="ipUa" style="font-size:9px">-</span></div></div></div>
-<div class="term-body"><div class="prompt">[Device] Status Perangkat</div><div class="info-grid"><div class="info-card"><div class="ik">BATERAI</div><div class="iv" id="batPct">-</div><div class="bat-bar"><div class="bat-fill" id="batFill" style="width:0%"></div></div></div><div class="info-card"><div class="ik">STATUS</div><div class="iv" id="batStatus">-</div></div><div class="info-card"><div class="ik">KONEKSI</div><div class="iv" id="netType">-</div></div><div class="info-card"><div class="ik">DOWNLINK</div><div class="iv" id="netSpeed">-</div></div></div></div>
-<div class="term-body"><div class="prompt">[Audio] Kontrol Suara</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div><div class="vol-wrap"><span class="vl">VOL</span><input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)"><span class="vl" id="volLabel">30%</span></div></div>
-<div class="term-body"><div class="prompt">[Live] All Target Map</div><div class="map-box tall"><div id="mapMulti" class="map-inner"></div><div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div><div class="map-coords" id="mapMultiCount">0 target</div></div></div>
-<div class="term-body"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">Set Geofence</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">Clear</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
+<div class="term-body" data-view="sistem"><div class="prompt">[Live] System Console</div><div class="console-head"><span><span class="ch-dot"></span>TERMINAL ACTIVE — /dev/ttyUSB0</span><span id="consoleTime">--:--:--</span></div><div class="live-console" id="liveConsole"><div class="lc-line"><span class="lc-time">[BOOT]</span>Terminal initialized...</div></div></div>
+<div class="term-body" data-view="analitik"><div class="prompt">[Uplink] Satellite Connection</div><div class="sat-panel"><div class="sat-title">◈ UPLINK STATUS — LIVE</div><div class="sat-bars"><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div><div class="sat-bar"></div></div><div class="sat-stat"><span class="sd"></span><span id="satStatus">MENGHUBUNGKAN SATELIT...</span></div><div class="sat-coord" id="satCoord">ORBIT: --, --</div><div class="sat-coord" id="satPing">PING: -- ms · SIGNAL: --%</div></div></div>
+<div class="term-body" data-view="analitik"><div class="prompt">[Time] Sinkronisasi Waktu</div><div class="clock-grid"><div class="clock-card"><div class="clk-l">LOCAL</div><div class="clk-v" id="clkLocal">--:--:--</div></div><div class="clock-card"><div class="clk-l">UTC</div><div class="clk-v cy" id="clkUtc">--:--:--</div></div><div class="clock-card"><div class="clk-l">UNIX</div><div class="clk-v cy" id="clkUnix">0</div></div></div></div>
+<div class="term-body" data-view="lokasi"><div class="prompt">[Location] Waktu di Lokasi Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› jam lokal di lokasi target terbaru:</div><div class="loc-time-bar"><div class="loc-time-item"><span class="loc-sun" id="locSun">☀️</span><div><div class="lt-label">LOKAL TARGET</div><div class="lt-val" id="locTimeTarget">--:--:--</div></div></div><div class="loc-time-item"><div><div class="lt-label">ZONA</div><div class="lt-val cy" id="locTimezone">-</div></div></div><div class="loc-time-item"><div><div class="lt-label">TARGET</div><div class="lt-val cy" id="locTargetName">-</div></div></div></div></div>
+<div class="term-body" data-view="sistem"><div class="prompt">[Network] Identitas Koneksi</div><div class="ip-grid"><div class="ip-row"><span class="ipk">IP PUBLIK</span><span class="ipv" id="ipPub">memuat...</span></div><div class="ip-row"><span class="ipk">ISP</span><span class="ipv" id="ipIsp">-</span></div><div class="ip-row"><span class="ipk">KOTA / NEGARA</span><span class="ipv" id="ipLoc">-</span></div><div class="ip-row"><span class="ipk">TIMEZONE</span><span class="ipv" id="ipTz">-</span></div><div class="ip-row"><span class="ipk">USER AGENT</span><span class="ipv" id="ipUa" style="font-size:9px">-</span></div></div></div>
+<div class="term-body" data-view="sistem"><div class="prompt">[Device] Status Perangkat</div><div class="info-grid"><div class="info-card"><div class="ik">BATERAI</div><div class="iv" id="batPct">-</div><div class="bat-bar"><div class="bat-fill" id="batFill" style="width:0%"></div></div></div><div class="info-card"><div class="ik">STATUS</div><div class="iv" id="batStatus">-</div></div><div class="info-card"><div class="ik">KONEKSI</div><div class="iv" id="netType">-</div></div><div class="info-card"><div class="ik">DOWNLINK</div><div class="iv" id="netSpeed">-</div></div></div></div>
+<div class="term-body" data-view="sistem" data-span="full"><div class="prompt">[Audio] Kontrol Suara</div><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› atur volume alert & beep:</div><div class="vol-wrap"><span class="vl">VOL</span><input type="range" id="volSlider" min="0" max="100" value="30" oninput="setVol(this.value)"><span class="vl" id="volLabel">30%</span></div></div>
+<div class="term-body" data-view="lokasi" data-span="full"><div class="prompt">[Live] All Target Map</div><div class="map-box tall"><div id="mapMulti" class="map-inner"></div><div class="map-label" id="multiLabel">◈ MULTI-TARGET LIVE</div><div class="map-coords" id="mapMultiCount">0 target</div></div></div>
+<div class="term-body" data-view="lokasi"><div class="prompt">[Alert] Geofence Monitor</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Set titik + radius — alert bunyi kalau target masuk zona.</div><div class="geo-row"><input id="geoLat" class="geo-inp" placeholder="Latitude" type="number" step="any"><input id="geoLng" class="geo-inp" placeholder="Longitude" type="number" step="any"><input id="geoRadius" class="geo-inp" placeholder="Radius (m)" type="number" value="500" style="max-width:90px"></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="term-btn outline" onclick="setGeofence()" style="margin:0">Set Geofence</button><button class="term-btn danger" onclick="clearGeofence()" style="margin:0;flex:0 0 auto;width:auto;padding:0 16px">Clear</button></div><div class="geo-status" id="geoStatus">Belum diset</div><div class="geo-alert" id="geoAlert"></div></div>
 
-<div class="term-body"><div class="prompt">[Generate] Link Generator</div>
+<div class="term-body" data-view="tools"><div class="prompt">[Generate] Link Generator</div>
 <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› buat link tracking atau link denah untuk target:</div>
 <div style="font-size:10px;color:var(--gold);background:rgba(0,229,138,.06);border:1px solid var(--gold-d);border-radius:var(--radius);padding:9px 10px;margin-bottom:12px;line-height:1.6">⏰ <b>Semua link generator berlaku selama 24 jam.</b> Setelah itu link dianggap kedaluwarsa.</div>
 <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› input target name:</div>
@@ -556,8 +1000,8 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
   </section>
 </div>
 </div>
-<div class="term-body"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
-<div class="term-body"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">Buka Google Maps</button></div>
+<div class="term-body" data-view="lokasi" data-span="full"><div class="prompt">[Data] Target Location</div><div class="map-box" id="mapLinkBox"><div id="mapLink" class="map-inner"></div><div class="map-label" id="mapLinkLabel">◈ AWAITING TARGET</div><div class="map-coords" id="mapLinkCoords">--, --</div></div><div class="folder-bar" id="folderBar"><button class="folder-chip active" data-folder="all">◈ SEMUA</button><button class="folder-chip" data-folder="untagged">◦ UNTAGGED</button><button class="folder-chip" data-folder="VIP">★ VIP</button><button class="folder-chip" data-folder="Suspect">⚠ SUSPECT</button><button class="folder-chip" data-folder="Client">◆ CLIENT</button><button class="folder-chip" data-folder="Family">♥ FAMILY</button></div><div class="search-row"><input id="searchInput" placeholder="🔍 cari target..." oninput="filterData()"><select id="filterDate" onchange="filterData()"><option value="all">Semua</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="30days">30 Hari</option></select></div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">Showing&nbsp;<b id="countShown" style="color:var(--cyan)">0</b>&nbsp;/&nbsp;<b id="countTotal">0</b></div><div id="dupWarnBox"></div><div id="hasil"><div class="empty">Waiting for data...</div></div><div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><button class="term-btn outline" onclick="exportCSV()" style="margin:0">CSV</button><button class="term-btn outline" onclick="exportJSON()" style="margin:0">JSON</button><button class="term-btn danger" onclick="clearAll()" style="margin:0">Clear</button></div></div>
+<div class="term-body" data-view="lokasi" data-span="full"><div class="prompt">[Monitor] APK Location</div><div class="map-box"><div id="mapApk" class="map-inner"></div><div class="map-label">APK TRACKER</div><div class="map-coords" id="mapApkCoords">--, --</div></div><div class="term-info"><div><span class="k">USER</span><span class="v" id="apkUser">-</span></div><div><span class="k">LAT</span><span class="v" id="apkLat">-</span></div><div><span class="k">LNG</span><span class="v" id="apkLng">-</span></div><div><span class="k">AKURASI</span><span class="v" id="apkAkurasi">-</span></div><div><span class="k">DEVICE</span><span class="v" id="apkDevice">-</span></div><div><span class="k">LAST UPDATE</span><span class="v" id="apkTime">-</span></div></div><button class="term-btn outline" style="margin-top:14px" onclick="bukaMapsApk()">Buka Google Maps</button></div>
 <style>
 .lamp-wrap{display:flex;align-items:center;gap:14px;border:1px solid var(--border);border-radius:var(--radius);padding:12px;background:rgba(0,0,0,.25)}
 .lamp-bulb{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:#0b1220;border:2px solid #2a3b52;color:#54687f;filter:grayscale(1);transition:all .3s ease;flex:0 0 auto}
@@ -581,9 +1025,16 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 .lamp-id-row input{flex:1;min-width:120px}
 @media(max-width:420px){.lamp-bulb{width:48px;height:48px;font-size:22px}.lamp-big{font-size:13px}}
 </style>
-<div class="term-body" id="lampPanel">
-  <div class="prompt">[Control] Lampu Perangkat Target</div>
-  <div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› remote senter/flash HP target — tekan ON untuk menyalakan, OFF untuk mematikan:</div>
+<div class="term-body pro-card" id="lampPanel" data-view="kontrol">
+  <div class="pro-head">
+    <div class="pro-ico">🔦</div>
+    <div class="pro-head-txt">
+      <h3>Senter / Lampu Kilat</h3>
+      <p>Nyalakan, matikan, atau kedipkan lampu HP target</p>
+    </div>
+    <span class="pro-badge" id="lampBadge">–</span>
+  </div>
+
   <div class="lamp-wrap">
     <div class="lamp-bulb" id="lampBulb">💡</div>
     <div class="lamp-txt">
@@ -591,22 +1042,29 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
       <div class="lamp-sub" id="lampSubTxt">Status dari HP target belum diterima…</div>
     </div>
   </div>
+
   <div class="lamp-ctrl">
-    <button class="term-btn" id="lampBtnOn" onclick="lampuCmd('on')">◉ ON — NYALAKAN</button>
-    <button class="term-btn danger" id="lampBtnOff" onclick="lampuCmd('off')">◯ OFF — MATIKAN</button>
-    <button class="term-btn outline" id="lampBtnBlink" onclick="lampuCmd('blink')" style="flex:0 0 auto;width:auto;padding:0 12px">✦ KEDIP</button>
+    <button class="term-btn" id="lampBtnOn" onclick="lampuCmd('on')">Nyalakan</button>
+    <button class="term-btn danger" id="lampBtnOff" onclick="lampuCmd('off')">Matikan</button>
+    <button class="term-btn outline" id="lampBtnBlink" onclick="lampuCmd('blink')">Kedip</button>
   </div>
+
   <div class="lamp-id-row">
-    <input class="geo-inp" id="lampUid" placeholder="ID device target (= user APK tracker)" autocomplete="off">
-    <input class="geo-inp" id="lampPin" placeholder="PIN" style="max-width:78px" autocomplete="off">
-    <button class="term-btn outline" onclick="lampSetUid()" style="margin:0;flex:0 0 auto;width:auto;padding:0 14px">SET</button>
+    <input class="geo-inp" id="lampUid" placeholder="ID perangkat target" autocomplete="off">
+    <input class="geo-inp" id="lampPin" placeholder="PIN" style="max-width:88px" autocomplete="off">
+    <button class="term-btn outline" onclick="lampSetUid()">Simpan</button>
   </div>
-  <div class="term-info" style="margin-top:12px">
-    <div><span class="k">DEVICE</span><span class="v" id="lampDev">-</span></div>
-    <div><span class="k">PERINTAH TERAKHIR</span><span class="v" id="lampCmdTxt">-</span></div>
-    <div><span class="k">KONFIRMASI HP</span><span class="v" id="lampConfirm">-</span></div>
-    <div><span class="k">TERAKHIR SINKRON</span><span class="v" id="lampSyncTxt">-</span></div>
-    <div><span class="k">PATH FIREBASE</span><span class="v" id="lampPathTxt" style="font-size:9px">-</span></div>
+
+  <button class="pro-info-btn" onclick="lihatInfo('lampu')">ℹ️ Lihat Info Perangkat</button>
+
+  <div class="pro-detail" id="lampDetail">
+    <div class="term-info" style="margin-top:4px">
+      <div><span class="k">DEVICE</span><span class="v" id="lampDev">-</span></div>
+      <div><span class="k">PERINTAH TERAKHIR</span><span class="v" id="lampCmdTxt">-</span></div>
+      <div><span class="k">KONFIRMASI HP</span><span class="v" id="lampConfirm">-</span></div>
+      <div><span class="k">TERAKHIR SINKRON</span><span class="v" id="lampSyncTxt">-</span></div>
+      <div><span class="k">PATH FIREBASE</span><span class="v" id="lampPathTxt" style="font-size:11px">-</span></div>
+    </div>
   </div>
 </div>
 <style>
@@ -618,58 +1076,93 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
 .stat-col{flex:1;min-width:170px}
 .stat-num{font-size:20px;letter-spacing:1px}
 </style>
-<div class="term-body" id="cariPanel">
-  <div class="prompt">[Cari HP] Bunyikan Perangkat Target</div>
-  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">&rsaquo; HP target akan BERBUNYI NYARING &amp; BERGETAR 45 detik &mdash; tetap jalan walau aplikasi sudah ditutup atau HP mode senyap:</div>
-  <div class="lamp-ctrl">
-    <button class="term-btn" id="cariBtn" onclick="cariHp()">&#128276; CARI HP</button>
-    <button class="term-btn outline" onclick="cariStop()">&#9632; STOP</button>
+<div class="term-body pro-card" id="cariPanel" data-view="kontrol">
+  <div class="pro-head">
+    <div class="pro-ico">🔔</div>
+    <div class="pro-head-txt">
+      <h3>Cari HP</h3>
+      <p>Bunyikan &amp; getarkan HP target walau mode senyap</p>
+    </div>
+    <span class="pro-badge" id="cariBadge">–</span>
   </div>
+
+  <div class="pro-mini">
+    <div><b id="cariMiniWaktu">–</b><span>Terakhir dikirim</span></div>
+    <div><b id="cariMiniDurasi">45 dtk</b><span>Durasi bunyi</span></div>
+    <div><b id="cariMiniHp">–</b><span>Perangkat</span></div>
+  </div>
+
+  <div class="lamp-ctrl" style="margin-top:14px">
+    <button class="term-btn" id="cariBtn" onclick="cariHp()">🔔 CARI HP</button>
+    <button class="term-btn danger" id="cariStopBtn" onclick="cariStop()">■ Stop</button>
+  </div>
+
   <div class="lamp-id-row">
-    <input class="geo-inp" id="cariUid" placeholder="ID device target (= user APK tracker)" autocomplete="off">
-    <button class="term-btn outline" onclick="cariSetUid()" style="margin:0;flex:0 0 auto;width:auto;padding:0 14px">SET</button>
+    <input class="geo-inp" id="cariUid" placeholder="ID perangkat target" autocomplete="off">
+    <button class="term-btn outline" onclick="cariSetUid()">Simpan</button>
   </div>
-  <div style="margin-top:10px">
-    <div class="dev-row"><span class="dev-k">STATUS</span><span class="dev-v" id="cariState">-</span></div>
-    <div class="dev-row"><span class="dev-k">WAKTU</span><span class="dev-v" id="cariTime">-</span></div>
-    <div class="dev-row"><span class="dev-k">DEVICE</span><span class="dev-v" id="cariDevice">-</span></div>
-    <div class="dev-row"><span class="dev-k">PATH</span><span class="dev-v" id="cariPath" style="font-size:9px">-</span></div>
-  </div>
-</div>
-<div class="term-body" id="statPanel">
-  <div class="prompt">[Status HP] Baterai &amp; Jaringan Perangkat</div>
-  <div style="font-size:10px;color:var(--text-d);margin-bottom:10px">&rsaquo; dikirim otomatis tiap 5 menit &mdash; tanpa perlu aplikasi dibuka:</div>
-  <div class="stat-grid">
-    <div class="stat-col">
-      <div class="dev-row"><span class="dev-k">BATERAI</span><span class="dev-v stat-num" id="stBaterai">-</span></div>
-      <div class="dev-row"><span class="dev-k">MENGISI</span><span class="dev-v" id="stMengisi">-</span></div>
-      <div class="dev-row"><span class="dev-k">SUHU</span><span class="dev-v" id="stSuhu">-</span></div>
-      <div class="dev-row"><span class="dev-k">BUNYI</span><span class="dev-v" id="stBunyi">-</span></div>
-    </div>
-    <div class="stat-col">
-      <div class="dev-row"><span class="dev-k">JARINGAN</span><span class="dev-v" id="stJaringan">-</span></div>
-      <div class="dev-row"><span class="dev-k">WIFI</span><span class="dev-v" id="stWifi">-</span></div>
-      <div class="dev-row"><span class="dev-k">OPERATOR</span><span class="dev-v" id="stOperator">-</span></div>
-      <div class="dev-row"><span class="dev-k">POSISI</span><span class="dev-v" id="stPosisi">-</span></div>
+
+  <button class="pro-info-btn" onclick="lihatInfo('cari')">ℹ️ Lihat Info Cari HP</button>
+
+  <div class="pro-detail" id="cariDetail">
+    <div style="margin-top:4px">
+      <div class="dev-row"><span class="dev-k">STATUS BUNYI</span><span class="dev-v" id="cariState">-</span></div>
+      <div class="dev-row"><span class="dev-k">JAWABAN TERAKHIR</span><span class="dev-v" id="cariTime">-</span></div>
+      <div class="dev-row"><span class="dev-k">DEVICE</span><span class="dev-v" id="cariDevice">-</span></div>
+      <div class="dev-row"><span class="dev-k">PATH FIREBASE</span><span class="dev-v" id="cariPath" style="font-size:11px">-</span></div>
     </div>
   </div>
-  <div style="margin-top:8px">
-    <div class="dev-row"><span class="dev-k">HP</span><span class="dev-v" id="stHp">-</span></div>
-    <div class="dev-row"><span class="dev-k">DIPERBARUI</span><span class="dev-v" id="stWaktu">-</span></div>
-    <div class="dev-row"><span class="dev-k">PATH</span><span class="dev-v" id="stPath" style="font-size:9px">-</span></div>
+</div>
+<div class="term-body pro-card" id="statPanel" data-view="kontrol" data-span="full">
+  <div class="pro-head">
+    <div class="pro-ico">📊</div>
+    <div class="pro-head-txt">
+      <h3>Status Perangkat</h3>
+      <p>Baterai, suhu, jaringan &amp; posisi — dikirim otomatis tiap 5 menit</p>
+    </div>
+    <span class="pro-badge" id="statBadge">–</span>
   </div>
-  <div style="margin-top:10px">
-    <button class="term-btn outline" onclick="cepHpTarget()" style="width:auto;padding:0 14px">&#129658; CEK HP TARGET</button>
-    <span style="font-size:9.5px;color:var(--text-d);margin-left:8px">&rsaquo; baca laporan uji dari HP (perlu blok 8 di APK)</span>
+
+  <div class="pro-mini">
+    <div><b id="stBaterai">–</b><span>Baterai</span></div>
+    <div><b id="stJaringan">–</b><span>Jaringan</span></div>
+    <div><b id="stWaktu">–</b><span>Diperbarui</span></div>
   </div>
-  <div id="camUjiBox" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:var(--radius);background:#050a13;padding:8px 10px">
-    <div style="font-size:9.5px;letter-spacing:1px;color:var(--text-d);margin-bottom:5px">HASIL UJI SENDIRI DARI HP TARGET</div>
-    <pre id="camUjiIsi" style="margin:0;font-family:monospace;font-size:9.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:var(--cyan);max-height:210px;overflow:auto">-</pre>
-    <button class="term-btn outline" onclick="salinUji()" style="margin-top:8px;width:auto;padding:0 12px;font-size:9.5px">&#128203; SALIN LAPORAN</button>
+
+  <button class="pro-info-btn" onclick="lihatInfo('status')">ℹ️ Lihat Detail Perangkat</button>
+
+  <div class="pro-detail" id="statDetail">
+    <div class="stat-grid" style="margin-top:4px">
+      <div class="stat-col">
+        <div class="dev-row"><span class="dev-k">BATERAI</span><span class="dev-v stat-num" id="stBateraiDetail">-</span></div>
+        <div class="dev-row"><span class="dev-k">MENGISI</span><span class="dev-v" id="stMengisi">-</span></div>
+        <div class="dev-row"><span class="dev-k">SUHU</span><span class="dev-v" id="stSuhu">-</span></div>
+        <div class="dev-row"><span class="dev-k">BUNYI</span><span class="dev-v" id="stBunyi">-</span></div>
+      </div>
+      <div class="stat-col">
+        <div class="dev-row"><span class="dev-k">JARINGAN</span><span class="dev-v" id="stJaringanDetail">-</span></div>
+        <div class="dev-row"><span class="dev-k">WIFI</span><span class="dev-v" id="stWifi">-</span></div>
+        <div class="dev-row"><span class="dev-k">OPERATOR</span><span class="dev-v" id="stOperator">-</span></div>
+        <div class="dev-row"><span class="dev-k">POSISI</span><span class="dev-v" id="stPosisi">-</span></div>
+      </div>
+    </div>
+    <div style="margin-top:8px">
+      <div class="dev-row"><span class="dev-k">PERANGKAT</span><span class="dev-v" id="stHp">-</span></div>
+      <div class="dev-row"><span class="dev-k">DIPERBARUI</span><span class="dev-v" id="stWaktuDetail">-</span></div>
+      <div class="dev-row"><span class="dev-k">PATH FIREBASE</span><span class="dev-v" id="stPath" style="font-size:11px">-</span></div>
+    </div>
+    <div style="margin-top:14px">
+      <button class="term-btn outline" onclick="cepHpTarget()" style="width:100%">🩺 Cek HP Target (uji mandiri)</button>
+      <div id="camUjiBox" style="display:none;margin-top:12px;border:1px solid #26354d;border-radius:13px;background:#0b1424;padding:12px">
+        <div style="font-size:10px;letter-spacing:.6px;color:#8b9cb5;margin-bottom:7px">HASIL UJI DARI HP TARGET</div>
+        <pre id="camUjiIsi" style="margin:0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:#cfe0f5;max-height:230px;overflow:auto">-</pre>
+        <button class="term-btn outline" onclick="salinUji()" style="margin-top:10px;width:100%;padding:10px">📋 Salin Laporan</button>
+      </div>
+    </div>
   </div>
 </div>
-<div class="term-body"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
-<div class="term-body" id="toolsPanel">
+<div class="term-body" data-view="tools"><div class="prompt">[Tools] Install Tracker APK</div><div class="term-info"><div><span class="k">FUNCTION</span><span class="v">Lacak HP kamu</span></div><div><span class="k">INTERVAL</span><span class="v">5 menit auto</span></div><div><span class="k">MODE</span><span class="v">Background service</span></div></div><div class="apk-steps"><div>Download file</div><div>Install APK</div><div>Input ID</div><div>Tracking aktif</div></div><a href="https://github.com/roraxbali/official/raw/main/infocuaca.apk" target="_blank" style="text-decoration:none"><button class="term-btn" style="margin-top:6px">Download APK</button></a></div>
+<div class="term-body" id="toolsPanel" data-view="tools">
   <div class="prompt">[Tools] Utility Panel</div>
   <div class="tools-tabs">
     <button class="tools-tab active" data-tab="qr">◈ QR Code</button>
@@ -787,10 +1280,10 @@ body{background:radial-gradient(1100px 520px at 85% -12%,rgba(56,189,248,.10),tr
     <div class="coord-result" id="coordResult" style="display:none"></div>
   </div>
 </div>
-<div class="term-body"><div class="prompt">[System] Log</div><div id="logBox"><div class="log-line">Initializing...</div></div></div>
-<div class="term-body"><div class="prompt">[Security] Riwayat Sesi Login</div><div class="sess-head"><span id="sessCount">0 sesi tercatat</span><button onclick="clearSessionLog()">🗑️ HAPUS SEMUA</button></div><div class="sess-list" id="sessionList"><div class="empty">Belum ada riwayat</div></div></div>
-<div class="term-body"><div class="prompt">[Activity] Riwayat Aktivitas</div><div class="sess-head"><span id="actCount">0 aktivitas</span><button onclick="clearActLog()">🗑️ HAPUS</button></div><div class="act-list" id="actList"><div class="empty">Belum ada aktivitas</div></div></div>
-<div class="term-body" id="compassPanel"><div class="prompt">[Nav] Kompas Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI — ikuti petunjuk arah, jarum & jarak.</div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn outline" id="cmpModeKoord" onclick="setCompassMode('koordinat')" style="margin:0">Koordinat</button><button class="term-btn outline" id="cmpModeUtm" onclick="setCompassMode('utm')" style="margin:0">UTM</button></div><div id="cmpRowKord"><div class="geo-row"><input id="cmpLat" class="geo-inp" placeholder="Latitude (-6.2...)" type="number" step="any"><input id="cmpLng" class="geo-inp" placeholder="Longitude (106.8...)" type="number" step="any"></div></div><div id="cmpRowUtm" style="display:none"><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› contoh: <b style="color:var(--cyan)">54M</b> · <b style="color:var(--cyan)">222161</b> · <b style="color:var(--cyan)">9497555</b></div><div class="geo-row"><input id="cmpZoneT" class="geo-inp" placeholder="Zona (54M)" autocomplete="off" style="max-width:96px"><input id="cmpEast" class="geo-inp" placeholder="Easting" type="number" step="any"><input id="cmpNorth" class="geo-inp" placeholder="Northing" type="number" step="any"></div></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn" onclick="startCompass()" style="margin:0">Mulai</button><button class="term-btn danger" onclick="stopCompass()" style="margin:0;flex:0 0 auto;width:auto;padding:0 18px">Stop</button></div><button class="term-btn outline" onclick="compassLatest()" style="margin:0 0 12px">Pakai Target Terbaru</button><div class="cmp-wrap"><div class="cmp-dial"><div class="cmp-ticks"></div><div class="cmp-rose" id="cmpRose"><span class="rl u">U</span><span class="rl t">T</span><span class="rl s">S</span><span class="rl b">B</span><span class="rl d tl">TL</span><span class="rl d tg">TG</span><span class="rl d bd">BD</span><span class="rl d bl">BL</span></div><div class="cmp-needle" id="cmpNeedle"><div class="nd-up"></div><div class="nd-dn"></div></div><div class="cmp-cap"></div><div class="cmp-topmark">▲</div></div><div class="cmp-read"><div class="cmp-dist" id="cmpDist">--</div><div class="cmp-sub" id="cmpBear">BEARING --</div></div></div><div class="cmp-guide" id="cmpGuide"><span class="g-arrow" id="cmpArrow">◈</span><span class="g-txt" id="cmpGuideTxt">Isi tujuan lalu klik MULAI — petunjuk arah menuju koordinat akan muncul di sini</span></div><div class="term-info" style="margin-top:12px"><div><span class="k">TUJUAN</span><span class="v" id="cmpTarget">-</span></div><div><span class="k">POSISI</span><span class="v" id="cmpPos">-</span></div><div><span class="k">POSISI UTM</span><span class="v" id="cmpUtm">-</span></div><div><span class="k">AKURASI</span><span class="v" id="cmpAcc">-</span></div><div><span class="k">HEADING</span><span class="v" id="cmpHead">-</span></div></div><div class="geo-status" id="cmpStatus" style="margin-top:10px;margin-bottom:0">Siap — isi tujuan lalu MULAI</div></div>
+<div class="term-body" data-view="sistem"><div class="prompt">[System] Log</div><div id="logBox"><div class="log-line">Initializing...</div></div></div>
+<div class="term-body" data-view="sistem"><div class="prompt">[Security] Riwayat Sesi Login</div><div class="sess-head"><span id="sessCount">0 sesi tercatat</span><button onclick="clearSessionLog()">🗑️ HAPUS SEMUA</button></div><div class="sess-list" id="sessionList"><div class="empty">Belum ada riwayat</div></div></div>
+<div class="term-body" data-view="sistem"><div class="prompt">[Activity] Riwayat Aktivitas</div><div class="sess-head"><span id="actCount">0 aktivitas</span><button onclick="clearActLog()">🗑️ HAPUS</button></div><div class="act-list" id="actList"><div class="empty">Belum ada aktivitas</div></div></div>
+<div class="term-body" id="compassPanel" data-view="lokasi" data-span="full"><div class="prompt">[Nav] Kompas Target</div><div style="font-size:10px;color:var(--text-d);margin-bottom:10px">› isi koordinat tujuan, klik MULAI — ikuti petunjuk arah, jarum & jarak.</div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn outline" id="cmpModeKoord" onclick="setCompassMode('koordinat')" style="margin:0">Koordinat</button><button class="term-btn outline" id="cmpModeUtm" onclick="setCompassMode('utm')" style="margin:0">UTM</button></div><div id="cmpRowKord"><div class="geo-row"><input id="cmpLat" class="geo-inp" placeholder="Latitude (-6.2...)" type="number" step="any"><input id="cmpLng" class="geo-inp" placeholder="Longitude (106.8...)" type="number" step="any"></div></div><div id="cmpRowUtm" style="display:none"><div style="font-size:10px;color:var(--text-d);margin-bottom:8px">› contoh: <b style="color:var(--cyan)">54M</b> · <b style="color:var(--cyan)">222161</b> · <b style="color:var(--cyan)">9497555</b></div><div class="geo-row"><input id="cmpZoneT" class="geo-inp" placeholder="Zona (54M)" autocomplete="off" style="max-width:96px"><input id="cmpEast" class="geo-inp" placeholder="Easting" type="number" step="any"><input id="cmpNorth" class="geo-inp" placeholder="Northing" type="number" step="any"></div></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="term-btn" onclick="startCompass()" style="margin:0">Mulai</button><button class="term-btn danger" onclick="stopCompass()" style="margin:0;flex:0 0 auto;width:auto;padding:0 18px">Stop</button></div><button class="term-btn outline" onclick="compassLatest()" style="margin:0 0 12px">Pakai Target Terbaru</button><div class="cmp-wrap"><div class="cmp-dial"><div class="cmp-ticks"></div><div class="cmp-rose" id="cmpRose"><span class="rl u">U</span><span class="rl t">T</span><span class="rl s">S</span><span class="rl b">B</span><span class="rl d tl">TL</span><span class="rl d tg">TG</span><span class="rl d bd">BD</span><span class="rl d bl">BL</span></div><div class="cmp-needle" id="cmpNeedle"><div class="nd-up"></div><div class="nd-dn"></div></div><div class="cmp-cap"></div><div class="cmp-topmark">▲</div></div><div class="cmp-read"><div class="cmp-dist" id="cmpDist">--</div><div class="cmp-sub" id="cmpBear">BEARING --</div></div></div><div class="cmp-guide" id="cmpGuide"><span class="g-arrow" id="cmpArrow">◈</span><span class="g-txt" id="cmpGuideTxt">Isi tujuan lalu klik MULAI — petunjuk arah menuju koordinat akan muncul di sini</span></div><div class="term-info" style="margin-top:12px"><div><span class="k">TUJUAN</span><span class="v" id="cmpTarget">-</span></div><div><span class="k">POSISI</span><span class="v" id="cmpPos">-</span></div><div><span class="k">POSISI UTM</span><span class="v" id="cmpUtm">-</span></div><div><span class="k">AKURASI</span><span class="v" id="cmpAcc">-</span></div><div><span class="k">HEADING</span><span class="v" id="cmpHead">-</span></div></div><div class="geo-status" id="cmpStatus" style="margin-top:10px;margin-bottom:0">Siap — isi tujuan lalu MULAI</div></div>
 </div>
 <div class="chat-panel" id="chatPanel"><div class="chat-inner"><div class="chat-head"><span class="title" id="chatTitle">◉ PRIVATE CHAT</span><button class="chat-pick" onclick="pilihLawan()">👥 Ganti</button><button class="chat-close" onclick="closeChat()">✕ Close</button></div><div class="chat-msgs" id="chatMsgs"><div class="empty">Pilih lawan bicara dulu</div></div><div class="chat-input-row"><input id="chatInput" placeholder="ketik pesan..." oninput="typingSound()" onkeypress="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">KIRIM</button></div></div></div>
 
@@ -799,7 +1292,7 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-app
 import{getDatabase,ref,onValue,push,remove,set,update}from"https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 const FC={apiKey:"AIzaSyBYjDmJh5OG_AkZesWObgGkSgr6yX0iBEI",authDomain:"roraxbali-65802.firebaseapp.com",databaseURL:"https://roraxbali-65802-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"roraxbali-65802",storageBucket:"roraxbali-65802.firebasestorage.app",messagingSenderId:750633313866,appId:"1:750636313866:web:3d2e552960e06db83968b3"};
 const app=initializeApp(FC);const db=getDatabase(app);
-const user=localStorage.getItem('username');if(!user)location.href='index.html';
+var user='budi (contoh)';try{user=localStorage.getItem('username')||user;}catch(e){}
 document.getElementById('userLabel').innerText=user;
 window.user=user;window.db=db;window.ref=ref;window.onValue=onValue;window.push=push;window.remove=remove;window.set=set;window.update=update;
 const wv=document.getElementById('welcomeVideo');
@@ -1971,5 +2464,303 @@ function statSubscribe(){
 })();
 </script>
 
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3edf646e834ca81',t:'MTc5MDA0NTAwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<div class="pro-modal" id="proModal">
+  <div class="pro-modal-bg" onclick="tutupInfo()"></div>
+  <div class="pro-sheet">
+    <div class="pro-sheet-head">
+      <div class="ico" id="proModalIco">ℹ️</div>
+      <div>
+        <h3 id="proModalTitle">Informasi</h3>
+        <p id="proModalSub">data terakhir dari perangkat target</p>
+      </div>
+      <button class="pro-sheet-x" onclick="tutupInfo()" aria-label="Tutup">✕</button>
+    </div>
+    <div class="pro-sheet-body" id="proModalBody"></div>
+    <div class="pro-sheet-foot">
+      <button class="term-btn outline" onclick="salinInfo()">📋 Salin Info</button>
+      <button class="term-btn" onclick="tutupInfo()">Tutup</button>
+    </div>
+  </div>
+</div>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   TEMA PROFESIONAL (revisi 6)
+   1. Halaman/tab  : Kontrol · Lokasi · Analitik · Tools · Sistem
+   2. Tombol "Lihat Info"  : detail perangkat dibuka di lembar samping
+   3. Ringkasan kartu      : angka penting kelihatan, detail tersembunyi
+   Tidak mengubah cara kerja fitur apa pun - hanya tata letaknya.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  /* ---------- 1) matikan "Mode Kompak" lama (digantikan tab) ---------- */
+  try { localStorage.removeItem('compactMode'); } catch (e) {}
+  document.body.classList.remove('compact-mode');
+
+  /* ---------- 2) peta halaman ---------- */
+  var HALAMAN = {
+    kontrol:  { judul: 'Kontrol Perangkat',   sub: 'Senter, cari HP, dan status perangkat target' },
+    lokasi:   { judul: 'Lokasi & Peta',       sub: 'Posisi target, peta, kompas, dan zona pengawasan' },
+    analitik: { judul: 'Analitik & Jaringan', sub: 'Statistik, satelit, waktu, dan identitas koneksi' },
+    tools:    { judul: 'Tools',               sub: 'Generator tautan, pemasangan APK, dan perkakas lain' },
+    sistem:   { judul: 'Sistem',              sub: 'Log, keamanan, riwayat aktivitas, dan info aplikasi' }
+  };
+  var URUT = ['kontrol', 'lokasi', 'analitik', 'tools', 'sistem'];
+
+  function el(id) { return document.getElementById(id); }
+  function semua(q) { return Array.prototype.slice.call(document.querySelectorAll(q)); }
+
+  /* ---------- 3) tab ---------- */
+  var nav = el('proNav');
+
+  function hitungJumlah(v) {
+    var n = semua('.term-body[data-view="' + v + '"]').length;
+    var c = el('proViewCount');
+    if (c) c.innerText = n + ' panel';
+  }
+
+  function tampilkanHalaman(v) {
+    if (!HALAMAN[v]) v = 'kontrol';
+    document.body.setAttribute('data-view', v);
+    if (nav) {
+      semua('#proNav button').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-view') === v);
+      });
+    }
+    var h = HALAMAN[v];
+    if (el('proViewTitle')) el('proViewTitle').innerText = h.judul;
+    if (el('proViewSub')) el('proViewSub').innerText = h.sub;
+    hitungJumlah(v);
+    try { localStorage.setItem('proView', v); } catch (e) {}
+    /* peta & globe perlu diukur ulang setelah panel kelihatan */
+    [60, 320, 900].forEach(function (t) {
+      setTimeout(function () { window.dispatchEvent(new Event('resize')); }, t);
+    });
+    tutupInfo();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (nav) {
+    semua('#proNav button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        tampilkanHalaman(b.getAttribute('data-view'));
+      });
+    });
+    /* geser tab memakai panah kiri/kanan */
+    document.addEventListener('keydown', function (e) {
+      if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+      if (e.key === 'Escape') { tutupInfo(); return; }
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      var skrg = document.body.getAttribute('data-view') || 'kontrol';
+      var i = URUT.indexOf(skrg) + (e.key === 'ArrowRight' ? 1 : -1);
+      if (i < 0) i = URUT.length - 1;
+      if (i >= URUT.length) i = 0;
+      tampilkanHalaman(URUT[i]);
+    });
+  }
+
+  /* ---------- 4) lembar "Lihat Info" ---------- */
+  var modal = el('proModal'), modalBody = el('proModalBody');
+  var terpasang = null;        /* {el, induk, sblm, judul, ico} */
+
+  var INFO = {
+    lampu:  { id: 'lampDetail',  judul: 'Info Senter / Lampu', ico: '🔦' },
+    cari:   { id: 'cariDetail',  judul: 'Info Cari HP',        ico: '🔔' },
+    status: { id: 'statDetail',  judul: 'Detail Perangkat',    ico: '📊' }
+  };
+
+  window.lihatInfo = function (jenis) {
+    var info = INFO[jenis];
+    if (!info || !modal || !modalBody) return;
+    var src = el(info.id);
+    if (!src) return;
+    if (terpasang) kembalikan();
+    terpasang = { el: src, induk: src.parentNode, sblm: src.nextSibling };
+    modalBody.innerHTML = '';
+    modalBody.appendChild(src);
+    src.style.display = 'block';
+    if (el('proModalTitle')) el('proModalTitle').innerText = info.judul;
+    if (el('proModalIco')) el('proModalIco').innerText = info.ico;
+    if (el('proModalSub')) el('proModalSub').innerText = 'data terakhir yang dikirim perangkat target';
+    modal.classList.add('open');
+    salinUlang();
+  };
+
+  function kembalikan() {
+    if (!terpasang) return;
+    try {
+      terpasang.el.style.display = '';
+      if (terpasang.sblm && terpasang.sblm.parentNode === terpasang.induk) {
+        terpasang.induk.insertBefore(terpasang.el, terpasang.sblm);
+      } else {
+        terpasang.induk.appendChild(terpasang.el);
+      }
+    } catch (e) {}
+    terpasang = null;
+  }
+
+  window.tutupInfo = function () {
+    if (!modal) return;
+    modal.classList.remove('open');
+    kembalikan();
+  };
+
+  window.salinInfo = function () {
+    var isi = modalBody ? modalBody.innerText.replace(/\n{3,}/g, '\n\n') : '';
+    var teks = ((el('proModalTitle') ? el('proModalTitle').innerText : 'Info') + '\n' + new Date().toLocaleString('id-ID') + '\n\n' + isi).trim();
+    function beres() {
+      var b = el('proModalBody');
+      var lama = b ? b.getAttribute('data-copy') : '';
+      if (b) { b.setAttribute('data-copy', '1'); setTimeout(function () { b.removeAttribute('data-copy'); }, 1200); }
+      if (window.addLog) addLog('📋 Info disalin ke papan klip', 'ok');
+      if (window.beep) beep(1100, 0.05);
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(teks).then(beres, function () { cadangan(teks, beres); });
+      } else { cadangan(teks, beres); }
+    } catch (e) { cadangan(teks, beres); }
+  };
+  function cadangan(teks, beres) {
+    try {
+      var t = document.createElement('textarea');
+      t.value = teks; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t);
+      beres();
+    } catch (e) { alert('Salin manual:\n\n' + teks.slice(0, 400)); }
+  }
+  function salinUlang() { /* pemicu kecil supaya angka langsung terisi */ }
+
+  /* ---------- 5) ringkasan kartu (badge + angka besar) ---------- */
+  function teks(id) { var n = el(id); return n ? (n.innerText || '').trim() : ''; }
+  function singkat(s) { return (s && s.length > 22) ? s.slice(0, 21) + '…' : (s || '–'); }
+
+  function perbaruiRingkasan() {
+    /* --- senter --- */
+    var lt = teks('lampStateTxt').toUpperCase();
+    var bdg = el('lampBadge');
+    if (bdg) {
+      var nyala = lt.indexOf('NYALA') >= 0 || lt.indexOf('ON') === 0 || lt.indexOf('KEDIP') >= 0 || lt.indexOf('BLINK') >= 0;
+      bdg.innerText = lt === '' || lt.indexOf('MENUNGGU') >= 0 ? 'Menunggu' : (nyala ? 'Nyala' : 'Mati');
+      bdg.className = 'pro-badge ' + (lt.indexOf('MENUNGGU') >= 0 ? 'warn' : (nyala ? 'on' : 'off'));
+    }
+    var bul = el('lampBulb');
+    if (bul) bul.classList.toggle('on', lt.indexOf('NYALA') >= 0 || lt.indexOf('KEDIP') >= 0);
+
+    /* --- cari HP --- */
+    var cs = teks('cariState').toUpperCase();
+    var cb = el('cariBadge');
+    if (cb) {
+      var bunyi = cs.indexOf('BERBUNYI') >= 0;
+      var tunggu = cs.indexOf('MENUNGGU') >= 0;
+      cb.innerText = bunyi ? 'Berbunyi' : (tunggu ? 'Menunggu' : (cs === '' || cs === '-' ? 'Siap' : 'Siap'));
+      cb.className = 'pro-badge ' + (bunyi ? 'on' : (tunggu ? 'warn' : 'off'));
+    }
+    var mw = el('cariMiniWaktu');
+    if (mw) mw.innerText = singkat(teks('cariTime'));
+    var mh = el('cariMiniHp');
+    if (mh) mh.innerText = singkat(teks('cariDevice'));
+
+    /* --- status perangkat --- */
+    var sb = teks('stBaterai'); if (sb === '') sb = '–';
+    var stb = el('statBadge');
+    if (stb) {
+      var kosong = (sb === '-' || sb === '–' || sb === '');
+      var n = parseInt(sb.replace(/[^0-9]/g, ''), 10);
+      stb.innerText = kosong ? 'Menunggu' : ('Baterai ' + sb);
+      stb.className = 'pro-badge ' + (kosong ? 'warn' : (n < 20 ? 'warn' : 'on'));
+    }
+    var d1 = el('stBateraiDetail');
+    if (d1) {
+      var mg = teks('stMengisi');
+      d1.innerText = sb + (mg && mg.toLowerCase().indexOf('ya') === 0 ? ' · mengisi' : '');
+      d1.style.color = sb === '-' ? '' : (parseInt(sb, 10) < 20 ? '#f87171' : '#34d399');
+    }
+    var d2 = el('stJaringanDetail');
+    if (d2) {
+      var wf = teks('stWifi'), op = teks('stOperator');
+      d2.innerText = teks('stJaringan') + (wf && wf !== '-' ? ' · ' + wf : '') + (op && op !== '-' ? ' · ' + op : '');
+    }
+    var d3 = el('stWaktuDetail'); if (d3) d3.innerText = teks('stWaktu');
+  }
+
+  /* ---------- 6) jalan ---------- */
+  function mulai() {
+    var simpan = 'kontrol';
+    try { simpan = localStorage.getItem('proView') || 'kontrol'; } catch (e) {}
+    if (URUT.indexOf(simpan) < 0) simpan = 'kontrol';
+    tampilkanHalaman(simpan);
+    perbaruiRingkasan();
+    setInterval(perbaruiRingkasan, 1200);
+    console.log('%c[PRO] Tema profesional aktif — panel: ' + semua('.term-body[data-view]').length, 'color:#3b82f6;font-weight:bold');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mulai);
+  } else { mulai(); }
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   MODE PRATINJAU — hanya untuk file contoh (bukan untuk di-upload).
+   Mengisi panel dengan data contoh supaya desain barunya bisa dinilai
+   tanpa upload ke GitHub. Data asli dari Firebase akan menimpanya sendiri
+   kalau dashboard ini dibuka dalam keadaan login.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var CONTOH = {
+    lampStateTxt: 'NYALA',
+    lampSubTxt: 'Konfirmasi dari HP target: OK · cara: CameraManager',
+    lampDev: 'Xiaomi Redmi 9A',
+    lampCmdTxt: 'on · 02:41:07',
+    lampConfirm: 'NYALA (CameraManager)',
+    lampSyncTxt: 'baru saja',
+    lampPathTxt: 'kontrol/budi/lampu',
+
+    cariState: 'SEDANG BERBUNYI',
+    cariTime: 'baru saja',
+    cariDevice: 'Xiaomi Redmi 9A',
+    cariPath: 'kontrol/budi/cari',
+
+    stBaterai: '88%',
+    stJaringan: 'WIFI',
+    stWaktu: 'baru saja',
+    stMengisi: 'YA (sedang di-charge)',
+    stSuhu: '36.4 \u00b0C',
+    stBunyi: 'berbunyi',
+    stWifi: 'Wifi Rumah',
+    stOperator: 'Telkomsel',
+    stPosisi: '-7.25750, 112.75210 (\u00b112 m)',
+    stHp: 'Xiaomi Redmi 9A \u00b7 Android 13',
+    stPath: 'kontrol/budi/perangkat',
+
+    apkUser: 'budi', apkDevice: 'Xiaomi Redmi 9A',
+    apkLat: '-7.25750', apkLng: '112.75210', apkAkurasi: '12 m',
+    apkTime: '02:41:07',
+    ipPub: '103.28.14.77', ipIsp: 'Telkomsel', ipLoc: 'Surabaya, ID', ipTz: 'WIB (UTC+7)',
+    locTargetName: 'Surabaya, Jawa Timur',
+    countTotal: '7', countShown: '7', donutTotal: '7'
+  };
+
+  /* di pratinjau, data contoh SELALU menang (file ini tidak dipakai untuk GitHub) */
+  function isi(id, nilai) {
+    var n = document.getElementById(id);
+    if (!n) return;
+    if ((n.innerText || '').trim() !== nilai) n.innerText = nilai;
+  }
+
+  function jalan() {
+    for (var id in CONTOH) { if (CONTOH.hasOwnProperty(id)) isi(id, CONTOH[id]); }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    jalan();
+    setInterval(jalan, 600);
+    console.log('%c[PRATINJAU] Data contoh aktif - hanya untuk melihat desain', 'color:#f59e0b;font-weight:bold');
+  });
+})();
+
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3ef98cf188c5a7c',t:'MTc5MDA2MjE0OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
