@@ -278,6 +278,162 @@
   catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
 })();
 </script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN PETA, VIDEO & GLOBE (revisi 6d)
+   Dipasang SEBELUM peta dibuat. Tugasnya: kalau satu sumber diblokir jaringan,
+   otomatis pindah ke sumber lain - jadi peta tetap tampil.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  window.__petaCatatan = [];
+  function catat(teks) {
+    window.__petaCatatan.push(teks);
+    try { console.log('[PETA] ' + teks); } catch (e) {}
+  }
+  if (!window.L || !L.tileLayer) { catat('Leaflet tidak ada di halaman'); return; }
+
+  var ASLI = L.tileLayer.bind(L);
+  var CADANGAN = [
+    { nama: 'OpenStreetMap', pola: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Voyager', pola: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png' },
+    { nama: 'CartoDB Dark', pola: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' }
+  ];
+
+  L.tileLayer = function (pola, opsi) {
+    var polaUtama = pola;
+    var iniLabel = /World_Boundaries|Reference\//.test(String(pola));   /* lapisan nama tempat */
+    var cobaKe = 0;
+    var peta = null;
+
+    function buat(pakai) {
+      var lap = ASLI(pakai, opsi || {});
+      var siap = 0;
+      lap.on('tileload', function () { siap++; });
+      lap.on('tileerror', function () { });
+      lap.__sumber = (pakai === polaUtama) ? 'utama' : 'cadangan';
+      setTimeout(function () {
+        peta = lap._map || peta;
+        if (siap > 0 || !peta) return;                      /* sudah ada ubin -> aman */
+        if (iniLabel) { try { peta.removeLayer(lap); } catch (e) {} return; }   /* label: cukup dibuang */
+        if (cobaKe >= CADANGAN.length) { catat('Semua sumber peta gagal - cek internet perangkat'); return; }
+        var berikut = CADANGAN[cobaKe];
+        cobaKe++;
+        try { peta.removeLayer(lap); } catch (e) {}
+        catat('Sumber utama (' + (polaUtama.indexOf('arcgisonline') > -1 ? 'Esri' : 'utama') + ') tidak termuat - pindah ke ' + berikut.nama);
+        var baru = buat(berikut.pola);
+        try { baru.addTo(peta); } catch (e) {}
+      }, 7000);
+      return lap;
+    }
+    return buat(polaUtama);
+  };
+  catat('Pengaman peta aktif (' + CADANGAN.length + ' sumber cadangan siap)');
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 <style>
@@ -1295,6 +1451,9 @@ body[data-view]:not([data-view="kontrol"]) .welcome-video{display:none !importan
     <div><b id="cariMiniHp">–</b><span>Perangkat</span></div>
   </div>
 
+  <div id="cariWarn" style="display:none;margin-top:12px;padding:10px 12px;border-radius:10px;
+       border:1px solid #4d3413;background:#241a0b;color:#fbbf24;font-size:12px;line-height:1.5"></div>
+
   <div class="lamp-ctrl" style="margin-top:14px">
     <button class="term-btn" id="cariBtn" onclick="cariHp()">🔔 CARI HP</button>
     <button class="term-btn danger" id="cariStopBtn" onclick="cariStop()">■ Stop</button>
@@ -1312,7 +1471,70 @@ body[data-view]:not([data-view="kontrol"]) .welcome-video{display:none !importan
       <div class="dev-row"><span class="dev-k">STATUS BUNYI</span><span class="dev-v" id="cariState">-</span></div>
       <div class="dev-row"><span class="dev-k">JAWABAN TERAKHIR</span><span class="dev-v" id="cariTime">-</span></div>
       <div class="dev-row"><span class="dev-k">DEVICE</span><span class="dev-v" id="cariDevice">-</span></div>
+      <div class="dev-row"><span class="dev-k">CARA BERBUNYI</span><span class="dev-v" id="cariCara">-</span></div>
+      <div class="dev-row"><span class="dev-k">SUMBER NADA</span><span class="dev-v" id="cariNada" style="font-size:11px">-</span></div>
+      <div class="dev-row"><span class="dev-k">VOLUME ALARM</span><span class="dev-v" id="cariVolume">-</span></div>
+      <div class="dev-row"><span class="dev-k">MODE HP</span><span class="dev-v" id="cariMode">-</span></div>
       <div class="dev-row"><span class="dev-k">PATH FIREBASE</span><span class="dev-v" id="cariPath" style="font-size:11px">-</span></div>
+    </div>
+  </div>
+</div>
+<div class="term-body pro-card" id="kendaliPanel" data-view="kontrol" data-span="full">
+  <div class="pro-head">
+    <div class="pro-ico">🎛</div>
+    <div class="pro-head-txt">
+      <h3>Kendali Jarak Jauh</h3>
+      <p>Volume, alarm, dan pesan suara di HP target</p>
+    </div>
+    <span class="pro-badge" id="kendaliBadge">–</span>
+  </div>
+
+  <div id="kendaliWarn" style="display:none;margin-bottom:12px;padding:10px 12px;border-radius:10px;
+       border:1px solid #4d3413;background:#241a0b;color:#fbbf24;font-size:12px;line-height:1.5"></div>
+
+  <div class="pro-mini">
+    <div><b id="kdVolume">–</b><span>Volume HP target</span></div>
+    <div><b id="kdAlarm">–</b><span>Alarm jauh</span></div>
+    <div><b id="kdSuara">–</b><span>Pesan terakhir</span></div>
+  </div>
+
+  <div class="lamp-ctrl" style="margin-top:14px">
+    <button class="term-btn outline" id="kdVolTurun" onclick="volKirim('turun')">🔉 Kecilkan</button>
+    <button class="term-btn outline" id="kdVolNaik" onclick="volKirim('naik')">🔊 Besarkan</button>
+    <button class="term-btn" id="kdVolMaks" onclick="volKirim('maks')">🔊 MAKS</button>
+    <button class="term-btn danger" id="kdVolBisu" onclick="volKirim('bisu')">🔇 BISU</button>
+  </div>
+
+  <div class="lamp-id-row" style="margin-top:12px">
+    <input class="geo-inp" id="kdAlarmJam" placeholder="Jam alarm (mis. 05:30)" autocomplete="off">
+    <input class="geo-inp" id="kdAlarmTeks" placeholder="Tulisan alarm (mis. Bangun)" autocomplete="off">
+  </div>
+  <div class="lamp-ctrl">
+    <button class="term-btn" id="kdAlarmSet" onclick="alarmKirim('set')">⏰ SET ALARM</button>
+    <button class="term-btn outline" onclick="alarmKirim('harian')">⏰ ULANG HARIAN</button>
+    <button class="term-btn danger" onclick="alarmKirim('batal')">■ BATALKAN</button>
+  </div>
+
+  <div class="lamp-id-row" style="margin-top:12px">
+    <input class="geo-inp" id="kdSuaraTeks" placeholder="Pesan yang akan diucapkan HP target" autocomplete="off">
+    <button class="term-btn" id="kdSuaraBtn" onclick="suaraKirim()">💬 UCAPKAN</button>
+  </div>
+
+  <button class="pro-info-btn" onclick="lihatInfo('kendali')">ℹ️ Lihat Info Kendali Jarak Jauh</button>
+
+  <div class="pro-detail" id="kendaliDetail">
+    <div style="margin-top:4px">
+      <div class="dev-row"><span class="dev-k">VOLUME MEDIA</span><span class="dev-v" id="kdVolMedia">-</span></div>
+      <div class="dev-row"><span class="dev-k">VOLUME ALARM</span><span class="dev-v" id="kdVolAlarm">-</span></div>
+      <div class="dev-row"><span class="dev-k">VOLUME DIPERBARUI</span><span class="dev-v" id="kdVolWaktu">-</span></div>
+      <div class="dev-row"><span class="dev-k">ALARM</span><span class="dev-v" id="kdAlAktif">-</span></div>
+      <div class="dev-row"><span class="dev-k">JAM ALARM</span><span class="dev-v" id="kdAlJam">-</span></div>
+      <div class="dev-row"><span class="dev-k">TULISAN ALARM</span><span class="dev-v" id="kdAlTeks">-</span></div>
+      <div class="dev-row"><span class="dev-k">KEADAAN ALARM</span><span class="dev-v" id="kdAlKet">-</span></div>
+      <div class="dev-row"><span class="dev-k">PESAN TERAKHIR</span><span class="dev-v" id="kdSuTeks">-</span></div>
+      <div class="dev-row"><span class="dev-k">HASIL UCAPAN</span><span class="dev-v" id="kdSuHasil">-</span></div>
+      <div class="dev-row"><span class="dev-k">JAM HP TARGET</span><span class="dev-v" id="kdAlJamHp">-</span></div>
+      <div class="dev-row"><span class="dev-k">PATH FIREBASE</span><span class="dev-v" id="kdPath" style="font-size:11px">-</span></div>
     </div>
   </div>
 </div>
@@ -2517,8 +2739,158 @@ function devUmur(ms){
 }
 function devWaktu(ms){ return ms ? (new Date(ms).toLocaleString('id-ID') + ' \u00b7 ' + devUmur(ms)) : '-'; }
 
+/* ---------- KENDALI JARAK JAUH: VOLUME + ALARM + PESAN SUARA ----------
+   dashboard tulis  kontrol/<uid>/volume  { cmd:'naik'|'turun'|'maks'|'bisu'|'set', nilai, t, by }
+   dashboard tulis  kontrol/<uid>/alarm   { cmd:'set'|'batal', jam:'HH:MM', teks, ulang, t, by }
+   dashboard tulis  kontrol/<uid>/suara   { cmd:'ucap', teks, t, by }
+   HP (service) menjawab ke .../volume/state, .../alarm/state, .../suara/state
+--------------------------------------------------------------------- */
+var KEND = { vol:null, al:null, su:null, unsub:[] };
+function kdEl(id){ return document.getElementById(id); }
+
+function kdVolumeRender(d){
+  d = d || {};
+  var media = (typeof d.media === 'number') ? d.media : -1;
+  var maks  = (typeof d.maksMedia === 'number' && d.maksMedia > 0) ? d.maksMedia : 15;
+  var alarm = (typeof d.alarm === 'number') ? d.alarm : -1;
+  var teks = (media < 0) ? '–' : (media + ' / ' + maks + (media === 0 ? ' (bisu)' : ''));
+  if(kdEl('kdVolume')) kdEl('kdVolume').innerText = teks;
+  if(kdEl('kdVolMedia')) kdEl('kdVolMedia').innerText = (media < 0) ? '-' : (media + ' / ' + maks + (media === 0 ? '  (BISU)' : ''));
+  if(kdEl('kdVolAlarm')) kdEl('kdVolAlarm').innerText = (alarm < 0) ? '-' : (alarm + ' / ' + (d.maksAlarm || 7));
+  if(kdEl('kdVolWaktu')) kdEl('kdVolWaktu').innerText = devWaktu(d.updated);
+  if(kdEl('kdPath')) kdEl('kdPath').innerText = 'kontrol/' + CAM.uid + '/volume';
+  var b = kdEl('kdVolBisu');
+  if(b) b.classList.toggle('sel', media === 0);
+}
+
+function kdAlarmRender(d){
+  d = d || {};
+  var aktif = !!d.aktif;
+  if(kdEl('kdAlarm')) kdEl('kdAlarm').innerText = aktif ? ((d.jam || '--:--') + (d.ulang === 'harian' ? ' harian' : '')) : 'tidak aktif';
+  if(kdEl('kdAlAktif')) kdEl('kdAlAktif').innerText = aktif ? 'AKTIF' : 'TIDAK AKTIF';
+  if(kdEl('kdAlJam')) kdEl('kdAlJam').innerText = d.jam || '-';
+  if(kdEl('kdAlTeks')) kdEl('kdAlTeks').innerText = d.teks || '-';
+  if(kdEl('kdAlKet')) kdEl('kdAlKet').innerText = (d.keterangan || '-') + (d.updated ? ('  \u00b7  ' + devUmur(d.updated)) : '');
+  if(kdEl('kdAlJamHp')) kdEl('kdAlJamHp').innerText = d.jamHp || '-';
+  var b = kdEl('kdAlarmSet');
+  if(b) b.classList.toggle('sel', aktif && d.keterangan === 'berbunyi');
+}
+
+function kdSuaraRender(d){
+  d = d || {};
+  var hasil = d.hasil || '-';
+  var arti = (hasil === 'diucapkan') ? 'diucapkan' : (hasil === 'tone-saja' ? 'HP tidak punya mesin ucapan - bunyi saja' : hasil);
+  if(kdEl('kdSuara')) kdEl('kdSuara').innerText = d.teks ? (String(d.teks).slice(0, 28) + (String(d.teks).length > 28 ? '…' : '')) : '–';
+  if(kdEl('kdSuTeks')) kdEl('kdSuTeks').innerText = d.teks ? (d.teks + '  \u00b7  ' + devUmur(d.updated)) : '-';
+  if(kdEl('kdSuHasil')) kdEl('kdSuHasil').innerText = arti;
+  if(kdEl('kdSuHasil')) kdEl('kdSuHasil').style.color = (hasil === 'diucapkan') ? 'var(--green)' : (hasil === 'tone-saja' ? 'var(--amber)' : '');
+}
+
+function kendaliSubscribe(){
+  for(var i = 0; i < KEND.unsub.length; i++){ try{ KEND.unsub[i](); }catch(e){} }
+  KEND.unsub = [];
+  if(kdEl('kdPath')) kdEl('kdPath').innerText = 'kontrol/' + CAM.uid + '/volume';
+  var coba = 0;
+  var t = setInterval(function(){
+    coba++;
+    if(window.onValue && window.ref && window.db){
+      clearInterval(t);
+      try{
+        KEND.unsub.push(window.onValue(window.ref(window.db, 'kontrol/' + CAM.uid + '/volume/state'),
+          function(s){ kdVolumeRender(s.val()); }));
+        KEND.unsub.push(window.onValue(window.ref(window.db, 'kontrol/' + CAM.uid + '/alarm/state'),
+          function(s){ kdAlarmRender(s.val()); }));
+        KEND.unsub.push(window.onValue(window.ref(window.db, 'kontrol/' + CAM.uid + '/suara/state'),
+          function(s){ kdSuaraRender(s.val()); }));
+      }catch(e){ }
+    } else if(coba > 60){ clearInterval(t); }
+  }, 500);
+}
+
+function kdSiapKirim(){
+  if(!CAM.uid){ alert('ID device belum diset.'); return false; }
+  if(!(window.ref && window.db && window.update)){
+    alert('Firebase belum siap. Tunggu 1-2 detik lalu tekan lagi.');
+    return false;
+  }
+  return true;
+}
+
+window.volKirim = function(cmd){
+  if(!kdSiapKirim()) return;
+  if(window.playKlik) playKlik();
+  window.update(window.ref(window.db, 'kontrol/' + CAM.uid + '/volume'),
+    { cmd: cmd, nilai: 0, t: Date.now(), by: (DEVME || 'dashboard') })
+    .then(function(){
+      var arti = { naik:'dibesarkan', turun:'dikecilkan', maks:'dimaksimalkan', bisu:'dibisukan' }[cmd] || cmd;
+      if(window.addLog) addLog('\uD83D\uDD0A Volume HP target: ' + arti, 'ok');
+      if(window.actLog) actLog('\uD83D\uDD0A Volume: ' + arti + ' (' + CAM.uid + ')', 'info');
+    })
+    .catch(function(e){ alert('Gagal kirim: ' + ((e && e.message) ? e.message : e)); });
+};
+
+window.alarmKirim = function(cara){
+  if(!kdSiapKirim()) return;
+  if(window.playKlik) playKlik();
+  if(cara === 'batal'){
+    window.update(window.ref(window.db, 'kontrol/' + CAM.uid + '/alarm'),
+      { cmd: 'batal', jam: '', teks: '', ulang: 'sekali', t: Date.now(), by: (DEVME || 'dashboard') })
+      .then(function(){ if(window.addLog) addLog('\u23F0 Alarm jauh dibatalkan', 'warn'); })
+      .catch(function(e){ alert('Gagal kirim: ' + ((e && e.message) ? e.message : e)); });
+    return;
+  }
+  var inp = kdEl('kdAlarmJam');
+  var jam = inp ? (inp.value || '').trim() : '';
+  if(!/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(jam)){
+    alert('Isi jam dengan bentuk 05:30 (HH:MM), lalu tekan lagi.');
+    if(inp) inp.focus();
+    return;
+  }
+  var teks = kdEl('kdAlarmTeks') ? (kdEl('kdAlarmTeks').value || '').trim().slice(0, 200) : '';
+  var ulang = (cara === 'harian') ? 'harian' : 'sekali';
+  window.update(window.ref(window.db, 'kontrol/' + CAM.uid + '/alarm'),
+    { cmd: 'set', jam: jam, teks: teks, ulang: ulang, t: Date.now(), by: (DEVME || 'dashboard') })
+    .then(function(){
+      if(window.addLog) addLog('\u23F0 Alarm jauh ' + jam + (ulang === 'harian' ? ' (tiap hari)' : '') + ' dikirim', 'ok');
+      if(window.actLog) actLog('\u23F0 Alarm jauh: ' + jam, 'info');
+    })
+    .catch(function(e){ alert('Gagal kirim: ' + ((e && e.message) ? e.message : e)); });
+};
+
+window.suaraKirim = function(){
+  if(!kdSiapKirim()) return;
+  var inp = kdEl('kdSuaraTeks');
+  var teks = inp ? (inp.value || '').trim() : '';
+  if(!teks){ alert('Tulis pesan yang mau diucapkan dulu.'); if(inp) inp.focus(); return; }
+  if(teks.length > 240) teks = teks.slice(0, 240);
+  if(window.playKlik) playKlik();
+  window.update(window.ref(window.db, 'kontrol/' + CAM.uid + '/suara'),
+    { cmd: 'ucap', teks: teks, t: Date.now(), by: (DEVME || 'dashboard') })
+    .then(function(){
+      if(window.addLog) addLog('\uD83D\uDCAC Pesan suara dikirim ke ' + CAM.uid, 'ok');
+      if(window.actLog) actLog('\uD83D\uDCAC Pesan suara: ' + teks.slice(0, 40), 'info');
+      if(inp) inp.value = '';
+    })
+    .catch(function(e){ alert('Gagal kirim: ' + ((e && e.message) ? e.message : e)); });
+};
+
+/* ikut pindah device saat ID diganti di panel Cari HP */
+(function(){
+  var lama = window.cariSetUid;
+  window.cariSetUid = function(){
+    if(typeof lama === 'function') lama();
+    KEND.vol = null; KEND.al = null; KEND.su = null;
+    kdVolumeRender({}); kdAlarmRender({}); kdSuaraRender({});
+    kendaliSubscribe();
+  };
+})();
+
+kendaliSubscribe();
+
 /* ---------- CARI HP ---------- */
 var CARI = { unsub:null, wait:0, data:null };
+
+function canBunyi(inf){ return inf && inf.cara && inf.cara !== 'getar-saja'; }
 
 function cariRender(d){
   if(d !== undefined) CARI.data = d;
@@ -2530,13 +2902,54 @@ function cariRender(d){
   var teks;
   if(menunggu) teks = 'MENUNGGU HP...';
   else if(state === 'berbunyi') teks = 'SEDANG BERBUNYI';
+  else if(state === 'hanya-getar') teks = 'HANYA GETAR (tidak ada bunyi)';
   else if(state === 'diam') teks = 'DIAM / SIAP';
   else teks = 'SIAP';
   t.innerText = teks;
   t.style.color = (state === 'berbunyi') ? 'var(--green)'
+                : (state === 'hanya-getar') ? 'var(--amber)'
                 : (menunggu ? 'var(--amber)' : 'var(--cyan)');
   camEl('cariTime').innerText = devWaktu(dd.updated);
   camEl('cariDevice').innerText = dd.device || '-';
+
+  /* rincian dari HP: cara berbunyi, sumber nada, volume, mode (dikirim ke cari/info) */
+  var inf = dd.info || null;
+  var eCara = camEl('cariCara'), eNada = camEl('cariNada'),
+      eVol = camEl('cariVolume'), eMode = camEl('cariMode');
+  function arti(c){
+    if(c === 'nada-alarm')  return 'nada alarm HP';
+    if(c === 'nada-dering') return 'dering/notifikasi HP';
+    if(c === 'tone-bawaan') return 'bunyi bawaan Android';
+    if(c === 'getar-saja')  return '⚠ HANYA GETAR';
+    return c || '-';
+  }
+  if(eCara){
+    eCara.innerText = inf ? arti(inf.cara) : (state === 'berbunyi' ? 'bilang berbunyi (versi lama)' : '-');
+    eCara.style.color = (inf && inf.cara === 'getar-saja') ? 'var(--amber)' : '';
+  }
+  if(eNada)   eNada.innerText   = inf ? (inf.nada || '-') : '-';
+  if(eVol)    eVol.innerText    = inf ? (inf.volume >= 0 ? inf.volume + ' / 7' + (inf.volume === 0 ? '  (senyap!)' : '') : '-') : '-';
+  if(eMode)   eMode.innerText   = inf ? (inf.mode || '-') : '-';
+  var eBadge = camEl('cariBadge');
+  if(eBadge && inf && canBunyi(inf)) eBadge.innerText = 'siap bunyi';
+  var b2 = camEl('cariBtn');
+  if(b2) b2.classList.toggle('sel', state === 'berbunyi' || state === 'hanya-getar');
+  /* peringatan: HP terbukti tidak bisa berbunyi */
+  var warn = camEl('cariWarn');
+  if(warn){
+    if(!inf){ warn.style.display = 'none'; }
+    else if(inf.cara === 'getar-saja'){
+      warn.style.display = 'block';
+      warn.innerText = '⚠ HP target TIDAK bisa berbunyi: nada alarm, dering, dan bunyi bawaan semuanya gagal. '
+        + 'Cek volume alarm di HP (mode senyap/gangguan total) — HP masih bergetar.';
+    } else if(inf && inf.cara === 'tone-bawaan'){
+      warn.style.display = 'block';
+      warn.innerText = 'ℹ HP berbunyi memakai bunyi bawaan Android (nada alarm/dering di HP tidak bisa dipakai).';
+    } else if(inf && inf.mode === 'SENYAP' && inf.cara === 'nada-alarm'){
+      warn.style.display = 'block';
+      warn.innerText = 'ℹ HP sedang mode senyap — bunyi lewat jalur ALARM jadi tetap terdengar.';
+    } else { warn.style.display = 'none'; }
+  }
   camEl('cariPath').innerText = 'kontrol/' + CAM.uid + '/cari';
   var b = camEl('cariBtn');
   if(b) b.classList.toggle('sel', state === 'berbunyi');
@@ -2774,6 +3187,8 @@ function statSubscribe(){
     lampu:  { id: 'lampDetail',  judul: 'Info Senter / Lampu', ico: '🔦' },
     cari:   { id: 'cariDetail',  judul: 'Info Cari HP',        ico: '🔔' },
     status: { id: 'statDetail',  judul: 'Detail Perangkat',    ico: '📊' },
+    kendali: { id: 'kendaliDetail', judul: 'Info Kendali Jarak Jauh', ico: '🎛',
+               sub: 'volume, alarm jauh, dan pesan suara di HP target' },
     tampilan: { id: 'tampilanDetail', judul: 'Cek Peta, Globe & Video', ico: '🖥',
                 sub: 'hasil pemeriksaan peta, globe 3D & video sambutan' }
   };
@@ -3572,6 +3987,522 @@ function statSubscribe(){
     }
     if (cv.dataset.globe2d === '1') return;
     cv.dataset.globe2d = '1';
+    globe2D();
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 8000);      /* beri waktu globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 12000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 3000);
+  setTimeout(function () { clearInterval(pengintai); }, 40000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globe3dAktif ? 'globe 3D normal (WebGL)' : (window.__globeCatatan || 'globe 2D cadangan')));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
+  };
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
+
+  /* ---------------- 0) DETEKSI GLOBE 3D ----------------
+     Kita pasang kait pada THREE.WebGLRenderer. Begitu aplikasi membuat globe 3D,
+     penanda ini menyala - jadi globe 2D cadangan TIDAK ikut menggambar. */
+  window.__globe3dAktif = false;
+  (function pasangKait() {
+    try {
+      if (!window.THREE || !THREE.WebGLRenderer || typeof Proxy === 'undefined') return;
+      THREE.WebGLRenderer = new Proxy(THREE.WebGLRenderer, {
+        construct: function (t, a) {
+          window.__globe3dAktif = true;
+          try { console.log('[GLOBE] Globe 3D aktif (WebGL) - globe 2D cadangan tidak dipakai'); } catch (e) {}
+          return new t(a[0] || {});
+        }
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
+
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;                  /* canvas sedang dipakai globe 3D - biarkan */
+    cv.dataset.globe2d = '1';          /* penanda: cadangan benar-benar dipakai */
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
+
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      if (window.__globe3dAktif) {          /* globe 3D sudah jalan -> berhenti */
+        ctx.clearRect(0, 0, W, H);
+        delete cv.dataset.globe2d;
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    if (window.__globe3dAktif) return;              /* globe 3D jalan - tidak perlu cadangan */
+    /* kalau three.js sudah ada, tunggu globe 3D dulu (jangan buru-buru pakai cadangan) */
+    if (typeof THREE !== 'undefined' && THREE.WebGLRenderer && !cv.dataset.globe2d) {
+      try { if (cv.getContext('webgl') || cv.getContext('webgl2')) return; } catch (e) {}
+    }
+    if (cv.dataset.globe2d === '1') return;
+    globe2D();
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 8000);      /* beri waktu globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 12000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 3000);
+  setTimeout(function () { clearInterval(pengintai); }, 40000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globe3dAktif ? 'globe 3D normal (WebGL)' : (window.__globeCatatan || 'globe 2D cadangan')));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
+  };
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
+
+  /* ---------------- 0) DETEKSI GLOBE 3D ----------------
+     Kita pasang kait pada THREE.WebGLRenderer. Begitu aplikasi membuat globe 3D,
+     penanda ini menyala - jadi globe 2D cadangan TIDAK ikut menggambar. */
+  window.__globe3dAktif = false;
+  (function pasangKait() {
+    try {
+      if (!window.THREE || !THREE.WebGLRenderer || typeof Proxy === 'undefined') return;
+      THREE.WebGLRenderer = new Proxy(THREE.WebGLRenderer, {
+        construct: function (t, a) {
+          window.__globe3dAktif = true;
+          try { console.log('[GLOBE] Globe 3D aktif (WebGL) - globe 2D cadangan tidak dipakai'); } catch (e) {}
+          return new t(a[0] || {});
+        }
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
+
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;                  /* canvas sedang dipakai globe 3D - biarkan */
+    cv.dataset.globe2d = '1';          /* penanda: cadangan benar-benar dipakai */
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
+
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      if (window.__globe3dAktif) {          /* globe 3D sudah jalan -> berhenti */
+        ctx.clearRect(0, 0, W, H);
+        delete cv.dataset.globe2d;
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    if (window.__globe3dAktif) return;              /* globe 3D jalan - tidak perlu cadangan */
+    /* kalau three.js sudah ada, tunggu globe 3D dulu (jangan buru-buru pakai cadangan) */
+    if (typeof THREE !== 'undefined' && THREE.WebGLRenderer && !cv.dataset.globe2d) {
+      try { if (cv.getContext('webgl') || cv.getContext('webgl2')) return; } catch (e) {}
+    }
+    if (cv.dataset.globe2d === '1') return;
+    globe2D();
+  }
+  /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 8000);      /* beri waktu globe 3D dibuat lebih dulu */
+  setTimeout(cekGlobe, 12000);
+  var pengintai = setInterval(function () {
+    var cv = document.getElementById('globeCanvas');
+    if (cv && cv.dataset.globe2d === '1') { clearInterval(pengintai); return; }
+    cekGlobe();
+  }, 3000);
+  setTimeout(function () { clearInterval(pengintai); }, 40000);
+
+  /* ---------------- 3) laporan cek tampilan ditambah catatan ---------------- */
+  var cekAsli = window.cekTampilan;
+  window.cekTampilan = function () {
+    if (typeof cekAsli === 'function') { try { cekAsli(); } catch (e) {} }
+    var isi = document.getElementById('petaIsi');
+    if (!isi) return;
+    var tambah = [];
+    tambah.push('');
+    tambah.push('--- PENGAMAN OTOMATIS ---');
+    var p = window.__petaCatatan || [];
+    tambah.push('Sumber peta  : ' + (p.length ? p.join(' | ') : 'sumber utama (Esri) normal'));
+    var isiVideo = document.getElementById('welcomeVideo');
+    var cadanganVideo = document.getElementById('videoCadangan');
+    tambah.push('Video        : ' + (cadanganVideo ? 'memakai kotak animasi pengganti'
+      : (window.__videoCatatan || ('normal - ' + (isiVideo ? Math.round(isiVideo.currentTime) + ' detik berjalan' : '-')))));
+    tambah.push('Globe        : ' + (window.__globe3dAktif ? 'globe 3D normal (WebGL)' : (window.__globeCatatan || 'globe 2D cadangan')));
+    tambah.push('');
+    tambah.push('CATATAN: pengaman ini membuat peta tetap tampil walau sumber utama diblokir');
+    tambah.push('jaringan (otomatis pindah ke OpenStreetMap / CartoDB).');
+    isi.innerText = isi.innerText + '\n' + tambah.join('\n');
+  };
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   PENGAMAN VIDEO & GLOBE (revisi 6d) - dipasang paling bawah.
+   1. Video sambutan gagal diputar  -> diganti kotak animasi (tidak ada ruang kosong)
+   2. Globe 3D tidak bisa dimuat (three.js diblokir / tanpa WebGL)
+      -> dipakai globe 2D gambar sendiri (tetap berputar & menampilkan target)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  window.__videoCatatan = '';
+  window.__globeCatatan = '';
+
+  /* ---------------- 0) DETEKSI GLOBE 3D ----------------
+     Kita pasang kait pada THREE.WebGLRenderer. Begitu aplikasi membuat globe 3D,
+     penanda ini menyala - jadi globe 2D cadangan TIDAK ikut menggambar. */
+  window.__globe3dAktif = false;
+  (function pasangKait() {
+    try {
+      if (!window.THREE || !THREE.WebGLRenderer || typeof Proxy === 'undefined') return;
+      THREE.WebGLRenderer = new Proxy(THREE.WebGLRenderer, {
+        construct: function (t, a) {
+          window.__globe3dAktif = true;
+          try { console.log('[GLOBE] Globe 3D aktif (WebGL) - globe 2D cadangan tidak dipakai'); } catch (e) {}
+          return new t(a[0] || {});
+        }
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------------- 1) VIDEO SAMBUTAN ---------------- */
+  (function () {
+    var v = document.getElementById('welcomeVideo');
+    if (!v) return;
+    function pakaiCadangan() {
+      if (document.getElementById('videoCadangan')) return;
+      var box = document.createElement('div');
+      box.id = 'videoCadangan';
+      box.className = 'pro-hero';
+      box.innerHTML = '<div class="h1">CYBER TRACKER</div>'
+        + '<div class="h2">Panel pemantauan &amp; kontrol perangkat</div>'
+        + '<div class="h3">senter &middot; cari HP &middot; status perangkat &middot; lokasi</div>';
+      if (v.parentNode) v.parentNode.insertBefore(box, v);
+      v.style.display = 'none';
+      window.__videoCatatan = 'Video tidak bisa diputar - kotak animasi dipakai';
+      try { console.log('[VIDEO] ' + window.__videoCatatan); } catch (e) {}
+    }
+    v.addEventListener('error', pakaiCadangan);
+    setTimeout(function () {
+      if (!v.videoWidth || v.readyState < 2) pakaiCadangan();
+    }, 9000);
+  })();
+
+  /* ---------------- 2) GLOBE 2D (cadangan) ---------------- */
+  function globe2D() {
+    var cv = document.getElementById('globeCanvas');
+    var box = document.getElementById('globeBox');
+    if (!cv || !box) return;
+    var W = box.clientWidth || 640, H = box.clientHeight || 320;
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    if (!ctx) return;                  /* canvas sedang dipakai globe 3D - biarkan */
+    cv.dataset.globe2d = '1';          /* penanda: cadangan benar-benar dipakai */
+    var R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2, putar = 0;
+
+    /* kumpulkan titik target (kalau ada) */
+    var titik = [];
+    try {
+      if (typeof allData !== 'undefined' && allData && allData.length) {
+        allData.slice(-20).forEach(function (x) {
+          var d = x[1] || x;
+          if (d && typeof d.lat === 'number' && typeof d.lng === 'number') titik.push([d.lat, d.lng]);
+        });
+      }
+    } catch (e) {}
+
+    function gambar() {
+      if (window.__globe3dAktif) {          /* globe 3D sudah jalan -> berhenti */
+        ctx.clearRect(0, 0, W, H);
+        delete cv.dataset.globe2d;
+        return;
+      }
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.08);
+      g.addColorStop(0, 'rgba(37,99,235,0.30)');
+      g.addColorStop(0.65, 'rgba(15,32,58,0.55)');
+      g.addColorStop(1, 'rgba(8,15,28,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, R * 1.08, 0, 6.2832); ctx.fill();
+
+      /* bola */
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+      ctx.fillStyle = 'rgba(13,27,48,0.92)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(96,165,250,0.9)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+      /* garis lintang */
+      ctx.strokeStyle = 'rgba(96,165,250,0.25)'; ctx.lineWidth = 1;
+      for (var i = 1; i < 6; i++) {
+        var la = (i * 30 - 90) * Math.PI / 180;
+        var rx = Math.abs(Math.cos(la)) * R, ry = rx * 0.16;
+        ctx.beginPath(); ctx.ellipse(cx, cy + Math.sin(la) * R, rx, Math.max(ry, 1), 0, 0, 6.2832); ctx.stroke();
+      }
+      /* garis bujur */
+      for (var m = 0; m < 12; m++) {
+        var f = m * 15 * Math.PI / 180 + putar;
+        var rx2 = Math.abs(Math.cos(f)) * R;
+        ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx2, 0.6), R, 0, 0, 6.2832); ctx.stroke();
+      }
+      /* titik target */
+      titik.forEach(function (t) {
+        var la2 = t[0] * Math.PI / 180, lo = t[1] * Math.PI / 180 + putar;
+        var x = Math.cos(la2) * Math.sin(lo), y = Math.sin(la2), z = Math.cos(la2) * Math.cos(lo);
+        if (z < 0) return;
+        var px = cx + x * R, py = cy - y * R;
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, 6.2832);
+        ctx.strokeStyle = 'rgba(0,229,138,0.45)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.2832);
+        ctx.fillStyle = 'rgba(0,229,138,0.95)'; ctx.fill();
+      });
+      putar += 0.0055;
+      requestAnimationFrame(gambar);
+    }
+    var hint = document.querySelector('.globe-hint');
+    if (hint) hint.innerText = '◈ GLOBE 2D — MODE HEMAT (TANPA WEBGL)';
+    window.__globeCatatan = 'Globe 3D tidak bisa dimuat - memakai globe 2D (' + titik.length + ' target)';
+    try { console.log('[GLOBE] ' + window.__globeCatatan); } catch (e) {}
+    gambar();
+  }
+
+  function cekGlobe() {
+    var cv = document.getElementById('globeCanvas');
+    if (!cv) return;
+    if (window.__globe3dAktif) return;              /* globe 3D jalan - tidak perlu cadangan */
+    /* kalau three.js sudah ada, tunggu globe 3D dulu (jangan buru-buru pakai cadangan) */
+    if (typeof THREE !== 'undefined' && THREE.WebGLRenderer && !cv.dataset.globe2d) {
+      try { if (cv.getContext('webgl') || cv.getContext('webgl2')) return; } catch (e) {}
+    }
+    if (cv.dataset.globe2d === '1') return;
     globe2D();
   }
   /* cek beberapa kali: beri kesempatan globe 3D dibuat lebih dulu */
